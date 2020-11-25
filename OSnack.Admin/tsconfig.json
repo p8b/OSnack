@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "target": "ES6",
+    "lib": [ "ES6", "dom", "ES2015" ],
+    "baseUrl": "./",
+    "outDir": "./build/development",
+    "rootDirs": [ "src" ],
+    "jsx": "react",
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "removeComments": true,
+    /* Strict Type-Checking Options */
+    "strict": true,
+    "alwaysStrict": true,
+    /* Additional Checks */
+    "noUnusedLocals": true,
+    //"noUnusedParameters": true, 
+    //"noImplicitAny": true,
+    "noImplicitReturns": true,
+    /* Module Resolution Options */
+    "esModuleInterop": true,
+    /* Advanced Options */
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": [
+    "./src/**/**/*",
+    "./decs.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "build"
+  ]
+}

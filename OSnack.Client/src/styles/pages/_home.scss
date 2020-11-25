@@ -1,0 +1,66 @@
+﻿.hero-container {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, .5)), url("/public/images/hero-img-low-res.png");
+    min-height: 80vh;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    margin: 0;
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+
+    &.imgLoaded {
+        background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, .5)), url("/public/images/hero-img.png");
+    }
+
+    & h1 {
+        font-size: 4.5rem;
+    }
+}
+
+.btn-orange, .btn-orange:focus {
+    margin-top: 2.5rem;
+    padding: .5rem 3rem;
+    border-radius: 50px;
+    border: none;
+    color: #fff !important;
+    font-size: 1.5rem;
+    background-color: rgb(249, 154, 29);
+    box-shadow: 0 0 0 0.2rem rgba(249, 154, 29,0.50);
+    transition: 1s;
+
+    &:hover, &:active {
+        box-shadow: 0 0 0 0.6rem rgba(249, 154, 29,0.50);
+        background-color: rgba(249, 154, 29,0.80);
+        border-radius: 100px;
+        transition: 0.8s;
+        transition: 1s;
+    }
+}
+
+.msg-section {
+    text-align: center;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+    // color: white;
+    // background-color: rgb(177, 85, 85);
+    margin: 0;
+
+    & h3 {
+        // font-weight: 100;
+        & i {
+            font-weight: 500;
+            //  font-family: 'Courgette';
+            font-size: 2.5rem;
+        }
+    }
+
+    & h5 {
+        margin-top: 2rem;
+        font-weight: 100;
+    }
+}
+
+.categories-section {
+    padding: 2rem 0;
+}

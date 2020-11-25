@@ -1,0 +1,20 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace OSnack.API.Database.Models
+{
+   public class oNewsletter
+   {
+
+      [Key]
+      [DataType(DataType.EmailAddress, ErrorMessage = "Invalid Email \n")]
+      [Required(ErrorMessage = "Email is Required \n")]
+      [RegularExpression(@"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$",
+          ErrorMessage = "Invalid Email \n")]
+      public string Email { get; set; }
+
+      public string DisplayName { get; set; }
+
+
+
+   }
+}

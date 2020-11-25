@@ -1,0 +1,11 @@
+﻿.breadcrumb {
+    background-color: transparent;
+}
+
+.breadcrumb-item {
+    cursor: pointer;
+
+    &.active {
+        cursor: default;
+    }
+}

@@ -1,0 +1,37 @@
+﻿.dropdown-menu {
+    max-height: 10rem;
+    overflow-y: auto;
+}
+
+.input-dropdown {
+    width: 100%;
+    border-radius: 0.5rem;
+    background-color: white;
+    background-clip: padding-box;
+    border: 0px none;
+    outline: 0;
+    padding: .2rem !important;
+    margin: 0 !important;
+    border-bottom: 0.15rem solid rgb(128, 128, 128);
+    font-size: 1.2rem !important;
+    font-weight: 100;
+    text-align: left;
+    @extend .radius-none;
+
+    &:after {
+        text-align: right;
+        float: right;
+        text-decoration: none;
+        padding-left: 0.5rem;
+        content: "\f0d7";
+        font-family: "FA5 Solid" !important;
+    }
+
+    &.danger {
+        border-bottom: 0.15rem solid rgb(189, 28, 28) !important;
+    }
+
+    &.valid {
+        border-bottom: 0.15rem solid rgb(34, 180, 53) !important;
+    }
+}

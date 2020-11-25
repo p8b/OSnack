@@ -1,0 +1,360 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <Name>OSnack.Frontend.Shared</Name>
+    <RootNamespace>OSnack.Frontend.Shared</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>8cdbb948-9f27-436a-98ef-ea4e5711fd30</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>
+    </StartupFile>
+    <StartWebBrowser>False</StartWebBrowser>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
+    <EnableTypeScript>true</EnableTypeScript>
+    <StartWebBrowser>false</StartWebBrowser>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="package.json" />
+    <Content Include="README.md" />
+    <Content Include="src\hooks\apiCallers\user\Post.User.tsx" />
+    <Content Include="src\styles\animation\animations\attention_seekers\_bounce.scss" />
+    <Content Include="src\styles\animation\animations\attention_seekers\_flash.scss" />
+    <Content Include="src\styles\animation\animations\attention_seekers\_headShake.scss" />
+    <Content Include="src\styles\animation\animations\attention_seekers\_heartBeat.scss" />
+    <Content Include="src\styles\animation\animations\attention_seekers\_jello.scss" />
+    <Content Include="src\styles\animation\animations\attention_seekers\_pulse.scss" />
+    <Content Include="src\styles\animation\animations\attention_seekers\_rubberBand.scss" />
+    <Content Include="src\styles\animation\animations\attention_seekers\_shakeX.scss" />
+    <Content Include="src\styles\animation\animations\attention_seekers\_shakeY.scss" />
+    <Content Include="src\styles\animation\animations\attention_seekers\_swing.scss" />
+    <Content Include="src\styles\animation\animations\attention_seekers\_tada.scss" />
+    <Content Include="src\styles\animation\animations\attention_seekers\_wobble.scss" />
+    <Content Include="src\styles\animation\animations\bouncing_entrances\_bounceIn.scss" />
+    <Content Include="src\styles\animation\animations\bouncing_entrances\_bounceInDown.scss" />
+    <Content Include="src\styles\animation\animations\bouncing_entrances\_bounceInLeft.scss" />
+    <Content Include="src\styles\animation\animations\bouncing_entrances\_bounceInRight.scss" />
+    <Content Include="src\styles\animation\animations\bouncing_entrances\_bounceInUp.scss" />
+    <Content Include="src\styles\animation\animations\bouncing_exits\_bounceOut.scss" />
+    <Content Include="src\styles\animation\animations\bouncing_exits\_bounceOutDown.scss" />
+    <Content Include="src\styles\animation\animations\bouncing_exits\_bounceOutLeft.scss" />
+    <Content Include="src\styles\animation\animations\bouncing_exits\_bounceOutRight.scss" />
+    <Content Include="src\styles\animation\animations\bouncing_exits\_bounceOutUp.scss" />
+    <Content Include="src\styles\animation\animations\fading_entrances\_fadeIn.scss" />
+    <Content Include="src\styles\animation\animations\fading_entrances\_fadeInDown.scss" />
+    <Content Include="src\styles\animation\animations\fading_entrances\_fadeInDownBig.scss" />
+    <Content Include="src\styles\animation\animations\fading_entrances\_fadeInLeft.scss" />
+    <Content Include="src\styles\animation\animations\fading_entrances\_fadeInLeftBig.scss" />
+    <Content Include="src\styles\animation\animations\fading_entrances\_fadeInRight.scss" />
+    <Content Include="src\styles\animation\animations\fading_entrances\_fadeInRightBig.scss" />
+    <Content Include="src\styles\animation\animations\fading_entrances\_fadeInUp.scss" />
+    <Content Include="src\styles\animation\animations\fading_entrances\_fadeInUpBig.scss" />
+    <Content Include="src\styles\animation\animations\fading_exits\_fadeOut.scss" />
+    <Content Include="src\styles\animation\animations\fading_exits\_fadeOutDown.scss" />
+    <Content Include="src\styles\animation\animations\fading_exits\_fadeOutDownBig.scss" />
+    <Content Include="src\styles\animation\animations\fading_exits\_fadeOutLeft.scss" />
+    <Content Include="src\styles\animation\animations\fading_exits\_fadeOutLeftBig.scss" />
+    <Content Include="src\styles\animation\animations\fading_exits\_fadeOutRight.scss" />
+    <Content Include="src\styles\animation\animations\fading_exits\_fadeOutRightBig.scss" />
+    <Content Include="src\styles\animation\animations\fading_exits\_fadeOutUp.scss" />
+    <Content Include="src\styles\animation\animations\fading_exits\_fadeOutUpBig.scss" />
+    <Content Include="src\styles\animation\animations\flippers\_flip.scss" />
+    <Content Include="src\styles\animation\animations\flippers\_flipInX.scss" />
+    <Content Include="src\styles\animation\animations\flippers\_flipInY.scss" />
+    <Content Include="src\styles\animation\animations\flippers\_flipOutX.scss" />
+    <Content Include="src\styles\animation\animations\flippers\_flipOutY.scss" />
+    <Content Include="src\styles\animation\animations\lightspeed\_lightSpeedIn.scss" />
+    <Content Include="src\styles\animation\animations\lightspeed\_lightSpeedOut.scss" />
+    <Content Include="src\styles\animation\animations\rotating_entrances\_rotateIn.scss" />
+    <Content Include="src\styles\animation\animations\rotating_entrances\_rotateInDownLeft.scss" />
+    <Content Include="src\styles\animation\animations\rotating_entrances\_rotateInDownRight.scss" />
+    <Content Include="src\styles\animation\animations\rotating_entrances\_rotateInUpLeft.scss" />
+    <Content Include="src\styles\animation\animations\rotating_entrances\_rotateInUpRight.scss" />
+    <Content Include="src\styles\animation\animations\rotating_exits\_rotateOut.scss" />
+    <Content Include="src\styles\animation\animations\rotating_exits\_rotateOutDownLeft.scss" />
+    <Content Include="src\styles\animation\animations\rotating_exits\_rotateOutDownRight.scss" />
+    <Content Include="src\styles\animation\animations\rotating_exits\_rotateOutUpLeft.scss" />
+    <Content Include="src\styles\animation\animations\rotating_exits\_rotateOutUpRight.scss" />
+    <Content Include="src\styles\animation\animations\sliding_entrances\_slideInDown.scss" />
+    <Content Include="src\styles\animation\animations\sliding_entrances\_slideInLeft.scss" />
+    <Content Include="src\styles\animation\animations\sliding_entrances\_slideInRight.scss" />
+    <Content Include="src\styles\animation\animations\sliding_entrances\_slideInUp.scss" />
+    <Content Include="src\styles\animation\animations\sliding_exits\_slideOutDown.scss" />
+    <Content Include="src\styles\animation\animations\sliding_exits\_slideOutLeft.scss" />
+    <Content Include="src\styles\animation\animations\sliding_exits\_slideOutRight.scss" />
+    <Content Include="src\styles\animation\animations\sliding_exits\_slideOutUp.scss" />
+    <Content Include="src\styles\animation\animations\specials\_hinge.scss" />
+    <Content Include="src\styles\animation\animations\specials\_jackInTheBox.scss" />
+    <Content Include="src\styles\animation\animations\specials\_rollIn.scss" />
+    <Content Include="src\styles\animation\animations\specials\_rollOut.scss" />
+    <Content Include="src\styles\animation\animations\specials\_rotate.scss" />
+    <Content Include="src\styles\animation\animations\zooming_entrances\_zoomIn.scss" />
+    <Content Include="src\styles\animation\animations\zooming_entrances\_zoomInDown.scss" />
+    <Content Include="src\styles\animation\animations\zooming_entrances\_zoomInLeft.scss" />
+    <Content Include="src\styles\animation\animations\zooming_entrances\_zoomInRight.scss" />
+    <Content Include="src\styles\animation\animations\zooming_entrances\_zoomInUp.scss" />
+    <Content Include="src\styles\animation\animations\zooming_exits\_zoomOut.scss" />
+    <Content Include="src\styles\animation\animations\zooming_exits\_zoomOutDown.scss" />
+    <Content Include="src\styles\animation\animations\zooming_exits\_zoomOutLeft.scss" />
+    <Content Include="src\styles\animation\animations\zooming_exits\_zoomOutRight.scss" />
+    <Content Include="src\styles\animation\animations\zooming_exits\_zoomOutUp.scss" />
+    <Content Include="src\styles\animation\animations\_base.scss" />
+    <Content Include="src\styles\animation\animations\_sharedMixins.scss" />
+    <Content Include="src\styles\animation\_animate.scss" />
+    <Content Include="src\styles\bootstrap\bootstrap-grid.scss" />
+    <Content Include="src\styles\bootstrap\bootstrap-reboot.scss" />
+    <Content Include="src\styles\bootstrap\bootstrap.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_alert.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_background-variant.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_badge.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_border-radius.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_box-shadow.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_breakpoints.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_buttons.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_caret.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_clearfix.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_deprecate.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_float.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_forms.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_gradients.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_grid-framework.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_grid.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_hover.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_image.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_list-group.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_lists.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_nav-divider.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_pagination.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_reset-text.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_resize.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_screen-reader.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_size.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_table-row.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_text-emphasis.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_text-hide.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_text-truncate.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_transition.scss" />
+    <Content Include="src\styles\bootstrap\mixins\_visibility.scss" />
+    <Content Include="src\styles\bootstrap\utilities\_align.scss" />
+    <Content Include="src\styles\bootstrap\utilities\_background.scss" />
+    <Content Include="src\styles\bootstrap\utilities\_borders.scss" />
+    <Content Include="src\styles\bootstrap\utilities\_clearfix.scss" />
+    <Content Include="src\styles\bootstrap\utilities\_display.scss" />
+    <Content Include="src\styles\bootstrap\utilities\_embed.scss" />
+    <Content Include="src\styles\bootstrap\utilities\_flex.scss" />
+    <Content Include="src\styles\bootstrap\utilities\_float.scss" />
+    <Content Include="src\styles\bootstrap\utilities\_interactions.scss" />
+    <Content Include="src\styles\bootstrap\utilities\_overflow.scss" />
+    <Content Include="src\styles\bootstrap\utilities\_position.scss" />
+    <Content Include="src\styles\bootstrap\utilities\_screenreaders.scss" />
+    <Content Include="src\styles\bootstrap\utilities\_shadows.scss" />
+    <Content Include="src\styles\bootstrap\utilities\_sizing.scss" />
+    <Content Include="src\styles\bootstrap\utilities\_spacing.scss" />
+    <Content Include="src\styles\bootstrap\utilities\_stretched-link.scss" />
+    <Content Include="src\styles\bootstrap\utilities\_text.scss" />
+    <Content Include="src\styles\bootstrap\utilities\_visibility.scss" />
+    <Content Include="src\styles\bootstrap\vendor\_rfs.scss" />
+    <Content Include="src\styles\bootstrap\_alert.scss" />
+    <Content Include="src\styles\bootstrap\_badge.scss" />
+    <Content Include="src\styles\bootstrap\_breadcrumb.scss" />
+    <Content Include="src\styles\bootstrap\_button-group.scss" />
+    <Content Include="src\styles\bootstrap\_buttons.scss" />
+    <Content Include="src\styles\bootstrap\_card.scss" />
+    <Content Include="src\styles\bootstrap\_carousel.scss" />
+    <Content Include="src\styles\bootstrap\_close.scss" />
+    <Content Include="src\styles\bootstrap\_code.scss" />
+    <Content Include="src\styles\bootstrap\_custom-forms.scss" />
+    <Content Include="src\styles\bootstrap\_dropdown.scss" />
+    <Content Include="src\styles\bootstrap\_forms.scss" />
+    <Content Include="src\styles\bootstrap\_functions.scss" />
+    <Content Include="src\styles\bootstrap\_grid.scss" />
+    <Content Include="src\styles\bootstrap\_images.scss" />
+    <Content Include="src\styles\bootstrap\_input-group.scss" />
+    <Content Include="src\styles\bootstrap\_jumbotron.scss" />
+    <Content Include="src\styles\bootstrap\_list-group.scss" />
+    <Content Include="src\styles\bootstrap\_media.scss" />
+    <Content Include="src\styles\bootstrap\_mixins.scss" />
+    <Content Include="src\styles\bootstrap\_modal.scss" />
+    <Content Include="src\styles\bootstrap\_nav.scss" />
+    <Content Include="src\styles\bootstrap\_navbar.scss" />
+    <Content Include="src\styles\bootstrap\_pagination.scss" />
+    <Content Include="src\styles\bootstrap\_popover.scss" />
+    <Content Include="src\styles\bootstrap\_print.scss" />
+    <Content Include="src\styles\bootstrap\_progress.scss" />
+    <Content Include="src\styles\bootstrap\_reboot.scss" />
+    <Content Include="src\styles\bootstrap\_root.scss" />
+    <Content Include="src\styles\bootstrap\_spinners.scss" />
+    <Content Include="src\styles\bootstrap\_tables.scss" />
+    <Content Include="src\styles\bootstrap\_toasts.scss" />
+    <Content Include="src\styles\bootstrap\_tooltip.scss" />
+    <Content Include="src\styles\bootstrap\_transitions.scss" />
+    <Content Include="src\styles\bootstrap\_type.scss" />
+    <Content Include="src\styles\bootstrap\_utilities.scss" />
+    <Content Include="src\styles\bootstrap\_variables.scss" />
+    <Content Include="src\styles\main.shared.scss" />
+    <Content Include="src\styles\modules\_a.scss" />
+    <Content Include="src\styles\modules\_badge.scss" />
+    <Content Include="src\styles\modules\_bottons.scss" />
+    <Content Include="src\styles\modules\_breadcrumb.scss" />
+    <Content Include="src\styles\modules\_checkbox.scss" />
+    <Content Include="src\styles\modules\_dropdown.scss" />
+    <Content Include="src\styles\modules\_general.scss" />
+    <Content Include="src\styles\modules\_page-header.scss" />
+    <Content Include="src\styles\modules\_icons.scss" />
+    <Content Include="src\styles\modules\_input.scss" />
+    <Content Include="src\styles\modules\_label.scss" />
+    <Content Include="src\styles\modules\_modal.scss" />
+    <Content Include="src\styles\modules\_radius.scss" />
+    <Content Include="src\styles\modules\_scrollbar.scss" />
+    <Content Include="src\styles\modules\_shop-card.scss" />
+    <Content Include="src\styles\modules\_text-area.scss" />
+    <Content Include="src\styles\modules\_text-styles.scss" />
+    <Content Include="src\styles\modules\_toggler.scss" />
+    <Content Include="src\styles\modules\_tooltip.scss" />
+    <Content Include="tsconfig.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\" />
+    <Folder Include="src\components\" />
+    <Folder Include="src\components\Buttons\" />
+    <Folder Include="src\components\Inputs\" />
+    <Folder Include="src\components\Loading\" />
+    <Folder Include="src\components\Modals\" />
+    <Folder Include="src\components\Pagination\" />
+    <Folder Include="src\components\Table\" />
+    <Folder Include="src\components\UserAccount\" />
+    <Folder Include="src\components\Texts\" />
+    <Folder Include="src\hooks\" />
+    <Folder Include="src\hooks\apiCallers\" />
+    <Folder Include="src\hooks\apiCallers\authentication\" />
+    <Folder Include="src\hooks\apiCallers\category\" />
+    <Folder Include="src\hooks\apiCallers\product\" />
+    <Folder Include="src\hooks\apiCallers\user\" />
+    <Folder Include="src\hooks\function\" />
+    <Folder Include="src\pages\" />
+    <Folder Include="src\styles\" />
+    <Folder Include="src\components\Login\" />
+    <Folder Include="src\styles\animation\" />
+    <Folder Include="src\styles\animation\animations\" />
+    <Folder Include="src\styles\animation\animations\attention_seekers\" />
+    <Folder Include="src\styles\animation\animations\bouncing_entrances\" />
+    <Folder Include="src\styles\animation\animations\bouncing_exits\" />
+    <Folder Include="src\styles\animation\animations\fading_entrances\" />
+    <Folder Include="src\styles\animation\animations\fading_exits\" />
+    <Folder Include="src\styles\animation\animations\flippers\" />
+    <Folder Include="src\styles\animation\animations\lightspeed\" />
+    <Folder Include="src\styles\animation\animations\rotating_entrances\" />
+    <Folder Include="src\styles\animation\animations\rotating_exits\" />
+    <Folder Include="src\styles\animation\animations\sliding_entrances\" />
+    <Folder Include="src\styles\animation\animations\sliding_exits\" />
+    <Folder Include="src\styles\animation\animations\specials\" />
+    <Folder Include="src\styles\animation\animations\zooming_entrances\" />
+    <Folder Include="src\styles\animation\animations\zooming_exits\" />
+    <Folder Include="src\styles\bootstrap\" />
+    <Folder Include="src\styles\bootstrap\mixins\" />
+    <Folder Include="src\styles\bootstrap\utilities\" />
+    <Folder Include="src\styles\bootstrap\vendor\" />
+    <Folder Include="src\styles\modules\" />
+    <Folder Include="src\_core\" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="src\components\Buttons\Button.tsx" />
+    <TypeScriptCompile Include="src\components\Buttons\ButtonCard.tsx" />
+    <TypeScriptCompile Include="src\components\Buttons\ButtonPopupConfirm.tsx" />
+    <TypeScriptCompile Include="src\components\Buttons\DropDown.tsx" />
+    <TypeScriptCompile Include="src\components\Buttons\FacebookLogin.tsx" />
+    <TypeScriptCompile Include="src\components\Buttons\GoogleLogin.tsx" />
+    <TypeScriptCompile Include="src\components\Buttons\NavLink.tsx" />
+    <TypeScriptCompile Include="src\components\Card.tsx" />
+    <TypeScriptCompile Include="src\components\Inputs\InputDropDown.tsx" />
+    <TypeScriptCompile Include="src\components\Inputs\QuantityInput.tsx" />
+    <TypeScriptCompile Include="src\components\Inputs\SeachInput.tsx" />
+    <TypeScriptCompile Include="src\components\Modals\ConfirmPasswordModal.tsx" />
+    <TypeScriptCompile Include="src\components\Modals\Modal.tsx" />
+    <TypeScriptCompile Include="src\components\Inputs\CheckBox.tsx" />
+    <TypeScriptCompile Include="src\components\Inputs\Input.tsx" />
+    <TypeScriptCompile Include="src\components\Inputs\Slider.tsx" />
+    <TypeScriptCompile Include="src\components\Inputs\TextArea.tsx" />
+    <TypeScriptCompile Include="src\components\Inputs\Toggler.tsx" />
+    <TypeScriptCompile Include="src\components\Loading\Loading.tsx" />
+    <TypeScriptCompile Include="src\components\Pagination\Pagination.tsx" />
+    <TypeScriptCompile Include="src\components\Table\Table.tsx" />
+    <TypeScriptCompile Include="src\components\Texts\CopyText.tsx" />
+    <TypeScriptCompile Include="src\hooks\apiCallers\authentication\Get.Authentication.tsx" />
+    <TypeScriptCompile Include="src\hooks\apiCallers\authentication\Post.Authentication.tsx" />
+    <TypeScriptCompile Include="src\hooks\apiCallers\category\Get.Category.tsx" />
+    <TypeScriptCompile Include="src\hooks\apiCallers\product\Get.Product.tsx" />
+    <TypeScriptCompile Include="src\hooks\apiCallers\user\Put.User.tsx" />
+    <TypeScriptCompile Include="src\pages\PasswordReset.tsx" />
+    <TypeScriptCompile Include="src\pages\ConfirmEmail.tsx" />
+    <TypeScriptCompile Include="src\pages\PageNotFound.tsx" />
+    <TypeScriptCompile Include="src\components\Texts\Alert.tsx" />
+    <TypeScriptCompile Include="src\components\Texts\PageHeader.tsx" />
+    <TypeScriptCompile Include="src\components\UserAccount\UserAccount.tsx" />
+    <TypeScriptCompile Include="src\hooks\function\useDetectOutsideClick.tsx" />
+    <TypeScriptCompile Include="src\index.tsx" />
+    <TypeScriptCompile Include="src\components\Modals\ForgotPasswordModal.tsx" />
+    <TypeScriptCompile Include="src\components\Login\Login.tsx" />
+    <TypeScriptCompile Include="src\_core\apiModels.tsx" />
+    <TypeScriptCompile Include="src\_core\appClasses.tsx" />
+    <TypeScriptCompile Include="src\_core\appFunc.tsx" />
+    <TypeScriptCompile Include="src\_core\constant.Variables.tsx" />
+    <TypeScriptCompile Include="src\_core\customRoute.tsx" />
+    <TypeScriptCompile Include="src\_core\authenticationContext.tsx" />
+    <TypeScriptCompile Include="src\_core\type.Extensions.tsx" />
+  </ItemGroup>
+  <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:48022/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://localhost:1337</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}" User="">
+        <WebProjectProperties>
+          <StartPageUrl>
+          </StartPageUrl>
+          <StartAction>CurrentPage</StartAction>
+          <AspNetDebugging>True</AspNetDebugging>
+          <SilverlightDebugging>False</SilverlightDebugging>
+          <NativeDebugging>False</NativeDebugging>
+          <SQLDebugging>False</SQLDebugging>
+          <ExternalProgram>
+          </ExternalProgram>
+          <StartExternalURL>
+          </StartExternalURL>
+          <StartCmdLineArguments>
+          </StartCmdLineArguments>
+          <StartWorkingDirectory>
+          </StartWorkingDirectory>
+          <EnableENC>False</EnableENC>
+          <AlwaysStartWebServerOnDebug>False</AlwaysStartWebServerOnDebug>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

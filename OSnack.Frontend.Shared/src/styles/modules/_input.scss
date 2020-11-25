@@ -1,0 +1,73 @@
+﻿input {
+    width: 100%;
+    border-radius: 0.5rem;
+    background-color: white;
+    background-clip: padding-box;
+    border: 0px none;
+    outline: 0;
+    padding: .2rem !important;
+    margin: 0 !important;
+    border-bottom: 0.15rem solid rgb(128, 128, 128);
+    font-size: 1.2rem !important;
+    @extend .radius-none;
+
+    &.danger {
+        border-bottom: 0.15rem solid rgb(189, 28, 28) !important;
+    }
+
+    &.valid {
+        border-bottom: 0.15rem solid rgb(34, 180, 53) !important;
+    }
+
+    &:focus {
+        background-color: white;
+    }
+
+    &:disabled {
+        background-color: rgb(224, 224, 224) !important;
+        color: black;
+    }
+
+    &[type=number]::-webkit-inner-spin-button {
+        opacity: 0;
+    }
+}
+
+.slider {
+    width: 100%;
+    height: 15px;
+    border-radius: 5px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+
+    &:hover {
+        opacity: 1;
+    }
+}
+
+.input-right-label {
+    display: inline-block;
+    position: absolute;
+    z-index: 1;
+    right: 1rem;
+    text-align: right;
+    padding: 0.38rem;
+    background-color: white;
+    color: rgb(108, 108, 108);
+    user-select: none;
+    line-height: 0;
+}
+
+input[type='file'].upload {
+    text-indent: -999em;
+    outline: none;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+
+.custom-file-input {
+    cursor: pointer;
+}

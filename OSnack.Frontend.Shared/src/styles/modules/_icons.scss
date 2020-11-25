@@ -1,0 +1,256 @@
+﻿.add-icon {
+    &:before {
+        text-decoration: none;
+        padding: 0 .2rem;
+        content: "\f055";
+        display: inline-block;
+        font-family: "FA5 Solid" !important;
+    }
+}
+
+.back-icon {
+    &:before {
+        text-decoration: none;
+        padding: 0 .2rem;
+        content: "\f0a8";
+        display: inline-block;
+        font-family: "FA5 Solid" !important;
+    }
+}
+
+.save-icon {
+    &:before {
+        text-decoration: none;
+        padding: 0 .2rem;
+        content: "\f0c7";
+        display: inline-block;
+        font-family: "FA5 Solid" !important;
+    }
+}
+
+.edit-icon {
+    &:before {
+        text-decoration: none;
+        padding: 0 .2rem;
+        content: "\f044";
+        display: inline-block;
+        font-family: "FA5 Solid" !important;
+    }
+}
+
+.lock-icon {
+    &:before {
+        text-decoration: none;
+        padding: 0 .2rem;
+        content: "\f023";
+        display: inline-block;
+        font-family: "FA5 Solid" !important;
+    }
+}
+
+.search-icon {
+    &:before {
+        text-decoration: none;
+        padding: 0 .2rem;
+        content: "\f002";
+        display: inline-block;
+        font-family: "FA5 Solid" !important;
+    }
+}
+
+.search-all-icon {
+    &:before {
+        text-decoration: none;
+        padding: 0 .2rem;
+        content: "\f00e";
+        display: inline-block;
+        font-family: "FA5 Solid" !important;
+    }
+}
+
+.unlock-icon {
+    &:before {
+        text-decoration: none;
+        padding: 0 .2rem;
+        content: "\f3c1";
+        display: inline-block;
+        font-family: "FA5 Solid" !important;
+    }
+}
+
+.filter-icon {
+    &:before {
+        text-decoration: none;
+        padding: 0 .2rem;
+        content: "\f0b0";
+        display: inline-block;
+        font-family: "FA5 Solid" !important;
+    }
+}
+
+.delete-icon {
+    &:before {
+        text-decoration: none;
+        padding: 0 .2rem;
+        content: "\f2ed";
+        display: inline-block;
+        font-family: "FA5 Solid" !important;
+    }
+}
+
+.plus-icon {
+    &:before {
+        text-decoration: none;
+        content: "\f067";
+        display: inline-block;
+        font-family: "FA5 Solid" !important;
+    }
+}
+
+.minus-icon {
+    &:before {
+        text-decoration: none;
+        content: "\f068";
+        display: inline-block;
+        font-family: "FA5 Solid" !important;
+    }
+}
+
+.sort-numeric-up-icon {
+    &:before {
+        text-decoration: none;
+        padding: 0 .2rem;
+        content: "\f163";
+        display: inline-block;
+        font-family: "FA5 Solid" !important;
+    }
+}
+
+.sort-numeric-down-icon {
+    &:before {
+        text-decoration: none;
+        padding: 0 .2rem;
+        content: "\f886";
+        display: inline-block;
+        font-family: "FA5 Solid" !important;
+    }
+}
+
+.sortable-icon {
+    &-light {
+
+        &:before {
+            text-decoration: none !important;
+            padding: 0 .2rem;
+            content: "\f0dc";
+            display: inline;
+            font-family: "FA5 Solid" !important;
+            color: rgb(180, 180, 180);
+        }
+    }
+
+    &:before {
+        text-decoration: none !important;
+        padding: 0 .2rem;
+        content: "\f0dc";
+        display: inline;
+        font-family: "FA5 Solid" !important;
+    }
+}
+
+.pagination-left-arrow {
+    font-style: normal;
+
+    &:after {
+        text-decoration: none;
+        content: "\f053";
+        display: inline-block;
+        font-family: "FA5 Solid" !important;
+    }
+
+    &:before {
+        text-decoration: none;
+        content: "\f104";
+        display: inline-block;
+        font-family: "FA5 Solid" !important;
+    }
+}
+
+.pagination-right-arrow {
+    font-style: normal;
+
+    &:after {
+        text-decoration: none;
+        content: "\f054";
+        display: inline-block;
+        font-family: "FA5 Solid" !important;
+    }
+
+    &:before {
+        text-decoration: none;
+        content: "\f105";
+        display: inline-block;
+        font-family: "FA5 Solid" !important;
+    }
+}
+
+.info-icon {
+    text-decoration: none !important;
+    margin: auto;
+    font-size: 1.5rem;
+    user-select: none;
+    cursor: pointer;
+
+    &:after {
+        color: rgb(61, 95, 9);
+        font-size: 2rem;
+        margin: 0;
+        content: "\f05a";
+        font-family: "FA5 Solid" !important;
+    }
+}
+
+.user-circle-icon {
+    text-decoration: none !important;
+    color: rgb(61, 95, 9);
+    margin: auto;
+    font-size: 1.5rem;
+    user-select: none;
+    cursor: pointer;
+
+    &:after {
+        font-size: 2rem;
+        margin: 0;
+        content: "\f2bd";
+        font-family: "FA5 Solid" !important;
+    }
+}
+
+.open-eye-icon {
+    &:before {
+        text-decoration: none;
+        content: "\f06e";
+        display: inline-block;
+        font-family: "FA5 Solid" !important;
+    }
+}
+
+.close-eye-icon {
+    &:before {
+        text-decoration: none;
+        content: "\f070";
+        display: inline-block;
+        font-family: "FA5 Solid" !important;
+    }
+}
+
+.cart-icon {
+    &:after {
+        padding-left: .8rem;
+        padding-right: .8rem;
+        text-decoration: none;
+        content: "\f291";
+        display: inline-block;
+        font-family: "FA5 Solid" !important;
+    }
+}

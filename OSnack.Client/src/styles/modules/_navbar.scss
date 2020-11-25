@@ -1,0 +1,66 @@
+﻿.navbar {
+    z-index: 10;
+}
+
+@media(min-device-width:768px) {
+    .navbar {
+        z-index: 10;
+        @include slideInDown;
+        @include animated;
+        @include fast;
+    }
+}
+
+.logo-container {
+    &:focus {
+        @include bounce;
+        @include animated;
+        @include faster;
+    }
+}
+
+.Logo {
+    z-index: 100;
+    position: relative;
+    max-height: 5.5rem;
+
+    &.small {
+        max-height: 3rem !important;
+    }
+}
+
+.toggler-icon {
+    font-size: 2.5rem;
+    background-color: transparent;
+    outline: none !important;
+    border: 0 !important;
+    margin: 0;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    color: rgb(61, 95, 8) !important;
+
+
+    @media(min-width:768px) {
+        display: none !important;
+    }
+
+    &.show {
+        @include rotateIn;
+        @include animated;
+        @include fast;
+
+        &:before {
+            content: "\f00d";
+        }
+    }
+
+    &.hide {
+        @include bounceIn;
+        @include animated;
+        @include slow;
+
+        &:before {
+            content: "\f0c9";
+        }
+    }
+}

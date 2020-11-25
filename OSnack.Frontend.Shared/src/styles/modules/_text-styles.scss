@@ -1,0 +1,17 @@
+﻿.small-text {
+    font-size: .8rem;
+}
+
+.underline {
+    text-decoration: underline;
+}
+
+.table-header {
+    user-select: none;
+
+    &-sort {
+        @extend .table-header;
+        cursor: pointer;
+        text-decoration: underline;
+    }
+}

@@ -1,0 +1,17 @@
+﻿a {
+    cursor: pointer;
+    color: LightThemeText();
+    //text-decoration: none !important;
+    &:hover.hover-gray, &:focus.hover-gray {
+        color: rgb(128, 128, 128) !important;
+    }
+
+    &.font-0 {
+        font-size: 0;
+    }
+}
+
+.cropper-relative {
+    position: relative !important;
+    min-height: 20rem;
+}

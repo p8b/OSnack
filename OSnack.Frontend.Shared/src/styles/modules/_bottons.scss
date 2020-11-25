@@ -1,0 +1,263 @@
+﻿
+.btn, .btn-lg {
+    font-weight: bold;
+    border-radius: 0.9rem;
+    border: none;
+    outline: 0px solid !important;
+
+    &.loading {
+        pointer-events: none !important;
+    }
+
+    &.loading {
+        & {
+            text-decoration: line-through double;
+        }
+
+        &:after {
+            text-decoration: none;
+            content: "\f116";
+            display: inline-block;
+            margin-left: .5rem;
+            font-family: "FA5 Solid" !important;
+            @include rotate;
+            @include slower;
+            @include infinite;
+        }
+    }
+
+    &:hover {
+        box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19) !important;
+    }
+
+    &:focus {
+        box-shadow: none;
+    }
+
+    &.no-shadow {
+        &:hover, &:active, &:focus {
+            box-shadow: none !important;
+        }
+    }
+}
+
+.btn-fb {
+    color: #fff;
+    background-color: rgb(24, 119, 242);
+    padding-left: 2.5rem;
+
+    &:before {
+        content: "\f09a";
+        margin: 0;
+        margin-right: .2rem;
+        font-size: 2rem;
+        font-family: "FA5 Brands" !important;
+        float: left;
+        padding: 0;
+        z-index: 1000;
+        top: 0;
+        bottom: 0;
+        left: .6rem;
+        position: absolute;
+        display: block;
+    }
+
+    &:focus, &:hover {
+        background-color: rgb(21, 71, 135);
+    }
+}
+
+.btn-g {
+    color: rgb(75, 75, 75);
+    background-color: rgb(255, 255, 255);
+    border: solid .01rem rgb(75,75,75);
+    padding-left: 2.4rem;
+
+    &:before {
+        content: "";
+        background: url("data:image/png;base64,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");
+        background-size: contain;
+        height: 2.7rem;
+        width: 2.7rem;
+        float: left;
+        top: .1rem;
+        bottom: 0;
+        left: .6rem;
+        display: block;
+        position: absolute;
+    }
+
+    &:focus, &:hover, &:active {
+        color: rgb(255, 255, 255);
+        background: linear-gradient(90deg, rgba(255,255,255,1) 3.3rem, rgba(109,109,109,1) 3.3rem);
+    }
+}
+
+.btn-card {
+    padding: 1rem;
+    margin: 0;
+    color: rgba(75, 75, 75,.9);
+
+    &:hover, &:focus, &:active {
+        color: rgba(0,0,0,1);
+        box-shadow: none !important;
+    }
+
+    & > div {
+        height: 12rem;
+        width: 12rem;
+        box-shadow: 0px 0px 10px 5px rgba(0,0,0,0.08);
+        border-radius: .4rem;
+        transition-duration: .5s;
+        background-color: rgba(255, 255, 255, 0.70);
+
+        &:hover, &:focus, &:active {
+            background-color: rgb(255, 255, 255);
+            box-shadow: 0px 0px 10px 5px rgba(0,0,0,0.25);
+        }
+    }
+}
+
+
+/// *** Button Colors
+.btn-dark-green {
+    color: #fff;
+    background-color: rgb(42, 66, 7);
+
+    &:hover, &:focus {
+        color: #fff;
+        background-color: rgb(80, 125, 12);
+    }
+}
+
+.btn-green {
+    color: #fff;
+    background-color: rgb(80, 125, 12);
+
+    &:hover, &:focus {
+        color: #fff;
+        background-color: rgb(42, 66, 7);
+    }
+}
+
+.btn-red {
+    color: white !important;
+    background-color: rgba(156, 10, 9);
+
+    &:hover, &:focus {
+        background-color: rgb(116, 7, 7);
+    }
+}
+
+.btn-white {
+    color: black;
+    background-color: rgb(223, 223, 223);
+
+    &:hover, &:focus {
+        color: white;
+        background-color: rgb(109,109,109);
+    }
+}
+
+.btn-blue {
+    color: white;
+    background-color: rgb(23, 162, 184);
+
+    &:hover, &:focus {
+        color: white;
+        background-color: rgb(18, 109, 123);
+    }
+}
+
+.btn-navy {
+    color: white !important;
+    background-color: rgb(61, 23, 184);
+
+    &:hover, &:focus {
+        background-color: rgb(33, 16, 86);
+    }
+}
+
+.btn-orange {
+    color: white;
+    background-color: rgb(184, 102, 23);
+
+    &:hover, &:focus {
+        background-color: rgb(118, 65, 15);
+    }
+}
+
+.btn-yale {
+    color: white;
+    background-color: rgb(17, 68, 118);
+
+    &:hover, &:focus {
+        background-color: rgb(12, 46, 79);
+    }
+}
+
+.btn-outline-dark {
+    color: rgb(75, 75, 75);
+    background-color: rgb(255, 255, 255);
+    border: solid .01rem rgb(75,75,75);
+    padding-left: 2.5rem;
+
+    &:before {
+        content: "";
+        background-size: contain;
+        height: 2.7rem;
+        width: 2.7rem;
+        float: left;
+        top: .1rem;
+        bottom: 0;
+        left: .2rem;
+        display: block;
+        position: absolute;
+    }
+
+    &:focus, &:hover, &:active {
+        color: rgb(255, 255, 255);
+        background-color: rgb(109,109,109);
+    }
+}
+
+
+.text-nav {
+    padding-bottom: 0;
+    color: rgba(40, 62, 8,1) !important;
+    border-bottom: solid 0.15rem rgba(255, 255, 255, 0.00);
+    padding-top: .5rem;
+
+    @media(max-width:768px) {
+        padding-top: 1rem;
+    }
+}
+
+.link-nav {
+    @extend .text-nav;
+    z-index: 100;
+
+    &:hover {
+        text-decoration: none;
+        border-bottom: solid 0.15rem rgba(61, 95, 9,.4);
+    }
+
+    & div#navlink-underline-animation {
+        z-index: 100;
+        margin-left: auto;
+        margin-right: auto;
+        width: 0 !important;
+        transition: width .8s;
+    }
+
+    &.visited {
+        border-bottom: none;
+
+        & div#navlink-underline-animation {
+            width: 100% !important;
+            transition: width .8s;
+            outline: 1rem;
+            border-bottom: solid 0.15rem rgb(61, 95, 9);
+        }
+    }
+}

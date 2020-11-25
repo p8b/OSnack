@@ -1,0 +1,81 @@
+// == Shared Mixins
+// ==================================================
+
+// == Keyframes (create keyframes for animation)
+// = @param $animation-name (string) - keyframes (and animation) name (no spaces)
+@mixin keyframes($animation-name) {
+    @at-root {
+        // @-moz-keyframes #{$animation-name} {
+        //   @content;
+        // }
+        // @-webkit-keyframes #{$animation-name} {
+        //   @content;
+        // }
+        // @-o-keyframes #{$animation-name} {
+        //   @content;
+        // }
+        // @-ms-keyframes #{$animation-name} {
+        //   @content;
+        // }
+        @keyframes #{$animation-name} {
+            @content;
+        }
+    }
+}
+
+// == Animated
+@mixin animated($animation-duration-time: 1s, $animation-fill-mode: both) {
+    animation-duration: $animation-duration-time;
+    animation-fill-mode: $animation-fill-mode;
+}
+
+// == Media with reduced motion
+@mixin reduced-motion {
+    @media (prefers-reduced-motion) {
+        animation: unset !important;
+        transition: none !important;
+    }
+}
+
+// == Infinite
+@mixin infinite {
+    animation-iteration-count: infinite;
+}
+
+// == Varying animation duration (speed)
+@mixin fast($animation-duration-time: .8s) {
+    animation-duration: $animation-duration-time;
+}
+
+@mixin faster($animation-duration-time: .5s) {
+    animation-duration: $animation-duration-time;
+}
+
+@mixin slow($animation-duration-time: 2s) {
+    animation-duration: $animation-duration-time;
+}
+
+@mixin slower($animation-duration-time: 3s) {
+    animation-duration: $animation-duration-time;
+}
+
+// == Varying animation delay
+@mixin delay-1s($animation-delay-time: 1s) {
+    animation-delay: $animation-delay-time;
+}
+
+@mixin delay-2s($animation-delay-time: 2s) {
+    animation-delay: $animation-delay-time;
+}
+
+@mixin delay-3s($animation-delay-time: 3s) {
+    animation-delay: $animation-delay-time;
+}
+
+@mixin delay-4s($animation-delay-time: 4s) {
+    animation-delay: $animation-delay-time;
+}
+
+@mixin delay-5s($animation-delay-time: 5s) {
+    animation-delay: $animation-delay-time;
+}

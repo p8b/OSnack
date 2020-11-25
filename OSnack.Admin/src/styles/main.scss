@@ -1,0 +1,19 @@
+﻿
+/*** helpers ***/
+@import "./helpers/_variables.scss";
+@import "./helpers/_functions.scss";
+@import "./helpers/_mixins.scss";
+@import "./animation/_animate.scss";
+
+/*** modules ***/
+@import "./modules/_fonts.scss";
+@import "./modules/_html.scss";
+@import "./modules/_body.scss";
+@import "./modules/_navbar.scss";
+@import "./modules/_footer.scss";
+@import "./modules/_container.scss";
+@import "./modules/_dropdown.scss";
+
+
+/*** pages ***/
+@import "./pages/_home.scss";

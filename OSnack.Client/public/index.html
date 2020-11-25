@@ -1,0 +1,59 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no" />
+    <meta name="theme-color" content="#269120" />
+    <meta name="description" content="Treat yourself with delicious and healthy snacks." />
+    <meta name="keywords" content="OSnack, Snack, Baklava, Olives, Olive, Turkish Delight" />
+    <title id="browser-title">OSnack</title>
+
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Rubik:wght@200;400;500;900&display=swap" />
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Courgette&display=swap" />
+
+    <link rel="icon" type="image/png" href="/public/favicon.ico" />
+    <link rel="manifest" href="/public/manifest.json">
+    <style type="text/css">
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #000000;
+            color: white !important;
+            padding: 8px;
+            z-index: 100;
+        }
+
+            .skip-link:focus {
+                top: 0;
+            }
+    </style>
+    <noscript>
+        <style>
+            .jsonly {
+                display: none;
+            }
+        </style>
+    </noscript>
+</head>
+<body id="mainBody">
+    <a class="skip-link" href="/">Skip to Home</a>
+    <main id="rootDiv">
+        <div style="left:50%; top:50%; position:absolute;width:auto;height:auto; transform: translate(-50%, -50%)">
+            <noscript>You need to enable JavaScript to run this app.</noscript>
+            <div class="jsonly">
+                <img style="width:3rem;height:3rem;" src="/public/images/LoadSpinner.gif" alt="." />
+                <br />
+                Loading...
+            </div>
+        </div>
+    </main>
+    <script defer crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react-router/5.2.0/react-router.min.js"></script>
+    <!--    <script crossorigin="anonymous" src="https://unpkg.com/react@16/umd/react.development.js"></script>
+        <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>-->
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react-router-dom/5.2.0/react-router-dom.min.js"></script>
+    <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/core-js/3.6.5/minified.js"></script>
+</body>
+</html>

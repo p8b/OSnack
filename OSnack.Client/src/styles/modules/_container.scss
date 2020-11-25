@@ -1,0 +1,11 @@
+﻿/*.container {
+    @include zoomInDown;
+    @include animated;
+    @include faster;
+}
+*/
+.wide-container {
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+    max-width: 100% !important;
+}

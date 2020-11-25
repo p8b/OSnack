@@ -1,0 +1,113 @@
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+using OSnack.API.Database.Models;
+using OSnack.API.Extras;
+using OSnack.API.Extras.CustomTypes;
+
+using P8B.Core.CSharp;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace OSnack.API.Controllers
+{
+   public partial class EmailTemplateController
+   {
+      #region *** Response Types ***
+      [ProducesResponseType(StatusCodes.Status200OK)]
+      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      #endregion
+      [HttpGet("[action]")]
+      [Authorize(AppConst.AccessPolicies.Secret)] /// Done
+      public async Task<IActionResult> Get()
+      {
+         try
+         {
+            List<oEmailTemplate> templateList = await _DbContext.EmailTemplates
+               .Include(et => et.ServerVariables)
+               .OrderByDescending(et => et.Name)
+               .ToListAsync().ConfigureAwait(false);
+
+            oEmailTemplate copyDefaultTemplate = null;
+            foreach (oEmailTemplate item in templateList)
+            {
+               if (item.IsDefaultTemplate)
+                  copyDefaultTemplate = item;
+               item.PrepareDesign(WebHost.WebRootPath);
+               item.PrepareHtml(WebHost.WebRootPath);
+            }
+
+            if (copyDefaultTemplate != null)
+            {
+               templateList.Remove(copyDefaultTemplate);
+               templateList = templateList.Prepend(copyDefaultTemplate).ToList();
+            }
+            return Ok(templateList);
+         }
+         catch (Exception) //ArgumentNullException
+         {
+            /// in the case any exceptions return the following error
+            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            return StatusCode(417, ErrorsList);
+         }
+      }
+
+      #region *** Response Types ***
+      [ProducesResponseType(StatusCodes.Status200OK)]
+      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      #endregion
+      [HttpGet("[action]")]
+      [Authorize(AppConst.AccessPolicies.Secret)] /// Done
+      public async Task<IActionResult> GetDefault()
+      {
+         try
+         {
+            var template = await _DbContext.EmailTemplates.SingleOrDefaultAsync(et => et.IsDefaultTemplate).ConfigureAwait(false);
+
+            template.PrepareDesign(WebHost.WebRootPath);
+
+            return Ok(template);
+         }
+         catch (Exception) //ArgumentNullException
+         {
+            /// in the case any exceptions return the following error
+            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            return StatusCode(417, ErrorsList);
+         }
+      }
+
+      #region *** Response Types ***
+      [ProducesResponseType(StatusCodes.Status200OK)]
+      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      #endregion
+      [HttpGet("[action]")]
+      [Authorize(AppConst.AccessPolicies.Secret)] /// Done
+      public IActionResult GetServerVariables()
+      {
+         try
+         {
+            var List = new List<oServerVariables>();
+
+            List.Add(new oServerVariables(EmailTemplateServerVariables.ExpiaryDateTime));
+            List.Add(new oServerVariables(EmailTemplateServerVariables.RegistrationMethod));
+            List.Add(new oServerVariables(EmailTemplateServerVariables.Role));
+            List.Add(new oServerVariables(EmailTemplateServerVariables.TokenUrl));
+            List.Add(new oServerVariables(EmailTemplateServerVariables.UserName));
+
+            return Ok(List);
+         }
+         catch (Exception) //ArgumentNullException
+         {
+            /// in the case any exceptions return the following error
+            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            return StatusCode(417, ErrorsList);
+         }
+      }
+   }
+}

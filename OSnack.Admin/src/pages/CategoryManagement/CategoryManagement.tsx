@@ -1,0 +1,149 @@
+﻿import React, { useEffect, useState } from 'react';
+import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
+import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
+import Table, { TableData, TableHeaderData, TableRowData } from 'osnack-frontend-shared/src/components/Table/Table';
+import { Category } from 'osnack-frontend-shared/src/_core/apiModels';
+import CategoryModal from './CategoryModal';
+import Container from '../../components/Container';
+import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
+import { useSearchCategory } from '../../hooks/apiCallers/category/Get.Category';
+import { ConstMaxNumberOfPerItemsPage, GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
+import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
+import Alert, { AlertObj, AlertTypes, Error } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import { sleep } from 'osnack-frontend-shared/src/_core/appFunc';
+
+const CategoryManagement = (props: IProps) => {
+   const [alert, setAlert] = useState(new AlertObj());
+   const [searchValue, setSearchValue] = useState("");
+   const [selectedCategory, setSelectedCategory] = useState(new Category());
+   const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false);
+
+   const [tableData, setTableData] = useState(new TableData());
+   const [tblSortName, setTblsortName] = useState("Name");
+   const [tblIsSortAsc, setTblIsSortAsc] = useState(true);
+   const [tblTotalItemCount, setTblTotalItemCount] = useState(0);
+   const [tblSelectedPage, setTblSelectedPage] = useState(1);
+   const [tblMaxItemsPerPage, setTblMaxItemsPerPage] = useState(ConstMaxNumberOfPerItemsPage);
+
+   useEffect(() => {
+      onSearch();
+   }, []);
+
+   const onSearch = (
+      isSortAsc = tblIsSortAsc,
+      sortName = tblSortName,
+      selectedPage = tblSelectedPage,
+      maxItemsPerPage = tblMaxItemsPerPage
+   ) => {
+      let searchString = GetAllRecords;
+
+      if (searchValue != null && searchValue != "")
+         searchString = searchValue;
+
+      if (isSortAsc != tblIsSortAsc)
+         setTblIsSortAsc(isSortAsc);
+
+      if (sortName != tblSortName)
+         setTblsortName(sortName);
+
+      if (selectedPage != tblSelectedPage)
+         setTblSelectedPage(selectedPage);
+
+      if (maxItemsPerPage != tblMaxItemsPerPage)
+         setTblMaxItemsPerPage(maxItemsPerPage);
+
+      sleep(500).then(() => { setAlert(alert.PleaseWait); });
+      useSearchCategory(selectedPage, maxItemsPerPage, searchString, isSortAsc, sortName).then(result => {
+         if (result.alert.List.length > 0) {
+            alert.List = result.alert.List;
+            alert.Type = result.alert.Type;
+            setAlert(alert);
+         }
+         else {
+            setAlert(alert.Clear);
+            setTblTotalItemCount(result.totalCount);
+            populateCategoryTable(result.categoryList);
+         }
+      });
+   };
+
+   const populateCategoryTable = (categoryList: Category[]) => {
+      let tData = new TableData();
+      tData.headers.push(new TableHeaderData("Name", "Name", true));
+      tData.headers.push(new TableHeaderData("", "", false));
+
+      categoryList.map(category =>
+         tData.rows.push(new TableRowData([
+            category.name,
+            <div className="col-auto p-0 m-0">
+               <button className="btn btn-sm btn-blue col-12 m-0 mt-1 mt-xl-0"
+                  onClick={() => { editCategory(category); }}
+                  children="Edit" />
+            </div>
+         ])));
+      if (categoryList.length == 0) {
+         setAlert(new AlertObj([new Error("0", "No Result Found")], AlertTypes.Warning));
+      } else {
+         setAlert(alert.Clear);
+      }
+      setTableData(tData);
+   };
+
+   const editCategory = (category: Category) => {
+      setSelectedCategory(category);
+      setIsOpenCategoryModal(true);
+   };
+   const resetCategoryModal = () => {
+      setIsOpenCategoryModal(false);
+      setSelectedCategory(new Category());
+   };
+
+   return (
+      <Container className="container-fluid">
+         <PageHeader title="Categories" className="line-header-lg" />
+         <Container className="bg-white row">
+            {/***** Search Input and new category button  ****/}
+            <SearchInput key="searchInput"
+               value={searchValue}
+               onChange={i => setSearchValue(i.target.value)}
+               className="col-12 col-md-9"
+               onSearch={() => { onSearch(tblIsSortAsc, tblSortName); }}
+            />
+
+            <Button children={<span className="add-icon" children="Category" />}
+               className="col-12 col-md-3 btn-green btn-lg"
+               onClick={() => { setIsOpenCategoryModal(true); }}
+            />
+
+            <Alert alert={alert}
+               className="col-12 mb-2"
+               onClosed={() => { setAlert(alert.Clear); }}
+            />
+
+            {/***** Category Table  ****/}
+            <div className="row col-12 p-0 m-0">
+               <Table className="col-12 text-center table-striped mt-4"
+                  defaultSortName={tblSortName}
+                  data={tableData}
+                  onSortClick={onSearch}
+               />
+               <Pagination
+                  maxItemsPerPage={tblMaxItemsPerPage}
+                  selectedPage={tblSelectedPage}
+                  onChange={(selectedPage, maxItemsPerPage) => { onSearch(tblIsSortAsc, tblSortName, selectedPage, maxItemsPerPage); }}
+                  listCount={tblTotalItemCount} />
+            </div>
+
+            {/***** Add/ modify category modal  ****/}
+            <CategoryModal isOpen={isOpenCategoryModal}
+               onSuccess={() => { resetCategoryModal(); onSearch(tblIsSortAsc, tblSortName); }}
+               category={selectedCategory}
+               onClose={resetCategoryModal} />
+         </Container>
+      </Container>
+   );
+};
+
+declare type IProps = {
+};
+export default CategoryManagement;
