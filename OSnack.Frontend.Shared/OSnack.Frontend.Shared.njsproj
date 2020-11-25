@@ -31,23 +31,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="package.json" />
-    <Content Include="public\fonts\fa-brands-400.ttf" />
-    <Content Include="public\fonts\fa-brands-400.woff" />
-    <Content Include="public\fonts\fa-brands-400.woff2" />
-    <Content Include="public\fonts\fa-regular-400.ttf" />
-    <Content Include="public\fonts\fa-regular-400.woff" />
-    <Content Include="public\fonts\fa-regular-400.woff2" />
-    <Content Include="public\fonts\fa-solid-900.ttf" />
-    <Content Include="public\fonts\fa-solid-900.woff" />
-    <Content Include="public\fonts\fa-solid-900.woff2" />
-    <Content Include="public\images\icons-192.png" />
-    <Content Include="public\images\icons-512.png" />
-    <Content Include="public\images\IdkFace%28Mango%29.png" />
-    <Content Include="public\images\LoadSpinner.gif" />
-    <Content Include="public\images\logo.png" />
-    <Content Include="public\images\MangoMenu.png" />
-    <Content Include="public\images\MintOliveBG.jpg" />
-    <Content Include="public\manifest.json" />
     <Content Include="README.md" />
     <Content Include="src\hooks\apiCallers\user\Post.User.tsx" />
     <Content Include="src\styles\animation\animations\attention_seekers\_bounce.scss" />
@@ -246,8 +229,6 @@
     <Content Include="tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="public\images\" />
-    <Folder Include="public\fonts\" />
     <Folder Include="src\" />
     <Folder Include="src\components\" />
     <Folder Include="src\components\Buttons\" />
@@ -265,7 +246,6 @@
     <Folder Include="src\hooks\apiCallers\product\" />
     <Folder Include="src\hooks\apiCallers\user\" />
     <Folder Include="src\hooks\function\" />
-    <Folder Include="public\" />
     <Folder Include="src\pages\" />
     <Folder Include="src\styles\" />
     <Folder Include="src\components\Login\" />
