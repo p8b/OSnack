@@ -12,23 +12,23 @@ const outputPublicPath = "./build/public/";
 
 const copyObjects = [
    {
-      from: path.resolve(__dirname, "public/favicon.ico"),
+      from: path.resolve(__dirname, "node_modules/osnack-frontend-shared/public/favicon.ico"),
       to: path.resolve(__dirname, `${outputPublicPath}`)
    },
    {
-      from: path.resolve(__dirname, "public/manifest.json"),
+      from: path.resolve(__dirname, "node_modules/osnack-frontend-shared/public/manifest.json"),
       to: path.resolve(__dirname, `${outputPublicPath}`)
    },
-   //{
-   //   from: path.resolve(__dirname, "public/styles"),
-   //   to: path.resolve(__dirname, `${outputPublicPath}styles/`)
-   //},
    {
-      from: path.resolve(__dirname, "public/images/"),
+      from: path.resolve(__dirname, "node_modules/osnack-frontend-shared/public/images/"),
       to: path.resolve(__dirname, `${outputPublicPath}images/`)
    },
+   //{
+   //   from: path.resolve(__dirname, "public/images/"),
+   //   to: path.resolve(__dirname, `${outputPublicPath}images/`)
+   //},
    {
-      from: path.resolve(__dirname, "public/fonts/"),
+      from: path.resolve(__dirname, "node_modules/osnack-frontend-shared/public/fonts/"),
       to: path.resolve(__dirname, `${outputPublicPath}fonts/`)
    }
 ];
