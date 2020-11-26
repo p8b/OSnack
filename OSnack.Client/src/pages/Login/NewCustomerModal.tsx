@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect, useRef } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import { User } from "osnack-frontend-shared/src/_core/apiModels";
 import { RegistrationTypes, CommonRegex } from "osnack-frontend-shared/src/_core/constant.Variables";
@@ -12,6 +12,7 @@ import Modal from "osnack-frontend-shared/src/components/Modals/Modal";
 import Alert, { AlertObj, AlertTypes, Error } from "osnack-frontend-shared/src/components/Texts/Alert";
 
 const NewCustomerModal = (props: IProps) => {
+   const isUnmounted = useRef(false);
    const [alert, setAlert] = useState(new AlertObj());
    const [user, setUser] = useState(new User());
    const [termsAndCondition, setTermsAndCondition] = useState(false);
@@ -19,6 +20,12 @@ const NewCustomerModal = (props: IProps) => {
    const [redirectToMain, setRedirectToMain] = useState(false);
    const history = useHistory();
    let externalLogin = false;
+
+   useEffect(() => () => { isUnmounted.current = true; }, []);
+   useEffect(() => {
+      if (props.newUser !== null) setUser(props.newUser);
+      setTermsAndCondition(false);
+   }, [props.newUser]);
 
    const createNewCustomer = async () => {
       let errors = [];
@@ -38,8 +45,9 @@ const NewCustomerModal = (props: IProps) => {
          setAlert(new AlertObj(errors, AlertTypes.Error));
       else {
 
-         sleep(500).then(() => { setAlert(alert.PleaseWait); });
+         sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
          useCreateCustomer(user).then(result => {
+            if (isUnmounted.current) return;
             if (result.List.length > 0)
                setAlert(result);
             else
@@ -58,11 +66,6 @@ const NewCustomerModal = (props: IProps) => {
       }
       return "*";
    };
-
-   useEffect(() => {
-      if (props.newUser !== null) setUser(props.newUser);
-      setTermsAndCondition(false);
-   }, [props.newUser]);
 
    if (redirectToMain) return <Redirect to="/" />;
 

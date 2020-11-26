@@ -43,13 +43,6 @@
     <Content Include="public\fonts\fa-solid-900.woff2" />
     <Content Include="public\images\hero-img-low-res.png" />
     <Content Include="public\images\hero-img.png" />
-    <Content Include="public\images\icons-192.png" />
-    <Content Include="public\images\icons-512.png" />
-    <Content Include="public\images\IdkFace%28Mango%29.png" />
-    <Content Include="public\images\LoadSpinner.gif" />
-    <Content Include="public\images\logo.png" />
-    <Content Include="public\images\MangoMenu.png" />
-    <Content Include="public\images\MintOliveBG.jpg" />
     <Content Include="public\index.html" />
     <Content Include="public\manifest.json" />
     <Content Include="public\robots.txt" />
