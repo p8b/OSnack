@@ -31,20 +31,9 @@
   <ItemGroup>
     <Content Include="babel.config.js" />
     <Content Include="package.json" />
-    <Content Include="public\favicon.ico" />
-    <Content Include="public\fonts\fa-brands-400.ttf" />
-    <Content Include="public\fonts\fa-brands-400.woff" />
-    <Content Include="public\fonts\fa-brands-400.woff2" />
-    <Content Include="public\fonts\fa-regular-400.ttf" />
-    <Content Include="public\fonts\fa-regular-400.woff" />
-    <Content Include="public\fonts\fa-regular-400.woff2" />
-    <Content Include="public\fonts\fa-solid-900.ttf" />
-    <Content Include="public\fonts\fa-solid-900.woff" />
-    <Content Include="public\fonts\fa-solid-900.woff2" />
     <Content Include="public\images\hero-img-low-res.png" />
     <Content Include="public\images\hero-img.png" />
     <Content Include="public\index.html" />
-    <Content Include="public\manifest.json" />
     <Content Include="public\robots.txt" />
     <Content Include="README.md" />
     <Content Include="server\cert\cert.pem" />
@@ -152,7 +141,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="public\images\" />
-    <Folder Include="public\fonts\" />
     <Folder Include="server\cert\" />
     <Folder Include="src\" />
     <Folder Include="server\" />
