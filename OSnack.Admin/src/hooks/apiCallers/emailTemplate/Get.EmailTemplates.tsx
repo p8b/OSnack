@@ -37,7 +37,7 @@ export const useGetAllEmailTemplates = async () => {
    let alert: AlertObj = new AlertObj([], AlertTypes.Error);
    let templateList: EmailTemplate[] = [];
    try {
-      const response = await httpCaller.get(`${API_URL}/EmailTemplate/Get`);
+      const response = await httpCaller.get(`${API_URL}/EmailTemplate/Get/All`);
 
       switch (response?.status) {
          case 200: // Ok Response
@@ -64,16 +64,17 @@ export const useGetAllEmailTemplates = async () => {
    return { alert, templateList };
 };
 
-export const useGetDefaultEmailTemplates = async () => {
+export const useGetEmailTemplate = async (template: EmailTemplate) => {
    let alert: AlertObj = new AlertObj([], AlertTypes.Error);
-   let template: EmailTemplate = new EmailTemplate();
+   let defaultTemplate: EmailTemplate = new EmailTemplate();
    try {
-      const response = await httpCaller.get(`${API_URL}/EmailTemplate/GetDefault`);
+      const response = await httpCaller.get(`${API_URL}/EmailTemplate/Get/${template.id}`);
 
       switch (response?.status) {
          case 200: // Ok Response
-            await response.json().then((data: EmailTemplate) => {
-               template = data;
+            await response.json().then((data: { template: EmailTemplate; defaultTemplate: EmailTemplate; }) => {
+               template = data.template;
+               defaultTemplate = data.defaultTemplate;
             });
             break;
          case 422: //Unprocessable Entity
@@ -92,5 +93,5 @@ export const useGetDefaultEmailTemplates = async () => {
    } catch (e) {
       alert.List.push(CommonErrors.BadServerResponse);
    }
-   return { alert, template };
+   return { alert, template, defaultTemplate };
 };

@@ -1,4 +1,4 @@
-﻿import React, { useState, useContext } from "react";
+﻿import React, { useState, useContext, useRef, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 
 import { CommonRegex } from "../../_core/constant.Variables";
@@ -15,14 +15,18 @@ import Alert, { AlertObj, AlertTypes, Error } from "../Texts/Alert";
 import { sleep } from "../../_core/appFunc";
 
 const Login = (props: IProps) => {
+   const isUnmounted = useRef(false);
    const [alert, setAlert] = useState(new AlertObj());
    const [loginInfo, setLoginInfo] = useState(new LoginInfo());
    const [forgotPasswordModalIsOpen, setForgotPasswordModalIsOpen] = useState(false);
    const auth = useContext(AuthContext);
 
+   useEffect(() => () => { isUnmounted.current = true; }, []);
+
    const login = async () => {
-      sleep(500).then(() => { setAlert(alert.PleaseWait); });
+      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
       useLogin(loginInfo, props.access).then(result => {
+         if (isUnmounted.current) return;
          if (result.alert.List.length > 0) {
             alert.List = result.alert.List;
             alert.Type = result.alert.Type;
@@ -33,14 +37,14 @@ const Login = (props: IProps) => {
          }
       });
    };
-
    const externalLogin = async (info: ExternalLoginInfo) => {
 
       info.rememberMe = loginInfo.rememberMe;
       info.redirectUrl = window.location.href;
 
-      sleep(500).then(() => { setAlert(alert.PleaseWait); });
+      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
       useExternalLogin(info, props.access).then(result => {
+         if (isUnmounted.current) return;
          if (result.alert.List.length > 0) {
             alert.List = result.alert.List;
             alert.Type = result.alert.Type;
@@ -57,9 +61,8 @@ const Login = (props: IProps) => {
    };
 
    const externalLoginWait = () => {
-      setAlert(new AlertObj([new Error("Working", "Please Wait...")], AlertTypes.Warning));
+      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
    };
-
    const externalLoginFailed = (err: string) => {
       setAlert(new AlertObj([new Error(Math.random(), err)], AlertTypes.Error));
    };

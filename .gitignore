@@ -31,9 +31,10 @@ cert/
 Properties/
 node_modules/
 build/
+wwwroot/
 .vscode/tasks.json
 .vscode/launch.json
 .editorconfig
-OSnack.Admin/debug.log
-OSnack.API/wwwroot/EmailTemplates/Default Template/debug.log
+OSnack.Admin/debug.logTemplate/debug.log
 OSnack.Client/debug.log
+*.log

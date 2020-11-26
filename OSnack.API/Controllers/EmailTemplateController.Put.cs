@@ -25,72 +25,9 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
       [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
       #endregion
-      [HttpPut("Put/[action]")]
+      [HttpPut("[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)] /// Done
-      public async Task<IActionResult> UpdateDetails([FromBody] oEmailTemplate emailTemplate)
-      {
-         try
-         {
-            TryValidateModel(emailTemplate);
-            ModelState.Remove("HTML");
-            ModelState.Remove("Design");
-
-            if (!ModelState.IsValid)
-            {
-               CoreFunc.ExtractErrors(ModelState, ref ErrorsList);
-               return UnprocessableEntity(ErrorsList);
-            }
-
-            oEmailTemplate foundTemplate = await _DbContext.EmailTemplates
-               .AsTracking()
-               .Include(et => et.ServerVariables)
-               .FirstOrDefaultAsync((et) => et.Id == emailTemplate.Id).ConfigureAwait(false);
-
-            if (foundTemplate == null)
-            {
-               ErrorsList.Add(new Error("", "Template cannot be found."));
-               return UnprocessableEntity(ErrorsList);
-            }
-
-            //  if (!emailTemplate.ValidateHTMLServerVariables(ref ErrorsList))
-            //   return UnprocessableEntity(ErrorsList);
-
-            //_DbContext.RemoveRange(foundTemplate.ServerVariables);
-            //await _DbContext.SaveChangesAsync().ConfigureAwait(false);
-
-            foundTemplate.Name = emailTemplate.Name;
-            foundTemplate.Subject = emailTemplate.Subject;
-            foundTemplate.TokenUrlPath = emailTemplate.TokenUrlPath;
-            // foundTemplate.ServerVariables = emailTemplate.ServerVariables;
-
-            // ignore changing the lock status of the default template
-            if (!await _DbContext.EmailTemplates
-               .AnyAsync(et => et.IsDefaultTemplate && et.Id != emailTemplate.Id)
-               .ConfigureAwait(false))
-               foundTemplate.Locked = emailTemplate.Locked;
-
-
-            await _DbContext.EmailTemplates.AddAsync(foundTemplate).ConfigureAwait(false);
-            await _DbContext.SaveChangesAsync().ConfigureAwait(false);
-
-            return Ok(emailTemplate);
-         }
-         catch (Exception ee) //ArgumentNullException
-         {
-            /// in the case any exceptions return the following error
-            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
-            return StatusCode(417, ErrorsList);
-         }
-      }
-
-      #region *** Response Types ***
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
-      #endregion
-      [HttpPut("Put/[action]")]
-      [Authorize(AppConst.AccessPolicies.Secret)] /// Done
-      public async Task<IActionResult> UpdateDesgin([FromBody] oEmailTemplate emailTemplate)
+      public async Task<IActionResult> Put([FromBody] oEmailTemplate emailTemplate)
       {
          try
          {
@@ -107,14 +44,21 @@ namespace OSnack.API.Controllers
                /// return Unprocessable Entity with all the errors
                return UnprocessableEntity(ErrorsList);
 
-            oEmailTemplate foundTemplate = await _DbContext.EmailTemplates.AsTracking().FirstOrDefaultAsync((et) => et.Id == emailTemplate.Id).ConfigureAwait(false);
+            oEmailTemplate foundTemplate = await _DbContext.EmailTemplates
+               .AsTracking()
+               .Include(et => et.ServerVariables)
+               .FirstOrDefaultAsync((et) => et.Id == emailTemplate.Id)
+               .ConfigureAwait(false);
+
             if (foundTemplate == null)
             {
                ErrorsList.Add(new Error("", "Template cannot be found."));
                /// return Unprocessable Entity with all the errors
                return UnprocessableEntity(ErrorsList);
             }
+
             foundTemplate.PrepareHtml(WebHost.WebRootPath);
+            emailTemplate.RemoveHtmlComment();
             if (foundTemplate.HTML != emailTemplate.HTML)
             {
 
@@ -122,11 +66,22 @@ namespace OSnack.API.Controllers
                foundTemplate.Design = emailTemplate.Design;
                /// save files
                foundTemplate.SaveFilesToWWWRoot(WebHost.WebRootPath);
-
-               /// save to db
-               await _DbContext.SaveChangesAsync().ConfigureAwait(false);
             }
 
+
+            foundTemplate.Name = emailTemplate.Name;
+            foundTemplate.Subject = emailTemplate.Subject;
+            foundTemplate.TokenUrlPath = emailTemplate.TokenUrlPath;
+            foundTemplate.ServerVariables = emailTemplate.ServerVariables;
+
+            // ignore changing the lock status of the default template
+            if (!await _DbContext.EmailTemplates
+               .AnyAsync(et => et.IsDefaultTemplate && et.Id == emailTemplate.Id)
+               .ConfigureAwait(false))
+               foundTemplate.Locked = emailTemplate.Locked;
+
+            //await _DbContext.EmailTemplates.AddAsync(foundTemplate).ConfigureAwait(false);
+            await _DbContext.SaveChangesAsync().ConfigureAwait(false);
 
             /// return Ok with the object
             return Ok(emailTemplate);

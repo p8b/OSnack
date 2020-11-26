@@ -9,6 +9,16 @@ const ImageUpload = (props: IProps) => {
    const [originalImageBase64, setOriginalImageBase64] = useState("");
    const [croppedImage, setCroppedImage] = useState("");
 
+   useEffect(() => {
+      if (props.modifiedImageBase64 != null)
+         setCroppedImage(props.modifiedImageBase64);
+   }, [props.modifiedImageBase64]);
+   useEffect(() => {
+      if (props.originalImageBase64 != null)
+         setOriginalImageBase64(props.originalImageBase64);
+
+   }, [props.originalImageBase64]);
+
    const uploadDocument = async (input: HTMLInputElement) => {
       if (input.files != null) {
          const imageFile = input.files[0];
@@ -30,24 +40,11 @@ const ImageUpload = (props: IProps) => {
          input.value = "";
       }
    };
-
    const onCropCompleted = (modifiedImage: string) => {
       props.onUploaded(modifiedImage, originalImageBase64);
       setCroppedImage(modifiedImage);
       setIsOpenImageCropModal(false);
    };
-
-   useEffect(() => {
-      if (props.modifiedImageBase64 != null)
-         setCroppedImage(props.modifiedImageBase64);
-   }, [props.modifiedImageBase64]);
-
-   useEffect(() => {
-      if (props.originalImageBase64 != null)
-         setOriginalImageBase64(props.originalImageBase64);
-
-   }, [props.originalImageBase64]);
-
 
    return (
       <div className={props.className}>

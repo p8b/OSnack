@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useRef, useState } from 'react';
 import { Category, Product } from 'osnack-frontend-shared/src/_core/apiModels';
 import { getBase64fromUrlImage, enumToArray, sleep } from 'osnack-frontend-shared/src/_core/appFunc';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
@@ -18,25 +18,31 @@ import { API_URL, ProductUnitType } from 'osnack-frontend-shared/src/_core/const
 import ProductNutritionalInfoModal from './ProductNutritionalInfoModal';
 
 const ProductModal = (props: IProps) => {
+   const isUnmounted = useRef(false);
    const [alert, setAlert] = useState(new AlertObj());
    const [product, setProduct] = useState(new Product());
    const [productUnitTypeList] = useState(enumToArray(ProductUnitType));
    const [imageBase64, setImageBase64] = useState("");
    const [originalImageBase64, setOriginalImageBase64] = useState("");
    const [nutritionalInfoModalIsOpen, setNutritionalInfoModalIsOpen] = useState(false);
+
    useEffect(() => {
       setProduct(props.product);
       /// if the category already exists get the image and convert it to string base64
       if (props.product.id > 0) {
-
-         sleep(500).then(() => { setAlert(alert.PleaseWait); });
+         sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
          getBase64fromUrlImage(`${API_URL}/${props.product.imagePath}`)
-            .then(imgBase64 => { setImageBase64(imgBase64 as string); });
+            .then(imgBase64 => {
+               if (isUnmounted.current) return;
+               setImageBase64(imgBase64 as string);
+            });
          getBase64fromUrlImage(`${API_URL}/${props.product.originalImagePath}`)
             .then(originalImgBase64 => {
+               if (isUnmounted.current) return;
                setOriginalImageBase64(originalImgBase64 as string);
                setAlert(alert.Clear);
             }).catch(() => {
+               if (isUnmounted.current) return;
                setAlert(alert.addSingleWarning("Image Not Found!"));
             });
       }
@@ -47,8 +53,9 @@ const ProductModal = (props: IProps) => {
    }, [props.isOpen]);
 
    const createProduct = async () => {
-      sleep(500).then(() => { setAlert(alert.PleaseWait); });
+      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
       useCreateProduct(product).then(result => {
+         if (isUnmounted.current) return;
          if (result.alert.List.length > 0) {
             alert.List = result.alert.List;
             alert.Type = result.alert.Type;
@@ -61,10 +68,10 @@ const ProductModal = (props: IProps) => {
       });
    };
    const updateProduct = async () => {
-
-      sleep(500).then(() => { setAlert(alert.PleaseWait); });
+      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
 
       useModifyProduct(product).then(result => {
+         if (isUnmounted.current) return;
 
          if (result.alert.List.length > 0) {
             alert.List = result.alert.List;
@@ -77,11 +84,11 @@ const ProductModal = (props: IProps) => {
          }
       });
    };
+
    const deleteProduct = async () => {
-
-      sleep(500).then(() => { setAlert(alert.PleaseWait); });
+      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
       useDeleteProduct(product).then(result => {
-
+         if (isUnmounted.current) return;
          if (result.alert.List.length > 0) {
             alert.List = result.alert.List;
             alert.Type = result.alert.Type;

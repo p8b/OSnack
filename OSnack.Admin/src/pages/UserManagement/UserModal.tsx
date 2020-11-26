@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useRef, useState } from 'react';
 import { Role, User } from 'osnack-frontend-shared/src/_core/apiModels';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Input } from 'osnack-frontend-shared/src/components/Inputs/Input';
@@ -14,17 +14,21 @@ import { enumToArray, sleep } from 'osnack-frontend-shared/src/_core/appFunc';
 import { RegistrationTypes } from 'osnack-frontend-shared/src/_core/constant.Variables';
 
 const UserModal = (props: IProps) => {
+   const isUnmounted = useRef(false);
    const [alert, setAlert] = useState(new AlertObj());
    const [user, setUser] = useState(new User());
    const [registrationMethodList] = useState(enumToArray(RegistrationTypes));
+
+   useEffect(() => () => { isUnmounted.current = true; }, []);
 
    useEffect(() => {
       setUser(props.user);
    }, [props.user]);
 
    const createUser = async () => {
-      sleep(500).then(() => { setAlert(alert.PleaseWait); });
+      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
       useCreateUser(user).then(result => {
+         if (isUnmounted.current) return;
 
          if (result.alert.List.length > 0) {
             alert.List = result.alert.List;
@@ -37,9 +41,9 @@ const UserModal = (props: IProps) => {
       });
    };
    const updateUser = async () => {
-
-      sleep(500).then(() => { setAlert(alert.PleaseWait); });
+      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
       useModifyUser(user).then(result => {
+         if (isUnmounted.current) return;
 
          if (result.alert.List.length > 0) {
             alert.List = result.alert.List;
@@ -52,8 +56,9 @@ const UserModal = (props: IProps) => {
       });
    };
    const deleteUser = async () => {
-      sleep(500).then(() => { setAlert(alert.PleaseWait); });
+      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
       useDeleteUser(user).then(result => {
+         if (isUnmounted.current) return;
 
          if (result.alert.List.length > 0) {
             alert.List = result.alert.List;
@@ -65,6 +70,7 @@ const UserModal = (props: IProps) => {
          }
       });
    };
+
    return (
       <Modal className="col-11 col-sm-10 col-md-8 col-lg-6 pl-4 pr-4"
          bodyRef={props.modalRef}

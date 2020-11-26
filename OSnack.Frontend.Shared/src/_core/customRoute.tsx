@@ -2,7 +2,6 @@
 import { Route, Redirect } from "react-router-dom";
 import { Loading } from "../components/Loading/Loading";
 import { useSilentAuthentication } from "../hooks/apiCallers/authentication/Get.Authentication";
-import { setHtmlTitle } from "./appFunc";
 import { AuthContext } from "./authenticationContext";
 
 const CustomRoute = (props: IProps) => {

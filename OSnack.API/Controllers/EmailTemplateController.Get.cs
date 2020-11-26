@@ -23,9 +23,9 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(StatusCodes.Status200OK)]
       [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
       #endregion
-      [HttpGet("[action]")]
+      [HttpGet("Get/[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)] /// Done
-      public async Task<IActionResult> Get()
+      public async Task<IActionResult> All()
       {
          try
          {
@@ -62,17 +62,19 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(StatusCodes.Status200OK)]
       [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
       #endregion
-      [HttpGet("[action]")]
+      [HttpGet("[action]/{templateId}")]
       [Authorize(AppConst.AccessPolicies.Secret)] /// Done
-      public async Task<IActionResult> GetDefault()
+      public async Task<IActionResult> Get(int templateId)
       {
          try
          {
-            var template = await _DbContext.EmailTemplates.SingleOrDefaultAsync(et => et.IsDefaultTemplate).ConfigureAwait(false);
+            var defaultTemplate = await _DbContext.EmailTemplates.SingleOrDefaultAsync(et => et.IsDefaultTemplate).ConfigureAwait(false);
+            var template = await _DbContext.EmailTemplates.SingleOrDefaultAsync(et => et.Id == templateId).ConfigureAwait(false);
 
+            defaultTemplate.PrepareDesign(WebHost.WebRootPath);
             template.PrepareDesign(WebHost.WebRootPath);
 
-            return Ok(template);
+            return Ok(new { template, defaultTemplate });
          }
          catch (Exception) //ArgumentNullException
          {

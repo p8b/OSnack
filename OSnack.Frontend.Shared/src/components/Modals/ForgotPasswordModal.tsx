@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+﻿import React, { useEffect, useRef, useState } from "react";
 import Modal from "./Modal";
 import PageHeader from "../Texts/PageHeader";
 import { Input } from "../Inputs/Input";
@@ -8,17 +8,20 @@ import Alert, { AlertObj } from "../Texts/Alert";
 import { sleep } from "../../_core/appFunc";
 
 const ForgotPasswordModal = (props: IProps) => {
+   const isUnmounted = useRef(false);
    const [alert, setAlert] = useState(new AlertObj());
    const [email, setEmail] = useState(props.email);
    const [isTokenSent, setIsTokenSent] = useState(false);
-   const resetAlert = async () => { setAlert(alert.Clear); };
+
+   useEffect(() => () => { isUnmounted.current = true; }, []);
 
    const onSubmit = async () => {
-      resetAlert();
+      setAlert(alert.Clear);
       //Submit password reset request
       if (!isTokenSent) {
-         sleep(500).then(() => { setAlert(alert.PleaseWait); });
+         sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
          useRequestPasswordResetToken(email).then(result => {
+            if (isUnmounted.current) return;
             if (!result.isTokenSent && result.alert.List.length > 0) {
                alert.List = result.alert.List;
                alert.Type = result.alert.Type;

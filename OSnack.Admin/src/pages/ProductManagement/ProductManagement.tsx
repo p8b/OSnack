@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useRef, useState } from 'react';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import Alert, { AlertObj, AlertTypes, Error } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
@@ -15,6 +15,7 @@ import { enumToArray, sleep } from 'osnack-frontend-shared/src/_core/appFunc';
 import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
 
 const ProductManagement = (props: IProps) => {
+   const isUnmounted = useRef(false);
    const [alert, setAlert] = useState(new AlertObj());
    const [searchValue, setSearchValue] = useState("");
    const [selectedProduct, setSelectedProduct] = useState(new Product());
@@ -33,6 +34,8 @@ const ProductManagement = (props: IProps) => {
 
    useEffect(() => {
       useGetAllCategory().then(result => {
+         if (isUnmounted.current) return;
+
          if (result.alert.List.length > 0) {
             result.alert.List.push(new Error("0", "Category list cannot be loaded"));
             alert.List = result.alert.List;
@@ -43,6 +46,7 @@ const ProductManagement = (props: IProps) => {
          }
       });
       onSearch();
+      return () => { isUnmounted.current = true; };
    }, []);
 
    const onSearch = async (
@@ -77,8 +81,10 @@ const ProductManagement = (props: IProps) => {
          setSelectedStatusFilter(statusFilter);
 
 
-      sleep(500).then(() => { setAlert(alert.PleaseWait); });
+      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
       useSearchProduct(selectedPage, maxItemsPerPage, categoryFilter, searchString, statusFilter, isSortAsc, sortName).then(result => {
+         if (isUnmounted.current) return;
+
          if (result.alert.List.length > 0) {
             alert.List = result.alert.List;
             alert.Type = result.alert.Type;
@@ -121,7 +127,6 @@ const ProductManagement = (props: IProps) => {
       }
       setTableData(tData);
    };
-
    const editProduct = (product: Product) => {
       setSelectedProduct(product);
       setIsOpenProductModal(true);
@@ -130,7 +135,6 @@ const ProductManagement = (props: IProps) => {
       setIsOpenProductModal(false);
       setSelectedProduct(new Product());
    };
-
    const getStatusDisplayValue = () => {
       switch (selectedStatusFilter) {
          case "True":
@@ -140,6 +144,7 @@ const ProductManagement = (props: IProps) => {
       }
       return "All";
    };
+
    return (
       <Container className="container-fluid pr-0">
          <PageHeader title="Products" className="line-header-lg" />

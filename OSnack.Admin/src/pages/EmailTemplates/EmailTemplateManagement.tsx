@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useRef, useState } from 'react';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import ButtonCard from 'osnack-frontend-shared/src/components/Buttons/ButtonCard';
 import { useGetAllEmailTemplates, } from '../../hooks/apiCallers/emailTemplate/Get.EmailTemplates';
@@ -8,32 +8,36 @@ import { sleep } from 'osnack-frontend-shared/src/_core/appFunc';
 import { Redirect } from 'react-router-dom';
 
 const EmailTemplatePanel = (props: IProps) => {
+   const isUnmounted = useRef(false);
    const [alert, setAlert] = useState(new AlertObj());
    const [redirectToEditPage, setRedirectToEditPage] = useState(false);
    const [emailTemplate, setEmailTemplate] = useState(new EmailTemplate());
    const [tempList, setTempList] = useState<EmailTemplate[]>([]);
    const [defaultEmailTemplate, setDefaultEmailTemplate] = useState(new EmailTemplate());
 
+   useEffect(() => {
+      reloadTemplateList();
+      return () => { isUnmounted.current = true; };
+   }, []);
+
    const newTemplate = () => {
       setEmailTemplate(new EmailTemplate());
       setRedirectToEditPage(true);
    };
-
    const reloadTemplateList = () => {
-      sleep(500).then(() => { setAlert(alert.PleaseWait); });
+      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
       useGetAllEmailTemplates().then((result) => {
+         if (isUnmounted.current) return;
+
          setTempList(result.templateList);
          setDefaultEmailTemplate(result.templateList.find(tl => tl.isDefaultTemplate) || new EmailTemplate());
          setAlert(alert.Clear);
       });
    };
 
-   useEffect(() => {
-      reloadTemplateList();
-   }, []);
-
    if (redirectToEditPage)
-      return (<Redirect to={{ pathname: "EmailTemplate/Edit", state: { emailTemplate, defaultEmailTemplate } }} />);
+      return <Redirect to={{ pathname: "/EmailTemplate/Edit", state: { emailTemplate, defaultEmailTemplate } }} />;
+
    return (
       <>
          <PageHeader title="Email Templates" className="line-header-lg" />

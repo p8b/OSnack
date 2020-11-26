@@ -18,6 +18,15 @@
     }
 }
 
+.tick-icon {
+    &:before {
+        text-decoration: none;
+        padding: 0 .2rem;
+        content: "\f058";
+        display: inline-block;
+        font-family: "FA5 Solid" !important;
+    }
+}
 .save-icon {
     &:before {
         text-decoration: none;

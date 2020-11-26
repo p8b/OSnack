@@ -7,12 +7,14 @@ import { NutritionalInfo } from 'osnack-frontend-shared/src/_core/apiModels';
 import { AlertObj } from 'osnack-frontend-shared/src/components/Texts/Alert';
 const ProductNutritionalInfoModal = (props: IProps) => {
    const [nutritionalInfo, setNutritionalInfo] = useState(props.nutritionalInfo || new NutritionalInfo());
+
    useEffect(() => {
       if (props.nutritionalInfo == null)
          setNutritionalInfo(new NutritionalInfo());
       else
          setNutritionalInfo(props.nutritionalInfo);
-   }, [props.nutritionalInfo])
+   }, [props.nutritionalInfo]);
+
    return (
       <Modal className="col-11 col-sm-10 col-md-8 col-lg-6 pl-4 pr-4"
          isOpen={props.isOpen}>
@@ -52,7 +54,7 @@ const ProductNutritionalInfoModal = (props: IProps) => {
                onChange={i => { setNutritionalInfo({ ...nutritionalInfo, saturateFat: i.target.value as unknown as number }); }}
                className="col-12 col-sm-6"
                inputRightLable="grams"
-               showDanger={props.alert.checkExist("NutritionalInfo.SaturateFat")}/>
+               showDanger={props.alert.checkExist("NutritionalInfo.SaturateFat")} />
          </div>
          <div className="row">
             <Input label="Carbohydrate*"
@@ -62,7 +64,7 @@ const ProductNutritionalInfoModal = (props: IProps) => {
                onChange={i => { setNutritionalInfo({ ...nutritionalInfo, carbohydrate: i.target.value as unknown as number }); }}
                className="col-12 col-sm-6"
                inputRightLable="grams"
-               showDanger={props.alert.checkExist("NutritionalInfo.Carbohydrate")}/>
+               showDanger={props.alert.checkExist("NutritionalInfo.Carbohydrate")} />
 
             <Input label="Carbohydrate Sugar*"
                type="number"
@@ -71,7 +73,7 @@ const ProductNutritionalInfoModal = (props: IProps) => {
                onChange={i => { setNutritionalInfo({ ...nutritionalInfo, carbohydrateSugar: i.target.value as unknown as number }); }}
                className="col-12 col-sm-6"
                inputRightLable="grams"
-               showDanger={props.alert.checkExist("NutritionalInfo.CarbohydrateSugar")}/>
+               showDanger={props.alert.checkExist("NutritionalInfo.CarbohydrateSugar")} />
 
          </div>
          {/***** Fibre, Protein, Salt ****/}
@@ -83,7 +85,7 @@ const ProductNutritionalInfoModal = (props: IProps) => {
                onChange={i => { setNutritionalInfo({ ...nutritionalInfo, fibre: i.target.value as unknown as number }); }}
                className="col-12 col-sm-6"
                inputRightLable="grams"
-               showDanger={props.alert.checkExist("NutritionalInfo.Fibre")}/>
+               showDanger={props.alert.checkExist("NutritionalInfo.Fibre")} />
             <Input label="Protein*"
                type="number"
                positiveNumbersOnly
@@ -91,7 +93,7 @@ const ProductNutritionalInfoModal = (props: IProps) => {
                onChange={i => { setNutritionalInfo({ ...nutritionalInfo, protein: i.target.value as unknown as number }); }}
                className="col-12 col-sm-6"
                inputRightLable="grams"
-               showDanger={props.alert.checkExist("NutritionalInfo.Protein")}/>
+               showDanger={props.alert.checkExist("NutritionalInfo.Protein")} />
          </div>
          <div className="row">
             <Input label="Salt*"
@@ -118,6 +120,6 @@ declare type IProps = {
    isOpen: boolean;
    onSubmit: (nutritionalInfo: NutritionalInfo) => void;
    nutritionalInfo?: NutritionalInfo;
-   alert: AlertObj
+   alert: AlertObj;
 };
 export default ProductNutritionalInfoModal;

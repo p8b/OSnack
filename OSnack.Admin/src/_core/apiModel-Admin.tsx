@@ -1,7 +1,7 @@
 ﻿import { Design } from 'react-email-editor';
 
 export class EmailTemplate {
-   id?: number = 0;
+   id: number = 0;
    name?: string;
    subject?: string;
    tokenUrlPath?: string;

@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useRef, useState } from 'react';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import Table, { TableData, TableHeaderData, TableRowData } from 'osnack-frontend-shared/src/components/Table/Table';
@@ -15,6 +15,7 @@ import { useGetAllRoles } from '../../hooks/apiCallers/role/Get.Role';
 import { sleep } from 'osnack-frontend-shared/src/_core/appFunc';
 
 const UserManagement = (props: IProps) => {
+   const isUnmounted = useRef(false);
    const [alert, setAlert] = useState(new AlertObj());
    const [searchValue, setSearchValue] = useState("");
    const [selectedUser, setSelectedUser] = useState(new User());
@@ -30,8 +31,9 @@ const UserManagement = (props: IProps) => {
    const [tblMaxItemsPerPage, setTblMaxItemsPerPage] = useState(ConstMaxNumberOfPerItemsPage);
 
    useEffect(() => {
-      sleep(500).then(() => { setAlert(alert.PleaseWait); });
+      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
       useGetAllRoles().then(result => {
+         if (isUnmounted.current) return;
          if (result.alert.List.length > 0) {
             alert.List = result.alert.List;
             alert.Type = result.alert.Type;
@@ -42,6 +44,7 @@ const UserManagement = (props: IProps) => {
          }
       });
       onSearch();
+      return () => { isUnmounted.current = true; };
    }, []);
 
    const onSearch = (
@@ -71,8 +74,9 @@ const UserManagement = (props: IProps) => {
          setselectedRoleFilter(roleFilter);
 
 
-      sleep(500).then(() => { setAlert(alert.PleaseWait); });
+      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
       useSearchUser(selectedPage, maxItemsPerPage, searchString, roleFilter, isSortAsc, sortName).then(result => {
+         if (isUnmounted.current) return;
          if (result.alert.List.length > 0) {
             alert.List = result.alert.List;
             alert.Type = result.alert.Type;

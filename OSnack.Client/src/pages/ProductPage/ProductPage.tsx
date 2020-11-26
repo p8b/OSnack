@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useRef, useState } from 'react';
 
 import Alert, { AlertObj } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Product } from 'osnack-frontend-shared/src/_core/apiModels';
@@ -13,6 +13,7 @@ import Tabs from './Tabs';
 import ShopItem from '../Shop/ShopItem';
 
 const ProductPage = (props: IProps) => {
+   const isUnmounted = useRef(false);
    const [alert, setAlert] = useState(new AlertObj());
    const [product, setProduct] = useState(new Product());
    const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
@@ -20,11 +21,14 @@ const ProductPage = (props: IProps) => {
    const [quantity, setQuantity] = useState(0);
    const history = useHistory();
 
+   useEffect(() => () => { isUnmounted.current = true; }, []);
+
    useEffect(() => {
-      sleep(500).then(() => { setAlert(alert.PleaseWait); });
+      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
       const uriPathNameArr = window.location.pathname.split('/').filter(val => val.length > 0);
       if (uriPathNameArr.length === 4 && uriPathNameArr[1].toLowerCase() == "product") {
          useGetProduct(uriPathNameArr[2], uriPathNameArr[3]).then(result => {
+            if (isUnmounted.current) return;
             if (result.alert.List.length > 0) {
                alert.List = result.alert.List;
                alert.Type = result.alert.Type;
@@ -44,6 +48,7 @@ const ProductPage = (props: IProps) => {
 
    if (redirectToShop)
       return <Redirect to="/Shop" />;
+
    return (
       <Container className="wide-container m-0">
          <PageHeader title="Product Details" />

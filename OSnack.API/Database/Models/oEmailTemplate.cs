@@ -103,6 +103,9 @@ namespace OSnack.API.Database.Models
 
       internal bool ValidateHTMLServerVariables(ref List<Error> ErrorList)
       {
+         if(ServerVariables != null)
+         {
+
          foreach (oServerVariables item in ServerVariables)
          {
             // if tokenUrl is added to the attached email template but the value of URL path is not
@@ -115,6 +118,7 @@ namespace OSnack.API.Database.Models
 
             /// Set to 0 so it would not conflict with dbContext
             item.Id = 0;
+         }
          }
 
          if (ErrorList.Count > 0)

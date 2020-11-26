@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useRef, useState } from 'react';
 import { Category } from 'osnack-frontend-shared/src/_core/apiModels';
 import { API_URL } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import { getBase64fromUrlImage, sleep } from 'osnack-frontend-shared/src/_core/appFunc';
@@ -14,6 +14,7 @@ import { useDeleteCategory } from '../../hooks/apiCallers/category/Delete.Catego
 import Alert, { AlertObj, AlertTypes, Error } from 'osnack-frontend-shared/src/components/Texts/Alert';
 
 const CategoryModal = (props: IProps) => {
+   const isUnmounted = useRef(false);
    const [alert, setAlert] = useState(new AlertObj());
    const [category, setCategory] = useState(new Category());
    const [imageBase64, setImageBase64] = useState("");
@@ -22,16 +23,22 @@ const CategoryModal = (props: IProps) => {
       setCategory(props.category);
       /// if the category already exists get the image and convert it to string base64
       if (props.category.id > 0) {
-         sleep(500).then(() => { setAlert(alert.Loading); });
+         sleep(500, isUnmounted).then(() => { setAlert(alert.Loading); });
          getBase64fromUrlImage(`${API_URL}/${props.category.imagePath}`)
             .then(imgBase64 => {
+               if (isUnmounted.current) return;
+
                setImageBase64(imgBase64 as string);
             });
          getBase64fromUrlImage(`${API_URL}/${props.category.originalImagePath}`)
             .then(originalImgBase64 => {
+               if (isUnmounted.current) return;
+
                setOriginalImageBase64(originalImgBase64 as string);
                setAlert(alert.Clear);
             }).catch(() => {
+               if (isUnmounted.current) return;
+
                setAlert(alert.addSingleWarning("Image Not Found!"));
             });
 
@@ -39,7 +46,6 @@ const CategoryModal = (props: IProps) => {
    }, [props.category]);
 
    const createCategory = async () => {
-
       let errors = new AlertObj([], AlertTypes.Error);
 
       if (category.name == "")
@@ -52,8 +58,10 @@ const CategoryModal = (props: IProps) => {
          setAlert(errors);
          return;
       }
-      sleep(500).then(() => { setAlert(alert.PleaseWait); });
+      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
       useCreateCategory(category).then(result => {
+         if (isUnmounted.current) return;
+
          if (result.alert.List.length > 0) {
             alert.List = result.alert.List;
             alert.Type = result.alert.Type;
@@ -79,8 +87,9 @@ const CategoryModal = (props: IProps) => {
          return;
       }
 
-      sleep(500).then(() => { setAlert(alert.PleaseWait); });
+      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
       useModifyCategory(category).then(result => {
+         if (isUnmounted.current) return;
 
          if (result.alert.List.length > 0) {
             alert.List = result.alert.List;
@@ -94,9 +103,9 @@ const CategoryModal = (props: IProps) => {
       });
    };
    const deleteCategory = async () => {
-
-      sleep(500).then(() => { setAlert(alert.PleaseWait); });
+      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
       useDeleteCategory(category).then(result => {
+         if (isUnmounted.current) return;
 
          if (result.alert.List.length > 0) {
             alert.List = result.alert.List;

@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useRef, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Button } from '../components/Buttons/Button';
 import { Input } from '../components/Inputs/Input';
@@ -9,6 +9,7 @@ import { useResetPasswordWithToken } from '../hooks/apiCallers/user/Put.User';
 import { sleep } from '../_core/appFunc';
 
 const ConfrimEmail = (props: IProps) => {
+   const isUnmounted = useRef(false);
    const [alert, setAlert] = useState(new AlertObj());
    const [redirectToHome, setRedirectToHome] = useState(false);
    const [isDone, setIsDone] = useState(true);
@@ -17,9 +18,9 @@ const ConfrimEmail = (props: IProps) => {
    const [confirmPassword, setConfirmPassword] = useState("");
 
    useEffect(() => {
-
-      sleep(500).then(() => { setAlert(alert.PleaseWait); });
+      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
       useResetPasswordWithToken(window.location.pathname, email, password, true).then(result => {
+         if (isUnmounted.current) return;
          if (result.alert.List.length > 0) {
             alert.List = result.alert.List;
             alert.Type = result.alert.Type;
@@ -46,8 +47,9 @@ const ConfrimEmail = (props: IProps) => {
       else {
 
 
-         sleep(500).then(() => { setAlert(alert.PleaseWait); });
+         sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
          useResetPasswordWithToken(window.location.pathname, email, password).then(result => {
+            if (isUnmounted.current) return;
             if (result.alert.List.length > 0) {
                alert.List = result.alert.List;
                alert.Type = result.alert.Type;
@@ -62,6 +64,7 @@ const ConfrimEmail = (props: IProps) => {
    };
 
    if (redirectToHome) return <Redirect to="" />;
+
    return (
       <Modal className="col-11 col-sm-10 col-md-9 col-lg-4 pl-4 pr-4"
          isOpen={true}>

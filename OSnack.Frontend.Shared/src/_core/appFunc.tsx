@@ -136,7 +136,6 @@ export class httpCaller {
 export const getBase64fromUrlImage = (url: string) =>
    new Promise((resolve, reject) => {
       try {
-
          const image = new Image();
          image.crossOrigin = "Anonymous";
          image.src = url;
@@ -171,8 +170,22 @@ export const uuidv4 = () => {
    });
 };
 
-export const sleep = (ms: number) => {
-   return new Promise(resolve => setTimeout(resolve, ms));
+//export const delay = (ms: number) => {
+//   return new Promise((resolve, reject) => {
+//      setTimeout(resolve, ms);
+//   });
+//};
+export const sleep = async (ms: number, isCanceled: React.MutableRefObject<boolean>) => {
+   return new Promise((resolve, reject) => {
+      setTimeout(() => {
+         if (!isCanceled.current) {
+            resolve("Done");
+         }
+         else if (isCanceled.current) {
+            //reject("Canceled");
+         }
+      }, ms);
+   });
 };
 
 export const setHtmlTitle = (value: string) => {

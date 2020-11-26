@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useRef, useState } from 'react';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import Table, { TableData, TableHeaderData, TableRowData } from 'osnack-frontend-shared/src/components/Table/Table';
@@ -13,6 +13,7 @@ import Alert, { AlertObj, AlertTypes, Error } from 'osnack-frontend-shared/src/c
 import { sleep } from 'osnack-frontend-shared/src/_core/appFunc';
 
 const CategoryManagement = (props: IProps) => {
+   const isUnmounted = useRef(false);
    const [alert, setAlert] = useState(new AlertObj());
    const [searchValue, setSearchValue] = useState("");
    const [selectedCategory, setSelectedCategory] = useState(new Category());
@@ -27,6 +28,7 @@ const CategoryManagement = (props: IProps) => {
 
    useEffect(() => {
       onSearch();
+      return () => { isUnmounted.current = true; };
    }, []);
 
    const onSearch = (
@@ -52,8 +54,10 @@ const CategoryManagement = (props: IProps) => {
       if (maxItemsPerPage != tblMaxItemsPerPage)
          setTblMaxItemsPerPage(maxItemsPerPage);
 
-      sleep(500).then(() => { setAlert(alert.PleaseWait); });
+      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
       useSearchCategory(selectedPage, maxItemsPerPage, searchString, isSortAsc, sortName).then(result => {
+         if (isUnmounted.current) return;
+
          if (result.alert.List.length > 0) {
             alert.List = result.alert.List;
             alert.Type = result.alert.Type;
@@ -88,7 +92,6 @@ const CategoryManagement = (props: IProps) => {
       }
       setTableData(tData);
    };
-
    const editCategory = (category: Category) => {
       setSelectedCategory(category);
       setIsOpenCategoryModal(true);

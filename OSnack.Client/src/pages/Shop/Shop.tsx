@@ -1,7 +1,7 @@
 ﻿
 import Alert, { AlertObj, Error } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import Container from '../../components/Container';
 import { ShopContext } from '../../_core/shopContext';
 import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
@@ -14,6 +14,7 @@ import { useGetAllCategory } from 'osnack-frontend-shared/src/hooks/apiCallers/c
 import ShopItem from './ShopItem';
 
 const Shop = (props: IProps) => {
+   const isUnmounted = useRef(false);
    const [alert, setAlert] = useState(new AlertObj());
    const [searchValue, setSearchValue] = useState("");
    const [categoryList, setCategoryList] = useState<Category[]>([]);
@@ -28,7 +29,9 @@ const Shop = (props: IProps) => {
    const sortOptions = ["Name", "Price"];
 
    useEffect(() => {
+      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
       useGetAllCategory().then(result => {
+         if (isUnmounted.current) return;
          if (result.alert.List.length > 0) {
             result.alert.List.push(new Error("0", "Category list cannot be loaded"));
             alert.List = result.alert.List;
@@ -46,6 +49,7 @@ const Shop = (props: IProps) => {
             }
          }
       });
+      return () => { isUnmounted.current = true; };
    }, []);
 
    const onSearch = async (
@@ -53,7 +57,6 @@ const Shop = (props: IProps) => {
       sortName = tblSortName,
       selectedPage = tblSelectedPage,
       maxItemsPerPage = tblMaxItemsPerPage,
-      //statusFilter = selectedStatusFilter,
       categoryFilter = selectedCategoryFilter
    ) => {
       let searchString = GetAllRecords;
@@ -77,8 +80,9 @@ const Shop = (props: IProps) => {
          setSelectedCategoryFilter(categoryFilter);
       }
 
-      sleep(500).then(() => { setAlert(alert.PleaseWait); });
+      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
       useSearchProduct(selectedPage, maxItemsPerPage, categoryFilter, searchString, "true", isSortAsc, sortName).then(result => {
+         if (isUnmounted.current) return;
          if (result.alert.List.length > 0) {
             alert.List = result.alert.List;
             alert.Type = result.alert.Type;
@@ -94,6 +98,7 @@ const Shop = (props: IProps) => {
          }
       });
    };
+
    const handelSort = async (sortName: string) => {
       let isSortAsc = tblIsSortAsc;
       if (tblSortName === sortName)
@@ -107,6 +112,7 @@ const Shop = (props: IProps) => {
          !tblIsSortAsc ? "sort-numeric-down-icon" : "sort-numeric-up-icon"
          : "sortable-icon-light";
    };
+
    return (
       <Container className="wide-container p-0 m-0">
          <PageHeader title="Shop" className="hr-section-sm" />

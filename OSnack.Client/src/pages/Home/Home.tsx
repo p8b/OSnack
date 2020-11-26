@@ -1,4 +1,4 @@
-﻿import React, { useContext, useEffect, useState } from 'react';
+﻿import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import Container from '../../components/Container';
 import { useGetAllCategory } from 'osnack-frontend-shared/src/hooks/apiCallers/category/Get.Category';
@@ -9,6 +9,7 @@ import Carousel from '../../components/Carousel';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 
 const Home = (props: IProps) => {
+   const isUnmounted = useRef(false);
    const [heroImgLoaded, setHeroImgLoaded] = useState(false);
    const [carouselItems, setCarouselItems] = useState<any[]>([]);
    const { shopState, setShopState } = useContext(ShopContext);
@@ -22,11 +23,12 @@ const Home = (props: IProps) => {
          setHeroImgLoaded(true);
       };
       useGetAllCategory().then(result => {
+         if (isUnmounted.current) return;
          if (result.alert.List.length === 0) {
             getCarouselItems(result.categoryList);
          }
       });
-
+      return () => { isUnmounted.current = true; };
    }, []);
 
    const getCarouselItems = (categoryList: Category[]) => {
@@ -52,7 +54,6 @@ const Home = (props: IProps) => {
       setCarouselItems(arr);
    };
 
-
    return (
       <Container className="wide-container pl-0 pr-0">
          <div className={`hero-container ${heroImgLoaded ? "imgLoaded" : ""} row`}>
@@ -74,7 +75,7 @@ const Home = (props: IProps) => {
             </h5>
          </div>
          <div className="col-12 categories-section">
-            <PageHeader className="line-header-lg" title="Categories"/>
+            <PageHeader className="line-header-lg" title="Categories" />
             <Carousel items={carouselItems} />
          </div>
       </Container >

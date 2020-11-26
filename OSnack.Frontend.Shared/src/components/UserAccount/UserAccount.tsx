@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useEffect, useRef, useState } from 'react';
 import { useEditCurrentUser, useEditCurrentUserPassword } from '../../hooks/apiCallers/user/Put.User';
 import { User } from '../../_core/apiModels';
 import { enumToArray, sleep } from '../../_core/appFunc';
@@ -9,6 +9,7 @@ import ConfirmPasswordModal from '../Modals/ConfirmPasswordModal';
 import Alert, { AlertObj, AlertTypes, Error } from '../Texts/Alert';
 
 const UserAccount = (props: IProps) => {
+   const isUnmounted = useRef(false);
    const [alertAccountInfo, setAlertAccountInfo] = useState(new AlertObj());
    const [alertPasswordInfo, setAlertPasswordInfo] = useState(new AlertObj());
    const [user, setUser] = useState(props.user);
@@ -18,14 +19,7 @@ const UserAccount = (props: IProps) => {
    const [selectedAction, setSelectedAction] = useState("");
    const isExternalLogin = props.user.registrationMethod?.type !== RegistrationTypes.Application;
 
-   const getRegistrationType = () => {
-      let regType = user.registrationMethod?.type;
-      if (regType != null && regType != RegistrationTypes.Application) {
-         let typeList = enumToArray(RegistrationTypes);
-         return `Linked to ${typeList.find(i => i.id == regType)?.name} account`;
-      }
-      return "";
-   };
+   useEffect(() => () => { isUnmounted.current = true; }, []);
 
    const onDetailsChange = (currentPass: string) => {
       if (currentPass == "" && user.registrationMethod.type == RegistrationTypes.Application) {
@@ -36,10 +30,11 @@ const UserAccount = (props: IProps) => {
 
       setAlertPasswordInfo(alertPasswordInfo.Clear);
 
-      sleep(500).then(() => { setAlertAccountInfo(alertAccountInfo.PleaseWait); });
+      sleep(500, isUnmounted).then(() => { setAlertAccountInfo(alertAccountInfo.PleaseWait); });
       setIsOpenConfirmPassword(false);
 
       useEditCurrentUser(user, currentPass).then(result => {
+         if (isUnmounted.current) return;
          if (result.resetCurrentPasswordValue) {
             setIsOpenConfirmPassword(true);
             setSelectedAction("Details");
@@ -58,7 +53,6 @@ const UserAccount = (props: IProps) => {
       setCurrentPassword(currentPass);
       setSelectedAction("");
    };
-
    const onConfirmPassword = (currentPass: string) => {
       if (isExternalLogin) return;
 
@@ -82,13 +76,15 @@ const UserAccount = (props: IProps) => {
          return;
       }
       else {
-         sleep(500).then(() => { setAlertPasswordInfo(alertPasswordInfo.PleaseWait); });
+         sleep(500, isUnmounted).then(() => { setAlertPasswordInfo(alertPasswordInfo.PleaseWait); });
       }
 
       setCurrentPassword(currentPass);
       setSelectedAction("");
 
+      sleep(500, isUnmounted).then(() => { setAlertPasswordInfo(alertPasswordInfo.PleaseWait); });
       useEditCurrentUserPassword(user, currentPass).then(result => {
+         if (isUnmounted.current) return;
          if (result.resetCurrentPasswordValue) {
             setIsOpenConfirmPassword(true);
             setSelectedAction("Password");
@@ -105,6 +101,15 @@ const UserAccount = (props: IProps) => {
             setAlertPasswordInfo(alertPasswordInfo.addSingleSuccess("Updated"));
          }
       });
+   };
+
+   const getRegistrationType = () => {
+      let regType = user.registrationMethod?.type;
+      if (regType != null && regType != RegistrationTypes.Application) {
+         let typeList = enumToArray(RegistrationTypes);
+         return `Linked to ${typeList.find(i => i.id == regType)?.name} account`;
+      }
+      return "";
    };
 
    return (

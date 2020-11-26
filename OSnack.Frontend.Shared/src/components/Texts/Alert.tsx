@@ -108,8 +108,8 @@ export class AlertObj {
       this.Type = AlertTypes.Warning;
       return new AlertObj(this.List, this.Type);
    }
-   addSingleSuccess(msg: string) {
-      this.List = [new Error("0", msg)];
+   addSingleSuccess(msg: string, key: string = "0") {
+      this.List = [new Error(key, msg)];
       this.Type = AlertTypes.Success;
       return new AlertObj(this.List, this.Type);
    }

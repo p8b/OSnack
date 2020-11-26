@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect, useRef } from "react";
 import Modal from "./Modal";
 import { Input } from "../Inputs/Input";
 import { Button } from "../Buttons/Button";
@@ -7,18 +7,20 @@ import Alert, { AlertObj } from "../Texts/Alert";
 import { sleep } from "../../_core/appFunc";
 
 const ConfirmPasswordModal = (props: IProps) => {
+   const isUnmounted = useRef(false);
    const [alert, setAlert] = useState(new AlertObj());
    const [password, setPassword] = useState("");
 
+   useEffect(() => () => { isUnmounted.current = true; }, []);
    useEffect(() => {
-      if (!props.isOpen) {
+      if (!props.isOpen)
          setAlert(alert.Clear);
-      }
    }, [props.isOpen]);
 
    const onSubmit = async () => {
-      sleep(500).then(() => { setAlert(alert.PleaseWait); });
+      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
       useConfirmCurrentUserPassword(password).then(result => {
+         if (isUnmounted.current) return;
          if (result.alert.List.length > 0) {
             alert.List = result.alert.List;
             alert.Type = result.alert.Type;

@@ -6,10 +6,8 @@ import { Input } from "osnack-frontend-shared/src/components/Inputs/Input";
 import { Button } from "osnack-frontend-shared/src/components/Buttons/Button";
 
 import { EmailTemplate, ServerVariables } from "../../_core/apiModel-Admin";
-import { useModifyEmailTemplateDetails } from '../../hooks/apiCallers/emailTemplate/Put.EmailTemplate';
 import Alert, { AlertObj } from "osnack-frontend-shared/src/components/Texts/Alert";
 import InputDropdown from "osnack-frontend-shared/src/components/Inputs/InputDropDown";
-import { sleep } from "osnack-frontend-shared/src/_core/appFunc";
 
 const EmailTemplateEditDetailsModal = (props: IProps) => {
    const [alert, setAlert] = useState(new AlertObj());
@@ -17,24 +15,24 @@ const EmailTemplateEditDetailsModal = (props: IProps) => {
    const [isNewTemplate, setIsNewTemplate] = useState(true);
    const [isTokenUrlRequired, setIsTokenUrlRequired] = useState(false);
    const [serverVariables, setServerVariables] = useState<ServerVariables[]>([]);
+
    useEffect(() => {
-      if (template.id != null && template.id != 0)
+      if (props.emailTemplate.id > 0)
          setIsNewTemplate(false);
       else
          setIsNewTemplate(true);
 
+      setTemplate(props.emailTemplate);
+   }, [props.isOpen]);
+   useEffect(() => {
       let arr = props.serverVariables;
-      for (var i = 0; i < template.serverVariables?.length; i++) {
-         arr = arr.filter(sv => sv.enumValue != template.serverVariables[i].enumValue);
-         if (template.serverVariables[i].replacementValue == "@@TokenUrl@@")
+      for (var i = 0; i < props.emailTemplate.serverVariables?.length; i++) {
+         arr = arr.filter(sv => sv.enumValue != props.emailTemplate.serverVariables[i].enumValue);
+         if (props.emailTemplate.serverVariables[i].replacementValue == "@@TokenUrl@@")
             setIsTokenUrlRequired(true);
       }
       setServerVariables(arr);
-
-      if (props.alert != null && props.alert.List.length > 0) {
-         setAlert(props.alert);
-      }
-   }, [props.emailTemplate]);
+   }, [props.serverVariables]);
    useEffect(() => {
       const temp = template.serverVariables?.find(sv => sv.replacementValue == "@@TokenUrl@@");
       if (temp != undefined && template.serverVariables.includes(temp)) {
@@ -46,23 +44,15 @@ const EmailTemplateEditDetailsModal = (props: IProps) => {
    useEffect(() => {
       setAlert(props.alert || new AlertObj());
    }, [props.alert]);
+
    const onSubmit = async () => {
-      sleep(500).then(() => { setAlert(alert.PleaseWait); });
-      if (template.id != null && template.id > 0) {
-         useModifyEmailTemplateDetails(template).then(result => {
-            if (result.alert.List.length > 0) {
-               alert.List = result.alert.List;
-               alert.Type = result.alert.Type;
-               setAlert(alert);
-            }
-            else {
-               setAlert(alert.Clear);
-               props.onSubmit(template);
-            }
-         });
-      } else {
-         props.onSubmit({ ...template, id: 0 });
-      }
+      props.onSubmit(template);
+   };
+
+   const isTemplateDeleted = () => {
+      if (props.alert?.List.find(e => e.key === "Deleted") == undefined)
+         return false;
+      return true;
    };
 
    return (
@@ -134,10 +124,14 @@ const EmailTemplateEditDetailsModal = (props: IProps) => {
                <Alert alert={alert} className="col-12 mb-1"
                   onClosed={() => setAlert(alert.Clear)}
                />
-               <Button children={`${isNewTemplate ? "Continue" : "Edit"}`} className="btn-lg col-12 col-sm-6 mt-2 btn-green"
-                  onClick={onSubmit} />
-               <Button children="Cancel" className="btn-lg col-12 col-sm-6 mt-2 btn-white"
-                  onClick={() => { setAlert(alert.Clear); props.onCancel(); }} />
+               {!isTemplateDeleted() &&
+                  <>
+                     <Button children={`${isNewTemplate ? "Continue" : "Edit"}`} className="btn-lg col-12 col-sm-6 mt-2 btn-green"
+                        onClick={onSubmit} />
+                     <Button children="Cancel" className="btn-lg col-12 col-sm-6 mt-2 btn-white"
+                        onClick={() => { setAlert(alert.Clear); props.onCancel(); }} />
+                  </>
+               }
             </div>
          </div>
       </Modal >
