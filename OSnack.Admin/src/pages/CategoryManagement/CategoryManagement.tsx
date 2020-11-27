@@ -116,7 +116,7 @@ const CategoryManagement = (props: IProps) => {
             />
 
             <Button children={<span className="add-icon" children="Category" />}
-               className="col-12 col-md-3 btn-green btn-lg"
+               className="col-12 col-md-3 btn-green btn"
                onClick={() => { setIsOpenCategoryModal(true); }}
             />
 

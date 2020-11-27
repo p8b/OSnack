@@ -8,32 +8,34 @@ const ButtonPopupConfirm = (props: IProps) => {
 
    return (
       <div className={`btn-group form dropup p-0 ${props.className}`} ref={toggleDropdown}>
-         <button id={`${id}`} type="button" className={`btn btn-lg mt-auto col-12 m-0 ${props.btnClassName}`}
-            onClick={() => setIsOpenDropdown(prev => !prev)}
-            children={`${props.title}${isOpenDropdown ? "?" : ""}`}
-         />
-         {isOpenDropdown && (
-            <span aria-labelledby={`${id}`}
-               className={`dropdown-menu shadow-lg show ${props.spanClassName}`}>
-               <div className="col-12 text-wrap dropdown-item bg-white"
-                  children={props.popupMessage}
-               />
-               <div className="dropdown-item p-0 m-0 mt-2">
-                  <button type="button" className={"btn btn-sm btn-green col-6 boarder-radius-none"}
-                     onClick={() => {
-                        props.onConfirmClick!();
-                        setIsOpenDropdown(false);
-                     }}
-                     children="Yes"
+         <div className="col p-0">
+            <button id={`${id}`} type="button" className={`btn btn-lg mt-auto col-12 m-0 ${props.btnClassName}`}
+               onClick={() => setIsOpenDropdown(prev => !prev)}
+               children={`${props.title}${isOpenDropdown ? "?" : ""}`}
+            />
+            {isOpenDropdown && (
+               <span aria-labelledby={`${id}`}
+                  className={`col text-center dropdown-menu show ${props.spanClassName}`}>
+                  <div className="col-12 text-wrap "
+                     children={props.popupMessage}
                   />
+                  <div className="dropdown-item p-0 m-0 mt-2">
+                     <button type="button" className={"btn btn-sm btn-green col-6 radius-none-l"}
+                        onClick={() => {
+                           props.onConfirmClick!();
+                           setIsOpenDropdown(false);
+                        }}
+                        children="Yes"
+                     />
 
-                  <button type="button" className={"btn btn-sm btn-red col-6 boarder-radius-none"}
-                     onClick={() => setIsOpenDropdown(false)}
-                     children="No"
-                  />
-               </div>
-            </span>
-         )}
+                     <button type="button" className={"btn btn-sm btn-red col-6 radius-none-r"}
+                        onClick={() => setIsOpenDropdown(false)}
+                        children="No"
+                     />
+                  </div>
+               </span>
+            )}
+         </div>
       </div>
    );
 };

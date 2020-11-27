@@ -105,7 +105,7 @@ const UserManagement = (props: IProps) => {
             user.email,
             user.role?.name,
             <div className="col-auto p-0 m-0">
-               <button className="btn btn-sm btn-blue col-12 m-0 mt-1 mt-xl-0"
+               <button className="btn btn-sm btn-blue col-12 m-0 mt-1 mt-xl-0 edit-icon"
                   onClick={() => { editUser(user); }}
                   children="Edit" />
             </div>
@@ -142,7 +142,7 @@ const UserManagement = (props: IProps) => {
                />
 
                <Button children={<span className="add-icon" children="User" />}
-                  className="col-12 col-md-3 mt-1 mt-md-0 btn-green btn-lg"
+                  className="col-12 col-md-3 mt-1 mt-md-0 btn-green btn"
                   onClick={() => { setIsOpenUserModal(true); }}
                />
             </div>
@@ -150,16 +150,16 @@ const UserManagement = (props: IProps) => {
 
                <DropDown title={`Role: ${roleList.find((r) => r.id.toString() == selectedRoleFilter)?.name || "All"}`}
                   className="col-12 col-sm-6 col-md-4 ml-auto m-0 p-1"
-                  titleClassName="btn btn-white filter-icon">
-                  <div className="dropdown-item"
+                  titleClassName="btn btn-white filter-icon ">
+                  <button className="dropdown-item"
                      onClick={() => { onSearch(undefined, undefined, undefined, undefined, GetAllRecords); }} >
                      All
-                  </div>
+                  </button>
                   {roleList.map(role =>
-                     <div className="dropdown-item" key={role.id}
+                     <button className="dropdown-item" key={role.id}
                         onClick={() => { onSearch(undefined, undefined, undefined, undefined, role.id.toString()); }} >
                         {role.name}
-                     </div>
+                     </button>
                   )}
                </DropDown>
 

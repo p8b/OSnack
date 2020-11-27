@@ -161,10 +161,10 @@ const ProductModal = (props: IProps) => {
                showDanger={alert.checkExistFilterRequired("Category")}
                className="col-12 col-sm-6 " >
                {props.categoryList.map(category =>
-                  <div className="dropdown-item" key={category.id}
+                  <button className="dropdown-item" key={category.id}
                      onClick={() => { setProduct({ ...product, category: category }); }} >
                      {category.name}
-                  </div>
+                  </button>
                )}
             </InputDropDown>
          </div>
@@ -183,10 +183,10 @@ const ProductModal = (props: IProps) => {
                label="Unit Type*"
                className="col-12 col-sm-6 " >
                {productUnitTypeList.map(productUnitType =>
-                  <div className="dropdown-item" key={productUnitType.id}
+                  <button className="dropdown-item" key={productUnitType.id}
                      onClick={() => { setProduct({ ...product, unitType: productUnitType.id }); }} >
                      {productUnitType.name}
-                  </div>
+                  </button>
                )}
             </InputDropDown>
 

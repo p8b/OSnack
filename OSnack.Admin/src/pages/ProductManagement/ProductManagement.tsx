@@ -160,7 +160,7 @@ const ProductManagement = (props: IProps) => {
                />
 
                <Button children={<span className="add-icon" children="Product" />}
-                  className="col-12 col-md-3 mt-1 mt-md-0 btn-green btn-lg"
+                  className="col-12 col-md-3 mt-1 mt-md-0 btn-green btn"
                   onClick={() => { setIsOpenProductModal(true); }}
                />
             </div>
@@ -169,32 +169,32 @@ const ProductManagement = (props: IProps) => {
                <DropDown title={`Category: ${categoryList.find((c) => c.id.toString() == selectedCategoryFilter)?.name || "All"}`}
                   className="col-12 col-sm-6 col-md-4 ml-auto m-0 p-1"
                   titleClassName="btn btn-white filter-icon">
-                  <div className="dropdown-item"
+                  <button className="dropdown-item"
                      onClick={() => { onSearch(undefined, undefined, undefined, undefined, undefined, GetAllRecords); }} >
                      All
-                  </div>
+                  </button>
                   {categoryList.map(category =>
-                     <div className="dropdown-item" key={category.id}
+                     <button className="dropdown-item" key={category.id}
                         onClick={() => { onSearch(undefined, undefined, undefined, undefined, undefined, category.id.toString()); }} >
                         {category.name}
-                     </div>
+                     </button>
                   )}
                </DropDown>
                <DropDown title={`Status: ${getStatusDisplayValue()}`}
                   className="col-12 col-sm-6 col-md-4 m-0 p-1"
                   titleClassName="btn btn-white  filter-icon">
-                  <div className="dropdown-item"
+                  <button className="dropdown-item"
                      onClick={() => { onSearch(undefined, undefined, undefined, undefined, GetAllRecords); }} >
                      All
-                  </div>
-                  <div className="dropdown-item"
+                  </button>
+                  <button className="dropdown-item"
                      onClick={() => { onSearch(undefined, undefined, undefined, undefined, "True"); }} >
                      Active
-                  </div>
-                  <div className="dropdown-item"
+                  </button>
+                  <button className="dropdown-item"
                      onClick={() => { onSearch(undefined, undefined, undefined, undefined, "False"); }} >
                      Disabled
-                  </div>
+                  </button>
                </DropDown>
 
                <Alert alert={alert}

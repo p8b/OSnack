@@ -55,15 +55,13 @@ const NavMenu = (props: IProps) => {
                      <NavLink key={link.id} displayName={link.displayName} path={link.path} className="col-12 col-md-auto" />
                   )}
                   {auth.state.isAuthenticated &&
-                     <DropDown titleClassName={`navbar text-nav dropdown-toggle ${selectedNav === "/MyAccount" ? "visited" : ""}`}
+                     <DropDown titleClassName={`btn-no-style ${selectedNav === "/MyAccount" ? "visited" : ""}`}
                         title={<div className="user-circle-icon" />}>
                         <NavLink className="dropdown-item"
                            path={"/MyAccount"}
                            displayName="Account" />
                         <a className="dropdown-item"
-                           onClick={() => {
-                              logout();
-                           }}
+                           onClick={logout}
                            children="Logout" />
                      </DropDown >
                   }

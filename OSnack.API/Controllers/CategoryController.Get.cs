@@ -62,8 +62,8 @@ namespace OSnack.API.Controllers
       }
 
       #region ***  ***
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(List<oCategory>), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<P8B.Core.CSharp.Models.Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]")]
       public async Task<IActionResult> All()
