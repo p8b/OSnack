@@ -22,13 +22,13 @@ namespace OSnack.API.Controllers
    [AutoValidateAntiforgeryToken]
    public partial class CategoryController : ControllerBase
    {
-      private OSnackDbContext _AppDbContext { get; }
+      private OSnackDbContext _DbContext { get; }
       private IWebHostEnvironment _WebHost { get; }
       private List<Error> ErrorsList = new List<Error>();
 
       public CategoryController(OSnackDbContext db, IWebHostEnvironment webEnv)
       {
-         _AppDbContext = db;
+         _DbContext = db;
          _WebHost = webEnv;
       }
    }

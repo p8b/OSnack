@@ -19,10 +19,13 @@ const CategoryModal = (props: IProps) => {
    const [category, setCategory] = useState(new Category());
    const [imageBase64, setImageBase64] = useState("");
    const [originalImageBase64, setOriginalImageBase64] = useState("");
+   const [isNewImageSet, setIsNewImageSet] = useState(false);
    useEffect(() => {
       setCategory(props.category);
       /// if the category already exists get the image and convert it to string base64
       if (props.category.id > 0) {
+         setIsNewImageSet(false);
+
          sleep(500, isUnmounted).then(() => { setAlert(alert.Loading); });
          getBase64fromUrlImage(`${API_URL}/${props.category.imagePath}`)
             .then(imgBase64 => {
@@ -87,8 +90,14 @@ const CategoryModal = (props: IProps) => {
          return;
       }
 
+      let cat = category;
+      if (!isNewImageSet) {
+         cat.imageBase64 = '';
+         cat.originalImageBase64 = '';
+      }
+
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      useModifyCategory(category).then(result => {
+      useModifyCategory(cat).then(result => {
          if (isUnmounted.current) return;
 
          if (result.alert.List.length > 0) {
@@ -126,6 +135,7 @@ const CategoryModal = (props: IProps) => {
    const onImageUploaded = (croppedImage: string, originalImage: string) => {
       category.imageBase64 = croppedImage;
       category.originalImageBase64 = originalImage;
+      setIsNewImageSet(true);
    };
    const onImageUploadError = (errMsg: string) => {
       let errors = new AlertObj([], AlertTypes.Error);

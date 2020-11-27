@@ -21,6 +21,8 @@
 
     &:focus {
         background-color: white;
+        border-bottom-color: $input-border-botton-focus-color;
+        //border-bottom-color: rgb();
     }
 
     &:disabled {
@@ -70,4 +72,38 @@ input[type='file'].upload {
 
 .custom-file-input {
     cursor: pointer;
+}
+
+textarea {
+    width: 100%;
+    border-radius: 0.5rem;
+    background-color: transparent;
+    background-clip: padding-box;
+    border: 0px none;
+    outline: 0;
+    padding: .2rem !important;
+    margin: 0 !important;
+    border-bottom: 0.15rem solid rgb(128, 128, 128) !important;
+    font-size: 1.2rem !important;
+    @extend .radius-none;
+
+    &.danger {
+        border-bottom: 0.15rem solid rgb(189, 28, 28) !important;
+    }
+
+    &.valid {
+        border-bottom: 0.15rem solid rgb(34, 180, 53) !important;
+    }
+
+    &:focus {
+        background-color: white;
+        border-color: rgb(128, 128, 128) !important;
+        box-shadow: none !important;
+        border-bottom-color: $input-border-botton-focus-color !important;
+    }
+
+    &:disabled {
+        background-color: rgb(224, 224, 224) !important;
+        color: black;
+    }
 }

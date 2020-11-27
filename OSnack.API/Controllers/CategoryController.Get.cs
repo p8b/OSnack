@@ -35,24 +35,27 @@ namespace OSnack.API.Controllers
       {
          try
          {
-            int totalCount = await _AppDbContext.Categories
+            int totalCount = await _DbContext.Categories
                 .CountAsync(c => searchValue.Equals(CoreConst.GetAllRecords) ? true : c.Name.Contains(searchValue))
                 .ConfigureAwait(false);
 
-            List<oCategory> list = await _AppDbContext.Categories
-               .AsNoTracking()
+            List<oCategory> list = await _DbContext.Categories
                 .OrderByDynamic(sortName, isSortAsce)
                 .Where(c => searchValue.Equals(CoreConst.GetAllRecords) ? true : c.Name.Contains(searchValue))
                 .Skip((selectedPage - 1) * maxNumberPerItemsPage)
                 .Take(maxNumberPerItemsPage)
                 .ToListAsync()
                 .ConfigureAwait(false);
-            /// return the list of Categories
+            foreach (var category in list)
+            {
+               category.TotalProducts = await _DbContext.Products
+                  .CountAsync(p => p.Category.Id == category.Id)
+                  .ConfigureAwait(false);
+            }
             return Ok(new { list, totalCount });
          }
-         catch (Exception) //ArgumentNullException
+         catch (Exception)
          {
-            /// in the case any exceptions return the following error
             CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
             return StatusCode(417, ErrorsList);
          }
@@ -67,12 +70,10 @@ namespace OSnack.API.Controllers
       {
          try
          {
-            /// return the list of All Categories
-            return Ok(await _AppDbContext.Categories.AsNoTracking().ToListAsync().ConfigureAwait(false));
+            return Ok(await _DbContext.Categories.ToListAsync().ConfigureAwait(false));
          }
-         catch (Exception) //ArgumentNullException
+         catch (Exception)
          {
-            /// in the case any exceptions return the following error
             CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
             return StatusCode(417, ErrorsList);
          }

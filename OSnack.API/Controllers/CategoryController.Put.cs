@@ -20,7 +20,6 @@ namespace OSnack.API.Controllers
 {
    public partial class CategoryController
    {
-
       #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
       [ProducesResponseType(StatusCodes.Status200OK)]
@@ -30,7 +29,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPut("[action]")]
-      [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
+      [Authorize(AppConst.AccessPolicies.Secret)]  /// Done
       public async Task<IActionResult> Put([FromBody] oCategory modifiedCategory)
       {
          try
@@ -45,6 +44,7 @@ namespace OSnack.API.Controllers
                ModelState.Remove("ImageBase64");
                ModelState.Remove("OriginalImageBase64");
             }
+
             if (ModelState.ContainsKey("ImageBase64"))
                ModelState.Remove("OriginalImageBase64");
             /// if model validation failed
@@ -56,7 +56,7 @@ namespace OSnack.API.Controllers
             }
 
             /// check the database to see if a Category with the same name exists
-            if (await _AppDbContext.Categories
+            if (await _DbContext.Categories
                 .AnyAsync(c => c.Name == modifiedCategory.Name && c.Id != modifiedCategory.Id)
                 .ConfigureAwait(false))
             {
@@ -66,7 +66,7 @@ namespace OSnack.API.Controllers
             }
 
             /// get the current category
-            oCategory currentCatogory = await _AppDbContext.Categories
+            oCategory currentCatogory = await _DbContext.Categories
                 .SingleOrDefaultAsync(c => c.Id == modifiedCategory.Id)
                 .ConfigureAwait(false);
 
@@ -101,30 +101,14 @@ namespace OSnack.API.Controllers
                   return StatusCode(412, ErrorsList);
                }
             }
-            else /// move the existing image files to a new directory 
-            {
-               string folderName = CoreFunc.StringGenerator(10, 3, 3, 4);
-               modifiedCategory.ImagePath = CoreFunc.MoveImageInWWWRoot(oldImagePath, CoreFunc.StringGenerator(10, 3, 3, 4),
-                  _WebHost.WebRootPath, $"Images\\Categories\\{folderName}");
-               modifiedCategory.OriginalImagePath = CoreFunc.MoveImageInWWWRoot(oldOriginalImagePath, CoreFunc.StringGenerator(10, 3, 3, 4),
-                  _WebHost.WebRootPath, $"Images\\Categories\\{folderName}");
-            }
 
             try
             {
                /// else Category object is made without any errors
-               /// Update the current Category to the EF context
-               _AppDbContext.Categories.Update(modifiedCategory);
+               _DbContext.Categories.Update(modifiedCategory);
 
-               /// save the changes to the database
-               await _AppDbContext.SaveChangesAsync().ConfigureAwait(false);
+               await _DbContext.SaveChangesAsync().ConfigureAwait(false);
 
-               if (containsNewImages)
-               {
-                  CoreFunc.DeleteFromWWWRoot(oldImagePath, _WebHost.WebRootPath);
-                  CoreFunc.DeleteFromWWWRoot(oldOriginalImagePath, _WebHost.WebRootPath);
-                  CoreFunc.ClearEmptyImageFolders(_WebHost.WebRootPath);
-               }
             }
             catch (Exception)
             {
@@ -134,15 +118,18 @@ namespace OSnack.API.Controllers
                   CoreFunc.DeleteFromWWWRoot(modifiedCategory.OriginalImagePath, _WebHost.WebRootPath);
                   CoreFunc.ClearEmptyImageFolders(_WebHost.WebRootPath);
                }
-               throw;
             }
-            /// return 200 OK (Update) status with the modified object
-            /// and success message
+
+            if (containsNewImages)
+            {
+               CoreFunc.DeleteFromWWWRoot(oldImagePath, _WebHost.WebRootPath);
+               CoreFunc.DeleteFromWWWRoot(oldOriginalImagePath, _WebHost.WebRootPath);
+               CoreFunc.ClearEmptyImageFolders(_WebHost.WebRootPath);
+            }
             return Ok(modifiedCategory);
          }
-         catch (Exception) // DbUpdateException, DbUpdateConcurrencyException
+         catch (Exception)
          {
-            /// Add the error below to the error list and return bad request
             CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
             return StatusCode(417, ErrorsList);
          }

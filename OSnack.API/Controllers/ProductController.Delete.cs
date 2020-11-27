@@ -19,9 +19,6 @@ namespace OSnack.API.Controllers
 {
    public partial class ProductController
    {
-      /// <summary>
-      /// Delete Product
-      /// </summary>
       #region ***  ***
       [Consumes(MediaTypeNames.Application.Json)]
       [ProducesResponseType(StatusCodes.Status200OK)]
@@ -30,23 +27,19 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
       #endregion
       [HttpDelete("[action]")]
-      [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
+      [Authorize(AppConst.AccessPolicies.Secret)]  /// Done
       public async Task<IActionResult> Delete([FromBody] oProduct product)
       {
          try
          {
-
-            /// if the Product record with the same id is not found
-            if (!await _AppDbContext.Products.AnyAsync(d => d.Id == product.Id).ConfigureAwait(false))
+            if (!await _DbContext.Products.AnyAsync(d => d.Id == product.Id).ConfigureAwait(false))
             {
                CoreFunc.Error(ref ErrorsList, "Product not found");
                return NotFound(ErrorsList);
             }
 
-            /// now delete the Product record
-            _AppDbContext.Products.Remove(product);
-            /// save the changes to the database
-            await _AppDbContext.SaveChangesAsync().ConfigureAwait(false);
+            _DbContext.Products.Remove(product);
+            await _DbContext.SaveChangesAsync().ConfigureAwait(false);
 
             try
             {
@@ -56,14 +49,12 @@ namespace OSnack.API.Controllers
             }
             catch (Exception)
             {
-               _AppDbContext.AppLogs.Add(new oAppLog { Massage = string.Format("Category deleted record but Images was not. The path is: {0}", product.ImagePath) });
+               _DbContext.AppLogs.Add(new oAppLog { Massage = string.Format("Category deleted record but Images was not. The path is: {0}", product.ImagePath) });
             }
-            /// return 200 OK status
             return Ok($"Product '{product.Name}' was deleted");
          }
          catch (Exception)
          {
-            /// Add the error below to the error list
             CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
             return StatusCode(417, ErrorsList);
          }

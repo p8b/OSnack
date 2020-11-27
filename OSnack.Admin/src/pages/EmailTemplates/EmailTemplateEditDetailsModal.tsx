@@ -46,6 +46,7 @@ const EmailTemplateEditDetailsModal = (props: IProps) => {
    }, [props.alert]);
 
    const onSubmit = async () => {
+      console.log(template);
       props.onSubmit(template);
    };
 

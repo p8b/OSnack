@@ -7,7 +7,6 @@ export const useCreateUser = async (newUser: User) => {
    let alert = new AlertObj([], AlertTypes.Error);
    try {
       const response = await httpCaller.post(`${API_URL}/User/Post/CreateUser`, newUser);
-      console.log(response);
       switch (response?.status) {
          case 201: // Created Response
             await response.json().then((data: User) => {
@@ -32,4 +31,3 @@ export const useCreateUser = async (newUser: User) => {
    }
    return { alert };
 };
-

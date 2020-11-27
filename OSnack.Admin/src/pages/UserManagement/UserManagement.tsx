@@ -137,7 +137,7 @@ const UserManagement = (props: IProps) => {
                <SearchInput key="searchInput"
                   value={searchValue}
                   onChange={i => setSearchValue(i.target.value)}
-                  className="col-12 col-md-9 m-0 p-0"
+                  className="col-12 col-md-9 "
                   onSearch={() => { onSearch(tblIsSortAsc, tblSortName); }}
                />
 

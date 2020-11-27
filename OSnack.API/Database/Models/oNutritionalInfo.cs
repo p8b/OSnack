@@ -20,47 +20,38 @@ namespace OSnack.API.Database.Models
       public int PerGram { get; set; } = 100;
 
       [Column(TypeName = "decimal(5,2)")]
-      [Required(ErrorMessage = "Energy KJ value is Required \n")]
       [PositiveDecimalIncludingZero(ErrorMessage = "Must be positive number \n")]
       public decimal? EnergyKJ { get; set; }
 
       [Column(TypeName = "decimal(5,2)")]
-      [Required(ErrorMessage = "Energy Kcal value is Required \n")]
       [PositiveDecimalIncludingZero(ErrorMessage = "Must be positive number \n")]
       public decimal? EnergyKcal { get; set; }
 
       [Column(TypeName = "decimal(5,2)")]
-      [Required(ErrorMessage = "Fat value is Required \n")]
       [PositiveDecimalIncludingZero(ErrorMessage = "Must be positive number \n")]
       public decimal? Fat { get; set; }
 
       [Column(TypeName = "decimal(5,2)")]
-      [Required(ErrorMessage = "Fat of which saturates value is Required \n")]
       [PositiveDecimalIncludingZero(ErrorMessage = "Must be positive number \n")]
       public decimal? SaturateFat { get; set; }
 
       [Column(TypeName = "decimal(5,2)")]
-      [Required(ErrorMessage = "Carbohydrate value is Required \n")]
       [PositiveDecimalIncludingZero(ErrorMessage = "Must be positive number \n")]
       public decimal? Carbohydrate { get; set; }
 
       [Column(TypeName = "decimal(5,2)")]
-      [Required(ErrorMessage = "Carbohydrate of which sugar value is Required \n")]
       [PositiveDecimalIncludingZero(ErrorMessage = "Must be positive number \n")]
       public decimal? carbohydrateSugar { get; set; }
 
       [Column(TypeName = "decimal(5,2)")]
-      [Required(ErrorMessage = "Fibre value is Required \n")]
       [PositiveDecimalIncludingZero(ErrorMessage = "Must be positive number \n")]
       public decimal? Fibre { get; set; }
 
       [Column(TypeName = "decimal(5,2)")]
-      [Required(ErrorMessage = "Protein value is Required \n")]
       [PositiveDecimalIncludingZero(ErrorMessage = "Must be positive number \n")]
       public decimal? Protein { get; set; }
 
       [Column(TypeName = "decimal(5,2)")]
-      [Required(ErrorMessage = "Salt value is Required \n")]
       [PositiveDecimalIncludingZero(ErrorMessage = "Must be positive number \n")]
       public decimal? Salt { get; set; }
 

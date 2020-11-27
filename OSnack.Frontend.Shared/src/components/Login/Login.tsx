@@ -78,7 +78,7 @@ const Login = (props: IProps) => {
 
    return (
       <>
-         <PageHeader title="Login" className="pt-0" />
+         <PageHeader title="Login" className="pt-0 line-header-no-line" />
 
          <Input label="Email"
             type="email"

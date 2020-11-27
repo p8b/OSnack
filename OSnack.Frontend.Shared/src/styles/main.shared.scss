@@ -2,6 +2,8 @@
 @import "./bootstrap/bootstrap";
 @import "./animation/_animate.scss";
 
+@import "./modules/_variables.scss";
+
 /*** Styles ***/
 @import "./modules/_general.scss";
 @import "./modules/_a.scss";
@@ -18,7 +20,6 @@
 @import "./modules/_radius.scss";
 @import "./modules/_scrollbar.scss";
 @import "./modules/_shop-card.scss";
-@import "./modules/_text-area.scss";
 @import "./modules/_text-styles.scss";
 @import "./modules/_toggler.scss";
 @import "./modules/_tooltip.scss";

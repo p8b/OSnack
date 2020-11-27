@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Hosting;
 using P8B.Core.CSharp;
 using OSnack.API.Extras;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace P8B.UK.API.Services
 {
@@ -198,16 +199,11 @@ namespace P8B.UK.API.Services
          message.Subject = subject;
 
          /// Set the body of the email and type
-         TextPart bodyHtml = new TextPart("html")
+         BodyBuilder bodyBuilder = new BodyBuilder()
          {
-            Text = htmlMessage
+            TextBody = HtmlToPlainText(htmlMessage),
+            HtmlBody = htmlMessage
          };
-
-
-         /// Create a multi part email body in order to enable attachment
-         Multipart multiPartEmail = new Multipart("Mail");
-         /// Add the body to the multi part email
-         multiPartEmail.Add(bodyHtml);
 
          /// if Email must have an attachment then add it to the multi part email
          if (_Attachment != null)
@@ -220,12 +216,12 @@ namespace P8B.UK.API.Services
                attachment.ContentDisposition = new ContentDisposition(ContentDisposition.Attachment);
                attachment.ContentTransferEncoding = ContentEncoding.Base64;
                attachment.FileName = "Invoice";
-               multiPartEmail.Add(attachment);
+               bodyBuilder.Attachments.Add(attachment);
             }
          }
 
          /// Set the message body to the value of multi part email
-         message.Body = multiPartEmail;
+         message.Body = bodyBuilder.ToMessageBody();
 
          /// Create a disposable "SmtpClient" object in order to send the email
          using (SmtpClient client = new SmtpClient())
@@ -326,5 +322,27 @@ namespace P8B.UK.API.Services
          return true;
       }
 
+
+      private string HtmlToPlainText(string html)
+      {
+         Regex[] _htmlReplaces = new[] {
+            new Regex(@"<script\b[^<]*(?:(?!</script>)<[^<]*)*</script>", RegexOptions.Compiled | RegexOptions.Singleline, TimeSpan.FromSeconds(1)),
+            new Regex(@"<style\b[^<]*(?:(?!</style>)<[^<]*)*</style>", RegexOptions.Compiled | RegexOptions.Singleline, TimeSpan.FromSeconds(1)),
+            new Regex(@"<xml\b[^<]*(?:(?!</style>)<[^<]*)*</xml>", RegexOptions.Compiled | RegexOptions.Singleline, TimeSpan.FromSeconds(1)),
+            new Regex(@"<[^>]*>", RegexOptions.Compiled),
+            new Regex(@" +", RegexOptions.Compiled)
+          };
+
+         foreach (var r in _htmlReplaces)
+         {
+            html = r.Replace(html, " ");
+         }
+         var lines = html
+             .Split(new[] { '\r', '\n' })
+             .Select(_ => System.Net.WebUtility.HtmlDecode(_.Trim()))
+             .Where(_ => _.Length > 0)
+             .ToArray();
+         return string.Join("\n", lines);
+      }
    }
 }

@@ -10,12 +10,7 @@
     cursor: pointer;
 }
 
-.remove-btn-style {
-    background-color: transparent;
-    outline: none !important;
-    border: 0 !important;
-    margin: 0;
-    margin-left: 1rem;
-    margin-right: 1rem;
-    color: rgb(61, 95, 8) !important;
+.bg-gray {
+    background-color: rgb(128, 128, 128);
+    padding: .3rem;
 }

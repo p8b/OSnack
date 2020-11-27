@@ -50,14 +50,12 @@ const NavMenu = (props: IProps) => {
                   <button type="button"
                      className={`fas toggler-icon `}
                      onClick={() => { setIsOpenSideBar((prevVal) => !prevVal); }} />
-                  <DropDown className="ml-auto" titleClassName={`user-circle-icon`} title={``}>
+                  <DropDown className="ml-auto " titleClassName={`user-circle-icon btn-no-style`} title={``}>
                      <Link className="dropdown-item"
                         to="/MyAccount"
                         children="My Account" />
-                     <a className="dropdown-item"
-                        onClick={() => {
-                           logout();
-                        }}
+                     <button className="dropdown-item"
+                        onClick={logout}
                         children="Logout" />
                   </DropDown>
 

@@ -19,17 +19,17 @@ const ProductNutritionalInfoModal = (props: IProps) => {
       <Modal className="col-11 col-sm-10 col-md-8 col-lg-6 pl-4 pr-4"
          isOpen={props.isOpen}>
          <PageHeader title={"Nutritional Information"} />
-         <p>Information per 100g</p>
+         <b className="mb-3">**Information per 100g</b>
          {/***** Fat, Saturate Fat, Carbohydrate,  Carbohydrate Sugar ****/}
          <div className="row">
-            <Input label="Energy KJ*"
+            <Input label="Energy KJ"
                type="number"
                positiveNumbersOnly
                value={nutritionalInfo.energyKJ}
                onChange={i => { setNutritionalInfo({ ...nutritionalInfo, energyKJ: i.target.value as unknown as number }); }}
                className="col-12 col-sm-6"
                showDanger={props.alert.checkExist("NutritionalInfo.EnergyKJ")} />
-            <Input label="Energy Kcal*"
+            <Input label="Energy Kcal"
                type="number"
                positiveNumbersOnly
                value={nutritionalInfo.energyKcal}
@@ -38,7 +38,7 @@ const ProductNutritionalInfoModal = (props: IProps) => {
                showDanger={props.alert.checkExist("NutritionalInfo.EnergyKcal")} />
          </div>
          <div className="row">
-            <Input label="Fat*"
+            <Input label="Fat"
                type="number"
                positiveNumbersOnly
                value={nutritionalInfo.fat}
@@ -47,7 +47,7 @@ const ProductNutritionalInfoModal = (props: IProps) => {
                inputRightLable="grams"
                showDanger={props.alert.checkExist("NutritionalInfo.Fat")}
             />
-            <Input label="Saturate Fat*"
+            <Input label="Saturate Fat"
                type="number"
                positiveNumbersOnly
                value={nutritionalInfo.saturateFat}
@@ -57,7 +57,7 @@ const ProductNutritionalInfoModal = (props: IProps) => {
                showDanger={props.alert.checkExist("NutritionalInfo.SaturateFat")} />
          </div>
          <div className="row">
-            <Input label="Carbohydrate*"
+            <Input label="Carbohydrate"
                type="number"
                positiveNumbersOnly
                value={nutritionalInfo.carbohydrate}
@@ -66,7 +66,7 @@ const ProductNutritionalInfoModal = (props: IProps) => {
                inputRightLable="grams"
                showDanger={props.alert.checkExist("NutritionalInfo.Carbohydrate")} />
 
-            <Input label="Carbohydrate Sugar*"
+            <Input label="Carbohydrate Sugar"
                type="number"
                positiveNumbersOnly
                value={nutritionalInfo.carbohydrateSugar}
@@ -78,7 +78,7 @@ const ProductNutritionalInfoModal = (props: IProps) => {
          </div>
          {/***** Fibre, Protein, Salt ****/}
          <div className="row">
-            <Input label="Fibre*"
+            <Input label="Fibre"
                type="number"
                positiveNumbersOnly
                value={nutritionalInfo.fibre}
@@ -86,7 +86,7 @@ const ProductNutritionalInfoModal = (props: IProps) => {
                className="col-12 col-sm-6"
                inputRightLable="grams"
                showDanger={props.alert.checkExist("NutritionalInfo.Fibre")} />
-            <Input label="Protein*"
+            <Input label="Protein"
                type="number"
                positiveNumbersOnly
                value={nutritionalInfo.protein}
@@ -96,7 +96,7 @@ const ProductNutritionalInfoModal = (props: IProps) => {
                showDanger={props.alert.checkExist("NutritionalInfo.Protein")} />
          </div>
          <div className="row">
-            <Input label="Salt*"
+            <Input label="Salt"
                type="number"
                positiveNumbersOnly
                value={nutritionalInfo.salt}
@@ -107,8 +107,8 @@ const ProductNutritionalInfoModal = (props: IProps) => {
 
             {/***** buttons ****/}
             <div className="col-12 col-sm-6  mt-auto mb-auto">
-               <Button children="Submit"
-                  className={`col-12 btn-green btn-lg`}
+               <Button children="close"
+                  className={`col-12 btn-white btn-lg`}
                   onClick={() => { props.onSubmit(nutritionalInfo); }} />
             </div>
          </div>

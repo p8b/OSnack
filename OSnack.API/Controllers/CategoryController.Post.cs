@@ -19,10 +19,7 @@ namespace OSnack.API.Controllers
 {
    public partial class CategoryController
    {
-      /// <summary>
-      ///     Create a new Category
-      /// </summary>
-      #region *** 201 Created, 422 UnprocessableEntity, 412 PreconditionFailed, 417 ExpectationFailed ***
+      #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
       [ProducesResponseType(StatusCodes.Status201Created)]
       [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
@@ -31,7 +28,6 @@ namespace OSnack.API.Controllers
       #endregion
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
       [HttpPost("[action]")]
-      [ValidateAntiForgeryToken]
       public async Task<IActionResult> Post([FromBody] oCategory newCategory)
       {
          try
@@ -40,16 +36,15 @@ namespace OSnack.API.Controllers
 
             if (ModelState.ContainsKey("ImageBase64"))
                ModelState.Remove("OriginalImageBase64");
-            /// if model validation failed
+
             if (!ModelState.IsValid)
             {
                CoreFunc.ExtractErrors(ModelState, ref ErrorsList);
-               /// return Unprocessable Entity with all the errors
                return UnprocessableEntity(ErrorsList);
             }
 
             /// check the database to see if a Category with the same name exists
-            if (await _AppDbContext.Categories
+            if (await _DbContext.Categories
                 .AnyAsync(d => d.Name.Equals(newCategory.Name)).ConfigureAwait(false))
             {
                /// extract the errors and return bad request containing the errors
@@ -78,9 +73,9 @@ namespace OSnack.API.Controllers
             {
                /// else Category object is made without any errors
                /// Add the new Category to the EF context
-               await _AppDbContext.Categories.AddAsync(newCategory).ConfigureAwait(false);
+               await _DbContext.Categories.AddAsync(newCategory).ConfigureAwait(false);
                /// save the changes to the database
-               await _AppDbContext.SaveChangesAsync().ConfigureAwait(false);
+               await _DbContext.SaveChangesAsync().ConfigureAwait(false);
             }
             catch (Exception)
             {

@@ -43,7 +43,12 @@
     }
 
     & div input {
-        display: none;
+        height: 0 !important;
+        width: 0 !important;
+
+        &:focus + span {
+            box-shadow: 0px 0px 3px 2px rgba(0,0,0,0.75) !important;
+        }
     }
 
     & div input:checked + span {
@@ -63,7 +68,7 @@
         right: 0;
         bottom: 0;
         background-color: rgb(200, 0, 0);
-        transition: .8s;
+        transition: transform .8s;
 
         &:before {
             position: absolute;
@@ -77,7 +82,7 @@
             bottom: 0;
             box-shadow: inset 0 0 .3rem rgb(42, 42, 42);
             background-color: rgb(255, 255, 255);
-            transition: .4s;
+            transition: transform .4s;
         }
     }
 

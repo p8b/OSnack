@@ -25,11 +25,13 @@ const ProductModal = (props: IProps) => {
    const [imageBase64, setImageBase64] = useState("");
    const [originalImageBase64, setOriginalImageBase64] = useState("");
    const [nutritionalInfoModalIsOpen, setNutritionalInfoModalIsOpen] = useState(false);
+   const [isNewImageSet, setIsNewImageSet] = useState(false);
 
    useEffect(() => {
       setProduct(props.product);
       /// if the category already exists get the image and convert it to string base64
       if (props.product.id > 0) {
+         setIsNewImageSet(false);
          sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
          getBase64fromUrlImage(`${API_URL}/${props.product.imagePath}`)
             .then(imgBase64 => {
@@ -68,6 +70,13 @@ const ProductModal = (props: IProps) => {
       });
    };
    const updateProduct = async () => {
+
+      let prod = product;
+      if (!isNewImageSet) {
+         prod.imageBase64 = '';
+         prod.originalImageBase64 = '';
+      }
+
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
 
       useModifyProduct(product).then(result => {
@@ -107,6 +116,7 @@ const ProductModal = (props: IProps) => {
    const onImageUploaded = (croppedImage: string, originalImage: string) => {
       product.imageBase64 = croppedImage;
       product.originalImageBase64 = originalImage;
+      setIsNewImageSet(true);
    };
    const onImageUploadError = (errMsg: string) => {
       let errors = new AlertObj([], AlertTypes.Error);
@@ -140,7 +150,7 @@ const ProductModal = (props: IProps) => {
          {/***** Name ****/}
          <div className="row">
             <Input label="Name*"
-               value={name}
+               value={product.name}
                onChange={i => { setProduct({ ...product, name: i.target.value }); }}
                className="col-12 col-sm-6"
                showDanger={alert.checkExistFilterRequired("Name")}
@@ -194,7 +204,7 @@ const ProductModal = (props: IProps) => {
             />
             <div className="col-12 col-sm-6 m-auto">
                <Button className="btn btn-lg btn-blue col-12 pb-sm-2"
-                  children={`Add Nutritional Info*`}
+                  children={`Add Nutritional Info`}
                   onClick={() => { setNutritionalInfoModalIsOpen(true); }}
                />
             </div>

@@ -102,10 +102,10 @@ const UserModal = (props: IProps) => {
                showDanger={alert.checkExistFilterRequired("Role")}
                className="col-12 col-sm-6 " >
                {props.roleList.map(role =>
-                  <div className="dropdown-item" key={role.id}
+                  <button className="dropdown-item" key={role.id}
                      onClick={() => { setUser({ ...user, role: role }); }} >
                      {role.name}
-                  </div>
+                  </button>
                )}
             </InputDropdown>
          </div>

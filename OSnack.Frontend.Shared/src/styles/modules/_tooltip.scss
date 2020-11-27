@@ -15,15 +15,17 @@
         /* Position the tooltip */
         position: absolute;
         z-index: 1;
-        left: 100%;
+        top: 100%;
+        right: 50%;
+        transform: translate(50%,50%);
         margin-left: .5rem;
     }
 
     & .custom-tooltiptext::after {
         content: "";
         position: absolute;
-        top: 30%;
-        left: -10%;
+        top: -30%;
+        left: 50%;
         margin-left: -.5rem;
         border-width: .5rem;
         border-style: solid;

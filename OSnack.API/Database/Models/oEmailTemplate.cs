@@ -62,8 +62,8 @@ namespace OSnack.API.Database.Models
          if (!Directory.Exists(Path.Combine(SelectedFolder, Name)))
             Directory.CreateDirectory(Path.Combine(SelectedFolder, Name));
 
-         HtmlPath = string.Format(@"{0}\html-{1}.{2}", Name, new Random().Next(0, 100), "html");
-         DesignPath = string.Format(@"{0}\design-{1}.{2}", Name, new Random().Next(0, 100), "json");
+         HtmlPath = string.Format(@"{0}\html-{1}.html", Name, new Random().Next(0, 100));
+         DesignPath = string.Format(@"{0}\design-{1}.json", Name, new Random().Next(0, 100));
 
          RemoveHtmlComment();
          File.WriteAllText(Path.Combine(SelectedFolder, HtmlPath), HTML);
@@ -103,22 +103,22 @@ namespace OSnack.API.Database.Models
 
       internal bool ValidateHTMLServerVariables(ref List<Error> ErrorList)
       {
-         if(ServerVariables != null)
+         if (ServerVariables != null)
          {
 
-         foreach (oServerVariables item in ServerVariables)
-         {
-            // if tokenUrl is added to the attached email template but the value of URL path is not
-            if (item.EnumValue == EmailTemplateServerVariables.TokenUrl && string.IsNullOrEmpty(TokenUrlPath))
-               ErrorList.Add(new Error("TokenUrlPath", "Token URL is Required"));
+            foreach (oServerVariables item in ServerVariables)
+            {
+               // if tokenUrl is added to the attached email template but the value of URL path is not
+               if (item.EnumValue == EmailTemplateServerVariables.TokenUrl && string.IsNullOrEmpty(TokenUrlPath))
+                  ErrorList.Add(new Error("TokenUrlPath", "Token URL is Required"));
 
 
-            if (!HTML.Contains(item.ReplacementValue))
-               ErrorList.Add(new Error(item.ReplacementValue, $"Server Variable {item.ReplacementValue } is Required"));
+               if (!HTML.Contains(item.ReplacementValue))
+                  ErrorList.Add(new Error(item.ReplacementValue, $"Server Variable {item.ReplacementValue } is Required"));
 
-            /// Set to 0 so it would not conflict with dbContext
-            item.Id = 0;
-         }
+               /// Set to 0 so it would not conflict with dbContext
+               item.Id = 0;
+            }
          }
 
          if (ErrorList.Count > 0)
@@ -128,6 +128,6 @@ namespace OSnack.API.Database.Models
       }
 
       internal void RemoveHtmlComment() =>
-         HTML = new Regex(@"<!--(.*?)-->", RegexOptions.Compiled).Replace(HTML, " ");
+         HTML = new Regex(@"<!--(.*?)-->", RegexOptions.Compiled).Replace(HTML, "");
    }
 }

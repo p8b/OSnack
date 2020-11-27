@@ -1,5 +1,4 @@
-﻿
-.btn, .btn-lg {
+﻿.btn, .btn-lg {
     font-weight: bold;
     border-radius: 0.9rem;
     border: none;
@@ -260,4 +259,14 @@
             border-bottom: solid 0.15rem rgb(61, 95, 9);
         }
     }
+}
+
+.btn-no-style {
+    background-color: transparent;
+    outline: none !important;
+    border: 0 !important;
+    margin: 0;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    color: rgb(61, 95, 8) !important;
 }

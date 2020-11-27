@@ -78,7 +78,6 @@ const EmailTemplatesEdit = (props: IProps) => {
          emailTemp.design = data.design;
          var result: { alert: AlertObj; template: EmailTemplate; }
             = { alert: new AlertObj(), template: new EmailTemplate() };
-
          if (template.id == 0)
             result = await useCreateEmailTemplate(template);
          else if (template.id != null)

@@ -18,14 +18,12 @@ namespace OSnack.API.Database.Models
       public string Name { get; set; }
 
       [Display(Name = "Display Image")]
+      [StringLength(50, ErrorMessage = "Must be less than 50 Characters \n")]
       public string ImagePath { get; set; }
 
       [Display(Name = "Original Display Image")]
+      [StringLength(50, ErrorMessage = "Must be less than 50 Characters \n")]
       public string OriginalImagePath { get; set; }
-
-      //[JsonIgnore]
-      //[InverseProperty("Category")]
-      //public ICollection<oProduct> Products { get; set; }
 
       [NotMapped]
       [Required(ErrorMessage = "Image is Required \n")]
@@ -34,5 +32,9 @@ namespace OSnack.API.Database.Models
       [NotMapped]
       [Required(ErrorMessage = "Original Image is Required \n")]
       public string OriginalImageBase64 { get; set; }
+
+
+      [NotMapped]
+      public int TotalProducts { get; set; } = 0;
    }
 }

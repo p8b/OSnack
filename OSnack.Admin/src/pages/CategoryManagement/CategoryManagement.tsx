@@ -74,13 +74,15 @@ const CategoryManagement = (props: IProps) => {
    const populateCategoryTable = (categoryList: Category[]) => {
       let tData = new TableData();
       tData.headers.push(new TableHeaderData("Name", "Name", true));
+      tData.headers.push(new TableHeaderData("No. Products"));
       tData.headers.push(new TableHeaderData("", "", false));
 
       categoryList.map(category =>
          tData.rows.push(new TableRowData([
             category.name,
+            category.totalProducts,
             <div className="col-auto p-0 m-0">
-               <button className="btn btn-sm btn-blue col-12 m-0 mt-1 mt-xl-0"
+               <button className="btn btn-sm btn-blue col-12 m-0 mt-1 mt-xl-0 edit-icon"
                   onClick={() => { editCategory(category); }}
                   children="Edit" />
             </div>
@@ -102,9 +104,9 @@ const CategoryManagement = (props: IProps) => {
    };
 
    return (
-      <Container className="container-fluid">
+      <Container className="container-fluid ">
          <PageHeader title="Categories" className="line-header-lg" />
-         <Container className="bg-white row">
+         <Container className="row col-12 col-md-11 pt-2 pb-2 bg-white ml-auto mr-auto">
             {/***** Search Input and new category button  ****/}
             <SearchInput key="searchInput"
                value={searchValue}
