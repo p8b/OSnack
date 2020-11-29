@@ -12,7 +12,9 @@ export const SearchInput = (props: IProps) => {
                disabled={props.disabled || false}
                onKeyDown={e => { if (e.key === 'Enter') props.onSearch(); }}
             />
-            <div className={`col-auto m-0 btn-green btn-lg radius-none-l ${props.value === '' ? 'search-all-icon' : "search-icon"}`}
+            <button className={`col-auto m-0 btn-green btn radius-none-l 
+                              ${props.value === '' ? 'search-all-icon' : "search-icon"}
+                              ${props.btnClassName || ""}`}
                onClick={props.onSearch}
             />
 
@@ -26,6 +28,7 @@ interface IProps {
    onSearch: () => void;
    value: string;
    className?: string;
+   btnClassName?: string;
    disabled?: boolean;
 }
 export default SearchInput;

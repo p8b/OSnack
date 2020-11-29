@@ -109,13 +109,13 @@ const ProductManagement = (props: IProps) => {
 
       productList.map(product =>
          tData.rows.push(new TableRowData([
-            name,
+            product.name,
             product.category.name,
             `£${product.price}`,
             `${product.unitQuantity} ${productUnitTypeList.find(ut => ut.id == product.unitType)?.name}`,
-            status ? "Active" : "Disabled",
+            product.status ? "Active" : "Disabled",
             <div className="col-auto p-0 m-0">
-               <button className="btn btn-sm btn-blue col-12 m-0 mt-1 mt-xl-0"
+               <button className="btn btn-sm btn-blue col-12 m-0 mt-1 mt-xl-0 edit-icon"
                   onClick={() => { editProduct(product); }}
                   children="Edit" />
             </div>
@@ -155,12 +155,12 @@ const ProductManagement = (props: IProps) => {
                <SearchInput key="searchInput"
                   value={searchValue}
                   onChange={i => setSearchValue(i.target.value)}
-                  className="col-12 col-md-9 m-0 p-0"
+                  className="col-12 col-md-9 "
                   onSearch={() => { onSearch(tblIsSortAsc, tblSortName); }}
                />
 
                <Button children={<span className="add-icon" children="Product" />}
-                  className="col-12 col-md-3 mt-1 mt-md-0 btn-green btn-lg"
+                  className="col-12 col-md-3 mt-1 mt-md-0 btn-green btn"
                   onClick={() => { setIsOpenProductModal(true); }}
                />
             </div>
@@ -169,32 +169,32 @@ const ProductManagement = (props: IProps) => {
                <DropDown title={`Category: ${categoryList.find((c) => c.id.toString() == selectedCategoryFilter)?.name || "All"}`}
                   className="col-12 col-sm-6 col-md-4 ml-auto m-0 p-1"
                   titleClassName="btn btn-white filter-icon">
-                  <div className="dropdown-item"
+                  <button className="dropdown-item"
                      onClick={() => { onSearch(undefined, undefined, undefined, undefined, undefined, GetAllRecords); }} >
                      All
-                  </div>
+                  </button>
                   {categoryList.map(category =>
-                     <div className="dropdown-item" key={category.id}
+                     <button className="dropdown-item" key={category.id}
                         onClick={() => { onSearch(undefined, undefined, undefined, undefined, undefined, category.id.toString()); }} >
                         {category.name}
-                     </div>
+                     </button>
                   )}
                </DropDown>
                <DropDown title={`Status: ${getStatusDisplayValue()}`}
                   className="col-12 col-sm-6 col-md-4 m-0 p-1"
                   titleClassName="btn btn-white  filter-icon">
-                  <div className="dropdown-item"
+                  <button className="dropdown-item"
                      onClick={() => { onSearch(undefined, undefined, undefined, undefined, GetAllRecords); }} >
                      All
-                  </div>
-                  <div className="dropdown-item"
+                  </button>
+                  <button className="dropdown-item"
                      onClick={() => { onSearch(undefined, undefined, undefined, undefined, "True"); }} >
                      Active
-                  </div>
-                  <div className="dropdown-item"
+                  </button>
+                  <button className="dropdown-item"
                      onClick={() => { onSearch(undefined, undefined, undefined, undefined, "False"); }} >
                      Disabled
-                  </div>
+                  </button>
                </DropDown>
 
                <Alert alert={alert}

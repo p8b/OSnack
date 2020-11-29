@@ -27,6 +27,7 @@
         font-family: "FA5 Solid" !important;
     }
 }
+
 .save-icon {
     &:before {
         text-decoration: none;
@@ -130,7 +131,7 @@
         text-decoration: none;
         padding: 0 .2rem;
         content: "\f163";
-        display: inline-block;
+        display: inline;
         font-family: "FA5 Solid" !important;
     }
 }
@@ -140,29 +141,24 @@
         text-decoration: none;
         padding: 0 .2rem;
         content: "\f886";
-        display: inline-block;
+        display: inline;
         font-family: "FA5 Solid" !important;
     }
 }
 
 .sortable-icon {
     &-light {
-
         &:before {
-            text-decoration: none !important;
             padding: 0 .2rem;
             content: "\f0dc";
-            display: inline;
             font-family: "FA5 Solid" !important;
             color: rgb(180, 180, 180);
         }
     }
 
     &:before {
-        text-decoration: none !important;
         padding: 0 .2rem;
         content: "\f0dc";
-        display: inline;
         font-family: "FA5 Solid" !important;
     }
 }

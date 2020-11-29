@@ -240,10 +240,10 @@
     <Content Include="src\styles\modules\_radius.scss" />
     <Content Include="src\styles\modules\_scrollbar.scss" />
     <Content Include="src\styles\modules\_shop-card.scss" />
-    <Content Include="src\styles\modules\_text-area.scss" />
     <Content Include="src\styles\modules\_text-styles.scss" />
     <Content Include="src\styles\modules\_toggler.scss" />
     <Content Include="src\styles\modules\_tooltip.scss" />
+    <Content Include="src\styles\modules\_variables.scss" />
     <Content Include="tsconfig.json" />
   </ItemGroup>
   <ItemGroup>

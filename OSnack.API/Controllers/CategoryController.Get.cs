@@ -10,6 +10,7 @@ using P8B.Core.CSharp.Extentions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace OSnack.API.Controllers
@@ -34,19 +35,23 @@ namespace OSnack.API.Controllers
       {
          try
          {
-            int totalCount = await _AppDbContext.Categories
+            int totalCount = await _DbContext.Categories
                 .CountAsync(c => searchValue.Equals(CoreConst.GetAllRecords) ? true : c.Name.Contains(searchValue))
                 .ConfigureAwait(false);
 
-            List<oCategory> list = await _AppDbContext.Categories
-               .AsNoTracking()
+            List<oCategory> list = await _DbContext.Categories
                 .OrderByDynamic(sortName, isSortAsce)
                 .Where(c => searchValue.Equals(CoreConst.GetAllRecords) ? true : c.Name.Contains(searchValue))
                 .Skip((selectedPage - 1) * maxNumberPerItemsPage)
                 .Take(maxNumberPerItemsPage)
                 .ToListAsync()
                 .ConfigureAwait(false);
-
+            foreach (var category in list)
+            {
+               category.TotalProducts = await _DbContext.Products
+                  .CountAsync(p => p.Category.Id == category.Id)
+                  .ConfigureAwait(false);
+            }
             return Ok(new { list, totalCount });
          }
          catch (Exception)
@@ -57,16 +62,15 @@ namespace OSnack.API.Controllers
       }
 
       #region ***  ***
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(List<oCategory>), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<P8B.Core.CSharp.Models.Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]")]
       public async Task<IActionResult> All()
       {
          try
          {
-            return Ok(await _AppDbContext.Categories.AsNoTracking().ToListAsync()
-               .ConfigureAwait(false));
+            return Ok(await _DbContext.Categories.ToListAsync().ConfigureAwait(false));
          }
          catch (Exception)
          {

@@ -9,14 +9,17 @@ using OSnack.API.Extras;
 using P8B.Core.CSharp;
 
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Net.Mime;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace OSnack.API.Controllers
 {
    public partial class CategoryController
    {
-
       #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
       [ProducesResponseType(StatusCodes.Status200OK)]
@@ -26,7 +29,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPut("[action]")]
-      [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
+      [Authorize(AppConst.AccessPolicies.Secret)]  /// Done
       public async Task<IActionResult> Put([FromBody] oCategory modifiedCategory)
       {
          try
@@ -35,34 +38,39 @@ namespace OSnack.API.Controllers
             TryValidateModel(modifiedCategory);
 
             /// if new image is not provided do not check for new images
-            if (string.IsNullOrWhiteSpace(modifiedCategory.ImageBase64) &&
-               string.IsNullOrWhiteSpace(modifiedCategory.OriginalImageBase64))
+            if (string.IsNullOrWhiteSpace(modifiedCategory.ImageBase64) && string.IsNullOrWhiteSpace(modifiedCategory.OriginalImageBase64))
             {
                containsNewImages = false;
                ModelState.Remove("ImageBase64");
                ModelState.Remove("OriginalImageBase64");
             }
+
             if (ModelState.ContainsKey("ImageBase64"))
                ModelState.Remove("OriginalImageBase64");
-
+            /// if model validation failed
             if (!ModelState.IsValid)
             {
                CoreFunc.ExtractErrors(ModelState, ref ErrorsList);
+               /// return Unprocessable Entity with all the errors
                return UnprocessableEntity(ErrorsList);
             }
 
-            if (await _AppDbContext.Categories
+            /// check the database to see if a Category with the same name exists
+            if (await _DbContext.Categories
                 .AnyAsync(c => c.Name == modifiedCategory.Name && c.Id != modifiedCategory.Id)
                 .ConfigureAwait(false))
             {
+               /// extract the errors and return bad request containing the errors
                CoreFunc.Error(ref ErrorsList, "Category with the given name already exists.");
                return StatusCode(412, ErrorsList);
             }
 
-            oCategory currentCatogory = await _AppDbContext.Categories
+            /// get the current category
+            oCategory currentCatogory = await _DbContext.Categories
                 .SingleOrDefaultAsync(c => c.Id == modifiedCategory.Id)
                 .ConfigureAwait(false);
 
+            // if the current category does not exists
             if (currentCatogory == null)
             {
                CoreFunc.Error(ref ErrorsList, "Category Not Found");
@@ -93,26 +101,14 @@ namespace OSnack.API.Controllers
                   return StatusCode(412, ErrorsList);
                }
             }
-            else /// move the existing image files to a new directory 
-            {
-               string folderName = CoreFunc.StringGenerator(10, 3, 3, 4);
-               modifiedCategory.ImagePath = CoreFunc.MoveImageInWWWRoot(oldImagePath, CoreFunc.StringGenerator(10, 3, 3, 4),
-                  _WebHost.WebRootPath, $"Images\\Categories\\{folderName}");
-               modifiedCategory.OriginalImagePath = CoreFunc.MoveImageInWWWRoot(oldOriginalImagePath, CoreFunc.StringGenerator(10, 3, 3, 4),
-                  _WebHost.WebRootPath, $"Images\\Categories\\{folderName}");
-            }
 
             try
             {
-               _AppDbContext.Categories.Update(modifiedCategory);
-               await _AppDbContext.SaveChangesAsync().ConfigureAwait(false);
+               /// else Category object is made without any errors
+               _DbContext.Categories.Update(modifiedCategory);
 
-               if (containsNewImages)
-               {
-                  CoreFunc.DeleteFromWWWRoot(oldImagePath, _WebHost.WebRootPath);
-                  CoreFunc.DeleteFromWWWRoot(oldOriginalImagePath, _WebHost.WebRootPath);
-                  CoreFunc.ClearEmptyImageFolders(_WebHost.WebRootPath);
-               }
+               await _DbContext.SaveChangesAsync().ConfigureAwait(false);
+
             }
             catch (Exception)
             {
@@ -122,9 +118,14 @@ namespace OSnack.API.Controllers
                   CoreFunc.DeleteFromWWWRoot(modifiedCategory.OriginalImagePath, _WebHost.WebRootPath);
                   CoreFunc.ClearEmptyImageFolders(_WebHost.WebRootPath);
                }
-               throw;
             }
 
+            if (containsNewImages)
+            {
+               CoreFunc.DeleteFromWWWRoot(oldImagePath, _WebHost.WebRootPath);
+               CoreFunc.DeleteFromWWWRoot(oldOriginalImagePath, _WebHost.WebRootPath);
+               CoreFunc.ClearEmptyImageFolders(_WebHost.WebRootPath);
+            }
             return Ok(modifiedCategory);
          }
          catch (Exception)

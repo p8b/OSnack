@@ -1,6 +1,7 @@
 ﻿.dropdown-menu {
     max-height: 10rem;
     overflow-y: auto;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19) !important;
 }
 
 .input-dropdown {
@@ -17,6 +18,15 @@
     font-weight: 100;
     text-align: left;
     @extend .radius-none;
+
+    &:focus {
+        border-bottom-color: $input-border-botton-focus-color;
+
+        &.show:after {
+            color: $input-border-botton-focus-color;
+            content: "\f0d8";
+        }
+    }
 
     &:after {
         text-align: right;

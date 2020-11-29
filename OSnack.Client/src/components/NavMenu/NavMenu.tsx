@@ -17,19 +17,20 @@ const NavMenu = (props: IProps) => {
    const [currentNavItems, setCurrentNavItems] = useState(DefaultNav);
    const [selectedNav] = useState(window.location.pathname);
 
+   useEffect(() => {
+      if (auth.state.isAuthenticated)
+         setCurrentNavItems(LoginNav);
+      else
+         setCurrentNavItems(DefaultNav);
+   }, [auth.state.isAuthenticated]);
+
    const logout = async () => {
       const result = await useLogout();
       if (result.isLogout) {
          auth.setState({ isAuthenticated: false, user: new User() });
       }
    };
-   useEffect(() => {
-      /// Check which menu items to show for the user
-      if (auth.state.isAuthenticated)
-         setCurrentNavItems(LoginNav);
-      else
-         setCurrentNavItems(DefaultNav);
-   }, [auth.state.isAuthenticated]);
+
    return (
       <header>
          <nav id="navbar" ref={NavContainer}>
@@ -39,7 +40,7 @@ const NavMenu = (props: IProps) => {
                   <img id="logo" alt="Logo" className="Logo" src="/public/images/logo.png" />
                </Link>
                <button type="button" name="toggler"
-                  className={`fas cart-icon remove-btn-style ml-auto  ml-md-0 mr-md-2 ${outsideClickSmallNav ? "show" : "show"}`}
+                  className={`fas cart-icon btn-no-style ml-auto  ml-md-0 mr-md-2 ${outsideClickSmallNav ? "show" : "show"}`}
                   onClick={() => { setOutsideClickSmallNav((prevVal) => !prevVal); }} />
                <button type="button" name="toggler"
                   className={`fas toggler-icon ml-auto ${outsideClickSmallNav ? "show" : "hide"}`}
@@ -54,7 +55,7 @@ const NavMenu = (props: IProps) => {
                      <NavLink key={link.id} displayName={link.displayName} path={link.path} className="col-12 col-md-auto" />
                   )}
                   {auth.state.isAuthenticated &&
-                     <DropDown titleClassName={`navbar text-nav dropdown-toggle ${selectedNav === "/MyAccount" ? "visited" : ""}`}
+                     <DropDown titleClassName={`btn-no-style ${selectedNav === "/MyAccount" ? "visited" : ""}`}
                         title={<div className="user-circle-icon" />}>
                         <NavLink className="dropdown-item"
                            path={"/MyAccount"}
@@ -63,9 +64,7 @@ const NavMenu = (props: IProps) => {
                            path={"/MyAddresses"}
                            displayName="Addresses" />
                         <a className="dropdown-item"
-                           onClick={() => {
-                              logout();
-                           }}
+                           onClick={logout}
                            children="Logout" />
                      </DropDown >
                   }

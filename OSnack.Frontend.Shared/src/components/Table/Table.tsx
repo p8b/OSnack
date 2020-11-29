@@ -35,8 +35,8 @@ const Table = (props: IProps) => {
                         header.isSortable ?
                            <th key={Math.random()}>
                               <span onClick={() => sort(header.sortName)}
-                                 className={`col table-header-sort ${getSortedColCss(header.sortName)}`}>
-                                 {header.name}
+                                 className={`col ${getSortedColCss(header.sortName)}`}>
+                                 <span className="table-header-sort">{header.name}</span>
                               </span>
                            </th>
                            :
@@ -86,7 +86,7 @@ export class TableHeaderData {
    name = "";
    sortName = "";
    isSortable = false;
-   constructor(name: string, sortName: string, isSortable: boolean) {
+   constructor(name: string, sortName: string = "", isSortable: boolean = false) {
       this.name = name;
       this.sortName = sortName;
       this.isSortable = isSortable;

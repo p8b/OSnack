@@ -9,7 +9,10 @@ using OSnack.API.Extras;
 using P8B.Core.CSharp;
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Mime;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace OSnack.API.Controllers
@@ -40,9 +43,11 @@ namespace OSnack.API.Controllers
                return UnprocessableEntity(ErrorsList);
             }
 
-            if (await _AppDbContext.Categories
+            /// check the database to see if a Category with the same name exists
+            if (await _DbContext.Categories
                 .AnyAsync(d => d.Name.Equals(newCategory.Name)).ConfigureAwait(false))
             {
+               /// extract the errors and return bad request containing the errors
                CoreFunc.Error(ref ErrorsList, "Category already exists.");
                return StatusCode(412, ErrorsList);
             }
@@ -66,8 +71,11 @@ namespace OSnack.API.Controllers
             }
             try
             {
-               await _AppDbContext.Categories.AddAsync(newCategory).ConfigureAwait(false);
-               await _AppDbContext.SaveChangesAsync().ConfigureAwait(false);
+               /// else Category object is made without any errors
+               /// Add the new Category to the EF context
+               await _DbContext.Categories.AddAsync(newCategory).ConfigureAwait(false);
+               /// save the changes to the database
+               await _DbContext.SaveChangesAsync().ConfigureAwait(false);
             }
             catch (Exception)
             {
@@ -77,10 +85,13 @@ namespace OSnack.API.Controllers
                throw;
             }
 
+            /// return 201 created status with the new object
+            /// and success message
             return Created("", newCategory);
          }
-         catch (Exception)
+         catch (Exception) // DbUpdateException, DbUpdateConcurrencyException
          {
+            /// Add the error below to the error list and return bad request
             CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
             return StatusCode(417, ErrorsList);
          }

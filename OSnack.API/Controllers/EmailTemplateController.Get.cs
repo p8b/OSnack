@@ -68,8 +68,12 @@ namespace OSnack.API.Controllers
       {
          try
          {
-            var defaultTemplate = await _DbContext.EmailTemplates.SingleOrDefaultAsync(et => et.IsDefaultTemplate).ConfigureAwait(false);
-            var template = await _DbContext.EmailTemplates.SingleOrDefaultAsync(et => et.Id == templateId).ConfigureAwait(false);
+            var defaultTemplate = await _DbContext.EmailTemplates
+               .Include(et => et.ServerVariables)
+               .SingleOrDefaultAsync(et => et.IsDefaultTemplate).ConfigureAwait(false);
+            var template = await _DbContext.EmailTemplates
+               .Include(et => et.ServerVariables)
+               .SingleOrDefaultAsync(et => et.Id == templateId).ConfigureAwait(false);
 
             defaultTemplate.PrepareDesign(WebHost.WebRootPath);
             template.PrepareDesign(WebHost.WebRootPath);

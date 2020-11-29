@@ -9,7 +9,10 @@ using OSnack.API.Extras;
 using P8B.Core.CSharp;
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Mime;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace OSnack.API.Controllers
@@ -29,7 +32,8 @@ namespace OSnack.API.Controllers
       {
          try
          {
-            if (!await _AppDbContext.Categories
+            /// if the Category record with the same id is not found
+            if (!await _DbContext.Categories
                 .AnyAsync(c => c.Id == category.Id)
                 .ConfigureAwait(false))
             {
@@ -37,7 +41,8 @@ namespace OSnack.API.Controllers
                return NotFound(ErrorsList);
             }
 
-            if (await _AppDbContext.Products
+            /// If the category is in use by any product then do not allow delete
+            if (await _DbContext.Products
                 .AnyAsync(c => c.Category.Id == category.Id)
                 .ConfigureAwait(false))
             {
@@ -45,8 +50,8 @@ namespace OSnack.API.Controllers
                return StatusCode(412, ErrorsList);
             }
 
-            _AppDbContext.Categories.Remove(category);
-            await _AppDbContext.SaveChangesAsync().ConfigureAwait(false);
+            _DbContext.Categories.Remove(category);
+            await _DbContext.SaveChangesAsync().ConfigureAwait(false);
 
             try
             {
@@ -56,9 +61,8 @@ namespace OSnack.API.Controllers
             }
             catch (Exception)
             {
-               _AppDbContext.AppLogs.Add(new oAppLog { Massage = string.Format("Category deleted record but Images was not. The path is: {0}", category.ImagePath) });
+               _DbContext.AppLogs.Add(new oAppLog { Massage = string.Format("Category deleted record but Images was not. The path is: {0}", category.ImagePath) });
             }
-
             return Ok($"Category '{category.Name}' was deleted");
          }
          catch (Exception)

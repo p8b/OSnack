@@ -1,5 +1,11 @@
-﻿
-.btn, .btn-lg {
+﻿button {
+
+    &:focus {
+        outline: none;
+    }
+}
+
+.btn, btn-sm, .btn-lg {
     font-weight: bold;
     border-radius: 0.9rem;
     border: none;
@@ -263,4 +269,11 @@
             border-bottom: solid 0.15rem rgb(61, 95, 9);
         }
     }
+}
+
+.btn-no-style {
+    background-color: transparent;
+    outline: none !important;
+    border: 0 !important;
+    margin: 0;
 }

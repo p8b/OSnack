@@ -20,17 +20,13 @@ namespace OSnack.API.Controllers
    [Route("[controller]")]
    public partial class ProductController : ControllerBase
    {
-      private OSnackDbContext _AppDbContext { get; }
+      private OSnackDbContext _DbContext { get; }
       private List<Error> ErrorsList = new List<Error>();
       private IWebHostEnvironment _WebHost { get; }
 
-      /// <summary>
-      ///     Class Constructor. Set the local properties
-      /// </summary>
-      /// <param name="db">Receive the AppDbContext instance from the ASP.Net Pipeline</param>
       public ProductController(OSnackDbContext db, IWebHostEnvironment webEnv)
       {
-         _AppDbContext = db;
+         _DbContext = db;
          _WebHost = webEnv;
       }
    }

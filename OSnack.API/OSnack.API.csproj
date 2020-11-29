@@ -6,6 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\Images\Categories\CHoZgq7072\**" />
+    <Content Remove="wwwroot\Images\Categories\CHoZgq7072\**" />
+    <EmbeddedResource Remove="wwwroot\Images\Categories\CHoZgq7072\**" />
+    <None Remove="wwwroot\Images\Categories\CHoZgq7072\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Migrations\20200914163957_0.0.4.cs" />
     <Compile Remove="Migrations\20200914163957_0.0.4.Designer.cs" />
     <Compile Remove="Migrations\20200914170945_0.0.5.cs" />
@@ -44,7 +51,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\EmailTemplates\" />
-    <Folder Include="wwwroot\Images\Categories\CHoZgq7072\" />
   </ItemGroup>
 
   <ItemGroup>

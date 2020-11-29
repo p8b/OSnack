@@ -18,6 +18,7 @@ export class Category {
    imageBase64?: string;
    originalImageBase64?: string;
    products?: Product[];
+   totalProducts: number = 0;
 
    //constructor(category = {
    //   id: 0,

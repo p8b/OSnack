@@ -49,7 +49,7 @@ const ImageUpload = (props: IProps) => {
    return (
       <div className={props.className}>
          <div className={"col-12 p-0 "}>
-            <label children={<><span>Upload Image</span><span className="float-right">Browse</span></>} htmlFor="uploadImage"
+            <label children={<><span>Upload{croppedImage != '' ? " New" : ""} Image </span><span className="float-right text-white bg-gray">Browse</span></>} htmlFor="uploadImage"
                className={`col-form-label position-absolute col-12 p-0 cursor-pointer dark`} />
             <input id="uploadImage" type="file" accept="image/*" className="upload w-100 p-0 m-0 cursor-pointer"
                onChange={e => uploadDocument(e.target)}
@@ -61,7 +61,7 @@ const ImageUpload = (props: IProps) => {
                className={`col-6 mb-2 mb-md-0 btn-sm radius-none ${isPreviewImageOn ? "close-eye-icon" : "open-eye-icon"}`}
                onClick={() => { setIsPreviewImageOn(i => !i); }} />
          }
-         {originalImageBase64 &&
+         {croppedImage != '' && originalImageBase64 &&
             <button className="btn btn-sm btn-blue col-6 radius-none"
                onClick={() => { setIsOpenImageCropModal(true); }}
                children="Edit Image"

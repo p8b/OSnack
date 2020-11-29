@@ -18,7 +18,7 @@ namespace OSnack.API.Database.Models
 
       [Column(TypeName = "nvarchar(256)")]
       [Required(ErrorMessage = "Name is Required \n")]
-      [StringLength(256, ErrorMessage = "Must be less than 256 Characters \n")]
+      [StringLength(100, ErrorMessage = "Must be less than 100 Characters \n")]
       public string Name { get; set; }
 
       [Column(TypeName = "nvarchar(256)")]
@@ -26,9 +26,11 @@ namespace OSnack.API.Database.Models
       public string Description { get; set; }
 
       [Display(Name = "Display Image")]
+      [StringLength(50, ErrorMessage = "Must be less than 50 Characters \n")]
       public string ImagePath { get; set; }
 
       [Display(Name = "Original Display Image")]
+      [StringLength(50, ErrorMessage = "Must be less than 50 Characters \n")]
       public string OriginalImagePath { get; set; }
 
       [NotMapped]
@@ -53,12 +55,10 @@ namespace OSnack.API.Database.Models
       [Required(ErrorMessage = "Unit Type is Required \n")]
       public ProductUnitType UnitType { get; set; }
 
-      //[ForeignKey("CategoryId")]
       [Required(ErrorMessage = "Category is Required \n")]
       public oCategory Category { get; set; }
 
       [InverseProperty("Product")]
-      [Required(ErrorMessage = "Nutritional Information Required")]
       public oNutritionalInfo NutritionalInfo { get; set; }
 
       [InverseProperty("Product")]

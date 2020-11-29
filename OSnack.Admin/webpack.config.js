@@ -85,7 +85,7 @@ module.exports = {
       historyApiFallback: true,
    },
    plugins: [
-      new CleanWebpackPlugin(),
+      // new CleanWebpackPlugin(),
       new MiniCssExtractPlugin({
          filename: "public/styles/[name].css",
          chunkFilename: "[id].css",

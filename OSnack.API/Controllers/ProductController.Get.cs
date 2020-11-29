@@ -24,7 +24,6 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("[action]/{selectedPage}/{maxItemsPerPage}/{filterCategory}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}")]
-      //[Authorize(AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> Get(
           int selectedPage,
           int maxItemsPerPage,
@@ -39,14 +38,14 @@ namespace OSnack.API.Controllers
             bool.TryParse(filterStatus, out bool boolFilterStatus);
             int.TryParse(filterCategory, out int filterProductCategoryId);
 
-            int totalCount = await _AppDbContext.Products
+            int totalCount = await _DbContext.Products
                 .Where(p => filterStatus.Equals(CoreConst.GetAllRecords) || p.Status == boolFilterStatus)
                 .Where(p => filterCategory.Equals(CoreConst.GetAllRecords) || p.Category.Id == filterProductCategoryId)
                 .CountAsync(p => searchValue.Equals(CoreConst.GetAllRecords) || (p.Name.Contains(searchValue) || p.Id.ToString().Contains(searchValue)))
                 .ConfigureAwait(false);
 
             /// Include the necessary properties
-            List<oProduct> list = await _AppDbContext.Products
+            List<oProduct> list = await _DbContext.Products
                 .Where(p => filterStatus.Equals(CoreConst.GetAllRecords) || p.Status == boolFilterStatus)
                 .Include(p => p.Category)
                 .Include(p => p.NutritionalInfo)
@@ -76,26 +75,25 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("[action]/{categoryName}/{productName}")]
-      //[Authorize(AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> Get(string categoryName, string productName)
       {
          try
          {
-            oProduct product = await _AppDbContext.Products
+            oProduct product = await _DbContext.Products
                 .Include(p => p.Category)
                 .Include(p => p.NutritionalInfo)
                 .FirstOrDefaultAsync(p => p.Category.Name.Equals(categoryName) && p.Name.Equals(productName))
                 .ConfigureAwait(false);
 
-            List<oProduct> relatedProducts = await _AppDbContext.Products
+            List<oProduct> relatedProducts = await _DbContext.Products
                 .Include(p => p.Category)
-                .Where(p => p.Category == product.Category && p.Id != product.Id)
+                .Where(p => p.Category.Id == product.Category.Id && p.Id != product.Id)
                 .Take(3)
                 .ToListAsync()
                 .ConfigureAwait(false);
 
             if (relatedProducts.Count < 3)
-               relatedProducts.AddRange(await _AppDbContext.Products
+               relatedProducts.AddRange(await _DbContext.Products
                 .Include(p => p.Category)
                 .Take(3 - relatedProducts.Count)
                 .Where(p => !relatedProducts.Contains(p) && p.Id != product.Id)
@@ -105,9 +103,8 @@ namespace OSnack.API.Controllers
 
             return Ok(new { product, relatedProducts });
          }
-         catch (Exception) //ArgumentNullException
+         catch (Exception)
          {
-            /// in the case any exceptions return the following error
             CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
             return StatusCode(417, ErrorsList);
          }

@@ -18,6 +18,12 @@
         margin: 0px .8rem;
     }
 
+    &-no-line {
+        &::before, &::after {
+            height: 0;
+        }
+    }
+
     &-lg {
         @extend .line-header;
         font-size: 2.3rem;

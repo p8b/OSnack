@@ -19,17 +19,14 @@ namespace OSnack.API.Controllers
 {
    public partial class ProductController
    {
-      /// <summary>
-      ///     Create a new Product
-      /// </summary>
-      #region *** 201 Created, 400 BadRequest, 422 UnprocessableEntity, 412 PreconditionFailed, 417 ExpectationFailed ***
-      [HttpPost("[action]")]
+      #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
       [ProducesResponseType(StatusCodes.Status201Created)]
       [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
       [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
       [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
       #endregion
+      [HttpPost("[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Done
       public async Task<IActionResult> Post([FromBody] oProduct newProduct)
       {
@@ -48,24 +45,18 @@ namespace OSnack.API.Controllers
             if (ModelState.ContainsKey("ImageBase64"))
                ModelState.Remove("OriginalImageBase64");
 
-
-
-            /// if model validation failed
             if (!ModelState.IsValid)
             {
                CoreFunc.ExtractErrors(ModelState, ref ErrorsList);
-               /// return Unprocessable Entity with all the errors
                return UnprocessableEntity(ErrorsList);
             }
 
             /// check the database to see if a Product with the same name exists
-            if (await _AppDbContext.Products.AnyAsync(d => d.Name == newProduct.Name && d.Category.Id == newProduct.Category.Id).ConfigureAwait(false))
+            if (await _DbContext.Products.AnyAsync(d => d.Name == newProduct.Name && d.Category.Id == newProduct.Category.Id).ConfigureAwait(false))
             {
-               /// extract the errors and return bad request containing the errors
                CoreFunc.Error(ref ErrorsList, "Product already exists.");
                return StatusCode(412, ErrorsList);
             }
-
 
             try
             {
@@ -87,10 +78,9 @@ namespace OSnack.API.Controllers
 
             try
             {
-               await _AppDbContext.Products.AddAsync(newProduct).ConfigureAwait(false);
-               _AppDbContext.Entry(newProduct.Category).State = EntityState.Unchanged;
-               /// save the changes to the database
-               await _AppDbContext.SaveChangesAsync().ConfigureAwait(false);
+               await _DbContext.Products.AddAsync(newProduct).ConfigureAwait(false);
+               _DbContext.Entry(newProduct.Category).State = EntityState.Unchanged;
+               await _DbContext.SaveChangesAsync().ConfigureAwait(false);
             }
             catch (Exception)
             {
@@ -100,13 +90,10 @@ namespace OSnack.API.Controllers
                throw;
             }
 
-            /// return 201 created status with the new object
-            /// and success message
             return Created("", newProduct);
          }
-         catch (Exception) // DbUpdateException, DbUpdateConcurrencyException
+         catch (Exception)
          {
-            /// Add the error below to the error list and return bad request
             CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
             return StatusCode(417, ErrorsList);
          }
@@ -139,10 +126,10 @@ namespace OSnack.API.Controllers
 
             /// else score object is made without any errors
             /// Add the new score to the EF context
-            await _AppDbContext.Scores.AddAsync(newScore).ConfigureAwait(false);
+            await _DbContext.Scores.AddAsync(newScore).ConfigureAwait(false);
 
             /// save the changes to the data base
-            await _AppDbContext.SaveChangesAsync().ConfigureAwait(false);
+            await _DbContext.SaveChangesAsync().ConfigureAwait(false);
 
             /// return 201 created status with the new object
             /// and success message
