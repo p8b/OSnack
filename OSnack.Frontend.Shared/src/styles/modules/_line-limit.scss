@@ -1,0 +1,10 @@
+﻿@for $i from 1 through 5 {
+    .line-limit-#{$i} {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        word-wrap: break-word;
+        -webkit-line-clamp: $i;
+    }
+}

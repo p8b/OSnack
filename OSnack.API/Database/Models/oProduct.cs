@@ -7,19 +7,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 using P8B.Core.CSharp.Attributes;
 using OSnack.API.Extras.CustomTypes;
 using Microsoft.AspNetCore.Authentication;
+using OSnack.API.Database.ModelsDependencies;
 
 namespace OSnack.API.Database.Models
 {
    [Table("Products")]
-   public class oProduct
+   public class oProduct : OrderProductBase
    {
       [Key]
       public int Id { get; set; }
-
-      [Column(TypeName = "nvarchar(256)")]
-      [Required(ErrorMessage = "Name is Required \n")]
-      [StringLength(100, ErrorMessage = "Must be less than 100 Characters \n")]
-      public string Name { get; set; }
 
       [Column(TypeName = "nvarchar(256)")]
       [StringLength(256, ErrorMessage = "Must be less than 256 Characters \n")]
@@ -42,18 +38,6 @@ namespace OSnack.API.Database.Models
       public string OriginalImageBase64 { get; set; }
 
       public bool Status { get; set; } = false;
-
-      [Column(TypeName = "decimal(7,2)")]
-      [DataType(DataType.Currency, ErrorMessage = "Invalid Currency \n")]
-      [Required(ErrorMessage = "Price is Required \n")]
-      [PositiveDecimalIncludingZero(ErrorMessage = "Price should not be negative. \n")]
-      public decimal? Price { get; set; }
-
-      [Required(ErrorMessage = "Unit Quantity is Required \n")]
-      public int? UnitQuantity { get; set; }
-
-      [Required(ErrorMessage = "Unit Type is Required \n")]
-      public ProductUnitType UnitType { get; set; }
 
       [Required(ErrorMessage = "Category is Required \n")]
       public oCategory Category { get; set; }

@@ -1,5 +1,15 @@
 ﻿import { RegistrationTypes, ProductUnitType } from "./constant.Variables";
 
+export class Address {
+   id = 0;
+   name?: string;
+   firstLine?: string;
+   secondLine?: string;
+   city?: string;
+   postcode?: string;
+   isDefault?: boolean;
+   instructions?: string;
+}
 
 export class Category {
    id = 0;

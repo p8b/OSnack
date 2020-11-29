@@ -1,0 +1,10 @@
+﻿.table {
+    &::-webkit-scrollbar {
+        width: 0.2rem;
+        height: 0.2rem;
+    }
+}
+
+.td {
+    @extend td
+}

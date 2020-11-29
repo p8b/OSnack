@@ -28,18 +28,24 @@ namespace OSnack.API.Migrations
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("FirstLine")
                         .IsRequired()
-                        .HasMaxLength(500)
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
+
+                    b.Property<string>("Instructions")
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("Postcode")
                         .IsRequired()
@@ -47,8 +53,8 @@ namespace OSnack.API.Migrations
                         .HasColumnType("nvarchar(8)");
 
                     b.Property<string>("SecondLine")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
 
                     b.Property<int>("UserId1")
                         .HasColumnType("int");
@@ -273,27 +279,13 @@ namespace OSnack.API.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<string>("AddressCity")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("AddressFirstLine")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
                     b.Property<int>("AddressId")
                         .HasColumnType("int");
 
-                    b.Property<string>("AddressPostcode")
+                    b.Property<string>("City")
                         .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
-
-                    b.Property<string>("AddressSecondLine")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(25)");
@@ -308,8 +300,27 @@ namespace OSnack.API.Migrations
                     b.Property<decimal>("DeliveryPrice")
                         .HasColumnType("decimal(7,2)");
 
+                    b.Property<string>("FirstLine")
+                        .IsRequired()
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
                     b.Property<int>("PaymentId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Postcode")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
+
+                    b.Property<string>("SecondLine")
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -338,8 +349,17 @@ namespace OSnack.API.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
+
+                    b.Property<decimal?>("Price")
+                        .IsRequired()
+                        .HasColumnType("decimal(7,2)");
 
                     b.Property<string>("ProductCategoryName")
                         .IsRequired()
@@ -349,21 +369,14 @@ namespace OSnack.API.Migrations
                     b.Property<int?>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ProductName")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<int>("ProductNetQuantity")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("ProductPrice")
-                        .HasColumnType("decimal(7,2)");
-
-                    b.Property<int>("ProductUnitType")
-                        .HasColumnType("int");
-
                     b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UnitQuantity")
+                        .IsRequired()
+                        .HasColumnType("int");
+
+                    b.Property<int>("UnitType")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -418,8 +431,8 @@ namespace OSnack.API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("OriginalImagePath")
                         .HasMaxLength(50)

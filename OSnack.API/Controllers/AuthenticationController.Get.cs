@@ -1,19 +1,16 @@
-﻿using System;
-using System.Threading.Tasks;
-
-
+﻿using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
-
 using P8B.Core.CSharp;
+using System;
 using System.Linq;
-using Microsoft.AspNetCore.Antiforgery;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
+using System.Threading.Tasks;
 
 namespace OSnack.API.Controllers
 {
@@ -49,7 +46,6 @@ namespace OSnack.API.Controllers
          }
          catch (Exception)
          {
-            /// Add the error below to the error list and return bad request
             CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
             return StatusCode(417, ErrorsList);
          }
@@ -96,7 +92,6 @@ namespace OSnack.API.Controllers
          }
          catch (Exception)
          {
-            /// Add the error below to the error list and return bad request
             CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
             return StatusCode(417, ErrorsList);
          }
