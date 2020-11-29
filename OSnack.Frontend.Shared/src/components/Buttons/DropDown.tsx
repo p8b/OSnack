@@ -7,9 +7,11 @@ const DropDown = (props: IProps) => {
    return (
       <div className={`dropdown ${props.className}`} ref={myAccDropDownButton}>
          <div className="col p-0">
-            <button tabIndex={0} className={`col ${outsideClickMyAccDropDown ? " show" : ""} ${props?.titleClassName}`}
+            <button tabIndex={0} className={`col btn-no-style ${outsideClickMyAccDropDown ? " show" : ""} `}
                onClick={() => setOutsideClickMyAccDropDown((prev) => !prev)}>
-               {props.title}
+               <div className={` line-limit-1 ${props?.titleClassName}`}>
+                  {props.title}
+               </div>
             </button>
             <span className={`col dropdown-menu text-center dropdown-menu-right bg-white 
                                     ${outsideClickMyAccDropDown ? " show" : ""}`}>

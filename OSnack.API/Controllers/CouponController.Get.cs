@@ -39,13 +39,13 @@ namespace OSnack.API.Controllers
       {
          try
          {
-            int totalCount = await _AppDbContext.Coupons
+            int totalCount = await _DbContext.Coupons
                 .Where(r => filterType.Equals(CoreConst.GetAllRecords) ?
                 true : r.Type.Equals((CouponType)Enum.Parse(typeof(CouponType), filterType, true)))
                 .CountAsync(c => searchValue.Equals(CoreConst.GetAllRecords) ? true : c.Code.Contains(searchValue))
                 .ConfigureAwait(false);
 
-            List<oCoupon> list = await _AppDbContext.Coupons
+            List<oCoupon> list = await _DbContext.Coupons
                      .Where(r => filterType.Equals(CoreConst.GetAllRecords) ? true : r.Type.Equals((CouponType)Enum.Parse(typeof(CouponType), filterType, true)))
                 .OrderByDynamic(sortName, isSortAsce)
                 .Where(c => searchValue.Equals(CoreConst.GetAllRecords) ? true : c.Code.Contains(searchValue))
@@ -77,7 +77,7 @@ namespace OSnack.API.Controllers
       {
          try
          {
-            oCoupon coupon = await _AppDbContext.Coupons.FindAsync(couponCode);
+            oCoupon coupon = await _DbContext.Coupons.FindAsync(couponCode);
 
             if (coupon == null)
             {

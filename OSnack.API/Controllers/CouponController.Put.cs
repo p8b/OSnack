@@ -35,27 +35,27 @@ namespace OSnack.API.Controllers
                return UnprocessableEntity(ErrorsList);
             }
 
-            if (!await _AppDbContext.Coupons.AnyAsync(d =>
+            if (!await _DbContext.Coupons.AnyAsync(d =>
                         d.Code == modifiedCoupon.Code).ConfigureAwait(false))
             {
                CoreFunc.Error(ref ErrorsList, "Coupon Not exists.");
                return StatusCode(412, ErrorsList);
             }
 
-            if (await _AppDbContext.Coupons.AnyAsync(d => d.Code == modifiedCoupon.Code &&
+            if (await _DbContext.Coupons.AnyAsync(d => d.Code == modifiedCoupon.Code &&
                                                       d.Type != modifiedCoupon.Type).ConfigureAwait(false))
             {
                CoreFunc.Error(ref ErrorsList, "Coupon Type Can't be Change.");
                return StatusCode(412, ErrorsList);
             }
 
-            oCoupon originalCoupon = await _AppDbContext.Coupons.FindAsync(modifiedCoupon.Code).ConfigureAwait(false);
+            oCoupon originalCoupon = await _DbContext.Coupons.FindAsync(modifiedCoupon.Code).ConfigureAwait(false);
             originalCoupon.MaxUseQuantity = modifiedCoupon.MaxUseQuantity;
             originalCoupon.ExpiryDate = modifiedCoupon.ExpiryDate;
             originalCoupon.PendigCode = originalCoupon.Code;
 
-            _AppDbContext.Coupons.Update(originalCoupon);
-            await _AppDbContext.SaveChangesAsync().ConfigureAwait(false);
+            _DbContext.Coupons.Update(originalCoupon);
+            await _DbContext.SaveChangesAsync().ConfigureAwait(false);
 
             return Ok(originalCoupon);
          }

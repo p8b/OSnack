@@ -30,7 +30,7 @@ namespace OSnack.API.Controllers
          {
             if (newAddress != null)
             {
-               newAddress.User = await _AppDbContext.Users.AsTracking().Include(u => u.Role)
+               newAddress.User = await _DbContext.Users.AsTracking().Include(u => u.Role)
                   .Include(u => u.RegistrationMethod)
                    .SingleOrDefaultAsync(u => u.Id == AppFunc.GetUserId(User));
             }
@@ -41,12 +41,17 @@ namespace OSnack.API.Controllers
                return UnprocessableEntity(ErrorsList);
             }
 
-            await _AppDbContext.Addresses.AddAsync(newAddress).ConfigureAwait(false);
-            await _AppDbContext.SaveChangesAsync().ConfigureAwait(false);
+            if (!await _DbContext.Addresses.AnyAsync(a => a.User.Id == AppFunc.GetUserId(User)))
+            {
+               newAddress.IsDefault = true;
+            }
+
+            await _DbContext.Addresses.AddAsync(newAddress).ConfigureAwait(false);
+            await _DbContext.SaveChangesAsync().ConfigureAwait(false);
 
             return Created("Success", newAddress);
          }
-         catch (Exception ee)
+         catch (Exception)
          {
             CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
             return StatusCode(417, ErrorsList);

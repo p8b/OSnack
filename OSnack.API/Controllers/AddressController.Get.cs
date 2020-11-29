@@ -25,7 +25,7 @@ namespace OSnack.API.Controllers
         {
             try
             {
-                return Ok(await _AppDbContext.Addresses.
+                return Ok(await _DbContext.Addresses.
                     Where(t => t.User.Id == AppFunc.GetUserId(User)).ToListAsync());
             }
             catch (Exception)

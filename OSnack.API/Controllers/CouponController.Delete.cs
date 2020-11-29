@@ -30,22 +30,22 @@ namespace OSnack.API.Controllers
       {
          try
          {
-            if (!await _AppDbContext.Coupons.AnyAsync(d => d.Code == coupon.Code)
+            if (!await _DbContext.Coupons.AnyAsync(d => d.Code == coupon.Code)
                            .ConfigureAwait(false))
             {
                CoreFunc.Error(ref ErrorsList, "Coupon not found");
                return NotFound(ErrorsList);
             }
 
-            if (await _AppDbContext.Orders.AnyAsync(c => c.Coupon.Code == coupon.Code)
+            if (await _DbContext.Orders.AnyAsync(c => c.Coupon.Code == coupon.Code)
                            .ConfigureAwait(false))
             {
                CoreFunc.Error(ref ErrorsList, "Coupon is in use by at least one Order.");
                return StatusCode(412, ErrorsList);
             }
 
-            _AppDbContext.Coupons.Remove(coupon);
-            await _AppDbContext.SaveChangesAsync().ConfigureAwait(false);
+            _DbContext.Coupons.Remove(coupon);
+            await _DbContext.SaveChangesAsync().ConfigureAwait(false);
 
             return Ok($"Coupon '{coupon.Code}' was deleted");
          }

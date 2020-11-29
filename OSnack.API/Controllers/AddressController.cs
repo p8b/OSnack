@@ -20,10 +20,10 @@ namespace OSnack.API.Controllers
    [AutoValidateAntiforgeryToken]
    public partial class AddressController : ControllerBase
    {
-      private OSnackDbContext _AppDbContext { get; }
+      private OSnackDbContext _DbContext { get; }
 
       private List<Error> ErrorsList = new List<Error>();
 
-      public AddressController(OSnackDbContext db) => _AppDbContext = db;
+      public AddressController(OSnackDbContext db) => _DbContext = db;
    }
 }

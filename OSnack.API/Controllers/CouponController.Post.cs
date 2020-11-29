@@ -33,7 +33,7 @@ namespace OSnack.API.Controllers
             {
                return UnprocessableEntity(ErrorsList);
             }
-            if (await _AppDbContext.Coupons.AnyAsync(c => c.Code == newCoupon.PendigCode)
+            if (await _DbContext.Coupons.AnyAsync(c => c.Code == newCoupon.PendigCode)
                .ConfigureAwait(false))
             {
                CoreFunc.Error(ref ErrorsList, "Coupon Code already exists.");
@@ -49,8 +49,8 @@ namespace OSnack.API.Controllers
                return UnprocessableEntity(ErrorsList);
             }
 
-            await _AppDbContext.Coupons.AddAsync(newCoupon).ConfigureAwait(false);
-            await _AppDbContext.SaveChangesAsync().ConfigureAwait(false);
+            await _DbContext.Coupons.AddAsync(newCoupon).ConfigureAwait(false);
+            await _DbContext.SaveChangesAsync().ConfigureAwait(false);
 
             return Created("Success", newCoupon);
          }

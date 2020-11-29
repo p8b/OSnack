@@ -4,6 +4,7 @@ import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Input } from 'osnack-frontend-shared/src/components/Inputs/Input';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import ButtonPopupConfirm from 'osnack-frontend-shared/src/components/Buttons/ButtonPopupConfirm';
+import { TextArea } from 'osnack-frontend-shared/src/components/Inputs/TextArea';
 import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
 import Alert, { AlertObj, AlertTypes, Error } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { useCreateAddress } from '../../hooks/apiCallers/address/Post.Address';
@@ -47,7 +48,7 @@ const AddressModal = (props: IProps) => {
             setAlert(alert);
          } else {
             setAlert(alert.Clear);
-            setAddress(result.address);
+            props.onClose();
             props.onSuccess();
          }
       });
@@ -59,9 +60,9 @@ const AddressModal = (props: IProps) => {
       if (address.name == "")
          errors.List.push(new Error("0", "Address name is required."));
       if (address.firstLine == "")
-         errors.List.push(new Error("0", "FirstLin is required"));
+         errors.List.push(new Error("0", "FirstLine is required"));
       if (address.postcode == "")
-         errors.List.push(new Error("0", "Post Code is required."));
+         errors.List.push(new Error("0", "Postcode is required."));
       if (address.city == "")
          errors.List.push(new Error("0", "City is required."));
 
@@ -131,6 +132,11 @@ const AddressModal = (props: IProps) => {
                value={address.postcode}
                onChange={i => { setAddress({ ...address, postcode: i.target.value }); }}
                className="col-12 col-sm-6" />
+            <TextArea label="Instructions"
+               rows={3}
+               value={address.instructions}
+               onChange={i => { setAddress({ ...address, instructions: i.target.value }); }}
+               className="col-12" />
          </div>
 
          <Alert alert={alert}

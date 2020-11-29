@@ -126,25 +126,25 @@ const Shop = (props: IProps) => {
                />
                <DropDown title={`Category: ${categoryList.find((c) => c.id.toString() == selectedCategoryFilter)?.name || "All"}`}
                   className="col-12 col-sm-4 col-md-3 ml-auto m-0 p-0 pt-2"
-                  titleClassName="btn btn-lg btn-white filter-icon">
-                  <div className="dropdown-item"
+                  titleClassName="btn btn-white filter-icon">
+                  <button className="dropdown-item"
                      onClick={() => { onSearch(undefined, undefined, undefined, undefined, GetAllRecords); }} >
                      All
-                  </div>
+                  </button>
                   {categoryList.map(category =>
-                     <div className="dropdown-item" key={category.id}
+                     <button className="dropdown-item" key={category.id}
                         onClick={() => { onSearch(undefined, undefined, undefined, undefined, category.id.toString()); }}>
                         {category.name}
-                     </div>
+                     </button>
                   )}
                </DropDown>
                <DropDown title={`Sort By: ${tblSortName}`}
                   className="col-12 col-sm-4 col-md-3 ml-auto m-0 p-0 pt-2"
-                  titleClassName={`btn btn-lg btn-white ${!tblIsSortAsc ? "sort-numeric-down-icon" : "sort-numeric-up-icon"}`}>
+                  titleClassName={`btn btn-white ${!tblIsSortAsc ? "sort-numeric-down-icon" : "sort-numeric-up-icon"}`}>
                   {sortOptions.map(val =>
-                     <div className={`dropdown-item ${getSortedColCss(val)}`} onClick={() => { handelSort(val); }}>
+                     <button className={`dropdown-item ${getSortedColCss(val)}`} onClick={() => { handelSort(val); }}>
                         {val}
-                     </div>
+                     </button>
                   )}
                </DropDown>
                <Alert alert={alert}

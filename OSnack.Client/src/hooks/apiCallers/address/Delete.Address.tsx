@@ -13,8 +13,9 @@ export const useDeleteAddress = async (address: Address) => {
             //await response.json().then((data: string) => {
             //});
             break;
-         case 422: //Unprocessable Entity
+         case 404: //Not Found
          case 417: //Expectation Failed
+         case 412: //PreconditionFailed
             await response.json().then((data: Error[]) => {
                alert.List = data;
             });

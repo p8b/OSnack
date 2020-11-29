@@ -8,8 +8,7 @@ import { sleep } from 'osnack-frontend-shared/src/_core/appFunc';
 import { useGetAllAddresses } from '../../hooks/apiCallers/address/Get.Address';
 import AddressModal from './AddressModal';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
-import TextLimited from 'osnack-frontend-shared/src/components/Texts/TextLimited';
-import Container from '../../components/Container';
+import { useModifyDefaultAddress } from '../../hooks/apiCallers/address/Put.Address';
 
 const MyAddresses = (props: IProps) => {
    //const auth = useContext(AuthContext);
@@ -18,7 +17,6 @@ const MyAddresses = (props: IProps) => {
    const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false);
    const [selectAddress, setSelectAddress] = useState(new Address());
    const [addressList, setAddressList] = useState<Address[]>([]);
-   const [defaultAddress, setDefaultAddress] = useState(new Address());
 
    useEffect(() => {
       reloadAddressList();
@@ -35,7 +33,6 @@ const MyAddresses = (props: IProps) => {
          if (isUnmounted.current) return;
 
          setAddressList(result.addressList);
-         setDefaultAddress(result.addressList.find(tl => tl.isDefualt) || new Address());
          setAlert(alert.Clear);
       });
    };
@@ -43,6 +40,18 @@ const MyAddresses = (props: IProps) => {
    const resetCategoryModal = () => {
       setIsOpenCategoryModal(false);
       setSelectAddress(new Address());
+   };
+
+   const setDefault = (addressId: number) => {
+      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+      useModifyDefaultAddress(addressId).then((result) => {
+         if (result.alert.List.length > 0) {
+            alert.List = result.alert.List;
+            alert.Type = result.alert.Type;
+            setAlert(alert);
+         }
+         reloadAddressList();
+      });
    };
 
    return (
@@ -68,7 +77,9 @@ const MyAddresses = (props: IProps) => {
                            setSelectAddress(addr);
                            setIsOpenCategoryModal(true);
                         }}>
-                        <p className="tick-icon mb-auto ml-auto" />
+
+                        <p className={` tick-icon mb-auto ml-auto ${addr.isDefault ? '' : 'hide'}`} />
+
                         <div className="col-12 ">
                            <b className="row text-left  mt-auto m-0 p-0 line-limit-1">{addr.name}</b>
                            <p className="row  text-left  m-0 p-0 line-limit-2"
@@ -84,14 +95,15 @@ const MyAddresses = (props: IProps) => {
                         <div className="row col-12 p-0 m-0  mt-auto">
                            <Button className="btn-sm  col m-0 radius-none"
                               children="Edit" />
+                           {!addr.isDefault &&
+                              <Button className="btn-sm  col-6 m-0 radius-none"
+                                 onClick={(e) => {
+                                    e.stopPropagation();
+                                    setDefault(addr.id);
+                                 }}
 
-                           <Button className="btn-sm  col-6 m-0 radius-none"
-                              onClick={(e) => {
-                                 e.stopPropagation();
-                                 console.log("clicked");
-                              }}
-
-                              children="Set as Default" />
+                                 children="Set as Default" />
+                           }
                         </div>
                      </ButtonCard>
                   );

@@ -21,7 +21,10 @@ const Login = (props: IProps) => {
    const [forgotPasswordModalIsOpen, setForgotPasswordModalIsOpen] = useState(false);
    const auth = useContext(AuthContext);
 
-   useEffect(() => () => { isUnmounted.current = true; }, []);
+   useEffect(() => () => {
+      isUnmounted.current = true;
+      document.getElementById("email")?.focus();
+   }, []);
 
    const login = async () => {
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
@@ -82,6 +85,7 @@ const Login = (props: IProps) => {
 
          <Input label="Email"
             type="email"
+            id="email" 
             value={loginInfo.email}
             validationPattern={CommonRegex.Email}
             showDanger={alert.checkExist("email")}

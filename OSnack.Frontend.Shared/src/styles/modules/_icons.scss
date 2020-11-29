@@ -26,6 +26,10 @@
         display: inline-block;
         font-family: "FA5 Solid" !important;
     }
+
+    &.hide {
+            opacity: 0;
+    }
 }
 
 .save-icon {

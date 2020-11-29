@@ -7,7 +7,8 @@ export class Address {
    secondLine?: string;
    city?: string;
    postcode?: string;
-   isDefualt?: boolean;
+   isDefault?: boolean;
+   instructions?: string;
 }
 
 export class Category {
