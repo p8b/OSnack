@@ -29,7 +29,7 @@ const App = () => {
          <AuthenticationContext>
             <ShopContextContainer>
                <NavMenu />
-               <Container id="mainContainer" className="p-0 wide-container mt-1" extendBottom>
+               <Container id="mainContainer" className="p-0 wide-container main-container" extendBottom extendTop>
                   <Suspense fallback={<Loading />}>
                      <Switch>
                         {/***** Public Routes ****/}

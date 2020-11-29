@@ -32,7 +32,7 @@ const NavLink = (props: IProps) => {
             setSelectedNavItem();
             return props.path;
          }}>
-         <div className="w-100 ml-auto mr-auto text-center mb-0">{props.displayName}</div>
+         <div className="col-12 ml-auto mr-auto text-center mb-0">{props.displayName}</div>
          <div id="navlink-underline-animation" />
       </Link>
    );

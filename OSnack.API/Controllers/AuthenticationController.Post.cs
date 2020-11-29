@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Mime;
 using System.Net.Http.Headers;
@@ -11,8 +10,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
-using OSnack.API.Database;
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 
@@ -21,7 +18,6 @@ using P8B.Core.CSharp.Extentions;
 using P8B.Core.CSharp.Models;
 using Newtonsoft.Json;
 using System.Linq;
-using OSnack.API.Database.Context.ClassOverrides;
 
 namespace OSnack.API.Controllers
 {

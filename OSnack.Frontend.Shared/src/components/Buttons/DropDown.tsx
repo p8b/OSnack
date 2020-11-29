@@ -7,7 +7,7 @@ const DropDown = (props: IProps) => {
    return (
       <div className={`dropdown ${props.className}`} ref={myAccDropDownButton}>
          <div className="col p-0">
-            <button tabIndex={0} className={`col ${outsideClickMyAccDropDown ? " show" : ""} ${props?.titleClassName}`}
+            <button className={`col ${outsideClickMyAccDropDown ? " show" : ""} ${props?.titleClassName}`}
                onClick={() => setOutsideClickMyAccDropDown((prev) => !prev)}>
                {props.title}
             </button>

@@ -6,7 +6,7 @@ export const SearchInput = (props: IProps) => {
          <div className={`row`}>
             <input type="text"
                placeholder="Search"
-               defaultValue={props.value}
+               value={props.value}
                className="col m-0 p-0"
                onChange={props.onChange}
                disabled={props.disabled || false}

@@ -16,26 +16,23 @@ const Container = (props: IProps) => {
          window.removeEventListener("scroll", scrollChange);
       };
    }, []);
+
    const sizeChange = () => {
       let container = document.getElementById(props.id ?? "");
       if (props.extendBottom && container !== null)
          (container as HTMLElement).style.marginBottom = `${document.getElementById("footer")?.scrollHeight}px`;
    };
+
    const scrollChange = () => {
       let container = document.getElementById(props.id ?? "");
-      if (props.extendTop && container !== null && window.pageYOffset > 25) {
-
-         (container as HTMLElement).style.marginTop = `${document.getElementById("navbar")?.scrollHeight}px`;
-         document.getElementById("navbar")?.classList.add("fixed-top");
+      if (props.extendTop && container !== null && window.pageYOffset > 0) {
          document.getElementById("logo")?.classList.add("small");
+         document.getElementById("navbar")?.classList.add("transition");
       }
-      else if (window.pageYOffset < 15) {
-
-         (container as HTMLElement).style.marginTop = `0px`;
+      else {
          document.getElementById("logo")?.classList.remove("small");
-         document.getElementById("navbar")?.classList.remove("fixed-top");
+         document.getElementById("navbar")?.classList.remove("transition");
       }
-
    };
    return (<div id={props.id}
       className={`container ${props?.className}`}

@@ -3,7 +3,6 @@
 export const Input = (props: IProps) => {
    const id: string = Math.random().toString();
    const [lblPos, setLblPos] = useState("lower");
-   const [value, setValue] = useState("");
 
    const validationClassName = (targetInput: EventTarget & HTMLInputElement) => {
       const regex = RegExp(props.validationPattern || "");
@@ -27,7 +26,6 @@ export const Input = (props: IProps) => {
    };
    useEffect(() => {
       lblPosition(props.value?.toString() || "");
-      setValue(props.value?.toString() || "");
    }, [props.value]);
    return (
       <div className={`mb-3 ${props.className}`}>
@@ -37,7 +35,7 @@ export const Input = (props: IProps) => {
          }
          <input id={id} type={props?.type || "text"}
             className={`${props.showDanger ? "danger" : ""} ${props.showValid ? "valid" : ""} ${props.inputClassName || ""}`}
-            value={value}
+            value={props.value}
             onFocus={i => { lblPosition("initial"); }}
             onChange={i => {
                props.onChange(i);
