@@ -16,6 +16,7 @@ const Shop = lazy(() => import("./pages/Shop/Shop"));
 const About = lazy(() => import("./pages/About/About"));
 const ContactUs = lazy(() => import("./pages/ContactUs/ContactUs"));
 const MyAccount = lazy(() => import("./pages/MyAccount/MyAccount"));
+const MyAddresses = lazy(() => import("./pages/MyAccount/MyAddresses"));
 const LoginPage = lazy(() => import("./pages/Login/LoginPage"));
 const ProductPage = lazy(() => import("./pages/ProductPage/ProductPage"));
 const PageNotFound = lazy(() => import("osnack-frontend-shared/src/pages/PageNotFound"));
@@ -45,6 +46,7 @@ const App = () => {
 
                         {/***** Protected Routes  ****/}
                         <CustomRoute exact AuthRequired path="/MyAccount" Render={(props: any) => <MyAccount {...props} />} access={Access} />
+                        <CustomRoute exact AuthRequired path="/MyAddresses" Render={(props: any) => <MyAddresses {...props} />} access={Access} />
 
                         {/***** Route Not Found  ****/}
                         <CustomRoute path="*" Render={(props: any) => <PageNotFound {...props} />} access={Access} />

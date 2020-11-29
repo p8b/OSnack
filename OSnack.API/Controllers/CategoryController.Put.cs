@@ -9,11 +9,7 @@ using OSnack.API.Extras;
 using P8B.Core.CSharp;
 
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Net.Mime;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OSnack.API.Controllers
@@ -39,7 +35,8 @@ namespace OSnack.API.Controllers
             TryValidateModel(modifiedCategory);
 
             /// if new image is not provided do not check for new images
-            if (string.IsNullOrWhiteSpace(modifiedCategory.ImageBase64) && string.IsNullOrWhiteSpace(modifiedCategory.OriginalImageBase64))
+            if (string.IsNullOrWhiteSpace(modifiedCategory.ImageBase64) &&
+               string.IsNullOrWhiteSpace(modifiedCategory.OriginalImageBase64))
             {
                containsNewImages = false;
                ModelState.Remove("ImageBase64");
@@ -47,30 +44,25 @@ namespace OSnack.API.Controllers
             }
             if (ModelState.ContainsKey("ImageBase64"))
                ModelState.Remove("OriginalImageBase64");
-            /// if model validation failed
+
             if (!ModelState.IsValid)
             {
                CoreFunc.ExtractErrors(ModelState, ref ErrorsList);
-               /// return Unprocessable Entity with all the errors
                return UnprocessableEntity(ErrorsList);
             }
 
-            /// check the database to see if a Category with the same name exists
             if (await _AppDbContext.Categories
                 .AnyAsync(c => c.Name == modifiedCategory.Name && c.Id != modifiedCategory.Id)
                 .ConfigureAwait(false))
             {
-               /// extract the errors and return bad request containing the errors
                CoreFunc.Error(ref ErrorsList, "Category with the given name already exists.");
                return StatusCode(412, ErrorsList);
             }
 
-            /// get the current category
             oCategory currentCatogory = await _AppDbContext.Categories
                 .SingleOrDefaultAsync(c => c.Id == modifiedCategory.Id)
                 .ConfigureAwait(false);
 
-            // if the current category does not exists
             if (currentCatogory == null)
             {
                CoreFunc.Error(ref ErrorsList, "Category Not Found");
@@ -112,11 +104,7 @@ namespace OSnack.API.Controllers
 
             try
             {
-               /// else Category object is made without any errors
-               /// Update the current Category to the EF context
                _AppDbContext.Categories.Update(modifiedCategory);
-
-               /// save the changes to the database
                await _AppDbContext.SaveChangesAsync().ConfigureAwait(false);
 
                if (containsNewImages)
@@ -136,13 +124,11 @@ namespace OSnack.API.Controllers
                }
                throw;
             }
-            /// return 200 OK (Update) status with the modified object
-            /// and success message
+
             return Ok(modifiedCategory);
          }
-         catch (Exception) // DbUpdateException, DbUpdateConcurrencyException
+         catch (Exception)
          {
-            /// Add the error below to the error list and return bad request
             CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
             return StatusCode(417, ErrorsList);
          }

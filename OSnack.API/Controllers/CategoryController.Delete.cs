@@ -9,10 +9,7 @@ using OSnack.API.Extras;
 using P8B.Core.CSharp;
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Mime;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OSnack.API.Controllers
@@ -32,7 +29,6 @@ namespace OSnack.API.Controllers
       {
          try
          {
-            /// if the Category record with the same id is not found
             if (!await _AppDbContext.Categories
                 .AnyAsync(c => c.Id == category.Id)
                 .ConfigureAwait(false))
@@ -41,7 +37,6 @@ namespace OSnack.API.Controllers
                return NotFound(ErrorsList);
             }
 
-            /// If the category is in use by any product then do not allow delete
             if (await _AppDbContext.Products
                 .AnyAsync(c => c.Category.Id == category.Id)
                 .ConfigureAwait(false))
@@ -50,10 +45,7 @@ namespace OSnack.API.Controllers
                return StatusCode(412, ErrorsList);
             }
 
-            /// else the Category is found
-            /// now delete the Category record
             _AppDbContext.Categories.Remove(category);
-            /// save the changes to the database
             await _AppDbContext.SaveChangesAsync().ConfigureAwait(false);
 
             try
@@ -66,12 +58,11 @@ namespace OSnack.API.Controllers
             {
                _AppDbContext.AppLogs.Add(new oAppLog { Massage = string.Format("Category deleted record but Images was not. The path is: {0}", category.ImagePath) });
             }
-            /// return 200 OK status
+
             return Ok($"Category '{category.Name}' was deleted");
          }
          catch (Exception)
          {
-            /// Add the error below to the error list
             CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
             return StatusCode(417, ErrorsList);
          }

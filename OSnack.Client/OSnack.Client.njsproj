@@ -149,6 +149,7 @@
     <Folder Include="src\components\NavMenu\" />
     <Folder Include="src\hooks\" />
     <Folder Include="src\hooks\apiCallers\" />
+    <Folder Include="src\hooks\apiCallers\address\" />
     <Folder Include="src\hooks\apiCallers\product\" />
     <Folder Include="src\hooks\apiCallers\user\" />
     <Folder Include="src\pages\Home\" />
@@ -188,6 +189,10 @@
     <TypeScriptCompile Include="src\components\Footer.tsx" />
     <TypeScriptCompile Include="src\components\NavMenu\NavMenu.tsx" />
     <TypeScriptCompile Include="src\components\NavMenu\NavMenuItems.tsx" />
+    <TypeScriptCompile Include="src\hooks\apiCallers\address\Delete.Address.tsx" />
+    <TypeScriptCompile Include="src\hooks\apiCallers\address\Get.Address.tsx" />
+    <TypeScriptCompile Include="src\hooks\apiCallers\address\Post.Address.tsx" />
+    <TypeScriptCompile Include="src\hooks\apiCallers\address\Put.Address.tsx" />
     <TypeScriptCompile Include="src\hooks\apiCallers\product\Get.Product.tsx" />
     <TypeScriptCompile Include="src\pages\About\About.tsx" />
     <TypeScriptCompile Include="src\pages\ContactUs\ContactUs.tsx" />
@@ -196,7 +201,9 @@
     <TypeScriptCompile Include="src\index.tsx" />
     <TypeScriptCompile Include="src\pages\Home\Home.tsx" />
     <TypeScriptCompile Include="src\pages\Login\LoginPage.tsx" />
+    <TypeScriptCompile Include="src\pages\MyAccount\AddressModal.tsx" />
     <TypeScriptCompile Include="src\pages\MyAccount\MyAccount.tsx" />
+    <TypeScriptCompile Include="src\pages\MyAccount\MyAddresses.tsx" />
     <TypeScriptCompile Include="src\pages\ProductPage\ProductPage.tsx" />
     <TypeScriptCompile Include="src\pages\ProductPage\Tabs.tsx" />
     <TypeScriptCompile Include="src\pages\Shop\Shop.tsx" />

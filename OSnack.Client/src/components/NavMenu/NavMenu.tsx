@@ -58,7 +58,10 @@ const NavMenu = (props: IProps) => {
                         title={<div className="user-circle-icon" />}>
                         <NavLink className="dropdown-item"
                            path={"/MyAccount"}
-                           displayName="Account" />
+                        displayName="Account" />
+                     <NavLink className="dropdown-item"
+                           path={"/MyAddresses"}
+                           displayName="Addresses" />
                         <a className="dropdown-item"
                            onClick={() => {
                               logout();

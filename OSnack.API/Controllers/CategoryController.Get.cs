@@ -10,7 +10,6 @@ using P8B.Core.CSharp.Extentions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OSnack.API.Controllers
@@ -47,12 +46,11 @@ namespace OSnack.API.Controllers
                 .Take(maxNumberPerItemsPage)
                 .ToListAsync()
                 .ConfigureAwait(false);
-            /// return the list of Categories
+
             return Ok(new { list, totalCount });
          }
-         catch (Exception) //ArgumentNullException
+         catch (Exception)
          {
-            /// in the case any exceptions return the following error
             CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
             return StatusCode(417, ErrorsList);
          }
@@ -67,12 +65,11 @@ namespace OSnack.API.Controllers
       {
          try
          {
-            /// return the list of All Categories
-            return Ok(await _AppDbContext.Categories.AsNoTracking().ToListAsync().ConfigureAwait(false));
+            return Ok(await _AppDbContext.Categories.AsNoTracking().ToListAsync()
+               .ConfigureAwait(false));
          }
-         catch (Exception) //ArgumentNullException
+         catch (Exception)
          {
-            /// in the case any exceptions return the following error
             CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
             return StatusCode(417, ErrorsList);
          }
