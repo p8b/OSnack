@@ -152,29 +152,7 @@ namespace OSnack.API
             .WithRazorPagesRoot("/Extras/RootPage");
 
          // Register the Swagger services
-         services.AddSwaggerDocument(option =>
-         {
-            option.Title = "OSnack API";
-            option.DocumentName = "v1";
-            option.PostProcess = document =>
-            {
-               document.Info.Version = "v1";
-               document.Info.Title = "OSnack APi";
-               document.Info.Description = "OSnack Web API";
-               document.Info.TermsOfService = "None";
-               document.Info.Contact = new NSwag.OpenApiContact
-               {
-                  Name = "Majid Joveini",
-                  Email = "Majid.Joveini@gmail.com",
-                  // Url = "https://twitter.com/spboyer"
-               };
-               //document.Info.License = new NSwag.OpenApiLicense
-               //{
-               //   Name = "Use under LICX",
-               //   Url = "https://example.com/license"
-               //};
-            };
-         });
+         services.AddSwaggerDocument();
       }
 
       public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IAntiforgery antiforgery)

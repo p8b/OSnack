@@ -1,6 +1,7 @@
 ﻿import React, { createContext, useMemo, useReducer, useEffect } from "react";
 
 class ShopState {
+   //shopCategoryFilter = GetAllRecords;
 }
 
 const localStorageName = "ShopState";
