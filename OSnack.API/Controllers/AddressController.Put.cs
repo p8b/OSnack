@@ -7,7 +7,7 @@ using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 
 using P8B.Core.CSharp;
-
+using P8B.Core.CSharp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,9 +20,9 @@ namespace OSnack.API.Controllers
    {
       #region ******
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(oAddress), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPut("[action]")]
       [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test
@@ -55,9 +55,9 @@ namespace OSnack.API.Controllers
       }
       #region ******
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(StatusCodes.Status204NoContent)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPut("Put/[action]")]
       [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test
@@ -85,7 +85,7 @@ namespace OSnack.API.Controllers
             _DbContext.Addresses.UpdateRange(addresses);
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
 
-            return Ok();
+            return NoContent();
          }
          catch (Exception)
          {

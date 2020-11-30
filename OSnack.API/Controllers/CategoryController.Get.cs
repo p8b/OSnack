@@ -6,7 +6,7 @@ using OSnack.API.Database.Models;
 
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Extentions;
-
+using P8B.Core.CSharp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace OSnack.API.Controllers
 {
+
    public partial class CategoryController
    {
       /// <summary>
@@ -22,8 +23,8 @@ namespace OSnack.API.Controllers
       /// search by name or filter by unit or status
       /// </summary>
       #region *** ***
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(ResultList<oCategory>), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<P8B.Core.CSharp.Models.Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{isSortAsce}/{sortName}")]
       public async Task<IActionResult> Search(
@@ -52,7 +53,7 @@ namespace OSnack.API.Controllers
                   .CountAsync(p => p.Category.Id == category.Id)
                   .ConfigureAwait(false);
             }
-            return Ok(new { list, totalCount });
+            return Ok(new ResultList<oCategory>(list, totalCount));
          }
          catch (Exception)
          {
@@ -63,7 +64,7 @@ namespace OSnack.API.Controllers
 
       #region ***  ***
       [ProducesResponseType(typeof(List<oCategory>), StatusCodes.Status200OK)]
-      [ProducesResponseType(typeof(List<P8B.Core.CSharp.Models.Error>), StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]")]
       public async Task<IActionResult> All()
