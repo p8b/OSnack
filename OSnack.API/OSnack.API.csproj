@@ -5,6 +5,11 @@
     <ApplicationIcon>wwwroot\favicon.ico</ApplicationIcon>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="wwwroot\Images\Categories\CHoZgq7072\**" />
     <Content Remove="wwwroot\Images\Categories\CHoZgq7072\**" />
@@ -51,6 +56,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\EmailTemplates\" />
+    <Folder Include="wwwroot\Images\Defaults\" />
   </ItemGroup>
 
   <ItemGroup>
