@@ -58,7 +58,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\P8B.Core.CSharp\P8B.Core.CSharp.csproj" />
+    <ProjectReference Include="..\..\P8B.Libs\P8B.Core.CSharp\P8B.Core.CSharp.csproj" />
   </ItemGroup>
 
 

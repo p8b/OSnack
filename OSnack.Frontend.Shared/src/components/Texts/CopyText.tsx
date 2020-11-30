@@ -10,11 +10,12 @@ const CopyText = (props: IProps) => {
       }, 2000);
    };
    return (
+
       <div className={`custom-tooltip ${props.className || ""}`}
          onClick={copy}>
          {props.text}
          <span id="myToolTip"
-            className="custom-tooltiptext"
+            className="custom-tooltip-text"
             children={isCopied ? "Copied" : "Copy"} />
       </div>
    );

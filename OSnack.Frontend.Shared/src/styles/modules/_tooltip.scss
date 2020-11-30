@@ -4,7 +4,7 @@
     border-bottom: 1px dotted black;
     cursor: pointer;
 
-    & .custom-tooltiptext {
+    & .custom-tooltip-text {
         visibility: hidden;
         width: auto;
         background-color: black;
@@ -21,7 +21,7 @@
         margin-left: .5rem;
     }
 
-    & .custom-tooltiptext::after {
+    & .custom-tooltip-text::after {
         content: "";
         position: absolute;
         top: -30%;
@@ -32,11 +32,21 @@
         border-color: transparent black transparent transparent;
     }
 
-    &:focus .custom-tooltiptext {
+    &:focus .custom-tooltip-text {
         visibility: visible;
     }
 
-    &:hover .custom-tooltiptext {
+    &:hover .custom-tooltip-text {
         visibility: visible;
+    }
+}
+
+.tooltip-select-all-text {
+    user-select: all;
+}
+
+.tooltip {
+    &:focus {
+        visibility: visible !important;
     }
 }

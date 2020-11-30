@@ -51,7 +51,14 @@ const Table = (props: IProps) => {
                <tbody>
                   {props.data.rows.map(row =>
                      <tr key={Math.random()}>
-                        {row.data.map(d => <td key={Math.random()} children={d} />)}
+                        {row.data.map(d =>
+                           <td key={Math.random()} >
+                              {(typeof d === "string") &&
+                                 <span data-toggle="tooltip" title={d} className="tooltip-select-all-text line-limit-1">{d}</span>
+                              }
+                              {(typeof d !== "string") && d}
+                           </td>
+                        )}
                      </tr>
                   )}
                </tbody>
