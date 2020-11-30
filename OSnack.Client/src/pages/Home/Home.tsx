@@ -7,6 +7,7 @@ import { ShopContext } from '../../_core/shopContext';
 import { Category } from 'osnack-frontend-shared/src/_core/apiModels';
 import Carousel from '../../components/Carousel';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
+import { onCategoryImageError } from 'osnack-frontend-shared/src/_core/appFunc';
 
 const Home = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -43,7 +44,9 @@ const Home = (props: IProps) => {
                         setShopState({ ...shopState, shopCategoryFilter: category.id.toString() });
                         history.push(`/Shop/Category/${encodeURIComponent(category.name || "")}`);
                      }} >
-                     <img src={`${API_URL}\\${category.imagePath}`} alt={category.name} />
+                     <img src={`${API_URL}\\${category.imagePath}`}
+                        alt={category.name}
+                        onError={onCategoryImageError} />
                      <span>Shop Now</span>
                   </a>
                   <h1>{category.name}</h1>

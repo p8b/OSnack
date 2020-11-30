@@ -2,8 +2,8 @@
 import { useHistory } from 'react-router-dom';
 
 import { Product } from 'osnack-frontend-shared/src/_core/apiModels';
-import { enumToArray } from 'osnack-frontend-shared/src/_core/appFunc';
-import { API_URL, ProductUnitType } from 'osnack-frontend-shared/src/_core/constant.Variables';
+import { enumToArray, onProductImageError } from 'osnack-frontend-shared/src/_core/appFunc';
+import { API_URL, DefaultProductImage, ProductUnitType } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import QuantityInput from 'osnack-frontend-shared/src/components/Inputs/QuantityInput';
 
 const ShopItem = (props: IProps) => {
@@ -16,7 +16,9 @@ const ShopItem = (props: IProps) => {
             onClick={() => {
                history.push(`/Shop/Product/${encodeURIComponent(props.product.category.name || "")}/${encodeURIComponent(props.product.name || "")}`);
             }} >
-            <img src={`${API_URL}\\${props.product.imagePath}`} alt={props.product.name} />
+            <img src={`${API_URL}\\${props.product.imagePath}`}
+               onError={onProductImageError}
+               alt={props.product.name} />
             <span>Details</span>
          </a>
          <QuantityInput

@@ -1,6 +1,7 @@
 ﻿import { ddLookup } from "./appClasses";
 import 'whatwg-fetch';
 import { AntiforgeryTokenCookieName } from "./constant.Variables";
+import { ImgHTMLAttributes } from "react";
 
 //#region *** 'Cookie Management' ***
 /**
@@ -191,3 +192,13 @@ export const sleep = async (ms: number, isCanceled: React.MutableRefObject<boole
 export const setHtmlTitle = (value: string) => {
    document.title = `OSnack ${value != "" ? `- ${value}` : ""}`;
 };
+
+export const onProductImageError = async (i: React.SyntheticEvent<HTMLImageElement, Event>) => {
+
+   i.currentTarget.src = "/public/images/logo.png";
+};
+export const onCategoryImageError = async (i: React.SyntheticEvent<HTMLImageElement, Event>) => {
+
+   i.currentTarget.src = "/public/images/logo.png";
+};
+
