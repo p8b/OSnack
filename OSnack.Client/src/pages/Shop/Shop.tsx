@@ -12,6 +12,7 @@ import { sleep } from 'osnack-frontend-shared/src/_core/appFunc';
 import { useSearchProduct } from 'osnack-frontend-shared/src/hooks/apiCallers/product/Get.Product';
 import { useGetAllCategory } from 'osnack-frontend-shared/src/hooks/apiCallers/category/Get.Category';
 import ShopItem from './ShopItem';
+import { useHistory } from 'react-router-dom';
 
 const Shop = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -28,6 +29,8 @@ const Shop = (props: IProps) => {
    const [selectedCategoryFilter, setSelectedCategoryFilter] = useState(GetAllRecords);
    const sortOptions = ["Name", "Price"];
 
+   const history = useHistory();
+
    useEffect(() => {
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
       useGetAllCategory().then(result => {
@@ -41,7 +44,8 @@ const Shop = (props: IProps) => {
             setCategoryList(result.categoryList);
             const uriPathNameArr = window.location.pathname.split('/').filter(val => val.length > 0);
             if (uriPathNameArr.length === 3 && uriPathNameArr[1] == "Category") {
-               const uriSelectedCategory = result.categoryList.filter(val => val.name?.toLowerCase() == decodeURIComponent(uriPathNameArr[2]).toLowerCase());
+               console.log(decodeURIComponent(uriPathNameArr[2]).toLowerCase());
+               const uriSelectedCategory = result.categoryList.filter(val => val.name?.toLowerCase().trim() == decodeURIComponent(uriPathNameArr[2]).toLowerCase());
                if (uriSelectedCategory.length > 0)
                   onSearch(undefined, undefined, undefined, undefined, uriSelectedCategory[0].id.toString());
             } else {
@@ -126,14 +130,22 @@ const Shop = (props: IProps) => {
                />
                <DropDown title={`Category: ${categoryList.find((c) => c.id.toString() == selectedCategoryFilter)?.name || "All"}`}
                   className="col-12 col-sm-4 col-md-3 ml-auto m-0 p-0 pt-2"
-                  titleClassName="btn btn btn-white filter-icon">
+                  titleClassName="btn btn btn-white filter-icon"
+                  closeOnClickInsideMenu
+               >
                   <button className="dropdown-item"
-                     onClick={() => { onSearch(undefined, undefined, undefined, undefined, GetAllRecords); }} >
+                     onClick={() => {
+                        history.push("/Shop");
+                        onSearch(undefined, undefined, undefined, undefined, GetAllRecords);
+                     }} >
                      All
-                  </button>
+                        </button>
                   {categoryList.map(category =>
                      <button className="dropdown-item" key={category.id}
-                        onClick={() => { onSearch(undefined, undefined, undefined, undefined, category.id.toString()); }}>
+                        onClick={() => {
+                           history.push(`/Shop/Category/${encodeURIComponent(category.name || "")}`);
+                           onSearch(undefined, undefined, undefined, undefined, category.id.toString());
+                        }}>
                         {category.name}
                      </button>
                   )}

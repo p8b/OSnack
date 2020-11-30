@@ -5,7 +5,7 @@
 
 .shop-card {
     @include shop-card-size;
-    border-radius: 0.9rem;
+    // border-radius: 0.9rem;
     text-align: center;
     color: black;
     margin: 1rem;
@@ -15,6 +15,11 @@
 
     &:hover {
         box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19) !important;
+    }
+
+    &-category {
+        @extend .shop-card;
+        border-bottom: none;
     }
 }
 

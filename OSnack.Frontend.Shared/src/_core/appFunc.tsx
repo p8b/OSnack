@@ -1,7 +1,6 @@
 ﻿import { ddLookup } from "./appClasses";
 import 'whatwg-fetch';
-import { AntiforgeryTokenCookieName } from "./constant.Variables";
-import { ImgHTMLAttributes } from "react";
+import { AntiforgeryTokenCookieName, API_URL } from "./constant.Variables";
 
 //#region *** 'Cookie Management' ***
 /**
@@ -193,12 +192,24 @@ export const setHtmlTitle = (value: string) => {
    document.title = `OSnack ${value != "" ? `- ${value}` : ""}`;
 };
 
-export const onProductImageError = async (i: React.SyntheticEvent<HTMLImageElement, Event>) => {
+export class onImageError {
+   static Product = async (i: React.SyntheticEvent<HTMLImageElement, Event>) =>
+      onImageError.onImageErrorSelect(i, "Product");
+   static Category = async (i: React.SyntheticEvent<HTMLImageElement, Event>) =>
+      onImageError.onImageErrorSelect(i, "Category");
 
-   i.currentTarget.src = "/public/images/logo.png";
-};
-export const onCategoryImageError = async (i: React.SyntheticEvent<HTMLImageElement, Event>) => {
+   static onImageErrorSelect = (i: React.SyntheticEvent<HTMLImageElement, Event>, type: string = "") => {
+      let src = `${API_URL}/Images/defaults/default.png`;
 
-   i.currentTarget.src = "/public/images/logo.png";
-};
+      switch (type) {
+         case "Product":
+         case "Category":
+         default:
+            break;
+      }
+      if (i.currentTarget.currentSrc != src)
+         i.currentTarget.src = src;
+
+   };
+}
 

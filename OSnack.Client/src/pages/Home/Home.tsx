@@ -7,7 +7,7 @@ import { ShopContext } from '../../_core/shopContext';
 import { Category } from 'osnack-frontend-shared/src/_core/apiModels';
 import Carousel from '../../components/Carousel';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
-import { onCategoryImageError } from 'osnack-frontend-shared/src/_core/appFunc';
+import { onImageError } from 'osnack-frontend-shared/src/_core/appFunc';
 
 const Home = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -37,20 +37,18 @@ const Home = (props: IProps) => {
       for (var i = 0; i < categoryList.length; i++) {
          let category = categoryList[i];
          arr.push(
-            <div className="row justify-content-center p-2">
-               <div className="col p-0 shop-card ">
-                  <a className="col link-shop-card-img m-0 justify-text-center"
-                     onClick={() => {
-                        setShopState({ ...shopState, shopCategoryFilter: category.id.toString() });
-                        history.push(`/Shop/Category/${encodeURIComponent(category.name || "")}`);
-                     }} >
-                     <img src={`${API_URL}\\${category.imagePath}`}
-                        alt={category.name}
-                        onError={onCategoryImageError} />
-                     <span>Shop Now</span>
-                  </a>
-                  <h1>{category.name}</h1>
-               </div>
+            <div className="shop-card-category">
+               <a className="col link-shop-card-img m-0 justify-text-center"
+                  onClick={() => {
+                     setShopState({ ...shopState, shopCategoryFilter: category.id.toString() });
+                     history.push(`/Shop/Category/${encodeURIComponent(category.name || "")}`);
+                  }} >
+                  <img src={`${API_URL}\\${category.imagePath}`}
+                     alt={category.name}
+                     onError={onImageError.Category} />
+                  <span>Shop Now</span>
+               </a>
+               <div className="pt-3 pb-2 h4">{category.name}</div>
             </div>
          );
       }

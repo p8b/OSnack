@@ -18,7 +18,6 @@ const ProductPage = (props: IProps) => {
    const [product, setProduct] = useState(new Product());
    const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
    const [redirectToShop, setRedirectToShop] = useState<boolean>(false);
-   const [quantity, setQuantity] = useState(0);
    const history = useHistory();
 
    useEffect(() => () => { isUnmounted.current = true; }, []);
@@ -73,9 +72,12 @@ const ProductPage = (props: IProps) => {
                         <p className="pt-4 pb-4">{product.description}</p>
                         <b className="mb-5">£{product.price} ({product.unitQuantity} {enumToArray(ProductUnitType).filter(t => t.id == product.unitType)[0]?.name})</b>
                         <QuantityInput
-                           btnOnZeroTitle="Add to basket"
-                           value={quantity}
-                           onChange={(val) => { setQuantity(val); }}
+                           btnOnZeroTitle="Add"
+                           btnOnZeroClassName="radius-none btn-green cart-icon"
+                           btnMinusClassName="radius-none-t"
+                           btnPlusClassName="radius-none-t"
+                           value={0}
+                           onChange={(val) => { }}
                            className="w-50 pt-3 pb-3"
                         />
                      </div>

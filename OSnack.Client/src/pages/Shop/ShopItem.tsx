@@ -2,8 +2,8 @@
 import { useHistory } from 'react-router-dom';
 
 import { Product } from 'osnack-frontend-shared/src/_core/apiModels';
-import { enumToArray, onProductImageError } from 'osnack-frontend-shared/src/_core/appFunc';
-import { API_URL, DefaultProductImage, ProductUnitType } from 'osnack-frontend-shared/src/_core/constant.Variables';
+import { enumToArray, onImageError } from 'osnack-frontend-shared/src/_core/appFunc';
+import { API_URL, ProductUnitType } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import QuantityInput from 'osnack-frontend-shared/src/components/Inputs/QuantityInput';
 
 const ShopItem = (props: IProps) => {
@@ -17,7 +17,7 @@ const ShopItem = (props: IProps) => {
                history.push(`/Shop/Product/${encodeURIComponent(props.product.category.name || "")}/${encodeURIComponent(props.product.name || "")}`);
             }} >
             <img src={`${API_URL}\\${props.product.imagePath}`}
-               onError={onProductImageError}
+               onError={onImageError.Product}
                alt={props.product.name} />
             <span>Details</span>
          </a>
@@ -30,8 +30,10 @@ const ShopItem = (props: IProps) => {
             onChange={(val) => { }}
             className="col-12"
          />
-         <div className="pt-3 pb-2 h4">{props.product.name}</div>
-         <b>£{props.product.price}</b><span> - {props.product.unitQuantity} {enumToArray(ProductUnitType).filter(t => t.id == props.product.unitType)[0]?.name}</span>
+         <div className="pt-3">
+            <b>£{props.product.price}</b><span> - {props.product.unitQuantity} {enumToArray(ProductUnitType).filter(t => t.id == props.product.unitType)[0]?.name}</span>
+         </div>
+         <div className="pt-2 pb-1 h4">{props.product.name}</div>
       </div>
    );
 };

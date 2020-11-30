@@ -187,6 +187,7 @@
     <TypeScriptCompile Include="src\app.tsx" />
     <TypeScriptCompile Include="src\components\Container.tsx" />
     <TypeScriptCompile Include="src\components\Footer.tsx" />
+    <TypeScriptCompile Include="src\components\NavMenu\CartIcon.tsx" />
     <TypeScriptCompile Include="src\components\NavMenu\NavMenu.tsx" />
     <TypeScriptCompile Include="src\components\NavMenu\NavMenuItems.tsx" />
     <TypeScriptCompile Include="src\hooks\apiCallers\address\Delete.Address.tsx" />
