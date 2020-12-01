@@ -28,7 +28,7 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpPost("[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Done
-      public async Task<IActionResult> Post([FromBody] oProduct newProduct)
+      public async Task<IActionResult> Post([FromBody] Product newProduct)
       {
          try
          {
@@ -112,7 +112,7 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpPost("[action]/Score")]
       [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test
-      public async Task<IActionResult> Post([FromBody] oScore newScore)
+      public async Task<IActionResult> Post([FromBody] Score newScore)
       {
          try
          {

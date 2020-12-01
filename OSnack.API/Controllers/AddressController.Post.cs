@@ -19,13 +19,13 @@ namespace OSnack.API.Controllers
    {
       #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(typeof(oAddress), StatusCodes.Status201Created)]
+      [ProducesResponseType(typeof(Address), StatusCodes.Status201Created)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPost("[action]")]
       [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test
-      public async Task<IActionResult> Post([FromBody] oAddress newAddress)
+      public async Task<IActionResult> Post([FromBody] Address newAddress)
       {
          try
          {

@@ -78,7 +78,7 @@ namespace OSnack.API.Controllers
             int.TryParse(User.Claims
                 .FirstOrDefault(c => c.Type == "UserId")?.Value, out int userId);
 
-            oUser user = await _DbContext.Users.Include(u => u.Role)
+            User user = await _DbContext.Users.Include(u => u.Role)
               .Include(u => u.RegistrationMethod)
               .FirstOrDefaultAsync(u => u.Id == userId)
               .ConfigureAwait(false);

@@ -10,7 +10,7 @@ namespace OSnack.API.Extras.AppInterfaces
 {
    public struct UpdateCurrentUserData
    {
-      public oUser User { get; set; }
+      public User User { get; set; }
       public string CurrentPassword { get; set; }
    }
 }

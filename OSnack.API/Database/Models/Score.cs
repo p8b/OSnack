@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace OSnack.API.Database.Models
 {
    [Table("Score")]
-   public class oScore
+   public class Score
    {
       [Key]
       public int Id { get; set; }
@@ -15,12 +15,12 @@ namespace OSnack.API.Database.Models
       public int Rate { get; set; }
 
       [ForeignKey("OrderItemId")]
-      public oOrderItem OrderItem { get; set; }
+      public OrderItem OrderItem { get; set; }
 
       [Column(Order = 0)]
       public int OrderItemId { get; set; }
 
       [ForeignKey("ProductId")]
-      public oProduct Product { get; set; }
+      public Product Product { get; set; }
    }
 }

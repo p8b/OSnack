@@ -28,7 +28,7 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpPut("[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Done
-      public async Task<IActionResult> Put([FromBody] oProduct modifiedProduct)
+      public async Task<IActionResult> Put([FromBody] Product modifiedProduct)
       {
          try
          {

@@ -10,7 +10,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace OSnack.API.Database.Models
 {
    [Table("Orders")]
-   public class oOrder : OrderAddressBase
+   public class Order : OrderAddressBase
    {
       [Key]
       public int Id { get; set; }
@@ -23,7 +23,7 @@ namespace OSnack.API.Database.Models
       public OrderStatusType Status { get; set; }
 
       [Required(ErrorMessage = "Status is required \n")]
-      public oDeliveryOption DeliveryOption { get; set; }
+      public DeliveryOption DeliveryOption { get; set; }
 
       [DataType(DataType.Currency, ErrorMessage = "Invalid Currency \n")]
       [Column(TypeName = "decimal(7,2)")]
@@ -35,17 +35,17 @@ namespace OSnack.API.Database.Models
 
       [Required(ErrorMessage = "Address is required \n")]
       [ForeignKey("AddressId")]
-      public oAddress Address { get; set; }
+      public Address Address { get; set; }
 
       [Required(ErrorMessage = "Payment is required \n")]
       [ForeignKey("PaymentId")]
-      public oPayment Payment { get; set; }
+      public Payment Payment { get; set; }
 
       [ForeignKey("Code")]
-      public oCoupon Coupon { get; set; }
+      public Coupon Coupon { get; set; }
 
       [InverseProperty("Order")]
-      public ICollection<oOrderItem> OrderItems { get; set; }
+      public ICollection<OrderItem> OrderItems { get; set; }
 
    }
 }

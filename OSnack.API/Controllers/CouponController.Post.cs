@@ -25,7 +25,7 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpPost("[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
-      public async Task<IActionResult> Post([FromBody] oCoupon newCoupon)
+      public async Task<IActionResult> Post([FromBody] Coupon newCoupon)
       {
          try
          {

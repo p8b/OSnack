@@ -29,11 +29,11 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpDelete("[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)] /// Done
-      public async Task<IActionResult> Delete([FromBody] oEmailTemplate emailTemplate)
+      public async Task<IActionResult> Delete([FromBody] EmailTemplate emailTemplate)
       {
          try
          {
-            oEmailTemplate foundTemplate = await _DbContext.EmailTemplates.AsTracking().FirstOrDefaultAsync((et) => et.Id == emailTemplate.Id).ConfigureAwait(false);
+            EmailTemplate foundTemplate = await _DbContext.EmailTemplates.AsTracking().FirstOrDefaultAsync((et) => et.Id == emailTemplate.Id).ConfigureAwait(false);
             if (foundTemplate == null)
             {
                ErrorsList.Add(new Error("", "Template cannot be found."));

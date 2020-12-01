@@ -12,7 +12,7 @@ namespace OSnack.API.Extras
 {
 
    [Table("DeliveryOption")]
-   public class oDeliveryOption
+   public class DeliveryOption
    {
 
       [Key]
@@ -33,6 +33,6 @@ namespace OSnack.API.Extras
       public decimal MinimumOrderTotal { get; set; }
 
       [JsonIgnore]
-      public ICollection<oOrder> Orders { get; set; }
+      public ICollection<Order> Orders { get; set; }
    }
 }

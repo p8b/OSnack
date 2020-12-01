@@ -22,7 +22,7 @@ namespace OSnack.API.Controllers
    {
       #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(typeof(oCategory), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(Category), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status404NotFound)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
@@ -30,7 +30,7 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpPut("[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Done
-      public async Task<IActionResult> Put([FromBody] oCategory modifiedCategory)
+      public async Task<IActionResult> Put([FromBody] Category modifiedCategory)
       {
          try
          {
@@ -66,7 +66,7 @@ namespace OSnack.API.Controllers
             }
 
             /// get the current category
-            oCategory currentCatogory = await _DbContext.Categories
+            Category currentCatogory = await _DbContext.Categories
                 .SingleOrDefaultAsync(c => c.Id == modifiedCategory.Id)
                 .ConfigureAwait(false);
 

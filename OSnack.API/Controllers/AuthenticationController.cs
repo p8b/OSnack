@@ -16,14 +16,14 @@ namespace OSnack.API.Controllers
    public partial class AuthenticationController : ControllerBase
    {
       private OSnackDbContext _DbContext { get; }
-      private OSnackSignInManager<oUser> _SignInManager { get; }
-      private UserManager<oUser> _UserManager { get; }
+      private OSnackSignInManager<User> _SignInManager { get; }
+      private UserManager<User> _UserManager { get; }
       private List<Error> ErrorsList = new List<Error>();
       private readonly IAntiforgery _Antiforgery;
       private readonly IWebHostEnvironment _WebHostingEnv;
 
 
-      public AuthenticationController(OSnackDbContext db, OSnackSignInManager<oUser> sm, UserManager<oUser> um,
+      public AuthenticationController(OSnackDbContext db, OSnackSignInManager<User> sm, UserManager<User> um,
          IAntiforgery af, IWebHostEnvironment env)
       {
          _DbContext = db;

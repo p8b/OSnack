@@ -45,7 +45,7 @@ namespace OSnack.API.Controllers
                 .ConfigureAwait(false);
 
             /// Include the necessary properties
-            List<oProduct> list = await _DbContext.Products
+            List<Product> list = await _DbContext.Products
                 .Where(p => filterStatus.Equals(CoreConst.GetAllRecords) || p.Status == boolFilterStatus)
                 .Include(p => p.Category)
                 .Include(p => p.NutritionalInfo)
@@ -79,13 +79,13 @@ namespace OSnack.API.Controllers
       {
          try
          {
-            oProduct product = await _DbContext.Products
+            Product product = await _DbContext.Products
                 .Include(p => p.Category)
                 .Include(p => p.NutritionalInfo)
                 .FirstOrDefaultAsync(p => p.Category.Name.Equals(categoryName) && p.Name.Equals(productName))
                 .ConfigureAwait(false);
 
-            List<oProduct> relatedProducts = await _DbContext.Products
+            List<Product> relatedProducts = await _DbContext.Products
                 .Include(p => p.Category)
                 .Where(p => p.Category.Id == product.Category.Id && p.Id != product.Id)
                 .Take(3)

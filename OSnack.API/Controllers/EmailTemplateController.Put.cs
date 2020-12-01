@@ -27,7 +27,7 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpPut("[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)] /// Done
-      public async Task<IActionResult> Put([FromBody] oEmailTemplate emailTemplate)
+      public async Task<IActionResult> Put([FromBody] EmailTemplate emailTemplate)
       {
          try
          {
@@ -44,7 +44,7 @@ namespace OSnack.API.Controllers
                /// return Unprocessable Entity with all the errors
                return UnprocessableEntity(ErrorsList);
 
-            oEmailTemplate foundTemplate = await _DbContext.EmailTemplates
+            EmailTemplate foundTemplate = await _DbContext.EmailTemplates
                .AsTracking()
                .Include(et => et.ServerVariables)
                .FirstOrDefaultAsync((et) => et.Id == emailTemplate.Id)

@@ -20,13 +20,13 @@ namespace OSnack.API.Controllers
    {
       #region ******
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(typeof(oAddress), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(Address), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPut("[action]")]
       [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test
-      public async Task<IActionResult> Put([FromBody] oAddress modifiedAddress)
+      public async Task<IActionResult> Put([FromBody] Address modifiedAddress)
       {
          try
          {
@@ -65,7 +65,7 @@ namespace OSnack.API.Controllers
       {
          try
          {
-            List<oAddress> addresses = await _DbContext.Addresses.AsTracking()
+            List<Address> addresses = await _DbContext.Addresses.AsTracking()
                     .Include(a => a.User)
                     .ThenInclude(u => u.Role)
                     .Include(a => a.User)

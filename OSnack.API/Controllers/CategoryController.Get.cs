@@ -23,7 +23,7 @@ namespace OSnack.API.Controllers
       /// search by name or filter by unit or status
       /// </summary>
       #region *** ***
-      [ProducesResponseType(typeof(ResultList<oCategory>), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(ResultList<Category>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<P8B.Core.CSharp.Models.Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{isSortAsce}/{sortName}")]
@@ -40,7 +40,7 @@ namespace OSnack.API.Controllers
                 .CountAsync(c => searchValue.Equals(CoreConst.GetAllRecords) ? true : c.Name.Contains(searchValue))
                 .ConfigureAwait(false);
 
-            List<oCategory> list = await _DbContext.Categories
+            List<Category> list = await _DbContext.Categories
                 .OrderByDynamic(sortName, isSortAsce)
                 .Where(c => searchValue.Equals(CoreConst.GetAllRecords) ? true : c.Name.Contains(searchValue))
                 .Skip((selectedPage - 1) * maxNumberPerItemsPage)
@@ -53,7 +53,7 @@ namespace OSnack.API.Controllers
                   .CountAsync(p => p.Category.Id == category.Id)
                   .ConfigureAwait(false);
             }
-            return Ok(new ResultList<oCategory>(list, totalCount));
+            return Ok(new ResultList<Category>(list, totalCount));
          }
          catch (Exception)
          {
@@ -63,7 +63,7 @@ namespace OSnack.API.Controllers
       }
 
       #region ***  ***
-      [ProducesResponseType(typeof(List<oCategory>), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Category>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]")]

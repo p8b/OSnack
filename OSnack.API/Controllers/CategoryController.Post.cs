@@ -21,14 +21,14 @@ namespace OSnack.API.Controllers
    {
       #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(typeof(oCategory), StatusCodes.Status201Created)]
+      [ProducesResponseType(typeof(Category), StatusCodes.Status201Created)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
       [HttpPost("[action]")]
-      public async Task<IActionResult> Post([FromBody] oCategory newCategory)
+      public async Task<IActionResult> Post([FromBody] Category newCategory)
       {
          try
          {

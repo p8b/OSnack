@@ -81,7 +81,7 @@ namespace OSnack.API.Controllers
                return UnprocessableEntity(ErrorsList);
             }
 
-            oUser externalLoginUser = new oUser();
+            User externalLoginUser = new User();
             switch (externalLoginInfo.Type)
             {
                case RegistrationTypes.Google:
@@ -94,7 +94,7 @@ namespace OSnack.API.Controllers
 
 
             // Check if the user is already registered 
-            oUser registeredUser = await _DbContext.Users
+            User registeredUser = await _DbContext.Users
                .Include(u => u.Role)
                .Include(u => u.RegistrationMethod)
                .SingleOrDefaultAsync(u => u.RegistrationMethod.Type == externalLoginInfo.Type
@@ -121,11 +121,11 @@ namespace OSnack.API.Controllers
                return Unauthorized(ErrorsList);
             }
             /// check if the user is registered using other methods
-            oUser user = await _UserManager
+            User user = await _UserManager
                     .FindByEmailAsync(externalLoginUser?.Email).ConfigureAwait(false);
             if (user != null)
             {
-               oRegistrationMethod registrationMethod = await _DbContext.RegistrationMethods
+               RegistrationMethod registrationMethod = await _DbContext.RegistrationMethods
                   .FirstOrDefaultAsync(r => r.User.Id == user.Id).ConfigureAwait(false);
 
                if (registrationMethod.Type != RegistrationTypes.Application)
@@ -166,7 +166,7 @@ namespace OSnack.API.Controllers
             }
 
             /// Find the user with the provided email address
-            oUser user = await _DbContext.Users
+            User user = await _DbContext.Users
                .Include(u => u.Role)
                .Include(u => u.RegistrationMethod)
                .FirstOrDefaultAsync(r => r.Email.Equals(loginInfo.Email))
@@ -301,7 +301,7 @@ namespace OSnack.API.Controllers
             int.TryParse(User.Claims
                 .FirstOrDefault(c => c.Type == "UserId")?.Value, out int userId);
 
-            oUser user = await _DbContext.Users.Include(u => u.Role)
+            User user = await _DbContext.Users.Include(u => u.Role)
               .Include(u => u.RegistrationMethod)
               .FirstOrDefaultAsync(u => u.Id == userId)
               .ConfigureAwait(false);
@@ -327,7 +327,7 @@ namespace OSnack.API.Controllers
          }
       }
 
-      private async Task<oUser> GetGoogleUserInfo(P8B.Core.CSharp.Models.ExternalLoginInfo externalLoginInfo)
+      private async Task<User> GetGoogleUserInfo(P8B.Core.CSharp.Models.ExternalLoginInfo externalLoginInfo)
       {
          ExternalEmailSecret googleSecrets = AppConst.Settings.ExternalLoginSecrets.FindObj(e => e.Provider.EqualCurrentCultureIgnoreCase("Google"));
          var caller = new HttpClient();
@@ -345,12 +345,12 @@ namespace OSnack.API.Controllers
          var userInfoResult = await caller.GetAsync($"https://www.googleapis.com/oauth2/v2/userinfo").ConfigureAwait(false);
          var userInfoResultString = await userInfoResult.Content.ReadAsStringAsync().ConfigureAwait(false);
          var userInfoObj = JsonConvert.DeserializeObject<dynamic>(userInfoResultString);
-         return new oUser
+         return new User
          {
             Email = (string)userInfoObj.email,
             FirstName = (string)userInfoObj.given_name,
             Surname = (string)userInfoObj.family_name,
-            RegistrationMethod = new oRegistrationMethod
+            RegistrationMethod = new RegistrationMethod
             {
                ExternalLinkedId = (string)userInfoObj.id,
                RegisteredDate = DateTime.UtcNow,
@@ -359,7 +359,7 @@ namespace OSnack.API.Controllers
          };
       }
 
-      private async Task<oUser> GetFacebookUserInfo(P8B.Core.CSharp.Models.ExternalLoginInfo externalLoginInfo)
+      private async Task<User> GetFacebookUserInfo(P8B.Core.CSharp.Models.ExternalLoginInfo externalLoginInfo)
       {
          ExternalEmailSecret facebookSecrets = AppConst.Settings.ExternalLoginSecrets.FindObj(e => e.Provider.EqualCurrentCultureIgnoreCase("Facebook"));
 
@@ -377,12 +377,12 @@ namespace OSnack.API.Controllers
          var userInfoResult = await caller.GetAsync($"https://graph.facebook.com/me?fields=id,email,first_name,last_name&access_token={accessToken}").ConfigureAwait(false);
          var userInfoResultString = await userInfoResult.Content.ReadAsStringAsync().ConfigureAwait(false);
          var userInfoObj = JsonConvert.DeserializeObject<dynamic>(userInfoResultString);
-         return new oUser
+         return new User
          {
             FirstName = (string)userInfoObj.first_name,
             Surname = (string)userInfoObj.last_name,
             Email = (string)userInfoObj.email,
-            RegistrationMethod = new oRegistrationMethod
+            RegistrationMethod = new RegistrationMethod
             {
                ExternalLinkedId = (string)userInfoObj.id,
                RegisteredDate = DateTime.UtcNow,

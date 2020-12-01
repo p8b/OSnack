@@ -37,7 +37,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
       #endregion
       // [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
-      public async Task<IActionResult> Post([FromBody] oNewsletter newsletter)
+      public async Task<IActionResult> Post([FromBody] Newsletter newsletter)
       {
          try
          {
@@ -86,7 +86,7 @@ namespace OSnack.API.Controllers
          try
          {
             /// if the Newsletter record with the same id is not found
-            oNewsletter newsletter = _DbContext.Newsletters.Find(email);
+            Newsletter newsletter = _DbContext.Newsletters.Find(email);
             if (newsletter != null)
             {
                /// now delete the Newsletter record

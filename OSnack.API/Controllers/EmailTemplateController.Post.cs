@@ -24,7 +24,7 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpPost("[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)] /// Done
-      public async Task<IActionResult> Post([FromBody] oEmailTemplate emailTemplate)
+      public async Task<IActionResult> Post([FromBody] EmailTemplate emailTemplate)
       {
          try
          {

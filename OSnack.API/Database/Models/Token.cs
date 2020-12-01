@@ -11,7 +11,7 @@ using System.Linq;
 namespace OSnack.API.Database.Models
 {
    [Table("Tokens")]
-   public class oToken
+   public class Token
    {
       [Key]
       public int Id { get; set; }
@@ -37,14 +37,14 @@ namespace OSnack.API.Database.Models
 
       [JsonIgnore]
       [ForeignKey("UserId")]
-      public oUser User { get; set; }
+      public User User { get; set; }
 
       public string Email { get; set; }
 
       [NotMapped]
       public string UrlDomain { get; set; }
 
-      public oToken() { }
+      public Token() { }
 
       /// <summary>
       ///     Used to generate a URL to verify the user's request such as
@@ -55,7 +55,7 @@ namespace OSnack.API.Database.Models
       /// <param name="dbContext">DbContext to remove old tokens and save the new one</param>
       /// <param name="UrlPath">The path of the url e.g. "/reset/Password"</param>
       /// <param name="UrlDomain">The domain of the url e.g. "https://localhost:8080"</param>
-      public void GenerateToken(oUser user, DateTime ExpiaryDate, OSnackDbContext dbContext, string UrlPath)
+      public void GenerateToken(User user, DateTime ExpiaryDate, OSnackDbContext dbContext, string UrlPath)
       {
          if (string.IsNullOrWhiteSpace(UrlDomain))
             throw new Exception("Domain URL Required");
@@ -65,7 +65,7 @@ namespace OSnack.API.Database.Models
             throw new Exception("Expiry Date Required.");
 
          /// First check if the user has a token for the requested token type
-         IEnumerable<oToken> tokenValues = dbContext.Tokens
+         IEnumerable<Token> tokenValues = dbContext.Tokens
              .Where(vs => vs.User.Id == user.Id && vs.Type == Type)
              .AsEnumerable();
 

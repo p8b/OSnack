@@ -26,7 +26,7 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpDelete("[action]")]
       [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test
-      public async Task<IActionResult> Delete([FromBody] oAddress address)
+      public async Task<IActionResult> Delete([FromBody] Address address)
       {
          try
          {

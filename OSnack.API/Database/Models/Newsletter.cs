@@ -2,7 +2,7 @@
 
 namespace OSnack.API.Database.Models
 {
-   public class oNewsletter
+   public class Newsletter
    {
 
       [Key]

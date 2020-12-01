@@ -13,7 +13,7 @@ using P8B.Core.CSharp.Models;
 namespace OSnack.API.Database.Models
 {
    [Table("Coupons")]
-   public class oCoupon
+   public class Coupon
    {
       [Key]
       [StringLength(25, ErrorMessage = "Must be less than 25 Characters \n")]
@@ -37,7 +37,7 @@ namespace OSnack.API.Database.Models
       public DateTime ExpiryDate { get; set; }
 
       [JsonIgnore]
-      public ICollection<oOrder> Orders { get; set; }
+      public ICollection<Order> Orders { get; set; }
 
       public bool IsValid(ref List<Error> ErrorsList)
       {

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace OSnack.API.Database.Models
 {
     [Table("AppLogs")]
-    public class oAppLog
+    public class AppLog
     {
         [Key]
         public int Id { get; set; }
@@ -21,6 +21,6 @@ namespace OSnack.API.Database.Models
         public string JsonObject { get; set; }
 
         [ForeignKey("UserId")]
-        public oUser User { get; set; }
+        public User User { get; set; }
     }
 }

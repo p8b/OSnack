@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace OSnack.API.Database.Models
 {
-   public class oNutritionalInfo
+   public class NutritionalInfo
    {
       [Key]
       public int Id { get; set; }
@@ -58,6 +58,6 @@ namespace OSnack.API.Database.Models
       [JsonIgnore]
       [ForeignKey("ProductId")]
       [Required]
-      public oProduct Product { get; set; }
+      public Product Product { get; set; }
    }
 }

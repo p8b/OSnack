@@ -32,11 +32,11 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpPut("Put/[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
-      public async Task<IActionResult> UpdateUser([FromBody] oUser modifiedUser)
+      public async Task<IActionResult> UpdateUser([FromBody] User modifiedUser)
       {
          try
          {
-            oUser user = await _DbContext.Users
+            User user = await _DbContext.Users
                .AsTracking()
                .Include(u => u.Role)
                .Include(u => u.RegistrationMethod)
@@ -131,7 +131,7 @@ namespace OSnack.API.Controllers
          {
             /// find the current user details from the database
             int.TryParse(User.Claims.FirstOrDefault(c => c.Type == "UserId").Value, out int userId);
-            oUser user = await _DbContext.Users
+            User user = await _DbContext.Users
                .Include(u => u.RegistrationMethod)
                .FirstOrDefaultAsync(u => u.Id == userId)
                .ConfigureAwait(false);
@@ -203,7 +203,7 @@ namespace OSnack.API.Controllers
          try
          {
             /// if the user with the same id is not found
-            oUser user = await _DbContext.Users.FindAsync(userId).ConfigureAwait(false);
+            User user = await _DbContext.Users.FindAsync(userId).ConfigureAwait(false);
             if (user == null)
             {
                CoreFunc.Error(ref ErrorsList, "User not found");
@@ -247,7 +247,7 @@ namespace OSnack.API.Controllers
                   tokenValue = pathName[i] + tokenValue;
             }
 
-            oToken token = await _DbContext.Tokens
+            Token token = await _DbContext.Tokens
                .Include(t => t.User)
                .FirstOrDefaultAsync(t => t.Url.Contains(pathName) && t.Value.Equals(tokenValue))
                .ConfigureAwait(false);
@@ -302,7 +302,7 @@ namespace OSnack.API.Controllers
          try
          {
             int.TryParse(User.Claims.FirstOrDefault(c => c.Type == "UserId").Value, out int userId);
-            oUser user = _DbContext.Users.Find(userId);
+            User user = _DbContext.Users.Find(userId);
 
 
             if (!await _UserManager.CheckPasswordAsync(user, data.CurrentPassword).ConfigureAwait(false))
@@ -313,7 +313,7 @@ namespace OSnack.API.Controllers
 
 
             user.Password = data.User.Password;
-            oUser result = await UpdatePassword(user).ConfigureAwait(false);
+            User result = await UpdatePassword(user).ConfigureAwait(false);
             if (result == null)
             {
                return StatusCode(417, ErrorsList);
@@ -354,7 +354,7 @@ namespace OSnack.API.Controllers
                   tokenValue = pathName[i] + tokenValue;
             }
 
-            oToken token = await _DbContext.Tokens
+            Token token = await _DbContext.Tokens
                .Include(t => t.User)
                .SingleOrDefaultAsync(t => t.Value.Equals(tokenValue) && t.Url.Contains(pathName))
                .ConfigureAwait(false);
@@ -386,7 +386,7 @@ namespace OSnack.API.Controllers
 
             token.User.Password = passwordString;
 
-            oUser result = await UpdatePassword(token.User).ConfigureAwait(false);
+            User result = await UpdatePassword(token.User).ConfigureAwait(false);
 
             if (result == null)
                return StatusCode(412, ErrorsList);
@@ -415,10 +415,10 @@ namespace OSnack.API.Controllers
          }
       }
 
-      private async Task<oUser> UpdatePassword(oUser selectedUser)
+      private async Task<User> UpdatePassword(User selectedUser)
       {
          /// find the current user details from the database
-         oUser userDetails = _DbContext.Users.Find(selectedUser.Id);
+         User userDetails = _DbContext.Users.Find(selectedUser.Id);
          if (userDetails == null)
          {
             CoreFunc.Error(ref ErrorsList, "User not found!");

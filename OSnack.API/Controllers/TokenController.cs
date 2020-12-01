@@ -22,7 +22,7 @@ namespace OSnack.API.Controllers
    [Route("[controller]")]
    public class TokenController : Controller
    {
-      private UserManager<oUser> _UserManager { get; }
+      private UserManager<User> _UserManager { get; }
       private OSnackDbContext _DbContext { get; }
       private EmailSettings _EmailSettings { get; }
       private EmailService EmailService
@@ -38,7 +38,7 @@ namespace OSnack.API.Controllers
       /// <param name="db">Receive the AppDbContext instance from the ASP.Net Pipeline</param>
       /// <param name="um)">Receive the UserManager instance from the ASP.Net Pipeline</param>
       public TokenController(OSnackDbContext db,
-          UserManager<oUser> um,
+          UserManager<User> um,
           EmailSettings es)
       {
          _DbContext = db;

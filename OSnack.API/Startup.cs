@@ -1,4 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -8,11 +12,17 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Primitives;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
+using NJsonSchema.Infrastructure;
 
 using OSnack.API.Database;
 using OSnack.API.Database.Context.ClassOverrides;
@@ -35,7 +45,6 @@ namespace OSnack.API
 
       public void ConfigureServices(IServiceCollection services)
       {
-         services.AddControllers().AddNewtonsoftJson();
          /// Enable API calls from specified origins only
          services.AddCors(options =>
          {
@@ -67,7 +76,7 @@ namespace OSnack.API
          .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 
          /// Add .Net Core Identity to the pipe-line with the following options
-         services.AddIdentityCore<oUser>(options =>
+         services.AddIdentityCore<User>(options =>
          {
             options.ClaimsIdentity.UserIdClaimType = "UserId";
             options.ClaimsIdentity.SecurityStampClaimType = "SecurityStamp";
@@ -86,11 +95,11 @@ namespace OSnack.API
 
          })
          .AddEntityFrameworkStores<OSnackDbContext>()// Add the custom db context class
-         .AddSignInManager<OSnackSignInManager<oUser>>() // add the custom SignInManager class
+         .AddSignInManager<OSnackSignInManager<User>>() // add the custom SignInManager class
          .AddDefaultTokenProviders(); // Allow the use of tokens
 
-         services.Replace(ServiceDescriptor.Scoped<IUserValidator<oUser>,
-           OSnackUserValidator<oUser>>());
+         services.Replace(ServiceDescriptor.Scoped<IUserValidator<User>,
+           OSnackUserValidator<User>>());
 
          /// local static function to set the cookie authentication option
          static void CookieAuthOptions(CookieAuthenticationOptions options)
@@ -137,10 +146,7 @@ namespace OSnack.API
             });
          });
 
-         /// Grab the Smtp server info
-         /// and add it as a singleton middle-ware so that the EmailSettings object is
-         /// only referring to the same object across requests and classes
-        // services.AddSingleton(AppConst.Settings.EmailSettings);
+
 
          //// Add email service as a Transient service middle-ware so that each class implementing this
          //// middle-ware will receive a new object of oEmailService class
@@ -151,8 +157,32 @@ namespace OSnack.API
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
             .WithRazorPagesRoot("/Extras/RootPage");
 
+
+         services
+             .AddControllers()
+             .AddNewtonsoftJson(options => options.SerializerSettings.Converters.Add(new StringEnumConverter()));
+
          // Register the Swagger services
-         services.AddSwaggerDocument();
+         //services.AddOpenApiDocument(document =>
+         //{
+         //   document.DocumentName = "OpenApi";
+         //   var test = new JsonSerializerSettings();
+         //   var test1 = new PropertyRenameAndIgnoreSerializerContractResolver();
+         //   test1.RenameProperty(typeof(IdentityUser), "PasswordHash", "xxxxxxxx");
+         //   test.ContractResolver = test1;
+         //   document.SerializerSettings = test;
+         //});
+         services.AddSwaggerDocument(document =>
+         {
+            document.DocumentName = "SwaggerDoc";
+
+            var test = new JsonSerializerSettings();
+            var test1 = new PropertyRenameAndIgnoreSerializerContractResolver();
+            test1.RenameProperty(typeof(IdentityUser), "PasswordHash", "xxxxxxxx");
+            test.ContractResolver = test1;
+            document.SerializerSettings = test;
+
+         });
       }
 
       public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IAntiforgery antiforgery)
@@ -162,11 +192,33 @@ namespace OSnack.API
          {
             app.UseDeveloperExceptionPage();
 
-            // Register the Swagger generator and the Swagger UI middlewares
-            //Launch the app.Navigate to:
-            //http://localhost:<port>/swagger to view the Swagger UI.
-            //http://localhost:<port>/swagger/v1/swagger.json to view the Swagger specification
-            app.UseOpenApi();
+            //// Register the Swagger generator and the Swagger UI middlewares
+            ////Launch the app.Navigate to:
+            ////http://localhost:<port>/swagger to view the Swagger UI.
+            ////http://localhost:<port>/swagger/v1/swagger.json to view the Swagger specification
+            app.UseOpenApi(config =>
+            {
+               config.PostProcess = (document, request) =>
+               {
+                  foreach (var classObject in document.Definitions)
+                  {
+                     if (classObject.Key == "IdentityUserOfInteger")
+                     {
+
+                        foreach (var prop in typeof(User).GetProperties())
+                        {
+                           if (prop.CustomAttributes.Any(i => i.AttributeType.FullName == "Newtonsoft.Json.JsonIgnoreAttribute"))
+                              classObject.Value.Properties.Remove(classObject.Value.Properties.SingleOrDefault(i => i.Key == prop.Name));
+                        }
+
+                        document.Definitions.Add(new KeyValuePair<string, NJsonSchema.JsonSchema>("UserBase", classObject.Value));
+                        document.Definitions.Remove(classObject.Key);
+                        break;
+                     }
+                  }
+               };
+               config.Path = "swagger/{documentName}/swagger.json";
+            });
             app.UseSwaggerUi3();
          }
          else
@@ -206,7 +258,6 @@ namespace OSnack.API
          /// Enable the application to use authentication
          app.UseAuthentication();
 
-         /// User MVC Routes for the api calls
          app.UseMvc();
       }
    }

@@ -52,7 +52,7 @@ namespace P8B.UK.API.Services
       /// </summary>
       /// <param name="user">The user object</param>
       /// <returns>bool: true (if email is send correctly) else false</returns>
-      public async Task<bool> ExternalRegistrationWelcomeAsync(oUser user)
+      public async Task<bool> ExternalRegistrationWelcomeAsync(User user)
       {
          try
          {
@@ -64,7 +64,7 @@ namespace P8B.UK.API.Services
          {
             /// if there are any exceptions, Log the exception error
             /// on the database and return false to the caller
-            await _DbContext.AppLogs.AddAsync(new oAppLog
+            await _DbContext.AppLogs.AddAsync(new AppLog
             {
                Massage = err.Message,
                JsonObject = JsonConvert.SerializeObject(err),
@@ -82,12 +82,12 @@ namespace P8B.UK.API.Services
       /// <param name="user">The user object</param>
       /// <param name="ExpiaryDate">The expiry date for token</param>
       /// <returns>bool: true (if email is send correctly) else false</returns>
-      public async Task<bool> EmailConfirmationAsync(oUser user, string DomainUrl)
+      public async Task<bool> EmailConfirmationAsync(User user, string DomainUrl)
       {
          try
          {
             return await PopulateHtmlWithServerVariables("Email Confirmation", user
-               , new oToken
+               , new Token
                {
                   Type = TokenTypes.ConfirmEmail,
                   UrlDomain = DomainUrl,
@@ -99,7 +99,7 @@ namespace P8B.UK.API.Services
          {
             /// if there are any exceptions, Log the exception error
             /// on the database and return false to the caller
-            await _DbContext.AppLogs.AddAsync(new oAppLog
+            await _DbContext.AppLogs.AddAsync(new AppLog
             {
                Massage = err.Message,
                JsonObject = JsonConvert.SerializeObject(err),
@@ -113,12 +113,12 @@ namespace P8B.UK.API.Services
       /// <param name="user">The user object</param>
       /// <param name="DomainUrl">Domain set for the token</param>
       /// <returns>bool: true (if email is send correctly) else false</returns>
-      public async Task<bool> NewEmployeePasswordAsync(oUser user, string DomainUrl)
+      public async Task<bool> NewEmployeePasswordAsync(User user, string DomainUrl)
       {
          try
          {
             return await PopulateHtmlWithServerVariables("Welcome New Employee", user
-               , new oToken
+               , new Token
                {
                   Type = TokenTypes.ChangePassword,
                   UrlDomain = DomainUrl,
@@ -130,7 +130,7 @@ namespace P8B.UK.API.Services
          {
             /// if there are any exceptions, Log the exception error
             /// on the database and return false to the caller
-            await _DbContext.AppLogs.AddAsync(new oAppLog
+            await _DbContext.AppLogs.AddAsync(new AppLog
             {
                Massage = err.Message,
                JsonObject = JsonConvert.SerializeObject(err),
@@ -147,12 +147,12 @@ namespace P8B.UK.API.Services
       /// <param name="user">User object</param>                            
       /// <param name="DomainUrl">Domain set for the token</param>
       /// <returns>bool: true (if email is send correctly) else false</returns>
-      public async Task<bool> PasswordResetAsync(oUser user, string DomainUrl)
+      public async Task<bool> PasswordResetAsync(User user, string DomainUrl)
       {
          try
          {
             return await PopulateHtmlWithServerVariables("Password Reset", user
-               , new oToken
+               , new Token
                {
                   Type = TokenTypes.ChangePassword,
                   UrlDomain = DomainUrl,
@@ -258,10 +258,10 @@ namespace P8B.UK.API.Services
          }
       }
 
-      private async Task<bool> PopulateHtmlWithServerVariables(string templateName, oUser user, oToken token = null,
+      private async Task<bool> PopulateHtmlWithServerVariables(string templateName, User user, Token token = null,
          DateTime expiaryDate = new DateTime())
       {
-         oEmailTemplate template = await _DbContext.EmailTemplates
+         EmailTemplate template = await _DbContext.EmailTemplates
             .Include(et => et.ServerVariables)
             .FirstOrDefaultAsync(et => et.Name.Equals(templateName)).ConfigureAwait(false);
 

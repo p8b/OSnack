@@ -38,7 +38,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
       #endregion
       // [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
-      public async Task<IActionResult> Post([FromBody] oScore newScore)
+      public async Task<IActionResult> Post([FromBody] Score newScore)
       {
          try
          {

@@ -29,13 +29,13 @@ namespace OSnack.API.Controllers
       {
          try
          {
-            List<oEmailTemplate> templateList = await _DbContext.EmailTemplates
+            List<EmailTemplate> templateList = await _DbContext.EmailTemplates
                .Include(et => et.ServerVariables)
                .OrderByDescending(et => et.Name)
                .ToListAsync().ConfigureAwait(false);
 
-            oEmailTemplate copyDefaultTemplate = null;
-            foreach (oEmailTemplate item in templateList)
+            EmailTemplate copyDefaultTemplate = null;
+            foreach (EmailTemplate item in templateList)
             {
                if (item.IsDefaultTemplate)
                   copyDefaultTemplate = item;
@@ -98,13 +98,13 @@ namespace OSnack.API.Controllers
       {
          try
          {
-            var List = new List<oServerVariables>();
+            var List = new List<ServerVariables>();
 
-            List.Add(new oServerVariables(EmailTemplateServerVariables.ExpiaryDateTime));
-            List.Add(new oServerVariables(EmailTemplateServerVariables.RegistrationMethod));
-            List.Add(new oServerVariables(EmailTemplateServerVariables.Role));
-            List.Add(new oServerVariables(EmailTemplateServerVariables.TokenUrl));
-            List.Add(new oServerVariables(EmailTemplateServerVariables.UserName));
+            List.Add(new ServerVariables(EmailTemplateServerVariables.ExpiaryDateTime));
+            List.Add(new ServerVariables(EmailTemplateServerVariables.RegistrationMethod));
+            List.Add(new ServerVariables(EmailTemplateServerVariables.Role));
+            List.Add(new ServerVariables(EmailTemplateServerVariables.TokenUrl));
+            List.Add(new ServerVariables(EmailTemplateServerVariables.UserName));
 
             return Ok(List);
          }

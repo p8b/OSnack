@@ -28,7 +28,7 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpDelete("[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
-      public async Task<IActionResult> Delete([FromBody] oCategory category)
+      public async Task<IActionResult> Delete([FromBody] Category category)
       {
          try
          {
@@ -61,7 +61,7 @@ namespace OSnack.API.Controllers
             }
             catch (Exception)
             {
-               _DbContext.AppLogs.Add(new oAppLog { Massage = string.Format("Category deleted record but Images was not. The path is: {0}", category.ImagePath) });
+               _DbContext.AppLogs.Add(new AppLog { Massage = string.Format("Category deleted record but Images was not. The path is: {0}", category.ImagePath) });
             }
             return Ok($"Category '{category.Name}' was deleted");
          }

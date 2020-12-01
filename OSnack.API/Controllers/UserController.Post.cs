@@ -36,7 +36,7 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpPost("Post/[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
-      public async Task<IActionResult> CreateUser([FromBody] oUser newUser)
+      public async Task<IActionResult> CreateUser([FromBody] User newUser)
       {
          try
          {
@@ -95,12 +95,12 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPost("Post/[action]")]
-      public async Task<IActionResult> CreateCustomer([FromBody] oUser newCustomer)
+      public async Task<IActionResult> CreateCustomer([FromBody] User newCustomer)
       {
          try
          {
             if (newCustomer.RegistrationMethod == null)
-               newCustomer.RegistrationMethod = new oRegistrationMethod
+               newCustomer.RegistrationMethod = new RegistrationMethod
                {
                   Type = RegistrationTypes.Application
                };
@@ -173,7 +173,7 @@ namespace OSnack.API.Controllers
             }
 
             /// Find the user with the provided email address
-            oUser user = await _UserManager
+            User user = await _UserManager
                     .FindByEmailAsync(email).ConfigureAwait(false);
 
             /// if no user is found on the database
@@ -183,7 +183,7 @@ namespace OSnack.API.Controllers
                CoreFunc.Error(ref ErrorsList, "Email not registered");
                return StatusCode(412, ErrorsList);
             }
-            oRegistrationMethod registrationMethod = await _DbContext.RegistrationMethods.FirstOrDefaultAsync(rm => rm.User.Id == user.Id).ConfigureAwait(false);
+            RegistrationMethod registrationMethod = await _DbContext.RegistrationMethods.FirstOrDefaultAsync(rm => rm.User.Id == user.Id).ConfigureAwait(false);
             if (registrationMethod.Type != RegistrationTypes.Application)
             {
                /// in the case any exceptions return the following error
@@ -227,7 +227,7 @@ namespace OSnack.API.Controllers
          }
       }
 
-      private async Task<IActionResult> PrivateCreateUser(oUser newUser)
+      private async Task<IActionResult> PrivateCreateUser(User newUser)
       {
          try
          {

@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 namespace OSnack.API.Database.Models
 {
    [Table("Payments")]
-   public class oPayment
+   public class Payment
    {
       [Key]
       public int Id { get; set; }
@@ -23,6 +23,6 @@ namespace OSnack.API.Database.Models
       [Required(ErrorMessage = "Order is required \n")]
       [InverseProperty("Payment")]
       [JsonIgnore]
-      public oOrder Order { get; set; }
+      public Order Order { get; set; }
    }
 }

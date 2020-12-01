@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace OSnack.API.Database.Models
 {
    [Table("Addresses")]
-   public class oAddress : OrderAddressBase
+   public class Address : OrderAddressBase
    {
       [Key]
       public int Id { get; set; }
@@ -21,11 +21,11 @@ namespace OSnack.API.Database.Models
       [Required(ErrorMessage = "User is Required \n")]
       [JsonIgnore]
       [ForeignKey("UserId")]
-      public oUser User { get; set; }
+      public User User { get; set; }
 
       [InverseProperty("Address")]
       [JsonIgnore]
-      public ICollection<oOrder> Orders { get; set; }
+      public ICollection<Order> Orders { get; set; }
 
       [NotMapped]
       public int UserId { get; set; }

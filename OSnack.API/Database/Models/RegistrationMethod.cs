@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace OSnack.API.Database.Models
 {
    [Table("RegistrationMethod")]
-   public class oRegistrationMethod
+   public class RegistrationMethod
    {
       [Key]
       [JsonIgnore]
@@ -25,6 +25,6 @@ namespace OSnack.API.Database.Models
 
       [ForeignKey("UserId")]
       [JsonIgnore]
-      public oUser User { get; set; }
+      public User User { get; set; }
    }
 }

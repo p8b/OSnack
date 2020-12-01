@@ -10,7 +10,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace OSnack.API.Database.Models
 {
    [Table("OrderItems")]
-   public class oOrderItem : OrderProductBase
+   public class OrderItem : OrderProductBase
    {
       [Key]
       public int Id { get; set; }
@@ -25,7 +25,7 @@ namespace OSnack.API.Database.Models
 
       [ForeignKey("ProductId")]
       [JsonIgnore]
-      public oProduct Product { get; set; }
+      public Product Product { get; set; }
 
       [Required(ErrorMessage = "Quantity is Required")]
       public int Quantity { get; set; }
@@ -33,6 +33,6 @@ namespace OSnack.API.Database.Models
       [Required(ErrorMessage = "Order is Required")]
       [ForeignKey("OrderId")]
       [JsonIgnore]
-      public oOrder Order { get; set; }
+      public Order Order { get; set; }
    }
 }

@@ -56,7 +56,7 @@ namespace OSnack.API.Controllers
                 //.CountAsync(c => searchValue.Equals(CoreConst.GetAllRecords) ? true : c. .Contains(searchValue))
                 .ConfigureAwait(false);
 
-            List<oOrder> list = await _DbContext.Orders
+            List<Order> list = await _DbContext.Orders
                      .Where(r => filterStatus.Equals(CoreConst.GetAllRecords) ? true : r.Status.Equals((OrderStatusType)Enum.Parse(typeof(OrderStatusType), filterStatus, true)))
                 .OrderByDynamic(sortName, isSortAsce)
                 // .Where(c => searchValue.Equals(CoreConst.GetAllRecords) ? true : c.Code.Contains(searchValue))
@@ -113,7 +113,7 @@ namespace OSnack.API.Controllers
                 //.CountAsync(c => searchValue.Equals(CoreConst.GetAllRecords) ? true : c. .Contains(searchValue))
                 .ConfigureAwait(false);
 
-            List<oOrder> list = await _DbContext.Orders
+            List<Order> list = await _DbContext.Orders
                .Include(o => o.Address)
                .Where(o => o.Address.UserId == userId)
                 .Where(r => filterStatus.Equals(CoreConst.GetAllRecords) ? true : r.Status.Equals((OrderStatusType)Enum.Parse(typeof(OrderStatusType), filterStatus, true)))
@@ -280,7 +280,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
       #endregion
       // [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
-      public async Task<IActionResult> Put([FromBody] oOrder modifiedOrder)
+      public async Task<IActionResult> Put([FromBody] Order modifiedOrder)
       {
          try
          {
@@ -323,13 +323,13 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
       #endregion
       // [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
-      public async Task<IActionResult> PutOrderStatus([FromBody] oOrder modifiedOrder)
+      public async Task<IActionResult> PutOrderStatus([FromBody] Order modifiedOrder)
       {
          try
          {
 
             ///TODO Change Statues Only
-            oOrder orginalOrder = await _DbContext.Orders.FindAsync(modifiedOrder.Id).ConfigureAwait(false);
+            Order orginalOrder = await _DbContext.Orders.FindAsync(modifiedOrder.Id).ConfigureAwait(false);
             orginalOrder.Status = modifiedOrder.Status;
             /// Update the current Order to the EF context
             _DbContext.Orders.Update(orginalOrder);
@@ -361,7 +361,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
       #endregion
       //[Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
-      public async Task<IActionResult> Delete([FromBody] oOrder order)
+      public async Task<IActionResult> Delete([FromBody] Order order)
       {
          try
          {

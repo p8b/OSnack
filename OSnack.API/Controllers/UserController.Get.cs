@@ -60,7 +60,7 @@ namespace OSnack.API.Controllers
                                || searchValue.Equals(CoreConst.GetAllRecords) || u.Email.Contains(searchValue)
                                || searchValue.Equals(CoreConst.GetAllRecords) || u.PhoneNumber.Contains(searchValue))
                 ).ConfigureAwait(false);
-            List<oUser> list = await _DbContext.Users
+            List<User> list = await _DbContext.Users
                 .Include(u => u.Role)
                 .Include(u => u.RegistrationMethod)
                 .Where(u => filterRole.Equals(CoreConst.GetAllRecords) || u.Role.Id == filterRoleId)

@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace OSnack.API.Database.Models
 {
    [Table("Roles")]
-   public class oRole
+   public class Role
    {
       [Key]
       public int Id { get; set; }
@@ -26,6 +26,6 @@ namespace OSnack.API.Database.Models
 
       [JsonIgnore]
       [InverseProperty("Role")]
-      public ICollection<oUser> Users { get; set; }
+      public ICollection<User> Users { get; set; }
    }
 }

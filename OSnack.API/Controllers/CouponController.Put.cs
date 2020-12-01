@@ -25,7 +25,7 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpPut("[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
-      public async Task<IActionResult> Put([FromBody] oCoupon modifiedCoupon)
+      public async Task<IActionResult> Put([FromBody] Coupon modifiedCoupon)
       {
          try
          {
@@ -49,7 +49,7 @@ namespace OSnack.API.Controllers
                return StatusCode(412, ErrorsList);
             }
 
-            oCoupon originalCoupon = await _DbContext.Coupons.FindAsync(modifiedCoupon.Code).ConfigureAwait(false);
+            Coupon originalCoupon = await _DbContext.Coupons.FindAsync(modifiedCoupon.Code).ConfigureAwait(false);
             originalCoupon.MaxUseQuantity = modifiedCoupon.MaxUseQuantity;
             originalCoupon.ExpiryDate = modifiedCoupon.ExpiryDate;
             originalCoupon.PendigCode = originalCoupon.Code;

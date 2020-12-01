@@ -21,15 +21,15 @@ namespace OSnack.API.Controllers
    public partial class UserController : ControllerBase
    {
       private OSnackDbContext _DbContext { get; }
-      private UserManager<oUser> _UserManager { get; }
-      private SignInManager<oUser> _SignInManager { get; }
+      private UserManager<User> _UserManager { get; }
+      private SignInManager<User> _SignInManager { get; }
       private EmailService EmailService { get; }
       private List<Error> ErrorsList = new List<Error>();
 
       public UserController(OSnackDbContext db,
-          UserManager<oUser> um,
+          UserManager<User> um,
           IWebHostEnvironment webEnv,
-          SignInManager<oUser> sm)
+          SignInManager<User> sm)
       {
          _DbContext = db;
          _UserManager = um;

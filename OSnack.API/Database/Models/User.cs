@@ -1,16 +1,20 @@
 ﻿using Microsoft.AspNetCore.Identity;
+
+using Newtonsoft.Json;
+
+using NJsonSchema.Annotations;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Newtonsoft.Json;
 
 namespace OSnack.API.Database.Models
 {
    [Table("Users")]
-   public class oUser : IdentityUser<int>
+   public class User : IdentityUser<int>
    {
-      public oUser() => UserName = $"p8b{new Random().Next(0, 99)}";
+      public User() => UserName = $"p8b{new Random().Next(0, 99)}";
 
       #region nvarchar(256), Required, StringLength(256)
       [Column(TypeName = "nvarchar(256)")]
@@ -28,7 +32,7 @@ namespace OSnack.API.Database.Models
 
       [Required(ErrorMessage = "Role Required \n")]
       [ForeignKey("RoleId")]
-      public oRole Role { get; set; }
+      public Role Role { get; set; }
 
       #region Required, DateType(Password), JsonIgnore
       [DataType(DataType.Password)]
@@ -42,7 +46,7 @@ namespace OSnack.API.Database.Models
 
       [Required(ErrorMessage = "Registration Info Required")]
       [InverseProperty("User")]
-      public oRegistrationMethod RegistrationMethod { get; set; }
+      public RegistrationMethod RegistrationMethod { get; set; }
 
       #region Required, DateType(EmailAddress), RegularExpression
       [DataType(DataType.EmailAddress, ErrorMessage = "Invalid Email \n")]
@@ -53,7 +57,7 @@ namespace OSnack.API.Database.Models
       public override string Email { get; set; }
 
       [InverseProperty("User")]
-      public ICollection<oAddress> Addresses { get; set; }
+      public ICollection<Address> Addresses { get; set; }
 
       [NotMapped]
       public string Password { get; set; }

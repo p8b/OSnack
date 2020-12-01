@@ -4,18 +4,22 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using P8B.Core.CSharp.Attributes;
+using OSnack.API.Extras.CustomTypes;
+using Microsoft.AspNetCore.Authentication;
+using OSnack.API.Database.ModelsDependencies;
+
 namespace OSnack.API.Database.Models
 {
-   [Table("Categories")]
-   public class oCategory
+   [Table("Products")]
+   public class Product : OrderProductBase
    {
       [Key]
       public int Id { get; set; }
 
       [Column(TypeName = "nvarchar(256)")]
-      [Required(ErrorMessage = "Name is Required \n")]
       [StringLength(256, ErrorMessage = "Must be less than 256 Characters \n")]
-      public string Name { get; set; }
+      public string Description { get; set; }
 
       [Display(Name = "Display Image")]
       [StringLength(50, ErrorMessage = "Must be less than 50 Characters \n")]
@@ -33,8 +37,21 @@ namespace OSnack.API.Database.Models
       [Required(ErrorMessage = "Original Image is Required \n")]
       public string OriginalImageBase64 { get; set; }
 
+      public bool Status { get; set; } = false;
+
+      [Required(ErrorMessage = "Category is Required \n")]
+      public Category Category { get; set; }
+
+      [InverseProperty("Product")]
+      public NutritionalInfo NutritionalInfo { get; set; }
+
+      [InverseProperty("Product")]
+      public ICollection<Comment> Comments { get; set; }
+
+      [InverseProperty("Product")]
+      public ICollection<Score> Scores { get; set; }
 
       [NotMapped]
-      public int TotalProducts { get; set; } = 0;
+      public int AverageScore { get; set; }
    }
 }

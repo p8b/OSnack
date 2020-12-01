@@ -19,7 +19,7 @@ using System.Text.RegularExpressions;
 namespace OSnack.API.Database.Models
 {
    [Table("EmailTemplates")]
-   public class oEmailTemplate
+   public class EmailTemplate
    {
       [Key]
       public int Id { get; set; }
@@ -32,7 +32,7 @@ namespace OSnack.API.Database.Models
       public string Subject { get; set; } = "";
 
       public string TokenUrlPath { get; set; }
-      public List<oServerVariables> ServerVariables { get; set; }
+      public List<ServerVariables> ServerVariables { get; set; }
 
       public bool Locked { get; set; } = true;
 
@@ -106,7 +106,7 @@ namespace OSnack.API.Database.Models
          if (ServerVariables != null)
          {
 
-            foreach (oServerVariables item in ServerVariables)
+            foreach (ServerVariables item in ServerVariables)
             {
                // if tokenUrl is added to the attached email template but the value of URL path is not
                if (item.EnumValue == EmailTemplateServerVariables.TokenUrl && string.IsNullOrEmpty(TokenUrlPath))

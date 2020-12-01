@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace OSnack.API.Database.Models
 {
    [Table("ServerVariablesForEmail")]
-   public class oServerVariables
+   public class ServerVariables
    {
 
       [Key]
@@ -18,8 +18,8 @@ namespace OSnack.API.Database.Models
       [Required]
       public string ReplacementValue { get; set; }
 
-      public oServerVariables() { }
-      public oServerVariables(EmailTemplateServerVariables enumValue)
+      public ServerVariables() { }
+      public ServerVariables(EmailTemplateServerVariables enumValue)
       {
          EnumValue = enumValue;
          ReplacementValue = $"@@{enumValue}@@";

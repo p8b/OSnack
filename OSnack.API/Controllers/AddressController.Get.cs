@@ -17,7 +17,7 @@ namespace OSnack.API.Controllers
    public partial class AddressController : ControllerBase
    {
       #region *** ***
-      [ProducesResponseType(typeof(List<oAddress>), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Address>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]")]
