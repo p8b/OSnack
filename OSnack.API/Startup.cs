@@ -24,6 +24,8 @@ using Newtonsoft.Json.Converters;
 
 using NJsonSchema.Infrastructure;
 
+using NSwag.CodeGeneration.TypeScript;
+
 using OSnack.API.Database;
 using OSnack.API.Database.Context.ClassOverrides;
 using OSnack.API.Database.Models;
@@ -215,6 +217,13 @@ namespace OSnack.API
                         document.Definitions.Remove(classObject.Key);
                         break;
                      }
+                  }
+                  TypeScriptClientGenerator tg = new TypeScriptClientGenerator(document, new TypeScriptClientGeneratorSettings());
+                  foreach (var item in tg.GetAllCodeArtifacts())
+                  {
+                     var test = item.Category;
+
+
                   }
                };
                config.Path = "swagger/{documentName}/swagger.json";
