@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -30,7 +33,7 @@ using OSnack.API.Database;
 using OSnack.API.Database.Context.ClassOverrides;
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
-
+using P8B.Core.CSharp;
 using P8B.Core.CSharp.Extentions;
 using P8B.Core.CSharp.Models.Interfaces;
 using P8B.UK.API.Extras.Overrides;
@@ -176,14 +179,7 @@ namespace OSnack.API
          //});
          services.AddSwaggerDocument(document =>
          {
-            document.DocumentName = "SwaggerDoc";
-
-            var test = new JsonSerializerSettings();
-            var test1 = new PropertyRenameAndIgnoreSerializerContractResolver();
-            test1.RenameProperty(typeof(IdentityUser), "PasswordHash", "xxxxxxxx");
-            test.ContractResolver = test1;
-            document.SerializerSettings = test;
-
+            document.DocumentName = "OSnack";
          });
       }
 
@@ -201,31 +197,7 @@ namespace OSnack.API
             app.UseOpenApi(config =>
             {
                config.PostProcess = (document, request) =>
-               {
-                  foreach (var classObject in document.Definitions)
-                  {
-                     if (classObject.Key == "IdentityUserOfInteger")
-                     {
-
-                        foreach (var prop in typeof(User).GetProperties())
-                        {
-                           if (prop.CustomAttributes.Any(i => i.AttributeType.FullName == "Newtonsoft.Json.JsonIgnoreAttribute"))
-                              classObject.Value.Properties.Remove(classObject.Value.Properties.SingleOrDefault(i => i.Key == prop.Name));
-                        }
-
-                        document.Definitions.Add(new KeyValuePair<string, NJsonSchema.JsonSchema>("UserBase", classObject.Value));
-                        document.Definitions.Remove(classObject.Key);
-                        break;
-                     }
-                  }
-                  TypeScriptClientGenerator tg = new TypeScriptClientGenerator(document, new TypeScriptClientGeneratorSettings());
-                  foreach (var item in tg.GetAllCodeArtifacts())
-                  {
-                     var test = item.Category;
-
-
-                  }
-               };
+                             AppFunc.MakeClientZipFile(document);
                config.Path = "swagger/{documentName}/swagger.json";
             });
             app.UseSwaggerUi3();
