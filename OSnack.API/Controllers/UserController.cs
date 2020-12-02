@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 namespace OSnack.API.Controllers
 {
    [Route("User")]
+   [AutoValidateAntiforgeryToken]
    public partial class UserController : ControllerBase
    {
       private OSnackDbContext _DbContext { get; }

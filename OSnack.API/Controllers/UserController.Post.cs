@@ -27,12 +27,12 @@ namespace OSnack.API.Controllers
    {
       private bool isUserCreated { get; set; }
 
-      #region *** 201 Created, 422 UnprocessableEntity, 412 PreconditionFailed, 417 ExpectationFailed ***
+      #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(StatusCodes.Status201Created)]
-      [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-      [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPost("Post/[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
@@ -45,16 +45,12 @@ namespace OSnack.API.Controllers
 
             TryValidateModel(newUser);
             ModelState.Remove("PasswordHash");
-            /// if model validation failed
             if (!ModelState.IsValid)
             {
                CoreFunc.ExtractErrors(ModelState, ref ErrorsList);
-               /// return Unprocessable Entity with all the errors
                return UnprocessableEntity(ErrorsList);
             }
 
-
-            /// find the selected role object of the user
             newUser.Role = await _DbContext.Roles.AsTracking()
                 .FirstOrDefaultAsync(r => r.Id == newUser.Role.Id).ConfigureAwait(false);
 
@@ -71,14 +67,13 @@ namespace OSnack.API.Controllers
 
             return result;
          }
-         catch (Exception) // DbUpdateException, DbUpdateConcurrencyException
+         catch (Exception)
          {
             if (isUserCreated)
             {
                _DbContext.Remove(newUser);
                await _DbContext.SaveChangesAsync().ConfigureAwait(false);
             }
-            /// Add the error below to the error list and return bad request
             CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
             return StatusCode(417, ErrorsList);
          }
@@ -87,12 +82,12 @@ namespace OSnack.API.Controllers
       /// <summary>
       ///     Create a new Customer
       /// </summary>
-      #region *** 201 Created, 422 UnprocessableEntity, 412 PreconditionFailed, 417 ExpectationFailed ***
+      #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(StatusCodes.Status201Created)]
-      [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-      [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPost("Post/[action]")]
       public async Task<IActionResult> CreateCustomer([FromBody] User newCustomer)
@@ -137,14 +132,13 @@ namespace OSnack.API.Controllers
 
             return Created("", newCustomer);
          }
-         catch (Exception) // DbUpdateException, DbUpdateConcurrencyException
+         catch (Exception)
          {
             if (isUserCreated)
             {
                _DbContext.Remove(newCustomer);
                await _DbContext.SaveChangesAsync().ConfigureAwait(false);
             }
-            /// Add the error below to the error list and return bad request
             CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
             return StatusCode(417, ErrorsList);
          }
@@ -154,9 +148,9 @@ namespace OSnack.API.Controllers
       ///     Create a Password reset token which is emailed to the intended user
       /// </summary>
       #region *** Response Types ***
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPost("Post/[action]")]
       public async Task<IActionResult> RequestPasswordReset([FromBody] string email)
@@ -217,11 +211,10 @@ namespace OSnack.API.Controllers
                CoreFunc.Error(ref ErrorsList, "Unable to send email.");
                return StatusCode(417, ErrorsList);
             }
-            return Created("", null);
+            return Created("", "Created");
          }
-         catch (Exception) // DbUpdateException, DbUpdateConcurrencyException
+         catch (Exception)
          {
-            /// Add the error below to the error list and return bad request
             CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
             return StatusCode(417, ErrorsList);
          }

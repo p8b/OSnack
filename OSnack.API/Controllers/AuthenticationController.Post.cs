@@ -18,54 +18,56 @@ using P8B.Core.CSharp.Extentions;
 using P8B.Core.CSharp.Models;
 using Newtonsoft.Json;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace OSnack.API.Controllers
 {
    public partial class AuthenticationController : ControllerBase
    {
-      #region *** Response Types ***
+      #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-      [ProducesResponseType(StatusCodes.Status403Forbidden)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status401Unauthorized)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status403Forbidden)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPost("Post/[action]")]
       [ValidateAntiForgeryToken]
       public async Task<IActionResult> LoginOfficial([FromBody] LoginInfo loginInfo) =>
          await Login(loginInfo, AppConst.AccessPolicies.Official).ConfigureAwait(false);
 
-      #region *** Response Types ***
+      #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-      [ProducesResponseType(StatusCodes.Status403Forbidden)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status401Unauthorized)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status403Forbidden)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPost("Post/[action]")]
       [ValidateAntiForgeryToken]
       public async Task<IActionResult> LoginSecret([FromBody] LoginInfo loginInfo) =>
          await Login(loginInfo, AppConst.AccessPolicies.Secret).ConfigureAwait(false);
 
-      #region *** Response Types ***
+      #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status206PartialContent)]
-      [ProducesResponseType(StatusCodes.Status403Forbidden)]
-      [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(User), StatusCodes.Status206PartialContent)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status403Forbidden)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status401Unauthorized)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPost("Post/[action]")]
       public async Task<IActionResult> ExternalLoginOfficial([FromBody] P8B.Core.CSharp.Models.ExternalLoginInfo externalLoginInfo) =>
          await ExternalLogin(externalLoginInfo, AppConst.AccessPolicies.Official).ConfigureAwait(false);
-      #region *** Response Types ***
+      #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status206PartialContent)]
-      [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-      [ProducesResponseType(StatusCodes.Status403Forbidden)]
-      [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(User), StatusCodes.Status206PartialContent)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status403Forbidden)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status401Unauthorized)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPost("Post/[action]")]
       public async Task<IActionResult> ExternalLoginSecret([FromBody] P8B.Core.CSharp.Models.ExternalLoginInfo externalLoginInfo) =>
@@ -280,10 +282,10 @@ namespace OSnack.API.Controllers
          }
       }
 
-      #region *** Response Types ***
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      #region *** ***
+      [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status401Unauthorized)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [Authorize(AppConst.AccessPolicies.Official)]
       [HttpPost("Post/[action]")]

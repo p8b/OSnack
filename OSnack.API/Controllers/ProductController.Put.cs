@@ -7,6 +7,7 @@ using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 
 using P8B.Core.CSharp;
+using P8B.Core.CSharp.Models;
 
 using System;
 using System.Collections.Generic;
@@ -21,10 +22,10 @@ namespace OSnack.API.Controllers
    {
       #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
-      [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(Product), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPut("[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Done
@@ -54,18 +55,15 @@ namespace OSnack.API.Controllers
             if (ModelState.ContainsKey("ImageBase64"))
                ModelState.Remove("OriginalImageBase64");
 
-            /// if model validation failed
             if (!ModelState.IsValid)
             {
                CoreFunc.ExtractErrors(ModelState, ref ErrorsList);
-               /// return Unprocessable Entity with all the errors
                return UnprocessableEntity(ErrorsList);
             }
 
             /// check the database to see if a Product with the same name exists
             if (await _DbContext.Products.AnyAsync(d => d.Id != modifiedProduct.Id && d.Name == modifiedProduct.Name && d.Category.Id == modifiedProduct.Category.Id).ConfigureAwait(false))
             {
-               /// extract the errors and return bad request containing the errors
                CoreFunc.Error(ref ErrorsList, "Duplicated product name in selected category.");
                return StatusCode(412, ErrorsList);
             }

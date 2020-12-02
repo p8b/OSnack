@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 using OSnack.API.Database;
 using OSnack.API.Database.Models;
+using OSnack.API.Extras;
 
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Extentions;
@@ -22,9 +24,9 @@ namespace OSnack.API.Controllers
       /// <summary>
       /// Used to get a list of all users
       /// </summary>
-      #region *** 200 OK, 417 ExpectationFailed ***
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      #region ***  ***
+      [ProducesResponseType(typeof(ResultList<User>), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("[action]/" +
           "{selectedPage}/" +
@@ -33,7 +35,7 @@ namespace OSnack.API.Controllers
           "{filterRole}/" +
           "{isSortAsce}/" +
           "{sortName}")]
-      // [Authorize(AppConst.AccessPolicies.Secret)] /// Ready For Test
+      [Authorize(AppConst.AccessPolicies.Secret)] /// Ready For Test
       public async Task<IActionResult> Get(
           int selectedPage = 1,
           int maxItemsPerPage = 5,
@@ -76,11 +78,10 @@ namespace OSnack.API.Controllers
                 .ToListAsync()
                 .ConfigureAwait(false);
             /// return the list of Role ordered by name
-            return Ok(new { list, totalCount });
+            return Ok(new ResultList<User>(list, totalCount));
          }
-         catch (Exception) //ArgumentNullException
+         catch (Exception)
          {
-            /// in the case any exceptions return the following error
             CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
             return StatusCode(417, ErrorsList);
          }

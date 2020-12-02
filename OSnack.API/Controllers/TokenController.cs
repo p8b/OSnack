@@ -19,7 +19,9 @@ using P8B.UK.API.Services;
 
 namespace OSnack.API.Controllers
 {
+
    [Route("[controller]")]
+   [AutoValidateAntiforgeryToken]
    public class TokenController : Controller
    {
       private UserManager<User> _UserManager { get; }
