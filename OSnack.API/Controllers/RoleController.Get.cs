@@ -19,13 +19,9 @@ namespace OSnack.API.Controllers
 {
    public partial class RoleController
    {
-
-      /// <summary>
-      /// Get all the Roles.
-      /// </summary>
-      #region *** 200 OK, 417 ExpectationFailed ***
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      #region ***  ***
+      [ProducesResponseType(typeof(List<Role>), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("[action]")]
       //[Authorize(AppConst.AccessPolicies.Secret)] /// Done
@@ -33,12 +29,10 @@ namespace OSnack.API.Controllers
       {
          try
          {
-            /// return the list of All Roles
             return Ok(await _DbContext.Roles.ToListAsync().ConfigureAwait(false));
          }
-         catch (Exception) //ArgumentNullException
+         catch (Exception)
          {
-            /// in the case any exceptions return the following error
             CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
             return StatusCode(417, ErrorsList);
          }

@@ -6,6 +6,7 @@ using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 
 using P8B.Core.CSharp;
+using P8B.Core.CSharp.Models;
 
 using System;
 using System.Collections.Generic;
@@ -17,10 +18,10 @@ namespace OSnack.API.Controllers
 {
    public partial class EmailTemplateController
    {
-      #region *** Response Types ***
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      #region *** ***
+      [ProducesResponseType(typeof(EmailTemplate), StatusCodes.Status201Created)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPost("[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)] /// Done
@@ -28,11 +29,9 @@ namespace OSnack.API.Controllers
       {
          try
          {
-            /// if model validation failed
             if (!TryValidateModel(emailTemplate))
             {
                CoreFunc.ExtractErrors(ModelState, ref ErrorsList);
-               /// return Unprocessable Entity with all the errors
                return UnprocessableEntity(ErrorsList);
             }
 
@@ -45,17 +44,13 @@ namespace OSnack.API.Controllers
             /// save files
             emailTemplate.SaveFilesToWWWRoot(WebHost.WebRootPath);
 
-            /// save to db
             _DbContext.EmailTemplates.Add(emailTemplate);
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
 
-
-            /// return Ok with the object
             return Created("", emailTemplate);
          }
-         catch (Exception) //ArgumentNullException
+         catch (Exception)
          {
-            /// in the case any exceptions return the following error
             CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
             return StatusCode(417, ErrorsList);
          }

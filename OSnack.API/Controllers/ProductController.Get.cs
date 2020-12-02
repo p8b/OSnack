@@ -8,6 +8,7 @@ using OSnack.API.Extras;
 
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Extentions;
+using P8B.Core.CSharp.Models;
 
 using System;
 using System.Collections.Generic;
@@ -20,8 +21,8 @@ namespace OSnack.API.Controllers
    public partial class ProductController
    {
       #region ***  ***
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(ResultList<Product>), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("[action]/{selectedPage}/{maxItemsPerPage}/{filterCategory}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}")]
       public async Task<IActionResult> Get(
@@ -56,11 +57,10 @@ namespace OSnack.API.Controllers
                 .Take(maxItemsPerPage)
                 .ToListAsync()
                 .ConfigureAwait(false);
-            return Ok(new { list, totalCount });
+            return Ok(new ResultList<Product>(list, totalCount));
          }
-         catch (Exception) //ArgumentNullException
+         catch (Exception)
          {
-            /// in the case any exceptions return the following error
             CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
             return StatusCode(417, ErrorsList);
          }
@@ -71,8 +71,8 @@ namespace OSnack.API.Controllers
       /// Get a single product by using product and category name 
       /// </summary>
       #region ***  ***
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("[action]/{categoryName}/{productName}")]
       public async Task<IActionResult> Get(string categoryName, string productName)

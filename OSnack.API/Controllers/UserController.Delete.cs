@@ -20,10 +20,10 @@ namespace OSnack.API.Controllers
       /// <summary>
       /// Delete a user (Manager & Admin)
       /// </summary>
-      #region *** Response types ***
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      #region *** ***
+      [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpDelete("[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
@@ -52,6 +52,5 @@ namespace OSnack.API.Controllers
             return StatusCode(417, ErrorsList);
          }
       }
-
    }
 }

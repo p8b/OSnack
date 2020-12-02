@@ -15,6 +15,7 @@ using P8B.Core.CSharp;
 namespace OSnack.API.Controllers
 {
    [Route("[controller]")]
+   [AutoValidateAntiforgeryToken]
    public class ScoreController : ControllerBase
    {
       private OSnackDbContext _DbContext { get; }

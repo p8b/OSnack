@@ -18,6 +18,7 @@ using OSnack.API.Extras;
 namespace OSnack.API.Controllers
 {
    [Route("[controller]")]
+   [AutoValidateAntiforgeryToken]
    public partial class ProductController : ControllerBase
    {
       private OSnackDbContext _DbContext { get; }

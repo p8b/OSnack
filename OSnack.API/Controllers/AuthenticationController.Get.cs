@@ -5,10 +5,15 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
+
 using P8B.Core.CSharp;
+using P8B.Core.CSharp.Models;
+
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,16 +25,16 @@ namespace OSnack.API.Controllers
       /// This method is used to get the antiforgery cookie. 
       /// The setup is done in the startup.cs
       /// </summary>
-      [ProducesResponseType(StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
       [HttpGet("Get/[action]")]
       public void AntiforgeryToken()
       {
          SetAntiforgeryCookie();
       }
 
-      #region *** Response Types ***
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status400BadRequest)]
+      #region *** ***
+      [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [Authorize(AppConst.AccessPolicies.Official)]
       [HttpGet("Get/[action]")]
@@ -42,7 +47,7 @@ namespace OSnack.API.Controllers
 
             SetAntiforgeryCookie();
 
-            return Ok(new { isAuthenticated = false });
+            return Ok();
          }
          catch (Exception)
          {
@@ -51,19 +56,19 @@ namespace OSnack.API.Controllers
          }
       }
 
-      #region *** Response Types ***
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      #region ***  ***
+      [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [Authorize(AppConst.AccessPolicies.Official)]
       [HttpGet("Get/[action]")]
       public async Task<IActionResult> SilentOfficial() => await Silence().ConfigureAwait(false);
 
-      #region *** Response Types ***
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      #region ***  ***
+      [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [Authorize(AppConst.AccessPolicies.Secret)]
       [HttpGet("Get/[action]")]

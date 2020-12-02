@@ -8,6 +8,7 @@ using OSnack.API.Extras;
 using OSnack.API.Extras.CustomTypes;
 
 using P8B.Core.CSharp;
+using P8B.Core.CSharp.Models;
 
 using System;
 using System.Collections.Generic;
@@ -19,9 +20,9 @@ namespace OSnack.API.Controllers
 {
    public partial class EmailTemplateController
    {
-      #region *** Response Types ***
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      #region *** ***
+      [ProducesResponseType(typeof(List<EmailTemplate>), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)] /// Done
@@ -50,17 +51,16 @@ namespace OSnack.API.Controllers
             }
             return Ok(templateList);
          }
-         catch (Exception) //ArgumentNullException
+         catch (Exception)
          {
-            /// in the case any exceptions return the following error
             CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
             return StatusCode(417, ErrorsList);
          }
       }
 
-      #region *** Response Types ***
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      #region *** ***
+      [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("[action]/{templateId}")]
       [Authorize(AppConst.AccessPolicies.Secret)] /// Done
@@ -80,17 +80,16 @@ namespace OSnack.API.Controllers
 
             return Ok(new { template, defaultTemplate });
          }
-         catch (Exception) //ArgumentNullException
+         catch (Exception)
          {
-            /// in the case any exceptions return the following error
             CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
             return StatusCode(417, ErrorsList);
          }
       }
 
-      #region *** Response Types ***
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      #region *** ***
+      [ProducesResponseType(typeof(List<ServerVariables>), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)] /// Done

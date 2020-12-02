@@ -15,6 +15,7 @@ using P8B.Core.CSharp.Models;
 namespace OSnack.API.Controllers
 {
    [Route("[controller]")]
+   [AutoValidateAntiforgeryToken]
    public class NewsletterController : ControllerBase
    {
       private OSnackDbContext _DbContext { get; }

@@ -7,6 +7,7 @@ using OSnack.API.Database.Models;
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Extentions;
 using P8B.Core.CSharp.Models;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace OSnack.API.Controllers
       /// </summary>
       #region *** ***
       [ProducesResponseType(typeof(ResultList<Category>), StatusCodes.Status200OK)]
-      [ProducesResponseType(typeof(List<P8B.Core.CSharp.Models.Error>), StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{isSortAsce}/{sortName}")]
       public async Task<IActionResult> Search(

@@ -19,13 +19,10 @@ namespace OSnack.API.Controllers
 {
    public partial class EmailTemplateController
    {
-      /// <summary>
-      /// Delete email template
-      /// </summary>
-      #region *** Response Types ***
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      #region *** ***
+      [ProducesResponseType(typeof(EmailTemplate), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpDelete("[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)] /// Done
@@ -37,19 +34,16 @@ namespace OSnack.API.Controllers
             if (foundTemplate == null)
             {
                ErrorsList.Add(new Error("", "Template cannot be found."));
-               /// return Unprocessable Entity with all the errors
                return UnprocessableEntity(ErrorsList);
             }
             if (foundTemplate.Locked)
             {
                ErrorsList.Add(new Error("", "Template locked."));
-               /// return Unprocessable Entity with all the errors
                return UnprocessableEntity(ErrorsList);
-            }     
+            }
             if (foundTemplate.IsDefaultTemplate)
             {
                ErrorsList.Add(new Error("", "Cannot Delete Default Template."));
-               /// return Unprocessable Entity with all the errors
                return UnprocessableEntity(ErrorsList);
             }
             /// save files
@@ -57,16 +51,11 @@ namespace OSnack.API.Controllers
 
             _DbContext.Remove(foundTemplate);
 
-            /// save to db
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
-
-
-            /// return Ok with the object
             return Ok(emailTemplate);
          }
-         catch (Exception) //ArgumentNullException
+         catch (Exception)
          {
-            /// in the case any exceptions return the following error
             CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
             return StatusCode(417, ErrorsList);
          }

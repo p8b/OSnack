@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 namespace OSnack.API.Controllers
 {
    [Route("[controller]")]
+   [AutoValidateAntiforgeryToken]
    public partial class RoleController : ControllerBase
    {
       private OSnackDbContext _DbContext { get; }
