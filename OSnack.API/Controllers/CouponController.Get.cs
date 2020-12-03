@@ -30,7 +30,6 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpGet("Get/[action]/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{filterType}/{isSortAsce}/{sortName}")]
       [Authorize(AppConst.AccessPolicies.Secret)] /// Ready for test 
-      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> Search(
           int selectedPage,
           int maxNumberPerItemsPage,
@@ -74,8 +73,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]/{couponCode?}")]
-      [Authorize(AppConst.AccessPolicies.Official)]
-      /// Ready for test
+      [Authorize(AppConst.AccessPolicies.Official)]      /// Ready for test
       public async Task<IActionResult> Validate(Coupon couponCode)
       {
          try

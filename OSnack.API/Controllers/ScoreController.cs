@@ -42,7 +42,6 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
       #endregion
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test   
-      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Official)]
       public async Task<IActionResult> Post([FromBody] Score newScore)
       {
          try

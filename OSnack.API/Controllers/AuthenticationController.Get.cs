@@ -27,7 +27,6 @@ namespace OSnack.API.Controllers
       /// </summary>
       [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
       [HttpGet("Get/[action]")]
-      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Public)]
       public void AntiforgeryToken()
       {
          SetAntiforgeryCookie();
@@ -38,7 +37,6 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [Authorize(AppConst.AccessPolicies.Official)]
-      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Official)]
       [HttpGet("Get/[action]")]
       public async Task<IActionResult> Logout()
       {
@@ -64,7 +62,6 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [Authorize(AppConst.AccessPolicies.Official)]
-      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Official)]
       [HttpGet("Get/[action]")]
       public async Task<IActionResult> SilentOfficial() => await Silence().ConfigureAwait(false);
 
@@ -74,7 +71,6 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [Authorize(AppConst.AccessPolicies.Secret)]
-      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
       [HttpGet("Get/[action]")]
       public async Task<IActionResult> SilentSecret() => await Silence().ConfigureAwait(false);
 

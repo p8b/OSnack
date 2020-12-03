@@ -25,7 +25,6 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpGet("[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)] /// Done  
-      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> Get()
       {
          try

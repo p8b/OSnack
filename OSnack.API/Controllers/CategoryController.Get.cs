@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,7 +29,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{isSortAsce}/{sortName}")]
-      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Public)]
+      [Authorize(AppConst.AccessPolicies.Public)]
       public async Task<IActionResult> Search(
           int selectedPage,
           int maxNumberPerItemsPage,
@@ -69,7 +70,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]")]
-      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Public)]
+      [Authorize(AppConst.AccessPolicies.Public)]
       public async Task<IActionResult> All()
       {
          try

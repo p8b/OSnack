@@ -29,7 +29,6 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpPost("[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Done 
-      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> Post([FromBody] Product newProduct)
       {
          try
@@ -114,7 +113,6 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpPost("Post/[action]/Score")]
       [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test 
-      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Official)]
       public async Task<IActionResult> Score([FromBody] Score newScore)
       {
          try

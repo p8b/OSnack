@@ -29,7 +29,6 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
-      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
       [HttpPost("[action]")]
       public async Task<IActionResult> Post([FromBody] Category newCategory)
       {

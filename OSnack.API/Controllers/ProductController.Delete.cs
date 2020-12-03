@@ -28,7 +28,6 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpDelete("[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Done    
-      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> Delete([FromBody] Product product)
       {
          try

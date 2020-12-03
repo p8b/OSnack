@@ -29,7 +29,6 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpPut("[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Done 
-      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> Put([FromBody] Product modifiedProduct)
       {
          try

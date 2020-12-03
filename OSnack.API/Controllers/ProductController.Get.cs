@@ -25,7 +25,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("GET/[action]/{selectedPage}/{maxItemsPerPage}/{filterCategory}/{searchValue}/{isSortAsce}/{sortName}")]
-      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Public)]
+      [Authorize(AppConst.AccessPolicies.Public)]
       public async Task<IActionResult> SearchPublic(
           int selectedPage, int maxItemsPerPage,
           string filterCategory, string searchValue,
@@ -37,7 +37,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("GET/[action]/{selectedPage}/{maxItemsPerPage}/{filterCategory}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}")]
-      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
+      [Authorize(AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> SearchSecret(
           int selectedPage, int maxItemsPerPage,
           string filterCategory, string searchValue,
@@ -95,7 +95,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status404NotFound)]
       #endregion
       [HttpGet("GET/[action]/{categoryName}/{productName}")]
-      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Public)]
+      [Authorize(AppConst.AccessPolicies.Public)]
       public async Task<IActionResult> ProductAndRelate(string categoryName, string productName)
       {
          try
@@ -115,7 +115,7 @@ namespace OSnack.API.Controllers
             }
             List<Product> relatedProducts = await _DbContext.Products
                 .Include(p => p.Category)
-                .Where(p => p.Category.Id == product.Category.Id 
+                .Where(p => p.Category.Id == product.Category.Id
                          && p.Id != product.Id
                          && p.Status)
                 .Take(3)
@@ -126,7 +126,7 @@ namespace OSnack.API.Controllers
                relatedProducts.AddRange(await _DbContext.Products
                 .Include(p => p.Category)
                 .Take(3 - relatedProducts.Count)
-                .Where(p => !relatedProducts.Contains(p) 
+                .Where(p => !relatedProducts.Contains(p)
                          && p.Id != product.Id
                          && p.Status)
                 .ToListAsync()

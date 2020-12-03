@@ -19,7 +19,7 @@ namespace OSnack.API.Controllers
 {
    public partial class AddressController
    {
-      #region *** ***
+      #region*** ***
       [Consumes(MediaTypeNames.Application.Json)]
       [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
@@ -28,7 +28,6 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpDelete("[action]")]
       [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test 
-      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> Delete([FromBody] Address address)
       {
          try

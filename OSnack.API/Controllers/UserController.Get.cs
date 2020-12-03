@@ -36,7 +36,6 @@ namespace OSnack.API.Controllers
           "{isSortAsce}/" +
           "{sortName}")]
       [Authorize(AppConst.AccessPolicies.Secret)] /// Ready For Test  
-      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> Get(
           int selectedPage = 1,
           int maxItemsPerPage = 5,

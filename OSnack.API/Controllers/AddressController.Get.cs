@@ -24,7 +24,6 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpGet("Get/[action]")]
       [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test  
-      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Official)]
       public async Task<IActionResult> All()
       {
          try

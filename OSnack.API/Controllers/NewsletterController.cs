@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Mime;
 using System.Threading.Tasks;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -39,7 +39,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
       [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
       #endregion
-      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Public)]
+      [Authorize(AppConst.AccessPolicies.Public)]
       public async Task<IActionResult> Post([FromBody] Newsletter newsletter)
       {
          try
@@ -83,7 +83,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(StatusCodes.Status404NotFound)]
       #endregion 
       [HttpDelete("[action]/{email}")]
-      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Public)]
+      [Authorize(AppConst.AccessPolicies.Public)]
       public async Task<IActionResult> Delete(string email)
       {
          try
