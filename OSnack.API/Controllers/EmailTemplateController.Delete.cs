@@ -20,7 +20,7 @@ namespace OSnack.API.Controllers
    public partial class EmailTemplateController
    {
       #region *** ***
-      [ProducesResponseType(typeof(EmailTemplate), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
@@ -52,7 +52,7 @@ namespace OSnack.API.Controllers
             _DbContext.Remove(foundTemplate);
 
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
-            return Ok(emailTemplate);
+            return Ok($"Email Template ('{emailTemplate.Name}') was deleted");
          }
          catch (Exception)
          {

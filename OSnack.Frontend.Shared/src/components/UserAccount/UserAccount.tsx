@@ -1,12 +1,12 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
-import { useEditCurrentUser, useEditCurrentUserPassword } from '../../hooks/apiCallers/user/Put.User';
-import { User } from '../../_core/apiModels';
+import { useUpdateCurrentUserUser, useUpdateCurrentUserPasswordUser } from '../../hooks/apiHooks/useUserHook';
+import { User, RegistrationTypes } from '../../_core/apiModels';
 import { enumToArray, sleep } from '../../_core/appFunc';
-import { CommonRegex, RegistrationTypes } from '../../_core/constant.Variables';
+import { CommonRegex } from '../../_core/constant.Variables';
 import { Button } from '../Buttons/Button';
 import { Input } from '../Inputs/Input';
 import ConfirmPasswordModal from '../Modals/ConfirmPasswordModal';
-import Alert, { AlertObj, AlertTypes, Error } from '../Texts/Alert';
+import Alert, { AlertObj, AlertTypes, ErrorDto } from '../Texts/Alert';
 
 const UserAccount = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -32,23 +32,33 @@ const UserAccount = (props: IProps) => {
 
       sleep(500, isUnmounted).then(() => { setAlertAccountInfo(alertAccountInfo.PleaseWait); });
       setIsOpenConfirmPassword(false);
-
-      useEditCurrentUser(user, currentPass).then(result => {
+      useUpdateCurrentUserUser({ user: user, currentPassword: currentPass }).then((user) => {
          if (isUnmounted.current) return;
-         if (result.resetCurrentPasswordValue) {
-            setIsOpenConfirmPassword(true);
-            setSelectedAction("Details");
-            setCurrentPassword("");
-         }
-         else if (result.alert.List.length > 0) {
-            alertAccountInfo.List = result.alert.List;
-            alertAccountInfo.Type = result.alert.Type;
-            setAlertAccountInfo(alertAccountInfo);
-         }
-         else {
-            setAlertAccountInfo(alertAccountInfo.addSingleSuccess("Updated"));
-         }
+         setIsOpenConfirmPassword(true);
+         setSelectedAction("Details");
+         setCurrentPassword("");
+      }).catch((alert) => {
+         if (isUnmounted.current) return;
+         setAlertAccountInfo(alert);
       });
+
+
+      //useEditCurrentUser(user, currentPass).then(result => {
+      //   if (isUnmounted.current) return;
+      //   if (result.resetCurrentPasswordValue) {
+      //      setIsOpenConfirmPassword(true);
+      //      setSelectedAction("Details");
+      //      setCurrentPassword("");
+      //   }
+      //   else if (result.alert.List.length > 0) {
+      //      alertAccountInfo.List = result.alert.List;
+      //      alertAccountInfo.Type = result.alert.Type;
+      //      setAlertAccountInfo(alertAccountInfo);
+      //   }
+      //   else { //TODO
+      //      setAlertAccountInfo(alertAccountInfo.addSingleSuccess("Updated"));
+      //   }
+      //});
 
       setCurrentPassword(currentPass);
       setSelectedAction("");
@@ -63,10 +73,10 @@ const UserAccount = (props: IProps) => {
       }
 
       let errors = new AlertObj([], AlertTypes.Error);
-      if ((user.Password || "") == "")
-         errors.List.push(new Error('0', "Password Is Required"));
-      else if (user.Password !== confirmPassword)
-         errors.List.push(new Error('0', "Passwords mismatch."));
+      if ((user.password || "") == "")
+         errors.List.push(new ErrorDto('0', "Password Is Required"));
+      else if (user.password !== confirmPassword)
+         errors.List.push(new ErrorDto('0', "Passwords mismatch."));
 
       setIsOpenConfirmPassword(false);
       setAlertAccountInfo(alertAccountInfo.Clear);
@@ -83,31 +93,40 @@ const UserAccount = (props: IProps) => {
       setSelectedAction("");
 
       sleep(500, isUnmounted).then(() => { setAlertPasswordInfo(alertPasswordInfo.PleaseWait); });
-      useEditCurrentUserPassword(user, currentPass).then(result => {
+      useUpdateCurrentUserPasswordUser({ user: user, currentPassword: currentPass }).then((user) => {
          if (isUnmounted.current) return;
-         if (result.resetCurrentPasswordValue) {
-            setIsOpenConfirmPassword(true);
-            setSelectedAction("Password");
-            setCurrentPassword("");
-         }
-         else if (result.alert.List.length > 0) {
-            alertPasswordInfo.List = result.alert.List;
-            alertPasswordInfo.Type = result.alert.Type;
-            setAlertPasswordInfo(alertPasswordInfo);
-         }
-         else {
-            setUser({ ...user, Password: "" });
-            setConfirmPassword("");
-            setAlertPasswordInfo(alertPasswordInfo.addSingleSuccess("Updated"));
-         }
+         setIsOpenConfirmPassword(true);
+         setSelectedAction("Password");
+         setCurrentPassword("");
+      }).catch((alert) => {
+         setAlertPasswordInfo(alert);
       });
+
+      //useEditCurrentUserPassword(user, currentPass).then(result => {
+      //   if (isUnmounted.current) return;
+      //   if (result.resetCurrentPasswordValue) {
+      //      setIsOpenConfirmPassword(true);
+      //      setSelectedAction("Password");
+      //      setCurrentPassword("");
+      //   }
+      //   else if (result.alert.List.length > 0) {
+      //      alertPasswordInfo.List = result.alert.List;
+      //      alertPasswordInfo.Type = result.alert.Type;
+      //      setAlertPasswordInfo(alertPasswordInfo);
+      //   }
+      //   else {  //TODO
+      //      setUser({ ...user, Password: "" });  
+      //      setConfirmPassword("");
+      //      setAlertPasswordInfo(alertPasswordInfo.addSingleSuccess("Updated"));
+      //   }
+      //});
    };
 
    const getRegistrationType = () => {
       let regType = user.registrationMethod?.type;
       if (regType != null && regType != RegistrationTypes.Application) {
          let typeList = enumToArray(RegistrationTypes);
-         return `Linked to ${typeList.find(i => i.id == regType)?.name} account`;
+         return `Linked to ${typeList.find(i => i.name == regType)?.name} account`;
       }
       return "";
    };
@@ -172,10 +191,10 @@ const UserAccount = (props: IProps) => {
                   <h4 className="col-12" children="Change Password" />
                   <Input label={"Password*"}
                      type="password"
-                     value={user.Password}
+                     value={user.password}
                      className="col-12" key="password"
                      showDanger={alertPasswordInfo.checkExist("passwordhash")}
-                     onChange={i => setUser({ ...user, Password: i.target.value })}
+                     onChange={i => setUser({ ...user, password: i.target.value })}
                   />
 
                   <Input label={"Confirm Password*"}

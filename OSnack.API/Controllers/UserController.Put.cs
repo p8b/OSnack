@@ -32,7 +32,8 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPut("Put/[action]")]
-      [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
+      [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test  
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> UpdateUser([FromBody] User modifiedUser)
       {
          try
@@ -126,7 +127,8 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPut("Put/[action]")]
-      [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test
+      [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test  
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Official)]
       public async Task<IActionResult> UpdateCurrentUser([FromBody] UpdateCurrentUserData data)
       {
          try
@@ -198,6 +200,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [Authorize(AppConst.AccessPolicies.Secret)]
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
       [HttpPut("Put/[action]/{userId}/{lockoutEnabled}")]  /// Ready For Test
       public async Task<IActionResult> UserLockout(int userId, bool lockoutEnabled)
       {
@@ -234,6 +237,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPut("Put/[action]")]
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Public)]
       public async Task<IActionResult> ConfirmEmail([FromBody] string pathName)
       {
          try
@@ -295,7 +299,8 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
-      [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test
+      [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test 
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Official)]
       [HttpPut("Put/[action]")]
       public async Task<IActionResult> UpdateCurrentUserPassword([FromBody] UpdateCurrentUserData data)
       {
@@ -333,7 +338,8 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
-      [HttpPut("Put/[action]")] /// Ready For Test
+      [HttpPut("Put/[action]")] /// Ready For Test             
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Public)]
       public async Task<IActionResult> UpdatePasswordWithToken([FromBody] dynamic data)
       {
          try

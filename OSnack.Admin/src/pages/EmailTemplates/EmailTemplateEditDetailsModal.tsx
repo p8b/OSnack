@@ -5,7 +5,7 @@ import Modal from "osnack-frontend-shared/src/components/Modals/Modal";
 import { Input } from "osnack-frontend-shared/src/components/Inputs/Input";
 import { Button } from "osnack-frontend-shared/src/components/Buttons/Button";
 
-import { EmailTemplate, ServerVariables } from "../../_core/apiModel-Admin";
+import { EmailTemplate, ServerVariables } from "osnack-frontend-shared/src/_core/apiModels";
 import Alert, { AlertObj } from "osnack-frontend-shared/src/components/Texts/Alert";
 import InputDropdown from "osnack-frontend-shared/src/components/Inputs/InputDropDown";
 
@@ -26,16 +26,17 @@ const EmailTemplateEditDetailsModal = (props: IProps) => {
    }, [props.isOpen]);
    useEffect(() => {
       let arr = props.serverVariables;
-      for (var i = 0; i < props.emailTemplate.serverVariables?.length; i++) {
-         arr = arr.filter(sv => sv.enumValue != props.emailTemplate.serverVariables[i].enumValue);
-         if (props.emailTemplate.serverVariables[i].replacementValue == "@@TokenUrl@@")
-            setIsTokenUrlRequired(true);
-      }
+      if (props.emailTemplate.serverVariables)
+         for (var i = 0; i < props.emailTemplate.serverVariables?.length; i++) {
+            arr = arr.filter(sv => sv.enumValue != props.emailTemplate.serverVariables![i].enumValue);
+            if (props.emailTemplate.serverVariables[i].replacementValue == "@@TokenUrl@@")
+               setIsTokenUrlRequired(true);
+         }
       setServerVariables(arr);
    }, [props.serverVariables]);
    useEffect(() => {
       const temp = template.serverVariables?.find(sv => sv.replacementValue == "@@TokenUrl@@");
-      if (temp != undefined && template.serverVariables.includes(temp)) {
+      if (temp != undefined && template.serverVariables!.includes(temp)) {
          setIsTokenUrlRequired(true);
       } else {
          setIsTokenUrlRequired(false);
@@ -92,8 +93,8 @@ const EmailTemplateEditDetailsModal = (props: IProps) => {
                      <div className="dropdown-item" key={Math.random()}
                         onClick={() => {
                            let arr: ServerVariables[] = [sv];
-                           if (template.serverVariables?.length > 0)
-                              arr = arr.concat(template.serverVariables);
+                           if (template.serverVariables!.length > 0)
+                              arr = arr.concat(template.serverVariables!);
 
                            setServerVariables(serverVariables.filter(SV => SV != sv));
                            setTemplate({ ...template, serverVariables: arr });
@@ -109,10 +110,10 @@ const EmailTemplateEditDetailsModal = (props: IProps) => {
 
                         <span className="" onClick={() => {
                            let arr: ServerVariables[] = [sv];
-                           if (template.serverVariables?.length > 0)
+                           if (template.serverVariables!.length > 0)
                               arr = arr.concat(serverVariables);
 
-                           setTemplate({ ...template, serverVariables: template.serverVariables.filter(SV => SV != sv) });
+                           setTemplate({ ...template, serverVariables: template.serverVariables!.filter(SV => SV != sv) });
                            setServerVariables(arr);
                         }}
                            children="X"

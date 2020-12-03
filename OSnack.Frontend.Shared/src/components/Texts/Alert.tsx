@@ -1,4 +1,5 @@
-﻿import React, { CSSProperties } from 'react';
+﻿import React, { CSSProperties, useRef, useState } from 'react';
+import { sleep } from '../../_core/appFunc';
 
 const Alert = (props: IProps) => {
    let bgColor = 'rgb(0, 0, 0)';
@@ -28,7 +29,7 @@ const Alert = (props: IProps) => {
    return (
       <div style={style} className={`row col-12 m-0 mt-2 mb-2 ${props?.className ?? ""} ${(props.alert!.List.length === 0) ? "d-none" : ""}`}>
          <div className="col-11"
-            children={props.alert!.List.map((error: Error) => <div key={error.key} children={error.value} />)}
+            children={props.alert!.List.map((error: ErrorDto) => <div key={error.key} children={error.value} />)}
          />
          <div className="col-1 p-0 pr-2 text-right"
             children={<a onClick={props.onClosed} children="✘" />}
@@ -49,26 +50,24 @@ export enum AlertTypes {
    Error = 1,
    Warning = 2,
 };
-
-
-export class Error {
-   key?: string;
-   value?: string | any;
-   constructor(key?: string | number, value?: string | any) {
-      this.key = key?.toString();
+export class ErrorDto {
+   key?: string | undefined;
+   value?: string | undefined;
+   constructor(key?: string, value?: string) {
+      this.key = key;
       this.value = value;
-   };
-
-};
-
+   }
+}
 export class AlertObj {
-   List: Error[] = [];
+   List: ErrorDto[] = [];
    Type?: AlertTypes;
+   httpStatus?: number | string;
    isCleared = false;
 
-   constructor(list?: Error[], type?: AlertTypes) {
+   constructor(list?: ErrorDto[], type?: AlertTypes, status?: number | string) {
       this.List = list ?? [];
       this.Type = type;
+      this.httpStatus = status;
    }
    checkExist(inputName: string = "") {
       return !!this.List!.find(t => t.key!.toLowerCase() === inputName.toLowerCase());
@@ -80,20 +79,23 @@ export class AlertObj {
       if (includesError) {
          this.List = this.List.filter(t => t.key!.toLowerCase() !== inputName.toLowerCase());
          if (!this.List!.find(t => t.key!.includes("ErrorRemoved")))
-            this.List.push(new Error("ErrorRemoved", "Highlighted Fields Are Required."));
+            this.List.push(new ErrorDto("ErrorRemoved", "Highlighted Fields Are Required."));
       }
       return returnVal;
    }
    PleaseWait = () => {
       if (!this.isCleared && this.List.length === 0) {
-         this.List = [new Error("0", "Just a moment please...")];
+         this.List = [new ErrorDto("0", "Just a moment please...")];
          this.Type = AlertTypes.Warning;
+         return new AlertObj(this.List, this.Type);
       }
-      return new AlertObj(this.List, this.Type);
+      else {
+         return this;
+      }
    };
    Loading = () => {
       if (!this.isCleared && this.List.length === 0) {
-         this.List = [new Error("0", "Loading...")];
+         this.List = [new ErrorDto("0", "Loading...")];
          this.Type = AlertTypes.Warning;
       }
       return new AlertObj(this.List, this.Type);
@@ -104,16 +106,34 @@ export class AlertObj {
       return new AlertObj();
    };
    addSingleWarning(msg: string) {
-      this.List = [new Error("0", msg)];
+      this.List = [new ErrorDto("0", msg)];
       this.Type = AlertTypes.Warning;
       return new AlertObj(this.List, this.Type);
    }
    addSingleSuccess(msg: string, key: string = "0") {
-      this.List = [new Error(key, msg)];
+      this.List = [new ErrorDto(key, msg)];
       this.Type = AlertTypes.Success;
       return new AlertObj(this.List, this.Type);
    }
 }
 
+export const useAlert = (init: AlertObj) => {
+   const [alert, setAlert] = useState(init);
 
+   const PleaseWait = (waitms: number = 500, isCancel: React.MutableRefObject<boolean> = useRef(false)) => {
+      sleep(waitms, isCancel).then(() => {
+         setAlert(new AlertObj([new ErrorDto("0", "Just a moment please...")], AlertTypes.Warning));
+      });
+      if (alert.List.length === 0) {
+
+      };
+   };
+   const set = (value: AlertObj) => {
+      setAlert(value);
+   };
+   const Clear = () => {
+      setAlert(new AlertObj());
+   };
+   return { alert, set, PleaseWait, Clear };
+};
 

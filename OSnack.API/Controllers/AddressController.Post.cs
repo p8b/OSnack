@@ -25,7 +25,8 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPost("[action]")]
-      [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test
+      [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test    
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Official)]
       public async Task<IActionResult> Post([FromBody] Address newAddress)
       {
          try

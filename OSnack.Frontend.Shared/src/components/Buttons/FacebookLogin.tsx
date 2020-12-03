@@ -1,7 +1,7 @@
 ﻿import React from 'react';
 import { uuidv4 } from '../../_core/appFunc';
-import { ExternalLoginInfo } from '../../_core/apiModels';
-import { RegistrationTypes } from '../../_core/constant.Variables';
+import { ExternalLoginInfo, RegistrationTypes } from '../../_core/apiModels';
+
 
 const FacebookLogin = (props: IProps) => {
    let callBackWasCalled = false;
@@ -23,7 +23,12 @@ const FacebookLogin = (props: IProps) => {
          callBackWasCalled = true;
          const reply = windowPop!.document.location.search.replace("?code", "")!.replace("&state", "")!.split('=');
          if (reply![2] != null && localStorage.getItem("facebookState") === reply![2]) {
-            props.onSuccess(new ExternalLoginInfo(reply![1], reply![2], RegistrationTypes.Facebook));
+            props.onSuccess({
+               code: reply![1],
+               state: reply![2],
+               type: RegistrationTypes.Facebook,
+               rememberMe: false
+            });
             localStorage.removeItem("facebookState");
          } else props.onFailure("Facebook Login Failed. Cannot retrieve code!");
       };

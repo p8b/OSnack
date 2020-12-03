@@ -43,7 +43,7 @@ export class httpCaller {
       credentials: "include",
     * @param apiUri
     */
-   static get = async (apiUri: string) => fetch(`${apiUri}`, {
+   static GET = async (apiUri: string) => fetch(`${apiUri}`, {
       headers: new Headers({
          'content-type': 'application/json',
       }),
@@ -65,7 +65,7 @@ export class httpCaller {
     * @param apiUri
     * @param bodyObject
     */
-   static post = async (apiUri: string, bodyObject: any = "") => fetch(`${apiUri}`, {
+   static POST = async (apiUri: string, bodyObject: any = "") => fetch(`${apiUri}`, {
       headers: new Headers({
          Accept: 'application/json',
          'content-type': 'application/json',
@@ -90,7 +90,7 @@ export class httpCaller {
     * @param apiUri
     * @param bodyObject
     */
-   static put = async (apiUri: string, bodyObject: any = undefined) => fetch(`${apiUri}`, {
+   static PUT = async (apiUri: string, bodyObject: any = undefined) => fetch(`${apiUri}`, {
       headers: new Headers({
          Accept: 'application/json',
          'content-type': 'application/json',
@@ -115,7 +115,7 @@ export class httpCaller {
     * @param apiUri
     * @param bodyObject
     */
-   static delete = async (apiUri: string, bodyObject: any = "") => fetch(`${apiUri}`, {
+   static DELETE = async (apiUri: string, bodyObject: any = "") => fetch(`${apiUri}`, {
       headers: new Headers({
          Accept: 'application/json',
          'content-type': 'application/json',
@@ -160,7 +160,7 @@ export const getBase64fromUrlImage = (url: string) =>
  * @param enumObj any enum
  *///Turn enum to array of type "ddLookup".
 export const enumToArray = (enumObj: any) =>
-   Object.keys(enumObj).filter((value: any) => isNaN(Number(value)) === false)
+   Object.keys(enumObj)
       .map((k: any) => new ddLookup(k, (enumObj[k] as string).replace(/_/g, ' ')));
 
 export const uuidv4 = () => {

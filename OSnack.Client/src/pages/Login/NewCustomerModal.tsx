@@ -1,15 +1,15 @@
 ﻿import React, { useState, useEffect, useRef } from "react";
 import { Redirect, useHistory } from "react-router-dom";
-import { User } from "osnack-frontend-shared/src/_core/apiModels";
-import { RegistrationTypes, CommonRegex } from "osnack-frontend-shared/src/_core/constant.Variables";
+import { RegistrationTypes, User } from "osnack-frontend-shared/src/_core/apiModels";
+import { CommonRegex } from "osnack-frontend-shared/src/_core/constant.Variables";
 import { enumToArray, sleep } from "osnack-frontend-shared/src/_core/appFunc";
 import PageHeader from "osnack-frontend-shared/src/components/Texts/PageHeader";
 import { Input } from "osnack-frontend-shared/src/components/Inputs/Input";
 import { CheckBox } from "osnack-frontend-shared/src/components/Inputs/CheckBox";
 import { Button } from "osnack-frontend-shared/src/components/Buttons/Button";
-import { useCreateCustomer } from "../../hooks/apiCallers/user/Post.User";
+import { useCreateCustomerUser } from "osnack-frontend-shared/src/hooks/apiHooks/useUserHook";
 import Modal from "osnack-frontend-shared/src/components/Modals/Modal";
-import Alert, { AlertObj, AlertTypes, Error } from "osnack-frontend-shared/src/components/Texts/Alert";
+import Alert, { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/components/Texts/Alert";
 
 const NewCustomerModal = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -30,29 +30,29 @@ const NewCustomerModal = (props: IProps) => {
    const createNewCustomer = async () => {
       let errors = [];
       if ((user.firstName || "") === "")
-         errors.push(new Error("firstName", "Name is required"));
+         errors.push(new ErrorDto("firstName", "Name is required"));
       if ((user.surname || "") === "")
-         errors.push(new Error("surname", "Surname is required"));
+         errors.push(new ErrorDto("surname", "Surname is required"));
       if ((user.email || "") === "")
-         errors.push(new Error("email", "Email is required"));
-      if ((user?.Password || "") === "" && !externalLogin)
-         errors.push(new Error("passwordHash", "Password is required"));
-      if ((user.Password || "") !== confirmPassword && !externalLogin)
-         errors.push(new Error("passwordHash", "Passwords must match."));
+         errors.push(new ErrorDto("email", "Email is required"));
+      if ((user?.password || "") === "" && !externalLogin)
+         errors.push(new ErrorDto("passwordHash", "Password is required"));
+      if ((user.password || "") !== confirmPassword && !externalLogin)
+         errors.push(new ErrorDto("passwordHash", "Passwords must match."));
       if (!termsAndCondition)
-         errors.push(new Error("0", "You must agree to terms and conditions"));
+         errors.push(new ErrorDto("0", "You must agree to terms and conditions"));
       if (errors.length > 0)
          setAlert(new AlertObj(errors, AlertTypes.Error));
       else {
 
          sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-         useCreateCustomer(user).then(result => {
+         useCreateCustomerUser(user).then(user => {
             if (isUnmounted.current) return;
-            if (result.List.length > 0)
-               setAlert(result);
-            else
-               setRedirectToMain(true);
+            setRedirectToMain(true);
             setAlert(alert.Clear);
+         }).catch(alert => {
+            if (isUnmounted.current) return;
+            setAlert(alert);
          });
       };
    };
@@ -62,7 +62,7 @@ const NewCustomerModal = (props: IProps) => {
       if (regType != null && regType != RegistrationTypes.Application) {
          let typeList = enumToArray(RegistrationTypes);
          externalLogin = true;
-         return `(${typeList.find(i => i.id == regType)?.name} account)`;
+         return `(${typeList.find(i => i.name == regType)?.name} account)`;
       }
       return "*";
    };
@@ -106,10 +106,10 @@ const NewCustomerModal = (props: IProps) => {
                <>
                   <Input label={"Password*"}
                      type="password"
-                     value={user.Password}
+                     value={user.password}
                      className="col-6" key="password"
                      showDanger={alert.checkExist("passwordhash")}
-                     onChange={i => setUser({ ...user, Password: i.target.value })}
+                     onChange={i => setUser({ ...user, password: i.target.value })}
                   />
 
                   <Input label={"Confirm Password*"}

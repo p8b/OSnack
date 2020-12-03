@@ -1,8 +1,8 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import ButtonCard from 'osnack-frontend-shared/src/components/Buttons/ButtonCard';
-import { useGetAllEmailTemplates, } from '../../hooks/apiCallers/emailTemplate/Get.EmailTemplates';
-import { EmailTemplate } from '../../_core/apiModel-Admin';
+import { useAllEmailTemplate } from 'osnack-frontend-shared/src/hooks/apiHooks/useEmailTemplateHook';
+import { EmailTemplate } from 'osnack-frontend-shared/src/_core/apiModels';
 import Alert, { AlertObj } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { sleep } from 'osnack-frontend-shared/src/_core/appFunc';
 import { Redirect } from 'react-router-dom';
@@ -26,13 +26,24 @@ const EmailTemplatePanel = (props: IProps) => {
    };
    const reloadTemplateList = () => {
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      useGetAllEmailTemplates().then((result) => {
+      useAllEmailTemplate().then((emailTemplateList) => {
          if (isUnmounted.current) return;
 
-         setTempList(result.templateList);
-         setDefaultEmailTemplate(result.templateList.find(tl => tl.isDefaultTemplate) || new EmailTemplate());
+         setTempList(emailTemplateList);
+         setDefaultEmailTemplate(emailTemplateList.find(tl => tl.isDefaultTemplate) || new EmailTemplate());
          setAlert(alert.Clear);
+      }).catch((alert) => {
+         if (isUnmounted.current) return;
+         setAlert(alert);
       });
+
+      //useGetAllEmailTemplates().then((result) => {
+      //   if (isUnmounted.current) return;
+
+      //   setTempList(result.templateList);
+      //   setDefaultEmailTemplate(result.templateList.find(tl => tl.isDefaultTemplate) || new EmailTemplate());
+      //   setAlert(alert.Clear);
+      //});
    };
 
    if (redirectToEditPage)

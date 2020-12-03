@@ -26,7 +26,8 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpDelete("[action]")]
-      [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
+      [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test 
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> Delete([FromBody] User thisUser)
       {
          try

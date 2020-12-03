@@ -9,6 +9,7 @@ using OSnack.API.Extras.CustomTypes;
 
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Extentions;
+using P8B.Core.CSharp.Models;
 
 using System;
 using System.Collections.Generic;
@@ -24,11 +25,12 @@ namespace OSnack.API.Controllers
       /// search by Code or filter by type
       /// </summary>
       #region *** ***
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(MultiResult<List<Coupon>, int>), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<P8B.Core.CSharp.Models.Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{filterType}/{isSortAsce}/{sortName}")]
-      [Authorize(AppConst.AccessPolicies.Secret)] /// Ready for test
+      [Authorize(AppConst.AccessPolicies.Secret)] /// Ready for test 
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> Search(
           int selectedPage,
           int maxNumberPerItemsPage,
@@ -54,7 +56,7 @@ namespace OSnack.API.Controllers
                 .ToListAsync()
                 .ConfigureAwait(false);
 
-            return Ok(new { list, totalCount });
+            return Ok(new MultiResult<List<Coupon>, int>(list, totalCount));
          }
          catch (Exception)
          {
@@ -68,12 +70,13 @@ namespace OSnack.API.Controllers
       /// </summary>
       #region *** ***
       [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
-      [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]/{couponCode?}")]
-      [Authorize(AppConst.AccessPolicies.Official)] /// Ready for test
-      public async Task<IActionResult> Validate(string couponCode)
+      [Authorize(AppConst.AccessPolicies.Official)]
+      /// Ready for test
+      public async Task<IActionResult> Validate(Coupon couponCode)
       {
          try
          {
@@ -91,7 +94,7 @@ namespace OSnack.API.Controllers
                return StatusCode(412, ErrorsList);
             }
 
-            return Ok(coupon);
+            return Ok();
          }
          catch (Exception)
          {
@@ -99,6 +102,5 @@ namespace OSnack.API.Controllers
             return StatusCode(417, ErrorsList);
          }
       }
-
    }
 }

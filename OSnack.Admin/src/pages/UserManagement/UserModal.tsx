@@ -1,17 +1,14 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
-import { Role, User } from 'osnack-frontend-shared/src/_core/apiModels';
+import { RegistrationTypes, Role, User } from 'osnack-frontend-shared/src/_core/apiModels';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Input } from 'osnack-frontend-shared/src/components/Inputs/Input';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import ButtonPopupConfirm from 'osnack-frontend-shared/src/components/Buttons/ButtonPopupConfirm';
 import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
-import Alert, { AlertObj } from 'osnack-frontend-shared/src/components/Texts/Alert';
-import { useCreateUser } from '../../hooks/apiCallers/user/Post.User';
-import { useModifyUser } from '../../hooks/apiCallers/user/Put.User';
-import { useDeleteUser } from '../../hooks/apiCallers/user/Delete.User';
+import Alert, { AlertObj, AlertTypes, ErrorDto } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import { useCreateUserUser, useUpdateUserUser, useDeleteUser } from 'osnack-frontend-shared/src/hooks/apiHooks/useUserHook';
 import InputDropdown from 'osnack-frontend-shared/src/components/Inputs/InputDropDown';
 import { enumToArray, sleep } from 'osnack-frontend-shared/src/_core/appFunc';
-import { RegistrationTypes } from 'osnack-frontend-shared/src/_core/constant.Variables';
 
 const UserModal = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -27,47 +24,41 @@ const UserModal = (props: IProps) => {
 
    const createUser = async () => {
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      useCreateUser(user).then(result => {
+      useCreateUserUser(user).then(user => {
          if (isUnmounted.current) return;
-
-         if (result.alert.List.length > 0) {
-            alert.List = result.alert.List;
-            alert.Type = result.alert.Type;
-            setAlert(alert);
-         } else {
-            setAlert(alert.Clear);
-            props.onSuccess();
-         }
+         setAlert(alert.Clear);
+         setUser(user);
+         props.onSuccess();
+      }).catch(alert => {
+         if (isUnmounted.current) return;
+         setAlert(alert);
       });
    };
    const updateUser = async () => {
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      useModifyUser(user).then(result => {
+      console.log(user);
+      useUpdateUserUser(user).then(user => {
          if (isUnmounted.current) return;
-
-         if (result.alert.List.length > 0) {
-            alert.List = result.alert.List;
-            alert.Type = result.alert.Type;
-            setAlert(alert);
-         } else {
-            props.onSuccess();
-            setAlert(alert.Clear);
-         }
+         setAlert(alert.Clear);
+         setUser(user);
+         props.onSuccess();
+      }).catch(alert => {
+         if (isUnmounted.current) return;
+         setAlert(alert);
       });
    };
    const deleteUser = async () => {
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      useDeleteUser(user).then(result => {
+      useDeleteUser(user).then(message => {
          if (isUnmounted.current) return;
-
-         if (result.alert.List.length > 0) {
-            alert.List = result.alert.List;
-            alert.Type = result.alert.Type;
-            setAlert(alert);
-         } else {
-            props.onSuccess();
-            setAlert(alert.Clear);
-         }
+         alert.List.push(new ErrorDto("confirm", message));
+         alert.Type = AlertTypes.Success;
+         setAlert(alert);
+         setUser(user);
+         props.onSuccess();
+      }).catch(alert => {
+         if (isUnmounted.current) return;
+         setAlert(alert);
       });
    };
 
@@ -114,7 +105,7 @@ const UserModal = (props: IProps) => {
          <div className="row">
             <Input label={`Email ${user.id > 0 ? (user.emailConfirmed ? "(Verified)" : "(Not Verified)") : ""}`}
                value={user.email}
-               disabled={user.registrationMethod?.type != 0}
+               disabled={user.registrationMethod?.type != null}
                showDanger={alert.checkExistFilterRequired("Email")}
                onChange={i => { setUser({ ...user, email: i.target.value }); }}
                className="col-12 col-sm-6" />

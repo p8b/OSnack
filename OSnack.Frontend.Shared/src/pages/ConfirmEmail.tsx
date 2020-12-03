@@ -2,7 +2,7 @@
 import { Redirect } from 'react-router-dom';
 import Modal from '../components/Modals/Modal';
 import Alert, { AlertObj } from '../components/Texts/Alert';
-import { useConfirmEmailWithToken } from '../hooks/apiCallers/user/Put.User';
+import { useConfirmEmailUser } from '../hooks/apiHooks/useUserHook';
 import { sleep } from '../_core/appFunc';
 
 const ConfrimEmail = (props: IProps) => {
@@ -13,17 +13,24 @@ const ConfrimEmail = (props: IProps) => {
    useEffect(() => {
 
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      useConfirmEmailWithToken(window.location.pathname).then(result => {
+      useConfirmEmailUser(window.location.pathname).then(() => {
          if (isUnmounted.current) return;
-         if (result.isSuccess) {
-            setAlert(alert.addSingleSuccess("Success"));
-         }
-         else {
-            alert.List = result.alert.List;
-            alert.Type = result.alert.Type;
-            setAlert(alert);
-         }
+         setAlert(alert.addSingleSuccess("Success"));
+      }).catch((alert) => {
+         if (isUnmounted.current) return;
+         setAlert(alert);
       });
+      //useConfirmEmailWithToken(window.location.pathname).then(result => {
+      //   if (isUnmounted.current) return;
+      //   if (result.isSuccess) {
+      //      setAlert(alert.addSingleSuccess("Success"));
+      //   }
+      //   else {
+      //      alert.List = result.alert.List;
+      //      alert.Type = result.alert.Type;
+      //      setAlert(alert);
+      //   }
+      //});
       return () => { isUnmounted.current = true; };
    }, []);
 

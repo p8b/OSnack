@@ -1,22 +1,24 @@
 ﻿import React, { useState, useContext, useRef, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 
-import { CommonRegex } from "../../_core/constant.Variables";
+import { ClientAppAccess, CommonRegex } from "../../_core/constant.Variables";
 import PageHeader from "../../components/Texts/PageHeader";
 import { Input } from "../../components/Inputs/Input";
 import { CheckBox } from "../../components/Inputs/CheckBox";
 import { Button } from "../../components/Buttons/Button";
 import GoogleLogin from "../../components/Buttons/GoogleLogin";
-import { useLogin, useExternalLogin } from "../../hooks/apiCallers/authentication/Post.Authentication";
+import {
+   useLoginOfficialAuthentication, useLoginSecretAuthentication
+   , useExternalLoginOfficialAuthentication, useExternalLoginSecretAuthentication
+} from "../../hooks/apiHooks/useAuthenticationHook";
 import { AuthContext } from "../../_core/authenticationContext";
 import { ExternalLoginInfo, LoginInfo, User } from "../../_core/apiModels";
 import ForgotPasswordModal from "../Modals/ForgotPasswordModal";
-import Alert, { AlertObj, AlertTypes, Error } from "../Texts/Alert";
-import { sleep } from "../../_core/appFunc";
+import Alert, { AlertObj, AlertTypes, ErrorDto, useAlert } from "../Texts/Alert";
 
 const Login = (props: IProps) => {
    const isUnmounted = useRef(false);
-   const [alert, setAlert] = useState(new AlertObj());
+   const errorAlert = useAlert(new AlertObj());
    const [loginInfo, setLoginInfo] = useState(new LoginInfo());
    const [forgotPasswordModalIsOpen, setForgotPasswordModalIsOpen] = useState(false);
    const auth = useContext(AuthContext);
@@ -27,47 +29,97 @@ const Login = (props: IProps) => {
    }, []);
 
    const login = async () => {
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      useLogin(loginInfo, props.access).then(result => {
-         if (isUnmounted.current) return;
-         if (result.alert.List.length > 0) {
-            alert.List = result.alert.List;
-            alert.Type = result.alert.Type;
-            setAlert(alert);
-         } else if (result.isAuthenticated) {
-            auth.setState({ isAuthenticated: result.isAuthenticated, user: result.user });
-            setAlert(alert.Clear);
-         }
-      });
+      errorAlert.PleaseWait(500, isUnmounted);
+      switch (props.access) {
+         case ClientAppAccess.Official:
+            useLoginOfficialAuthentication(loginInfo).then((user: User) => {
+               if (isUnmounted.current) return;
+               auth.setState({ isAuthenticated: true, user: user });
+               errorAlert.Clear;
+            }).catch((result: AlertObj) => {
+               if (isUnmounted.current) return;
+               errorAlert.set(result);
+            });
+            break;
+         case ClientAppAccess.Secret:
+            useLoginSecretAuthentication(loginInfo).then((user: User) => {
+               if (isUnmounted.current) return;
+               auth.setState({ isAuthenticated: true, user: user });
+               errorAlert.Clear;
+            }).catch((result: AlertObj) => {
+               if (isUnmounted.current) return;
+               errorAlert.set(result);
+            });
+            break;
+         default:
+            break;
+      }
+      //useLogin(loginInfo, props.access).then(result => {
+      //   if (isUnmounted.current) return;
+      //   if (result.alert.List.length > 0) {
+      //      alert.List = result.alert.List;
+      //      alert.Type = result.alert.Type;
+      //      setAlert(alert);
+      //   } else if (result.isAuthenticated) {
+      //      auth.setState({ isAuthenticated: result.isAuthenticated, user: result.user });
+      //      setAlert(alert.Clear);
+      //   }
+      //});
    };
    const externalLogin = async (info: ExternalLoginInfo) => {
 
       info.rememberMe = loginInfo.rememberMe;
       info.redirectUrl = window.location.href;
 
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      useExternalLogin(info, props.access).then(result => {
-         if (isUnmounted.current) return;
-         if (result.alert.List.length > 0) {
-            alert.List = result.alert.List;
-            alert.Type = result.alert.Type;
-            setAlert(alert);
-         }
-         /// pass the state user info to create new customer
-         else if (!result.isAuthenticated) {
-            props.externalLoginFailed(result.user);
-            setAlert(alert.Clear);
-         } else if (result.isAuthenticated) {
-            auth.setState({ isAuthenticated: result.isAuthenticated, user: result.user });
-         }
-      });
+      errorAlert.PleaseWait(500, isUnmounted);
+      switch (props.access) {
+         case ClientAppAccess.Official:
+            useExternalLoginOfficialAuthentication(info).then((user: User) => {
+
+               if (false /*!result.isAuthenticated*/) {
+                  props.externalLoginFailed(user);
+                  errorAlert.Clear;
+               } else if (true /*result.isAuthenticated*/) {
+                  auth.setState({ isAuthenticated: true, user: user });
+               }
+            }).catch((result: AlertObj) => {
+               if (isUnmounted.current) return;
+               errorAlert.set(result);
+            });
+            break;
+         case ClientAppAccess.Secret:
+            useExternalLoginSecretAuthentication(info).then((user: User) => {
+
+               if (false /*!result.isAuthenticated*/) {
+                  props.externalLoginFailed(user);
+                  errorAlert.Clear;
+               } else if (true /*result.isAuthenticated*/) {
+                  auth.setState({ isAuthenticated: true, user: user });
+               }
+            }).catch((result: AlertObj) => {
+               if (isUnmounted.current) return;
+               errorAlert.set(result);
+            });
+            break;
+         default:
+            break;
+      }
+      //sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+      //useExternalLogin(info, props.access).then(result => {
+      //   if (isUnmounted.current) return;
+      //   if (result.alert.List.length > 0) {
+      //      alert.List = result.alert.List;
+      //      alert.Type = result.alert.Type;
+      //      setAlert(alert);
+      //   }
+      //   /// pass the state user info to create new customer
+      //});
    };
 
-   const externalLoginWait = () => {
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-   };
+   const externalLoginWait = () => { errorAlert.PleaseWait(); };
+
    const externalLoginFailed = (err: string) => {
-      setAlert(new AlertObj([new Error(Math.random(), err)], AlertTypes.Error));
+      errorAlert.set(new AlertObj([new ErrorDto(Math.random().toString(), err)], AlertTypes.Error));
    };
 
    /// If user is authenticated then redirect the user to home page
@@ -85,10 +137,10 @@ const Login = (props: IProps) => {
 
          <Input label="Email"
             type="email"
-            id="email" 
+            id="email"
             value={loginInfo.email}
             validationPattern={CommonRegex.Email}
-            showDanger={alert.checkExist("email")}
+            showDanger={errorAlert.alert.checkExist("email")}
             onChange={i => setLoginInfo({ ...loginInfo, email: i.target.value })}
          />
 
@@ -96,7 +148,7 @@ const Login = (props: IProps) => {
             type="password"
             onPressedEnter={login}
             value={loginInfo.password}
-            showDanger={alert.checkExist("password")}
+            showDanger={errorAlert.alert.checkExist("password")}
             onChange={i => setLoginInfo({ ...loginInfo, password: i.target.value })}
          />
 
@@ -111,7 +163,7 @@ const Login = (props: IProps) => {
 
          </div>
 
-         <Alert alert={alert} className="col-12" onClosed={() => setAlert(alert.Clear)} />
+         <Alert alert={errorAlert.alert} className="col-12" onClosed={() => errorAlert.Clear} />
 
          <Button children="Login" className="col-12 btn-lg btn-green mt-2 " onClick={login} />
          {  !props.disableExternalLogin &&
@@ -132,7 +184,7 @@ const Login = (props: IProps) => {
                   onSuccess={externalLogin}
                   onFailure={externalLoginFailed}
                   onClick={externalLoginWait}
-                  onClosedWithoutAction={() => setAlert(alert.Clear)}
+                  onClosedWithoutAction={() => errorAlert.Clear}
                />
             </>
          }
@@ -148,7 +200,7 @@ const Login = (props: IProps) => {
 
 declare type IProps = {
    fromPath: string;
-   access: string;
+   access: ClientAppAccess;
    disableExternalLogin?: boolean;
    externalLoginFailed: (user: User) => void;
 };

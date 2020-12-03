@@ -5,10 +5,9 @@ import ButtonCard from 'osnack-frontend-shared/src/components/Buttons/ButtonCard
 import Alert, { AlertObj } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Address } from 'osnack-frontend-shared/src/_core/apiModels';
 import { sleep } from 'osnack-frontend-shared/src/_core/appFunc';
-import { useGetAllAddresses } from '../../hooks/apiCallers/address/Get.Address';
+import { useAllAddress, useSetDefaultAddress } from 'osnack-frontend-shared/src/hooks/apiHooks/useAddressHook';
 import AddressModal from './AddressModal';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
-import { useModifyDefaultAddress } from '../../hooks/apiCallers/address/Put.Address';
 
 const MyAddresses = (props: IProps) => {
    //const auth = useContext(AuthContext);
@@ -29,11 +28,14 @@ const MyAddresses = (props: IProps) => {
    };
    const reloadAddressList = () => {
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      useGetAllAddresses().then((result) => {
+      useAllAddress().then(addresses => {
          if (isUnmounted.current) return;
 
-         setAddressList(result.addressList);
+         setAddressList(addresses);
          setAlert(alert.Clear);
+      }).catch(alert => {
+         if (isUnmounted.current) return;
+         setAlert(alert);
       });
    };
 
@@ -44,13 +46,11 @@ const MyAddresses = (props: IProps) => {
 
    const setDefault = (addressId: number) => {
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      useModifyDefaultAddress(addressId).then((result) => {
-         if (result.alert.List.length > 0) {
-            alert.List = result.alert.List;
-            alert.Type = result.alert.Type;
-            setAlert(alert);
-         }
+      useSetDefaultAddress(addressId).then(() => {
          reloadAddressList();
+      }).catch(alert => {
+         if (isUnmounted.current) return;
+         setAlert(alert);
       });
    };
 

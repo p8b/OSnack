@@ -26,6 +26,7 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpDelete("[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> Delete([FromBody] Coupon coupon)
       {
          try

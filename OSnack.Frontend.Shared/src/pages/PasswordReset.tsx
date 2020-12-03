@@ -3,9 +3,9 @@ import { Redirect } from 'react-router-dom';
 import { Button } from '../components/Buttons/Button';
 import { Input } from '../components/Inputs/Input';
 import Modal from '../components/Modals/Modal';
-import Alert, { AlertObj, AlertTypes, Error } from '../components/Texts/Alert';
+import Alert, { AlertObj, AlertTypes, ErrorDto } from '../components/Texts/Alert';
 import PageHeader from '../components/Texts/PageHeader';
-import { useResetPasswordWithToken } from '../hooks/apiCallers/user/Put.User';
+import { useUpdatePasswordWithTokenUser } from '../hooks/apiHooks/useUserHook';
 import { sleep } from '../_core/appFunc';
 
 const ConfrimEmail = (props: IProps) => {
@@ -19,27 +19,40 @@ const ConfrimEmail = (props: IProps) => {
 
    useEffect(() => {
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      useResetPasswordWithToken(window.location.pathname, email, password, true).then(result => {
+      useUpdatePasswordWithTokenUser({
+         pathName: window.location.pathname,
+         email: email,
+         password: password,
+         justCheckToken: true
+      }).then((user) => {
          if (isUnmounted.current) return;
-         if (result.alert.List.length > 0) {
-            alert.List = result.alert.List;
-            alert.Type = result.alert.Type;
-            setAlert(alert);
-         } else {
-            setAlert(alert.Clear);
-            setIsDone(false);
-         }
+         setAlert(alert.Clear);
+         setIsDone(false);
+      }).catch((alert) => {
+         if (isUnmounted.current) return;
+         setAlert(alert);
       });
+      //useResetPasswordWithToken(window.location.pathname, email, password, true).then(result => {
+      //   if (isUnmounted.current) return;
+      //   if (result.alert.List.length > 0) {
+      //      alert.List = result.alert.List;
+      //      alert.Type = result.alert.Type;
+      //      setAlert(alert);
+      //   } else {
+      //      setAlert(alert.Clear);
+      //      setIsDone(false);
+      //   }
+      //});
    }, []);
 
    const onSubmit = () => {
       let errors = new AlertObj([], AlertTypes.Error);
       if (email == "")
-         errors.List.push(new Error('0', "Email Is Required"));
+         errors.List.push(new ErrorDto('0', "Email Is Required"));
       if (password == "")
-         errors.List.push(new Error('0', "Password Is Required"));
+         errors.List.push(new ErrorDto('0', "Password Is Required"));
       if (password !== confirmPassword)
-         errors.List.push(new Error('0', "Passwords mismatch."));
+         errors.List.push(new ErrorDto('0', "Passwords mismatch."));
 
       if (errors.List.length > 0) {
          setAlert(errors);
@@ -48,18 +61,32 @@ const ConfrimEmail = (props: IProps) => {
 
 
          sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-         useResetPasswordWithToken(window.location.pathname, email, password).then(result => {
+         useUpdatePasswordWithTokenUser({
+            pathName: window.location.pathname,
+            email: email,
+            password: password,
+            justCheckToken: false
+         }).then((user) => {
             if (isUnmounted.current) return;
-            if (result.alert.List.length > 0) {
-               alert.List = result.alert.List;
-               alert.Type = result.alert.Type;
-               setAlert(alert);
-            }
-            else {
-               setAlert(alert.addSingleSuccess("Password Updated"));
-               setIsDone(true);
-            }
+            setAlert(alert.addSingleSuccess("Password Updated"));
+            setIsDone(true);
+         }).catch((alert) => {
+            if (isUnmounted.current) return;
+            setAlert(alert);
          });
+
+         //useResetPasswordWithToken(window.location.pathname, email, password).then(result => {
+         //   if (isUnmounted.current) return;
+         //   if (result.alert.List.length > 0) {
+         //      alert.List = result.alert.List;
+         //      alert.Type = result.alert.Type;
+         //      setAlert(alert);
+         //   }
+         //   else {
+         //      setAlert(alert.addSingleSuccess("Password Updated"));
+         //      setIsDone(true);
+         //   }
+         //});
       }
    };
 

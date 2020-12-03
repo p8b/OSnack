@@ -3,7 +3,7 @@ import Modal from "./Modal";
 import PageHeader from "../Texts/PageHeader";
 import { Input } from "../Inputs/Input";
 import { Button } from "../Buttons/Button";
-import { useRequestPasswordResetToken } from "../../hooks/apiCallers/user/Post.User";
+import { useRequestPasswordResetUser } from "../../hooks/apiHooks/useUserHook";
 import Alert, { AlertObj } from "../Texts/Alert";
 import { sleep } from "../../_core/appFunc";
 
@@ -20,17 +20,27 @@ const ForgotPasswordModal = (props: IProps) => {
       //Submit password reset request
       if (!isTokenSent) {
          sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-         useRequestPasswordResetToken(email).then(result => {
+         useRequestPasswordResetUser(email).then(() => {
             if (isUnmounted.current) return;
-            if (!result.isTokenSent && result.alert.List.length > 0) {
-               alert.List = result.alert.List;
-               alert.Type = result.alert.Type;
-               setAlert(alert);
-            } else {
-               setIsTokenSent(true);
-               setAlert(alert.addSingleSuccess("The Link to reset your password was sent to your email. Please check your Spam folder."));
-            }
+            setIsTokenSent(true);
+            setAlert(alert.addSingleSuccess("The Link to reset your password was sent to your email. Please check your Spam folder."));
+         }).catch((alert) => {
+            if (isUnmounted.current) return;
+            setAlert(alert);
          });
+
+
+         //useRequestPasswordResetToken(email).then(result => {
+         //   if (isUnmounted.current) return;
+         //   if (!result.isTokenSent && result.alert.List.length > 0) {
+         //      alert.List = result.alert.List;
+         //      alert.Type = result.alert.Type;
+         //      setAlert(alert);
+         //   } else {
+         //      setIsTokenSent(true);
+         //      setAlert(alert.addSingleSuccess("The Link to reset your password was sent to your email. Please check your Spam folder."));
+         //   }
+         //});
       }
    };
 

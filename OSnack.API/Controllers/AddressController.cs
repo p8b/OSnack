@@ -18,6 +18,7 @@ namespace OSnack.API.Controllers
 {
    [Route("[controller]")]
    [AutoValidateAntiforgeryToken]
+   [ApiControllerAttribute]
    public partial class AddressController : ControllerBase
    {
       private OSnackDbContext _DbContext { get; }

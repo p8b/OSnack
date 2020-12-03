@@ -35,7 +35,8 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPost("Post/[action]")]
-      [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
+      [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test 
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> CreateUser([FromBody] User newUser)
       {
          try
@@ -90,6 +91,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPost("Post/[action]")]
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Public)]
       public async Task<IActionResult> CreateCustomer([FromBody] User newCustomer)
       {
          try
@@ -147,12 +149,13 @@ namespace OSnack.API.Controllers
       /// <summary>
       ///     Create a Password reset token which is emailed to the intended user
       /// </summary>
-      #region *** Response Types ***
+      #region *** ***
       [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPost("Post/[action]")]
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Public)]
       public async Task<IActionResult> RequestPasswordReset([FromBody] string email)
       {
          try

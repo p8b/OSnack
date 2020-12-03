@@ -1,5 +1,5 @@
 ﻿
-import Alert, { AlertObj, Error } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import Alert, { AlertObj } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import Container from '../../components/Container';
@@ -9,8 +9,8 @@ import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput
 import { Category, Product } from 'osnack-frontend-shared/src/_core/apiModels';
 import { ConstMaxNumberOfPerItemsPage, GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import { sleep } from 'osnack-frontend-shared/src/_core/appFunc';
-import { useSearchProduct } from 'osnack-frontend-shared/src/hooks/apiCallers/product/Get.Product';
-import { useGetAllCategory } from 'osnack-frontend-shared/src/hooks/apiCallers/category/Get.Category';
+import { useSearchProduct } from 'osnack-frontend-shared/src/hooks/apiHooks/useProductHook';
+import { useAllCategory } from 'osnack-frontend-shared/src/hooks/apiHooks/useCategoryHook';
 import ShopItem from './ShopItem';
 import { useHistory } from 'react-router-dom';
 
@@ -33,25 +33,22 @@ const Shop = (props: IProps) => {
 
    useEffect(() => {
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      useGetAllCategory().then(result => {
+      useAllCategory().then(categories => {
          if (isUnmounted.current) return;
-         if (result.alert.List.length > 0) {
-            result.alert.List.push(new Error("0", "Category list cannot be loaded"));
-            alert.List = result.alert.List;
-            alert.Type = result.alert.Type;
-            setAlert(alert);
+         setCategoryList(categories);
+         const uriPathNameArr = window.location.pathname.split('/').filter(val => val.length > 0);
+         if (uriPathNameArr.length === 3 && uriPathNameArr[1] == "Category") {
+            console.log(decodeURIComponent(uriPathNameArr[2]).toLowerCase());
+            const uriSelectedCategory = categories.filter(val => val.name?.toLowerCase().trim() == decodeURIComponent(uriPathNameArr[2]).toLowerCase());
+            if (uriSelectedCategory.length > 0)
+               onSearch(undefined, undefined, undefined, undefined, uriSelectedCategory[0].id.toString());
          } else {
-            setCategoryList(result.categoryList);
-            const uriPathNameArr = window.location.pathname.split('/').filter(val => val.length > 0);
-            if (uriPathNameArr.length === 3 && uriPathNameArr[1] == "Category") {
-               console.log(decodeURIComponent(uriPathNameArr[2]).toLowerCase());
-               const uriSelectedCategory = result.categoryList.filter(val => val.name?.toLowerCase().trim() == decodeURIComponent(uriPathNameArr[2]).toLowerCase());
-               if (uriSelectedCategory.length > 0)
-                  onSearch(undefined, undefined, undefined, undefined, uriSelectedCategory[0].id.toString());
-            } else {
-               onSearch();
-            }
+            onSearch();
          }
+      }
+      ).catch(alert => {
+         if (isUnmounted.current) return;
+         setAlert(alert);
       });
       return () => { isUnmounted.current = true; };
    }, []);
@@ -87,19 +84,17 @@ const Shop = (props: IProps) => {
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
       useSearchProduct(selectedPage, maxItemsPerPage, categoryFilter, searchString, "true", isSortAsc, sortName).then(result => {
          if (isUnmounted.current) return;
-         if (result.alert.List.length > 0) {
-            alert.List = result.alert.List;
-            alert.Type = result.alert.Type;
-            setAlert(alert);
-         }
-         else {
-            setTblTotalItemCount(result.totalCount);
-            setProductList(result.productList);
-            if (result.totalCount === 0)
-               setAlert(alert.addSingleWarning("No Result Found"));
-            else
-               setAlert(alert.Clear);
-         }
+
+         setTblTotalItemCount(result.part2);
+         setProductList(result.part1!);
+         if (result.part2 === 0)
+            setAlert(alert.addSingleWarning("No Result Found"));
+         else
+            setAlert(alert.Clear);
+      }
+      ).catch(alert => {
+         if (isUnmounted.current) return;
+         setAlert(alert);
       });
    };
 

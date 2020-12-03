@@ -1,16 +1,16 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
-import Alert, { AlertObj, AlertTypes, Error } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import Alert, { AlertObj, AlertTypes, ErrorDto } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import Table, { TableData, TableHeaderData, TableRowData } from 'osnack-frontend-shared/src/components/Table/Table';
-import { Category, Product } from 'osnack-frontend-shared/src/_core/apiModels';
+import { Category, Product, ProductUnitType } from 'osnack-frontend-shared/src/_core/apiModels';
 import ProductModal from './ProductModal';
 import Container from '../../components/Container';
 import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
-import { ConstMaxNumberOfPerItemsPage, GetAllRecords, ProductUnitType } from 'osnack-frontend-shared/src/_core/constant.Variables';
+import { ConstMaxNumberOfPerItemsPage, GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
-import { useGetAllCategory } from '../../hooks/apiCallers/category/Get.Category';
-import { useSearchProduct } from '../../hooks/apiCallers/product/Get.Product';
+import { useAllCategory } from 'osnack-frontend-shared/src/hooks/apiHooks/useCategoryHook';
+import { useSearchProduct } from 'osnack-frontend-shared/src/hooks/apiHooks/useProductHook';
 import { enumToArray, sleep } from 'osnack-frontend-shared/src/_core/appFunc';
 import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
 
@@ -33,17 +33,12 @@ const ProductManagement = (props: IProps) => {
    const [tblMaxItemsPerPage, setTblMaxItemsPerPage] = useState(ConstMaxNumberOfPerItemsPage);
 
    useEffect(() => {
-      useGetAllCategory().then(result => {
+      useAllCategory().then(categories => {
          if (isUnmounted.current) return;
-
-         if (result.alert.List.length > 0) {
-            result.alert.List.push(new Error("0", "Category list cannot be loaded"));
-            alert.List = result.alert.List;
-            alert.Type = result.alert.Type;
-            setAlert(alert);
-         } else {
-            setCategoryList(result.categoryList);
-         }
+         setCategoryList(categories);
+      }).catch(alert => {
+         if (isUnmounted.current) return;
+         setAlert(alert);
       });
       onSearch();
       return () => { isUnmounted.current = true; };
@@ -82,20 +77,31 @@ const ProductManagement = (props: IProps) => {
 
 
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      useSearchProduct(selectedPage, maxItemsPerPage, categoryFilter, searchString, statusFilter, isSortAsc, sortName).then(result => {
-         if (isUnmounted.current) return;
-
-         if (result.alert.List.length > 0) {
-            alert.List = result.alert.List;
-            alert.Type = result.alert.Type;
-            setAlert(alert);
-         }
-         else {
-            setTblTotalItemCount(result.totalCount);
-            populateProductTable(result.productList);
+      useSearchProduct(selectedPage, maxItemsPerPage, categoryFilter, searchString, statusFilter, isSortAsc, sortName)
+         .then(products => {
+            if (isUnmounted.current) return;
+            setTblTotalItemCount(products.part2);
+            populateProductTable(products.part1 ? products.part1 : []);
             setAlert(alert.Clear);
-         }
-      });
+         }).catch(alert => {
+            if (isUnmounted.current) return;
+            setAlert(alert);
+         });
+
+      //useSearchProduct(selectedPage, maxItemsPerPage, categoryFilter, searchString, statusFilter, isSortAsc, sortName).then(result => {
+      //   if (isUnmounted.current) return;
+
+      //   if (result.alert.List.length > 0) {
+      //      alert.List = result.alert.List;
+      //      alert.Type = result.alert.Type;
+      //      setAlert(alert);
+      //   }
+      //   else {
+      //      setTblTotalItemCount(result.totalCount);
+      //      populateProductTable(result.productList);
+      //      setAlert(alert.Clear);
+      //   }
+      //});
    };
 
    const populateProductTable = (productList: Product[]) => {
@@ -112,7 +118,7 @@ const ProductManagement = (props: IProps) => {
             product.name,
             product.category.name,
             `£${product.price}`,
-            `${product.unitQuantity} ${productUnitTypeList.find(ut => ut.id == product.unitType)?.name}`,
+            `${product.unitQuantity} ${productUnitTypeList.find(ut => ut.name == product.unitType)?.name}`,
             product.status ? "Active" : "Disabled",
             <div className="col-auto p-0 m-0">
                <button className="btn btn-sm btn-blue col-12 m-0 mt-1 mt-xl-0 edit-icon"
@@ -121,7 +127,7 @@ const ProductManagement = (props: IProps) => {
             </div>
          ])));
       if (productList.length == 0) {
-         setAlert(new AlertObj([new Error("0", "No Result Found")], AlertTypes.Warning));
+         setAlert(new AlertObj([new ErrorDto("0", "No Result Found")], AlertTypes.Warning));
       } else {
          setAlert(alert.Clear);
       }

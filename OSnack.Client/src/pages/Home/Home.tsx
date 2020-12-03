@@ -1,7 +1,7 @@
 ﻿import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import Container from '../../components/Container';
-import { useGetAllCategory } from 'osnack-frontend-shared/src/hooks/apiCallers/category/Get.Category';
+import { useAllCategory } from 'osnack-frontend-shared/src/hooks/apiHooks/useCategoryHook';
 import { API_URL } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import { ShopContext } from '../../_core/shopContext';
 import { Category } from 'osnack-frontend-shared/src/_core/apiModels';
@@ -23,11 +23,9 @@ const Home = (props: IProps) => {
       img.onload = () => {
          setHeroImgLoaded(true);
       };
-      useGetAllCategory().then(result => {
+      useAllCategory().then(categories => {
          if (isUnmounted.current) return;
-         if (result.alert.List.length === 0) {
-            getCarouselItems(result.categoryList);
-         }
+         getCarouselItems(categories);
       });
       return () => { isUnmounted.current = true; };
    }, []);

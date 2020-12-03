@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using OSnack.API.Database;
 using OSnack.API.Database.Models;
+using OSnack.API.Extras;
 
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Models;
@@ -16,6 +17,7 @@ namespace OSnack.API.Controllers
 {
    [Route("[controller]")]
    [AutoValidateAntiforgeryToken]
+   [ApiControllerAttribute]
    public class NewsletterController : ControllerBase
    {
       private OSnackDbContext _DbContext { get; }
@@ -37,7 +39,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
       [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
       #endregion
-      // [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Public)]
       public async Task<IActionResult> Post([FromBody] Newsletter newsletter)
       {
          try
@@ -75,13 +77,13 @@ namespace OSnack.API.Controllers
       /// Delete Newsletter
       /// </summary>
       #region *** 200 OK,417 ExpectationFailed, 400 BadRequest, 404 NotFound ***
-      [HttpDelete("[action]/{email}")]
       [Consumes(MediaTypeNames.Application.Json)]
       [ProducesResponseType(StatusCodes.Status200OK)]
       [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
       [ProducesResponseType(StatusCodes.Status404NotFound)]
-      #endregion
-      //[Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
+      #endregion 
+      [HttpDelete("[action]/{email}")]
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Public)]
       public async Task<IActionResult> Delete(string email)
       {
          try

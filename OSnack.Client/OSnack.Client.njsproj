@@ -147,11 +147,6 @@
     <Folder Include="public\" />
     <Folder Include="src\components\" />
     <Folder Include="src\components\NavMenu\" />
-    <Folder Include="src\hooks\" />
-    <Folder Include="src\hooks\apiCallers\" />
-    <Folder Include="src\hooks\apiCallers\address\" />
-    <Folder Include="src\hooks\apiCallers\product\" />
-    <Folder Include="src\hooks\apiCallers\user\" />
     <Folder Include="src\pages\Home\" />
     <Folder Include="src\pages\Login\" />
     <Folder Include="src\pages\MyAccount\" />
@@ -190,15 +185,9 @@
     <TypeScriptCompile Include="src\components\NavMenu\CartIcon.tsx" />
     <TypeScriptCompile Include="src\components\NavMenu\NavMenu.tsx" />
     <TypeScriptCompile Include="src\components\NavMenu\NavMenuItems.tsx" />
-    <TypeScriptCompile Include="src\hooks\apiCallers\address\Delete.Address.tsx" />
-    <TypeScriptCompile Include="src\hooks\apiCallers\address\Get.Address.tsx" />
-    <TypeScriptCompile Include="src\hooks\apiCallers\address\Post.Address.tsx" />
-    <TypeScriptCompile Include="src\hooks\apiCallers\address\Put.Address.tsx" />
-    <TypeScriptCompile Include="src\hooks\apiCallers\product\Get.Product.tsx" />
     <TypeScriptCompile Include="src\pages\About\About.tsx" />
     <TypeScriptCompile Include="src\pages\ContactUs\ContactUs.tsx" />
     <TypeScriptCompile Include="src\pages\Login\NewCustomerModal.tsx" />
-    <TypeScriptCompile Include="src\hooks\apiCallers\user\Post.User.tsx" />
     <TypeScriptCompile Include="src\index.tsx" />
     <TypeScriptCompile Include="src\pages\Home\Home.tsx" />
     <TypeScriptCompile Include="src\pages\Login\LoginPage.tsx" />

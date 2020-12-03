@@ -22,7 +22,7 @@ using System.Collections.Generic;
 
 namespace OSnack.API.Controllers
 {
-   public partial class AuthenticationController : ControllerBase
+   public partial class AuthenticationController
    {
       #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
@@ -32,7 +32,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPost("Post/[action]")]
-      [ValidateAntiForgeryToken]
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Public)]
       public async Task<IActionResult> LoginOfficial([FromBody] LoginInfo loginInfo) =>
          await Login(loginInfo, AppConst.AccessPolicies.Official).ConfigureAwait(false);
 
@@ -44,7 +44,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPost("Post/[action]")]
-      [ValidateAntiForgeryToken]
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Public)]
       public async Task<IActionResult> LoginSecret([FromBody] LoginInfo loginInfo) =>
          await Login(loginInfo, AppConst.AccessPolicies.Secret).ConfigureAwait(false);
 
@@ -58,6 +58,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPost("Post/[action]")]
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Public)]
       public async Task<IActionResult> ExternalLoginOfficial([FromBody] P8B.Core.CSharp.Models.ExternalLoginInfo externalLoginInfo) =>
          await ExternalLogin(externalLoginInfo, AppConst.AccessPolicies.Official).ConfigureAwait(false);
       #region *** ***
@@ -70,6 +71,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPost("Post/[action]")]
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Public)]
       public async Task<IActionResult> ExternalLoginSecret([FromBody] P8B.Core.CSharp.Models.ExternalLoginInfo externalLoginInfo) =>
          await ExternalLogin(externalLoginInfo, AppConst.AccessPolicies.Secret).ConfigureAwait(false);
 
@@ -288,6 +290,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [Authorize(AppConst.AccessPolicies.Official)]
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Official)]
       [HttpPost("Post/[action]")]
       public async Task<IActionResult> ConfirmCurrentUserPassword([FromBody] string password)
       {

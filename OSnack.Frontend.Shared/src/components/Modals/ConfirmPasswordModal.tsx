@@ -2,7 +2,7 @@
 import Modal from "./Modal";
 import { Input } from "../Inputs/Input";
 import { Button } from "../Buttons/Button";
-import { useConfirmCurrentUserPassword } from "../../hooks/apiCallers/authentication/Post.Authentication";
+import { useConfirmCurrentUserPasswordAuthentication } from "../../hooks/apiHooks/useAuthenticationHook";
 import Alert, { AlertObj } from "../Texts/Alert";
 import { sleep } from "../../_core/appFunc";
 
@@ -19,18 +19,28 @@ const ConfirmPasswordModal = (props: IProps) => {
 
    const onSubmit = async () => {
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      useConfirmCurrentUserPassword(password).then(result => {
+      useConfirmCurrentUserPasswordAuthentication(password).then(user => {
          if (isUnmounted.current) return;
-         if (result.alert.List.length > 0) {
-            alert.List = result.alert.List;
-            alert.Type = result.alert.Type;
-            setAlert(alert);
-         } else {
-            setAlert(alert.Clear);
-            props.onSuccess(password);
-            setPassword("");
-         }
+         setAlert(alert.Clear);
+         props.onSuccess(password);
+         setPassword("");
+      }).catch(alert => {
+         if (isUnmounted.current) return;
+         setAlert(alert);
       });
+
+      //useConfirmCurrentUserPassword(password).then(result => {
+      //   if (isUnmounted.current) return;
+      //   if (result.alert.List.length > 0) {
+      //      alert.List = result.alert.List;
+      //      alert.Type = result.alert.Type;
+      //      setAlert(alert);
+      //   } else {
+      //      setAlert(alert.Clear);
+      //      props.onSuccess(password);
+      //      setPassword("");
+      //   }
+      //});
    };
    return (
       <Modal className="col-11 col-sm-10 col-md-9 col-lg-4 pl-4 pr-4"

@@ -27,7 +27,8 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status404NotFound)]
       #endregion
       [HttpDelete("[action]")]
-      [Authorize(AppConst.AccessPolicies.Secret)]  /// Done
+      [Authorize(AppConst.AccessPolicies.Secret)]  /// Done    
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> Delete([FromBody] Product product)
       {
          try

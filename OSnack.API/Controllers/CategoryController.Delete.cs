@@ -28,7 +28,8 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
       #endregion
       [HttpDelete("[action]")]
-      [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
+      [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test 
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> Delete([FromBody] Category category)
       {
          try

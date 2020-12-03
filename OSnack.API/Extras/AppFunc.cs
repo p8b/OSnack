@@ -1,7 +1,11 @@
 ﻿using NSwag;
 using NSwag.CodeGeneration.TypeScript;
+
 using OSnack.API.Database.Models;
+
 using P8B.Core.CSharp;
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -21,7 +25,7 @@ namespace OSnack.API.Extras
          return userId;
       }
 
-      public static void MakeClientZipFile(OpenApiDocument document)
+      public static void MakeClientZipFile(OpenApiDocument document, string webHostRoot, bool zipIt = false)
       {
          foreach (var classObject in document.Definitions)
          {
@@ -45,49 +49,58 @@ namespace OSnack.API.Extras
             GenerateDtoTypes = true,
             TypeScriptGeneratorSettings =
                      {
-                           EnumStyle=NJsonSchema.CodeGeneration.TypeScript.TypeScriptEnumStyle.Enum,
-                           TypeStyle=NJsonSchema.CodeGeneration.TypeScript.TypeScriptTypeStyle.Class,
-                           GenerateConstructorInterface=false
-                        }
+                        EnumStyle=NJsonSchema.CodeGeneration.TypeScript.TypeScriptEnumStyle.Enum,
+                        TypeStyle=NJsonSchema.CodeGeneration.TypeScript.TypeScriptTypeStyle.Class,
+                        GenerateConstructorInterface=false
+                     }
          });
-         string zipFilePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\Extras\api.zip";
-         string zipFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\Extras\zip";
+         string zipFilePath = Path.Combine(@$"{webHostRoot}\StaticFiles\tsApiFiles\{document.Info.Title}.zip");
+         string zipFolder = Path.Combine(@$"{webHostRoot}\StaticFiles\tsApiFiles\{document.Info.Title}");
 
-         File.Delete(zipFilePath);
+         try { File.Delete(zipFilePath); } catch (Exception) { }
          if (!Directory.Exists(zipFolder))
          {
             Directory.CreateDirectory(zipFolder);
-            Directory.CreateDirectory(zipFolder + @"\apiHooks");
+            Directory.CreateDirectory(@$"{zipFolder}\apiHooks");
          }
-         foreach (var item in tg.GetAllCodeArtifacts())
+         foreach (var hook in tg.GetAllCodeArtifacts())
          {
-            using FileStream fs = File.Create($"{zipFolder}\\apiHooks\\use{item.TypeName}Hook.tsx");
-            byte[] info = new UTF8Encoding(true).GetBytes(item.Code);
+
+            string tempScrtip = string.IsNullOrEmpty(hook.BaseTypeName) ?
+              hook.Code.Replace("import { @@Models@@ } from \"../../_core/apiModels\";", "") :
+              hook.Code;
+
+            using FileStream fs = File.Create($"{zipFolder}\\apiHooks\\use{hook.TypeName}Hook.tsx");
+            byte[] info = new UTF8Encoding(true).GetBytes(tempScrtip.Replace("@@Models@@", hook.BaseTypeName.Replace("@", "")));
             // Add some information to the file.
             fs.Write(info, 0, info.Length);
+
          }
 
          string simpleModels = "";
          string extendedModels = "";
          string enums = "";
-         foreach (var item in tg.GetAllDtoTypes())
+         foreach (var modelType in tg.GetAllDtoTypes())
          {
-            switch (item.Type)
+            if (modelType.TypeName != "ErrorDto")
             {
+               switch (modelType.Type)
+               {
 
-               case NJsonSchema.CodeGeneration.CodeArtifactType.Enum:
-                  enums += item.Code + '\n';
-                  break;
+                  case NJsonSchema.CodeGeneration.CodeArtifactType.Enum:
+                     enums += modelType.Code + '\n';
+                     break;
 
-               case NJsonSchema.CodeGeneration.CodeArtifactType.Class:
-                  if (item.BaseTypeName == null)
-                     simpleModels += item.Code + '\n';
-                  else
-                     extendedModels += item.Code + '\n';
-                  break;
+                  case NJsonSchema.CodeGeneration.CodeArtifactType.Class:
+                     if (modelType.BaseTypeName == null)
+                        simpleModels += modelType.Code + '\n';
+                     else
+                        extendedModels += modelType.Code + '\n';
+                     break;
 
-               default:
-                  break;
+                  default:
+                     break;
+               }
             }
          }
 
@@ -99,9 +112,12 @@ namespace OSnack.API.Extras
             fs1.Write(info2, 0, info2.Length);
 
          }
-         ZipFile.CreateFromDirectory(zipFolder, zipFilePath);
-         CoreFunc.DeleteDirectory(zipFolder);
 
+         if (zipIt)
+         {
+            ZipFile.CreateFromDirectory(zipFolder, zipFilePath);
+            CoreFunc.DeleteDirectory(zipFolder);
+         }
       }
    }
 }

@@ -3,15 +3,15 @@ import EmailEditor from 'react-email-editor';
 import ButtonPopupConfirm from 'osnack-frontend-shared/src/components/Buttons/ButtonPopupConfirm';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
-import { EmailTemplate, ServerVariables } from '../../_core/apiModel-Admin';
+import { EmailTemplate, MultiResultOfEmailTemplateAndEmailTemplate, ServerVariables } from 'osnack-frontend-shared/src/_core/apiModels';
 import { AlertObj } from 'osnack-frontend-shared/src/components/Texts/Alert';;
-import { useCreateEmailTemplate } from '../../hooks/apiCallers/emailTemplate/Post.EmailTemplate';
-import { useModifyEmailTemplate } from '../../hooks/apiCallers/emailTemplate/Put.EmailTemplate';
-import { useDeleteEmailTemplate } from '../../hooks/apiCallers/emailTemplate/Delete.EmailTemplate';
+import {
+   usePostEmailTemplate, usePutEmailTemplate, useDeleteEmailTemplate,
+   useGetEmailTemplate, useGetServerVariablesEmailTemplate
+} from 'osnack-frontend-shared/src/hooks/apiHooks/useEmailTemplateHook';
 import CopyText from 'osnack-frontend-shared/src/components/Texts/CopyText';
 import { sleep } from 'osnack-frontend-shared/src/_core/appFunc';
 import EmailTemplateEditDetailsModal from './EmailTemplateEditDetailsModal';
-import { useGetEmailTemplate, useGetServerVariables } from '../../hooks/apiCallers/emailTemplate/Get.EmailTemplates';
 import { Redirect, useHistory } from 'react-router-dom';
 
 const EmailTemplatesEdit = (props: IProps) => {
@@ -41,16 +41,24 @@ const EmailTemplatesEdit = (props: IProps) => {
       setDefaultTemplate(props.location.state.defaultEmailTemplate);
 
       if (props.location.state.emailTemplate.id > 0)
-         useGetEmailTemplate(props.location.state.emailTemplate).then(result => {
-            if (!isUnmounted.current) {
-               setTemplate(result.template);
-               setInitialLockedStatus(result.template.locked);
-               setDefaultTemplate(result.defaultTemplate);
-            }
-         });
+         useGetEmailTemplate(props.location.state.emailTemplate.id).then(
+            (result: MultiResultOfEmailTemplateAndEmailTemplate) => {
+               setTemplate(result.part1 ? result.part1 : new EmailTemplate());
+               setInitialLockedStatus(result.part1?.locked);
+               setDefaultTemplate(result.part2 ? result.part2 : new EmailTemplate());
+            });
 
-      useGetServerVariables().then(result => {
-         setServerVariables(result.List);
+      //useGetEmailTemplate(props.location.state.emailTemplate).then(result => {
+      //   if (!isUnmounted.current) {
+      //      setTemplate(result.template);
+      //      setInitialLockedStatus(result.template.locked);
+      //      setDefaultTemplate(result.defaultTemplate);
+      //   }
+      //});
+
+
+      useGetServerVariablesEmailTemplate().then(result => {
+         setServerVariables(result);
       });
 
 
@@ -79,9 +87,18 @@ const EmailTemplatesEdit = (props: IProps) => {
          var result: { alert: AlertObj; template: EmailTemplate; }
             = { alert: new AlertObj(), template: new EmailTemplate() };
          if (template.id == 0)
-            result = await useCreateEmailTemplate(template);
+            await usePostEmailTemplate(template).then((emailTemplate) => {
+               result.template = emailTemplate;
+            }).catch((alert) => {
+               result.alert = alert;
+            });
+         //   result = await usePostEmailTemplate(template);
          else if (template.id != null)
-            result = await useModifyEmailTemplate(template);
+            await usePutEmailTemplate(template).then((emailTemplate) => {
+               result.template = emailTemplate;
+            }).catch((alert) => {
+               result.alert = alert;
+            });
 
          if (result.alert.List.length > 0) {
             alert.List = result.alert.List;
@@ -101,20 +118,30 @@ const EmailTemplatesEdit = (props: IProps) => {
    };
    const onDelete = async () => {
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      useDeleteEmailTemplate(template).then(result => {
+      useDeleteEmailTemplate(template).then((message) => {
          if (isUnmounted.current) return;
-
-         if (result.alert.List.length > 0) {
-            alert.List = result.alert.List;
-            alert.Type = result.alert.Type;
-            setAlert(alert);
-            setIsOpenDetailsModal(true);
-         }
-         else {
-            setAlert(alert.addSingleSuccess("Deleted", "Deleted"));
-            sleep(3000, isUnmounted).then(() => { setIsTemplateRecognised(false); });
-         }
+         setAlert(alert.addSingleSuccess("Deleted", message));
+         sleep(3000, isUnmounted).then(() => { setIsTemplateRecognised(false); });
+      }).catch((alert) => {
+         if (isUnmounted.current) return;
+         setAlert(alert);
+         setIsOpenDetailsModal(true);
       });
+
+      //useDeleteEmailTemplate(template).then(result => {
+      //   if (isUnmounted.current) return;
+
+      //   if (result.alert.List.length > 0) {
+      //      alert.List = result.alert.List;
+      //      alert.Type = result.alert.Type;
+      //      setAlert(alert);
+      //      setIsOpenDetailsModal(true);
+      //   }
+      //   else {
+      //      setAlert(alert.addSingleSuccess("Deleted", "Deleted"));
+      //      sleep(3000, isUnmounted).then(() => { setIsTemplateRecognised(false); });
+      //   }
+      //});
    };
 
    const insertDefault = async () => {
@@ -179,7 +206,7 @@ const EmailTemplatesEdit = (props: IProps) => {
          </div>
          <div className="row col-12 ml-2">
             <div className="col-12 m-0 p-0">Name: {template.name}</div>
-            {template.serverVariables?.length > 0 &&
+            {template.serverVariables && template.serverVariables?.length > 0 &&
                <>
                   <div>Required Server Variables:</div>
                   {template.serverVariables?.map((sv: any) =>

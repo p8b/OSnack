@@ -24,7 +24,8 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPut("[action]")]
-      [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
+      [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test         
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> Put([FromBody] Coupon modifiedCoupon)
       {
          try

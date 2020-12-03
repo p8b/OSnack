@@ -26,7 +26,8 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPut("[action]")]
-      [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test
+      [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test  
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Official)]
       public async Task<IActionResult> Put([FromBody] Address modifiedAddress)
       {
          try
@@ -61,7 +62,8 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPut("Put/[action]")]
-      [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test
+      [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test 
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Official)]
       public async Task<IActionResult> SetDefault([FromBody] int addressId)
       {
          try

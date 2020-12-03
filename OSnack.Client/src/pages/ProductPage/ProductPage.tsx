@@ -1,11 +1,11 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 
 import Alert, { AlertObj } from 'osnack-frontend-shared/src/components/Texts/Alert';
-import { Product } from 'osnack-frontend-shared/src/_core/apiModels';
+import { Product, ProductUnitType } from 'osnack-frontend-shared/src/_core/apiModels';
 import { enumToArray, sleep } from 'osnack-frontend-shared/src/_core/appFunc';
-import { useGetProduct } from '../../hooks/apiCallers/product/Get.Product';
+import { useProductAndRelateProduct } from 'osnack-frontend-shared/src/hooks/apiHooks/useProductHook';
 import { Redirect, useHistory } from 'react-router-dom';
-import { API_URL, ProductUnitType } from 'osnack-frontend-shared/src/_core/constant.Variables';
+import { API_URL } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import Container from '../../components/Container';
 import QuantityInput from 'osnack-frontend-shared/src/components/Inputs/QuantityInput';
@@ -26,19 +26,15 @@ const ProductPage = (props: IProps) => {
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
       const uriPathNameArr = window.location.pathname.split('/').filter(val => val.length > 0);
       if (uriPathNameArr.length === 4 && uriPathNameArr[1].toLowerCase() == "product") {
-         useGetProduct(uriPathNameArr[2], uriPathNameArr[3]).then(result => {
+         useProductAndRelateProduct(uriPathNameArr[2], uriPathNameArr[3]).then(result => {
             if (isUnmounted.current) return;
-            if (result.alert.List.length > 0) {
-               alert.List = result.alert.List;
-               alert.Type = result.alert.Type;
-               setAlert(alert);
-            }
-            else {
-               setProduct(result.product);
-               window.scrollTo(0, 0);
-               setRelatedProducts(result.relatedProducts);
-               setAlert(alert.Clear);
-            }
+            setProduct(result.part1!);
+            window.scrollTo(0, 0);
+            setRelatedProducts(result.part2!);
+            setAlert(alert.Clear);
+         }).catch(alert => {
+            if (isUnmounted.current) return;
+            setAlert(alert);
          });
       } else {
          setRedirectToShop(true);
@@ -70,7 +66,7 @@ const ProductPage = (props: IProps) => {
                         <h1>{name}</h1>
                         <p>Category: {product.category.name}</p>
                         <p className="pt-4 pb-4">{product.description}</p>
-                        <b className="mb-5">£{product.price} ({product.unitQuantity} {enumToArray(ProductUnitType).filter(t => t.id == product.unitType)[0]?.name})</b>
+                        <b className="mb-5">£{product.price} ({product.unitQuantity} {enumToArray(ProductUnitType).filter(t => t.name == product.unitType)[0]?.name})</b>
                         <QuantityInput
                            btnOnZeroTitle="Add"
                            btnOnZeroClassName="radius-none btn-green cart-icon"

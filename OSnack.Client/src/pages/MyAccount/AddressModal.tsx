@@ -6,10 +6,8 @@ import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import ButtonPopupConfirm from 'osnack-frontend-shared/src/components/Buttons/ButtonPopupConfirm';
 import { TextArea } from 'osnack-frontend-shared/src/components/Inputs/TextArea';
 import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
-import Alert, { AlertObj, AlertTypes, Error } from 'osnack-frontend-shared/src/components/Texts/Alert';
-import { useCreateAddress } from '../../hooks/apiCallers/address/Post.Address';
-import { useModifyAddress } from '../../hooks/apiCallers/address/Put.Address';
-import { useDeleteAddress } from '../../hooks/apiCallers/address/Delete.Address';
+import Alert, { AlertObj, AlertTypes, ErrorDto } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import { usePostAddress, usePutAddress, useDeleteAddress } from 'osnack-frontend-shared/src/hooks/apiHooks/useAddressHook';
 import { sleep } from 'osnack-frontend-shared/src/_core/appFunc';
 
 const AddressModal = (props: IProps) => {
@@ -25,13 +23,13 @@ const AddressModal = (props: IProps) => {
 
       //Ask
       if (address.name == "")
-         errors.List.push(new Error("0", "Address name is required."));
+         errors.List.push(new ErrorDto("0", "Address name is required."));
       if (address.firstLine == "")
-         errors.List.push(new Error("0", "FirstLin is required"));
+         errors.List.push(new ErrorDto("0", "FirstLin is required"));
       if (address.postcode == "")
-         errors.List.push(new Error("0", "Post Code is required."));
+         errors.List.push(new ErrorDto("0", "Post Code is required."));
       if (address.city == "")
-         errors.List.push(new Error("0", "City is required."));
+         errors.List.push(new ErrorDto("0", "City is required."));
 
 
       if (errors.List.length > 0) {
@@ -39,18 +37,15 @@ const AddressModal = (props: IProps) => {
          return;
       }
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      useCreateAddress(address).then(result => {
+      usePostAddress(address).then(address => {
          if (isUnmounted.current) return;
-
-         if (result.alert.List.length > 0) {
-            alert.List = result.alert.List;
-            alert.Type = result.alert.Type;
-            setAlert(alert);
-         } else {
-            setAlert(alert.Clear);
-            props.onClose();
-            props.onSuccess();
-         }
+         setAlert(alert.Clear);
+         setAddress(address);
+         props.onClose();
+         props.onSuccess();
+      }).catch(alert => {
+         if (isUnmounted.current) return;
+         setAlert(alert);
       });
    };
    const updateAddress = async () => {
@@ -58,13 +53,13 @@ const AddressModal = (props: IProps) => {
       let errors = new AlertObj([], AlertTypes.Error);
 
       if (address.name == "")
-         errors.List.push(new Error("0", "Address name is required."));
+         errors.List.push(new ErrorDto("0", "Address name is required."));
       if (address.firstLine == "")
-         errors.List.push(new Error("0", "FirstLine is required"));
+         errors.List.push(new ErrorDto("0", "FirstLine is required"));
       if (address.postcode == "")
-         errors.List.push(new Error("0", "Postcode is required."));
+         errors.List.push(new ErrorDto("0", "Postcode is required."));
       if (address.city == "")
-         errors.List.push(new Error("0", "City is required."));
+         errors.List.push(new ErrorDto("0", "City is required."));
 
       if (errors.List.length > 0) {
          setAlert(errors);
@@ -72,36 +67,31 @@ const AddressModal = (props: IProps) => {
       }
 
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      useModifyAddress(address).then(result => {
+      usePutAddress(address).then(address => {
          if (isUnmounted.current) return;
-
-         if (result.alert.List.length > 0) {
-            alert.List = result.alert.List;
-            alert.Type = result.alert.Type;
-            setAlert(alert);
-         } else {
-            setAlert(alert.Clear);
-            setAddress(result.address);
-            props.onClose();
-            props.onSuccess();
-         }
+         setAlert(alert.Clear);
+         props.onClose();
+         props.onSuccess();
+      }).catch(alert => {
+         if (isUnmounted.current) return;
+         setAlert(alert);
       });
+
    };
    const deleteAddress = async () => {
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      useDeleteAddress(address).then(result => {
+      useDeleteAddress(address).then(message => {
          if (isUnmounted.current) return;
-
-         if (result.alert.List.length > 0) {
-            alert.List = result.alert.List;
-            alert.Type = result.alert.Type;
-            setAlert(alert);
-         } else {
-            setAlert(alert.Clear);
-            props.onClose();
-            props.onSuccess();
-         }
+         setAlert(alert.Clear);
+         alert.List.push(new ErrorDto("Deleted", message));
+         setAlert(alert);
+         props.onClose();
+         props.onSuccess();
+      }).catch(alert => {
+         if (isUnmounted.current) return;
+         setAlert(alert);
       });
+
    };
 
    return (

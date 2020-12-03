@@ -1,20 +1,18 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
-import { Category, Product } from 'osnack-frontend-shared/src/_core/apiModels';
+import { Category, Product, ProductUnitType } from 'osnack-frontend-shared/src/_core/apiModels';
 import { getBase64fromUrlImage, enumToArray, sleep } from 'osnack-frontend-shared/src/_core/appFunc';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Input } from 'osnack-frontend-shared/src/components/Inputs/Input';
 import InputDropDown from 'osnack-frontend-shared/src/components/Inputs/InputDropDown';
 import { Toggler } from 'osnack-frontend-shared/src/components/Inputs/Toggler';
-import Alert, { AlertObj, AlertTypes, Error } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import Alert, { AlertObj, AlertTypes, ErrorDto } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import ButtonPopupConfirm from 'osnack-frontend-shared/src/components/Buttons/ButtonPopupConfirm';
 import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
 import ImageUpload from '../../components/ImageUpload/ImageUpload';
-import { useCreateProduct } from '../../hooks/apiCallers/product/Post.Product';
-import { useModifyProduct } from '../../hooks/apiCallers/product/Put.Product';
-import { useDeleteProduct } from '../../hooks/apiCallers/product/Delete.Product';
+import { usePostProduct, usePutProduct, useDeleteProduct } from 'osnack-frontend-shared/src/hooks/apiHooks/useProductHook';
 import { TextArea } from 'osnack-frontend-shared/src/components/Inputs/TextArea';
-import { API_URL, ProductUnitType } from 'osnack-frontend-shared/src/_core/constant.Variables';
+import { API_URL } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import ProductNutritionalInfoModal from './ProductNutritionalInfoModal';
 
 const ProductModal = (props: IProps) => {
@@ -56,17 +54,15 @@ const ProductModal = (props: IProps) => {
 
    const createProduct = async () => {
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      useCreateProduct(product).then(result => {
+      usePostProduct(product).then(product => {
          if (isUnmounted.current) return;
-         if (result.alert.List.length > 0) {
-            alert.List = result.alert.List;
-            alert.Type = result.alert.Type;
-            setAlert(alert);
-         } else {
-            resetImageUpload();
-            props.onSuccess();
-            setAlert(alert.Clear);
-         }
+         setProduct(product);
+         resetImageUpload();
+         props.onSuccess();
+         setAlert(alert.Clear);
+      }).catch(alert => {
+         if (isUnmounted.current) return;
+         setAlert(alert);
       });
    };
    const updateProduct = async () => {
@@ -78,36 +74,31 @@ const ProductModal = (props: IProps) => {
       }
 
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-
-      useModifyProduct(product).then(result => {
+      usePutProduct(product).then(product => {
          if (isUnmounted.current) return;
-
-         if (result.alert.List.length > 0) {
-            alert.List = result.alert.List;
-            alert.Type = result.alert.Type;
-            setAlert(alert);
-         } else {
-            resetImageUpload();
-            props.onSuccess();
-            setAlert(alert.Clear);
-         }
+         setProduct(product);
+         resetImageUpload();
+         props.onSuccess();
+         setAlert(alert.Clear);
+      }).catch(alert => {
+         if (isUnmounted.current) return;
+         setAlert(alert);
       });
+
    };
 
    const deleteProduct = async () => {
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      useDeleteProduct(product).then(result => {
+      useDeleteProduct(product).then(message => {
          if (isUnmounted.current) return;
-         if (result.alert.List.length > 0) {
-            alert.List = result.alert.List;
-            alert.Type = result.alert.Type;
-            setAlert(alert);
-         } else {
-            resetImageUpload();
-            setAlert(alert.Clear);
-            props.onSuccess();
-         }
+         resetImageUpload();
+         setAlert(alert.Clear);
+         props.onSuccess();
+      }).catch(alert => {
+         if (isUnmounted.current) return;
+         setAlert(alert);
       });
+
    };
    const resetImageUpload = () => {
       setImageBase64("");
@@ -120,14 +111,14 @@ const ProductModal = (props: IProps) => {
    };
    const onImageUploadError = (errMsg: string) => {
       let errors = new AlertObj([], AlertTypes.Error);
-      errors.List.push(new Error("0", errMsg));
+      errors.List.push(new ErrorDto("0", errMsg));
       setAlert(errors);
    };
    const onImageUploadLoading = (progress: number) => {
       let errors = new AlertObj();
       errors.Type = AlertTypes.Warning;
       if (progress < 100)
-         errors.List.push(new Error("0", `uploading ${progress}%`));
+         errors.List.push(new ErrorDto("0", `uploading ${progress}%`));
       setAlert(errors);
    };
 
@@ -178,13 +169,13 @@ const ProductModal = (props: IProps) => {
                className="col-12 col-sm-6"
                showDanger={alert.checkExistFilterRequired("UnitQuantity")}
             />
-
+            {console.log(enumToArray(ProductUnitType))}
             <InputDropDown dropdownTitle={productUnitTypeList.find((pu) => pu.id == product.unitType)?.name || "Select Option"}
                label="Unit Type*"
                className="col-12 col-sm-6 " >
                {productUnitTypeList.map(productUnitType =>
                   <button className="dropdown-item" key={productUnitType.id}
-                     onClick={() => { setProduct({ ...product, unitType: productUnitType.id }); }} >
+                     onClick={() => { setProduct({ ...product, unitType: ProductUnitType[productUnitType.id as keyof typeof ProductUnitType] }); }} >
                      {productUnitType.name}
                   </button>
                )}

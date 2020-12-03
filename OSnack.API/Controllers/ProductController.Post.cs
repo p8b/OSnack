@@ -28,7 +28,8 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPost("[action]")]
-      [Authorize(AppConst.AccessPolicies.Secret)]  /// Done
+      [Authorize(AppConst.AccessPolicies.Secret)]  /// Done 
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> Post([FromBody] Product newProduct)
       {
          try
@@ -111,9 +112,10 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
       [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
       #endregion
-      [HttpPost("[action]/Score")]
-      [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test
-      public async Task<IActionResult> Post([FromBody] Score newScore)
+      [HttpPost("Post/[action]/Score")]
+      [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test 
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Official)]
+      public async Task<IActionResult> Score([FromBody] Score newScore)
       {
          try
          {

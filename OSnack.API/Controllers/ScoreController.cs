@@ -11,11 +11,14 @@ using System.Text;
 using System.Threading.Tasks;
 using P8B.Core.CSharp.Models;
 using P8B.Core.CSharp;
+using OSnack.API.Extras;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OSnack.API.Controllers
 {
    [Route("[controller]")]
    [AutoValidateAntiforgeryToken]
+   [ApiControllerAttribute]
    public class ScoreController : ControllerBase
    {
       private OSnackDbContext _DbContext { get; }
@@ -38,7 +41,8 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
       [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
       #endregion
-      // [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
+      [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test   
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Official)]
       public async Task<IActionResult> Post([FromBody] Score newScore)
       {
          try

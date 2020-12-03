@@ -1,7 +1,7 @@
 ﻿import React from 'react';
 import { uuidv4 } from '../../_core/appFunc';
-import { ExternalLoginInfo } from '../../_core/apiModels';
-import { RegistrationTypes } from '../../_core/constant.Variables';
+import { ExternalLoginInfo, RegistrationTypes } from '../../_core/apiModels';
+
 const GoogleLogin = (props: IProps) => {
    let callBackWasCalled = false;
    const login = () => {
@@ -23,7 +23,12 @@ const GoogleLogin = (props: IProps) => {
          callBackWasCalled = true;
          const reply = windowPop!.document.location.search.replace("?state", "")!.replace("&code", "")!.replace("&scope", "")!.split('=');
          if (reply![1] != null && localStorage.getItem("googleLogin") === reply![1]) {
-            props.onSuccess(new ExternalLoginInfo(reply![2], reply![1], RegistrationTypes.Google));
+            props.onSuccess({
+               code: reply![2],
+               state: reply![1],
+               type: RegistrationTypes.Google,
+               rememberMe: false
+            });
             localStorage.removeItem("googleLogin");
          } else props.onFailure("Google Login Failed. Cannot retrieve code!");
       };

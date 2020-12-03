@@ -19,6 +19,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Primitives;
 
@@ -33,6 +34,7 @@ using OSnack.API.Database;
 using OSnack.API.Database.Context.ClassOverrides;
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
+
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Extentions;
 using P8B.Core.CSharp.Models.Interfaces;
@@ -163,44 +165,53 @@ namespace OSnack.API
             .WithRazorPagesRoot("/Extras/RootPage");
 
 
-         services
-             .AddControllers()
+         services.AddControllers()
              .AddNewtonsoftJson(options => options.SerializerSettings.Converters.Add(new StringEnumConverter()));
 
-         // Register the Swagger services
-         //services.AddOpenApiDocument(document =>
-         //{
-         //   document.DocumentName = "OpenApi";
-         //   var test = new JsonSerializerSettings();
-         //   var test1 = new PropertyRenameAndIgnoreSerializerContractResolver();
-         //   test1.RenameProperty(typeof(IdentityUser), "PasswordHash", "xxxxxxxx");
-         //   test.ContractResolver = test1;
-         //   document.SerializerSettings = test;
-         //});
-         services.AddSwaggerDocument(document =>
+         services.AddApiVersioning(options =>
          {
-            document.DocumentName = "OSnack";
+            options.AssumeDefaultVersionWhenUnspecified = true;
+            options.DefaultApiVersion = new ApiVersion(1, 0);
+            options.ReportApiVersions = true;
          });
-      }
 
-      public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IAntiforgery antiforgery)
+
+         // Register the Swagger services
+         foreach (var policy in AppConst.AccessPolicies.List)
+         {
+            services.AddOpenApiDocument(document =>
+            {
+               document.DocumentName = $"OSnack {policy}";
+               document.Title = $"OSnack {policy}";
+               document.AuthorizationGroupNames = new string[] { policy };
+            });
+         }
+      }
+      public void Configure(IApplicationBuilder app,
+         IWebHostEnvironment env,
+         IAntiforgery antiforgery)
       {
          //  CookieOptions antiForgeryCookieOptions;
          if (env.IsDevelopment())
          {
             app.UseDeveloperExceptionPage();
 
+            app.UseStaticFiles(new StaticFileOptions
+            {
+               FileProvider = new PhysicalFileProvider(
+                  Path.Combine(Directory.GetCurrentDirectory(), "StaticFiles"))
+            });
             //// Register the Swagger generator and the Swagger UI middlewares
-            ////Launch the app.Navigate to:
-            ////http://localhost:<port>/swagger to view the Swagger UI.
-            ////http://localhost:<port>/swagger/v1/swagger.json to view the Swagger specification
             app.UseOpenApi(config =>
             {
                config.PostProcess = (document, request) =>
-                             AppFunc.MakeClientZipFile(document);
-               config.Path = "swagger/{documentName}/swagger.json";
+                             AppFunc.MakeClientZipFile(document, Directory.GetCurrentDirectory());
+               config.Path = "/swagger/{documentName}/swagger.json";
             });
-            app.UseSwaggerUi3();
+            app.UseSwaggerUi3(config =>
+            {
+               config.ValidateSpecification = true;
+            });
          }
          else
          {
@@ -222,13 +233,11 @@ namespace OSnack.API
             context.Request.Path = "/";
             foreach (var COR in AppConst.Settings.OpenCors)
             {
-               if (context.Request.Headers.TryGetValue("Origin", out StringValues Originvalue)
+               if (env.IsDevelopment())
+                  context.Request.Path = OrgPath;
+               else if (context.Request.Headers.TryGetValue("Origin", out StringValues Originvalue)
                   && COR.EqualCurrentCultureIgnoreCase(Originvalue.ToString()))
                   context.Request.Path = OrgPath;
-
-               if (env.IsDevelopment() && context.Request.Headers.TryGetValue("Postman-Token", out StringValues fetchType))
-                  context.Request.Path = OrgPath;
-
             }
             return next(context);
          });

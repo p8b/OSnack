@@ -59,7 +59,7 @@ namespace OSnack.API.Controllers
       }
 
       #region *** ***
-      [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(MultiResult<EmailTemplate, EmailTemplate>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("[action]/{templateId}")]
@@ -78,7 +78,7 @@ namespace OSnack.API.Controllers
             defaultTemplate.PrepareDesign(WebHost.WebRootPath);
             template.PrepareDesign(WebHost.WebRootPath);
 
-            return Ok(new { template, defaultTemplate });
+            return Ok(new MultiResult<EmailTemplate, EmailTemplate>(template, defaultTemplate));
          }
          catch (Exception)
          {

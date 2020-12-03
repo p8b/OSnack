@@ -21,11 +21,30 @@ namespace OSnack.API.Controllers
    public partial class ProductController
    {
       #region ***  ***
-      [ProducesResponseType(typeof(ResultList<Product>), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(MultiResult<List<Product>, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
-      [HttpGet("[action]/{selectedPage}/{maxItemsPerPage}/{filterCategory}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}")]
-      public async Task<IActionResult> Get(
+      [HttpGet("GET/[action]/{selectedPage}/{maxItemsPerPage}/{filterCategory}/{searchValue}/{isSortAsce}/{sortName}")]
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Public)]
+      public async Task<IActionResult> SearchPublic(
+          int selectedPage, int maxItemsPerPage,
+          string filterCategory, string searchValue,
+          bool isSortAsce, string sortName) =>
+         await Search(selectedPage, maxItemsPerPage, filterCategory, searchValue, "true", isSortAsce, sortName).ConfigureAwait(false);
+
+      #region ***  ***
+      [ProducesResponseType(typeof(MultiResult<List<Product>, int>), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
+      #endregion
+      [HttpGet("GET/[action]/{selectedPage}/{maxItemsPerPage}/{filterCategory}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}")]
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
+      public async Task<IActionResult> SearchSecret(
+          int selectedPage, int maxItemsPerPage,
+          string filterCategory, string searchValue,
+          string filterStatus, bool isSortAsce, string sortName) =>
+         await Search(selectedPage, maxItemsPerPage, filterCategory, searchValue, null, isSortAsce, sortName).ConfigureAwait(false);
+
+      private async Task<IActionResult> Search(
           int selectedPage,
           int maxItemsPerPage,
           string filterCategory = CoreConst.GetAllRecords,
@@ -57,7 +76,7 @@ namespace OSnack.API.Controllers
                 .Take(maxItemsPerPage)
                 .ToListAsync()
                 .ConfigureAwait(false);
-            return Ok(new ResultList<Product>(list, totalCount));
+            return Ok(new MultiResult<List<Product>, int>(list, totalCount));
          }
          catch (Exception)
          {
@@ -71,23 +90,34 @@ namespace OSnack.API.Controllers
       /// Get a single product by using product and category name 
       /// </summary>
       #region ***  ***
-      [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(MultiResult<Product, List<Product>>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status404NotFound)]
       #endregion
-      [HttpGet("[action]/{categoryName}/{productName}")]
-      public async Task<IActionResult> Get(string categoryName, string productName)
+      [HttpGet("GET/[action]/{categoryName}/{productName}")]
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Public)]
+      public async Task<IActionResult> ProductAndRelate(string categoryName, string productName)
       {
          try
          {
             Product product = await _DbContext.Products
                 .Include(p => p.Category)
                 .Include(p => p.NutritionalInfo)
-                .FirstOrDefaultAsync(p => p.Category.Name.Equals(categoryName) && p.Name.Equals(productName))
+                .SingleOrDefaultAsync(p => p.Category.Name.Equals(categoryName)
+                                        && p.Name.Equals(productName)
+                                        && p.Status)
                 .ConfigureAwait(false);
 
+            if (product == null)
+            {
+               CoreFunc.Error(ref ErrorsList, "Product Not Found");
+               return NotFound(ErrorsList);
+            }
             List<Product> relatedProducts = await _DbContext.Products
                 .Include(p => p.Category)
-                .Where(p => p.Category.Id == product.Category.Id && p.Id != product.Id)
+                .Where(p => p.Category.Id == product.Category.Id 
+                         && p.Id != product.Id
+                         && p.Status)
                 .Take(3)
                 .ToListAsync()
                 .ConfigureAwait(false);
@@ -96,12 +126,14 @@ namespace OSnack.API.Controllers
                relatedProducts.AddRange(await _DbContext.Products
                 .Include(p => p.Category)
                 .Take(3 - relatedProducts.Count)
-                .Where(p => !relatedProducts.Contains(p) && p.Id != product.Id)
+                .Where(p => !relatedProducts.Contains(p) 
+                         && p.Id != product.Id
+                         && p.Status)
                 .ToListAsync()
                 .ConfigureAwait(false));
 
 
-            return Ok(new { product, relatedProducts });
+            return Ok(new MultiResult<Product, List<Product>>(product, relatedProducts));
          }
          catch (Exception)
          {

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import { DefaultNav, LoginNav } from "./NavMenuItems";
 import { AuthContext } from "osnack-frontend-shared/src/_core/authenticationContext";
-import { useLogout } from "osnack-frontend-shared/src/hooks/apiCallers/authentication/Get.Authentication";
+import { useLogoutAuthentication } from "osnack-frontend-shared/src/hooks/apiHooks/useAuthenticationHook";
 import { User } from "osnack-frontend-shared/src/_core/apiModels";
 import DropDown from "osnack-frontend-shared/src/components/Buttons/DropDown";
 import NavLink from "osnack-frontend-shared/src/components/Buttons/NavLink";
@@ -16,11 +16,11 @@ const NavMenu = (props: IProps) => {
    const [currentNavItems, setCurrentNavItems] = useState(DefaultNav);
 
    const logout = async () => {
-      const result = await useLogout();
-      if (result.isLogout) {
+      await useLogoutAuthentication().then(() => {
          auth.setState({ isAuthenticated: false, user: new User() });
          setCurrentNavItems(DefaultNav);
-      }
+      });
+
    };
 
    useEffect(() => {

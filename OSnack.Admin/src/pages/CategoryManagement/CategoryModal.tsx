@@ -8,10 +8,8 @@ import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import ButtonPopupConfirm from 'osnack-frontend-shared/src/components/Buttons/ButtonPopupConfirm';
 import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
 import ImageUpload from '../../components/ImageUpload/ImageUpload';
-import { useCreateCategory } from '../../hooks/apiCallers/category/Post.Category';
-import { useModifyCategory } from '../../hooks/apiCallers/category/Put.Category';
-import { useDeleteCategory } from '../../hooks/apiCallers/category/Delete.Category';
-import Alert, { AlertObj, AlertTypes, Error } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import { usePostCategory, usePutCategory, useDeleteCategory } from 'osnack-frontend-shared/src/hooks/apiHooks/useCategoryHook';
+import Alert, { AlertObj, AlertTypes, ErrorDto } from 'osnack-frontend-shared/src/components/Texts/Alert';
 
 const CategoryModal = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -52,38 +50,48 @@ const CategoryModal = (props: IProps) => {
       let errors = new AlertObj([], AlertTypes.Error);
 
       if (category.name == "")
-         errors.List.push(new Error("0", "Category name is required."));
+         errors.List.push(new ErrorDto("0", "Category name is required."));
 
       if (category.imageBase64 == "" || category.originalImageBase64 == "")
-         errors.List.push(new Error("1", "Image Required."));
+         errors.List.push(new ErrorDto("1", "Image Required."));
 
       if (errors.List.length > 0) {
          setAlert(errors);
          return;
       }
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      useCreateCategory(category).then(result => {
-         if (isUnmounted.current) return;
+      usePostCategory(category).then((category) => {
+         setAlert(alert.Clear);
+         resetImageUpload();
+         props.onSuccess();
 
-         if (result.alert.List.length > 0) {
-            alert.List = result.alert.List;
-            alert.Type = result.alert.Type;
-            setAlert(alert);
-         } else {
-            setAlert(alert.Clear);
-            resetImageUpload();
-            props.onSuccess();
-         }
+      }).catch((alert) => {
+         if (isUnmounted.current) return;
+         setAlert(alert);
       });
+
+      //useCreateCategory(category).then(result => {
+      //   if (isUnmounted.current) return;
+
+      //   if (result.alert.List.length > 0) {
+      //      alert.List = result.alert.List;
+      //      alert.Type = result.alert.Type;
+      //      setAlert(alert);
+      //   } else {
+      //      setAlert(alert.Clear);
+      //      resetImageUpload();
+      //      props.onSuccess();
+      //   }
+      //});
    };
    const updateCategory = async () => {
       let errors = new AlertObj([], AlertTypes.Error);
 
       if (category.name == "")
-         errors.List.push(new Error("0", "Category name is required."));
+         errors.List.push(new ErrorDto("0", "Category name is required."));
 
       if (category.imageBase64 == "" || category.originalImageBase64 == "")
-         errors.List.push(new Error("1", "Image Required."));
+         errors.List.push(new ErrorDto("1", "Image Required."));
 
       if (errors.List.length > 0) {
          setAlert(errors);
@@ -94,38 +102,55 @@ const CategoryModal = (props: IProps) => {
       if (!isNewImageSet) {
          cat.imageBase64 = '';
          cat.originalImageBase64 = '';
-      }
+      } if (isUnmounted.current) return;
 
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      useModifyCategory(cat).then(result => {
+      usePutCategory(cat).then((category) => {
+         setAlert(alert.Clear);
+         resetImageUpload();
+         props.onSuccess();
+      }).catch((alert) => {
          if (isUnmounted.current) return;
-
-         if (result.alert.List.length > 0) {
-            alert.List = result.alert.List;
-            alert.Type = result.alert.Type;
-            setAlert(alert);
-         } else {
-            setAlert(alert.Clear);
-            resetImageUpload();
-            props.onSuccess();
-         }
+         setAlert(alert);
       });
+      //useModifyCategory(cat).then(result => {
+      //   if (isUnmounted.current) return;
+
+      //   if (result.alert.List.length > 0) {
+      //      alert.List = result.alert.List;
+      //      alert.Type = result.alert.Type;
+      //      setAlert(alert);
+      //   } else {
+      //      setAlert(alert.Clear);
+      //      resetImageUpload();
+      //      props.onSuccess();
+      //   }
+      //});
    };
    const deleteCategory = async () => {
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      useDeleteCategory(category).then(result => {
+      useDeleteCategory(category).then((category) => {
+         setAlert(alert.Clear);
+         resetImageUpload();
+         props.onSuccess();
+      }).catch((alert) => {
          if (isUnmounted.current) return;
-
-         if (result.alert.List.length > 0) {
-            alert.List = result.alert.List;
-            alert.Type = result.alert.Type;
-            setAlert(alert);
-         } else {
-            setAlert(alert.Clear);
-            resetImageUpload();
-            props.onSuccess();
-         }
+         setAlert(alert);
       });
+
+      //useDeleteCategory(category).then(result => {
+      //   if (isUnmounted.current) return;
+
+      //   if (result.alert.List.length > 0) {
+      //      alert.List = result.alert.List;
+      //      alert.Type = result.alert.Type;
+      //      setAlert(alert);
+      //   } else {
+      //      setAlert(alert.Clear);
+      //      resetImageUpload();
+      //      props.onSuccess();
+      //   }
+      //});
    };
 
    const resetImageUpload = () => {
@@ -139,14 +164,14 @@ const CategoryModal = (props: IProps) => {
    };
    const onImageUploadError = (errMsg: string) => {
       let errors = new AlertObj([], AlertTypes.Error);
-      errors.List.push(new Error("0", errMsg));
+      errors.List.push(new ErrorDto("0", errMsg));
       setAlert(errors);
    };
    const onImageUploadLoading = (progress: number) => {
       let errors = new AlertObj();
       errors.Type = AlertTypes.Warning;
       if (progress < 100)
-         errors.List.push(new Error("0", `uploading ${progress}%`));
+         errors.List.push(new ErrorDto("0", `uploading ${progress}%`));
       setAlert(errors);
    };
 

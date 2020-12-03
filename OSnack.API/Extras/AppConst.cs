@@ -49,6 +49,20 @@ namespace OSnack.API.Extras
          /// * Customer <br/>
          /// </summary>
          public const string Official = nameof(Official);
+         /// <summary>
+         /// Public Policy includes Everyone including anonymous 
+         /// </summary>
+         public const string Public = nameof(Public);
+
+         public static string[] List
+         {
+            get => new string[] {
+            nameof(TopSecret),
+            nameof(Secret),
+            nameof(Official),
+            nameof(Public),
+         };
+         }
       }
 
       public enum RegistrationTypes
@@ -85,10 +99,10 @@ namespace OSnack.API.Extras
          get
          {
             /// Get the directory of the app settings.json file
-            var jsonFilePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\Extras\Settings.json";
+            var jsonFilePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\StaticFiles\Settings.json";
             /// If above file does not exists check the android path.
             if (!File.Exists(jsonFilePath))
-               jsonFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Extras\Settings.json");
+               jsonFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"StaticFiles\Settings.json");
             /// Read the json file from that directory
             /// de-serialise the json string into an object of AppSettings and return it
             return JsonConvert.DeserializeObject<Settings>(File.ReadAllText(jsonFilePath));

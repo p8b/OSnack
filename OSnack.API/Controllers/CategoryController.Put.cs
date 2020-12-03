@@ -30,7 +30,8 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPut("[action]")]
-      [Authorize(AppConst.AccessPolicies.Secret)]  /// Done
+      [Authorize(AppConst.AccessPolicies.Secret)]  /// Done   
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> Put([FromBody] Category modifiedCategory)
       {
          try

@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Models;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +23,8 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]")]
-      [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test
+      [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test  
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Official)]
       public async Task<IActionResult> All()
       {
          try

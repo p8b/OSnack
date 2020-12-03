@@ -20,6 +20,7 @@ namespace OSnack.API.Controllers
 {
    [Route("[controller]")]
    [AutoValidateAntiforgeryToken]
+   [ApiControllerAttribute]
    public class OrderController : ControllerBase
    {
       private OSnackDbContext _DbContext { get; }
@@ -41,7 +42,8 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("[action]/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}")]
-      // [Authorize(AppConst.AccessPolicies.Secret)] /// Done
+      [Authorize(AppConst.AccessPolicies.Secret)] /// Done  
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> Get(
           int selectedPage,
           int maxNumberPerItemsPage,
@@ -96,6 +98,7 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpGet("[action]/MyOrder/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}/{isSortAsce}/{sortName}")]
       [Authorize(AppConst.AccessPolicies.Official)] /// Done
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Official)]
       public async Task<IActionResult> Get(
           int selectedPage,
           int maxNumberPerItemsPage,
@@ -280,7 +283,8 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
       [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
       #endregion
-      // [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
+      [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test     
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> Put([FromBody] Order modifiedOrder)
       {
          try
@@ -323,7 +327,8 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
       [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
       #endregion
-      // [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
+      [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> PutOrderStatus([FromBody] Order modifiedOrder)
       {
          try
@@ -361,7 +366,8 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(StatusCodes.Status404NotFound)]
       [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
       #endregion
-      //[Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
+      [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test 
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> Delete([FromBody] Order order)
       {
          try

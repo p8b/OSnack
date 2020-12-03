@@ -25,7 +25,7 @@ namespace OSnack.API.Controllers
       /// Used to get a list of all users
       /// </summary>
       #region ***  ***
-      [ProducesResponseType(typeof(ResultList<User>), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(MultiResult<List<User>, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("[action]/" +
@@ -35,7 +35,8 @@ namespace OSnack.API.Controllers
           "{filterRole}/" +
           "{isSortAsce}/" +
           "{sortName}")]
-      [Authorize(AppConst.AccessPolicies.Secret)] /// Ready For Test
+      [Authorize(AppConst.AccessPolicies.Secret)] /// Ready For Test  
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> Get(
           int selectedPage = 1,
           int maxItemsPerPage = 5,
@@ -78,7 +79,7 @@ namespace OSnack.API.Controllers
                 .ToListAsync()
                 .ConfigureAwait(false);
             /// return the list of Role ordered by name
-            return Ok(new ResultList<User>(list, totalCount));
+            return Ok(new MultiResult<List<User>, int>(list, totalCount));
          }
          catch (Exception)
          {

@@ -7,11 +7,11 @@ import Container from '../../components/Container';
 import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
 import { ConstMaxNumberOfPerItemsPage, GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
-import Alert, { AlertObj, AlertTypes, Error } from 'osnack-frontend-shared/src/components/Texts/Alert';
-import { useSearchUser } from '../../hooks/apiCallers/user/Get.User';
+import Alert, { AlertObj, AlertTypes, ErrorDto } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import { useGetUser } from 'osnack-frontend-shared/src/hooks/apiHooks/useUserHook';
 import UserModal from './UserModal';
 import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
-import { useGetAllRoles } from '../../hooks/apiCallers/role/Get.Role';
+import { useGetRole } from 'osnack-frontend-shared/src/hooks/apiHooks/useRoleHook';
 import { sleep } from 'osnack-frontend-shared/src/_core/appFunc';
 
 const UserManagement = (props: IProps) => {
@@ -32,17 +32,15 @@ const UserManagement = (props: IProps) => {
 
    useEffect(() => {
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      useGetAllRoles().then(result => {
+      useGetRole().then(roles => {
          if (isUnmounted.current) return;
-         if (result.alert.List.length > 0) {
-            alert.List = result.alert.List;
-            alert.Type = result.alert.Type;
-            setAlert(alert);
-         } else {
-            setRoleList(result.roleList);
-            setAlert(alert.Clear);
-         }
+         setRoleList(roles);
+         setAlert(alert.Clear);
+      }).catch(alert => {
+         if (isUnmounted.current) return;
+         setAlert(alert);
       });
+
       onSearch();
       return () => { isUnmounted.current = true; };
    }, []);
@@ -75,19 +73,18 @@ const UserManagement = (props: IProps) => {
 
 
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      useSearchUser(selectedPage, maxItemsPerPage, searchString, roleFilter, isSortAsc, sortName).then(result => {
-         if (isUnmounted.current) return;
-         if (result.alert.List.length > 0) {
-            alert.List = result.alert.List;
-            alert.Type = result.alert.Type;
-            setAlert(alert);
-         }
-         else {
-            setTblTotalItemCount(result.totalCount);
-            populateUserTable(result.userList);
+      useGetUser(selectedPage, maxItemsPerPage, searchString, roleFilter, isSortAsc, sortName).then(
+         result => {
+            if (isUnmounted.current) return;
+            setTblTotalItemCount(result.part2);
+            populateUserTable(result.part1!);
             setAlert(alert.Clear);
          }
+      ).catch(alert => {
+         if (isUnmounted.current) return;
+         setAlert(alert);
       });
+
    };
 
    const populateUserTable = (userList: User[]) => {
@@ -111,7 +108,7 @@ const UserManagement = (props: IProps) => {
             </div>
          ])));
       if (userList.length == 0) {
-         setAlert(new AlertObj([new Error("0", "No Result Found")], AlertTypes.Warning));
+         setAlert(new AlertObj([new ErrorDto("0", "No Result Found")], AlertTypes.Warning));
       } else {
          setAlert(alert.Clear);
       }

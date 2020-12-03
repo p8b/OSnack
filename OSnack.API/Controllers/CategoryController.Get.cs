@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 using OSnack.API.Database.Models;
+using OSnack.API.Extras;
 
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Extentions;
@@ -16,7 +17,6 @@ using System.Threading.Tasks;
 
 namespace OSnack.API.Controllers
 {
-
    public partial class CategoryController
    {
       /// <summary>
@@ -24,10 +24,11 @@ namespace OSnack.API.Controllers
       /// search by name or filter by unit or status
       /// </summary>
       #region *** ***
-      [ProducesResponseType(typeof(ResultList<Category>), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(MultiResult<List<Category>, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{isSortAsce}/{sortName}")]
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Public)]
       public async Task<IActionResult> Search(
           int selectedPage,
           int maxNumberPerItemsPage,
@@ -54,7 +55,7 @@ namespace OSnack.API.Controllers
                   .CountAsync(p => p.Category.Id == category.Id)
                   .ConfigureAwait(false);
             }
-            return Ok(new ResultList<Category>(list, totalCount));
+            return Ok(new MultiResult<List<Category>, int>(list, totalCount));
          }
          catch (Exception)
          {
@@ -68,6 +69,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]")]
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Public)]
       public async Task<IActionResult> All()
       {
          try

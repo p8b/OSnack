@@ -11,6 +11,7 @@ using P8B.Core.CSharp.Models;
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using System.Threading.Tasks;
 
@@ -26,7 +27,8 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
       #endregion
       [HttpDelete("[action]")]
-      [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test
+      [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test 
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> Delete([FromBody] Address address)
       {
          try

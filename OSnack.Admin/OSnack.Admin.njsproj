@@ -139,13 +139,6 @@
     <Folder Include="src\components\" />
     <Folder Include="src\components\NavMenu\" />
     <Folder Include="src\components\ImageUpload\" />
-    <Folder Include="src\hooks\" />
-    <Folder Include="src\hooks\apiCallers\" />
-    <Folder Include="src\hooks\apiCallers\emailTemplate\" />
-    <Folder Include="src\hooks\apiCallers\category\" />
-    <Folder Include="src\hooks\apiCallers\role\" />
-    <Folder Include="src\hooks\apiCallers\product\" />
-    <Folder Include="src\hooks\apiCallers\user\" />
     <Folder Include="src\pages\" />
     <Folder Include="src\pages\Dashboard\" />
     <Folder Include="src\pages\LoginPage\" />
@@ -184,23 +177,6 @@
     <TypeScriptCompile Include="src\components\ImageUpload\ImageUpload.tsx" />
     <TypeScriptCompile Include="src\components\NavMenu\NavMenu.tsx" />
     <TypeScriptCompile Include="src\components\NavMenu\NavMenuItems.tsx" />
-    <TypeScriptCompile Include="src\hooks\apiCallers\category\Delete.Category.tsx" />
-    <TypeScriptCompile Include="src\hooks\apiCallers\category\Get.Category.tsx" />
-    <TypeScriptCompile Include="src\hooks\apiCallers\category\Put.Category.tsx" />
-    <TypeScriptCompile Include="src\hooks\apiCallers\category\Post.Category.tsx" />
-    <TypeScriptCompile Include="src\hooks\apiCallers\emailTemplate\Get.EmailTemplates.tsx" />
-    <TypeScriptCompile Include="src\hooks\apiCallers\emailTemplate\Delete.EmailTemplate.tsx" />
-    <TypeScriptCompile Include="src\hooks\apiCallers\emailTemplate\Put.EmailTemplate.tsx" />
-    <TypeScriptCompile Include="src\hooks\apiCallers\emailTemplate\Post.EmailTemplate.tsx" />
-    <TypeScriptCompile Include="src\hooks\apiCallers\role\Get.Role.tsx" />
-    <TypeScriptCompile Include="src\hooks\apiCallers\product\Delete.Product.tsx" />
-    <TypeScriptCompile Include="src\hooks\apiCallers\product\Get.Product.tsx" />
-    <TypeScriptCompile Include="src\hooks\apiCallers\product\Post.Product.tsx" />
-    <TypeScriptCompile Include="src\hooks\apiCallers\product\Put.Product.tsx" />
-    <TypeScriptCompile Include="src\hooks\apiCallers\user\Delete.User.tsx" />
-    <TypeScriptCompile Include="src\hooks\apiCallers\user\Get.User.tsx" />
-    <TypeScriptCompile Include="src\hooks\apiCallers\user\Post.User.tsx" />
-    <TypeScriptCompile Include="src\hooks\apiCallers\user\Put.User.tsx" />
     <TypeScriptCompile Include="src\index.tsx" />
     <TypeScriptCompile Include="src\pages\CategoryManagement\CategoryManagement.tsx" />
     <TypeScriptCompile Include="src\pages\CategoryManagement\CategoryModal.tsx" />
@@ -215,7 +191,6 @@
     <TypeScriptCompile Include="src\pages\ProductManagement\ProductModal.tsx" />
     <TypeScriptCompile Include="src\pages\UserManagement\UserModal.tsx" />
     <TypeScriptCompile Include="src\pages\UserManagement\UserManagement.tsx" />
-    <TypeScriptCompile Include="src\_core\apiModel-Admin.tsx" />
     <TypeScriptCompile Include="src\_core\appConstant.Variables.tsx" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />

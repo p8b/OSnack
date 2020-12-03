@@ -2,14 +2,14 @@
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import Table, { TableData, TableHeaderData, TableRowData } from 'osnack-frontend-shared/src/components/Table/Table';
-import { Category } from 'osnack-frontend-shared/src/_core/apiModels';
+import { Category, MultiResultOfListOfCategoryAndInteger } from 'osnack-frontend-shared/src/_core/apiModels';
 import CategoryModal from './CategoryModal';
 import Container from '../../components/Container';
 import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
-import { useSearchCategory } from '../../hooks/apiCallers/category/Get.Category';
+import { useSearchCategory } from 'osnack-frontend-shared/src/hooks/apiHooks/useCategoryHook';
 import { ConstMaxNumberOfPerItemsPage, GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
-import Alert, { AlertObj, AlertTypes, Error } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import Alert, { AlertObj, AlertTypes, ErrorDto } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { sleep } from 'osnack-frontend-shared/src/_core/appFunc';
 
 const CategoryManagement = (props: IProps) => {
@@ -55,29 +55,41 @@ const CategoryManagement = (props: IProps) => {
          setTblMaxItemsPerPage(maxItemsPerPage);
 
       sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      useSearchCategory(selectedPage, maxItemsPerPage, searchString, isSortAsc, sortName).then(result => {
-         if (isUnmounted.current) return;
-
-         if (result.alert.List.length > 0) {
-            alert.List = result.alert.List;
-            alert.Type = result.alert.Type;
-            setAlert(alert);
-         }
-         else {
+      useSearchCategory(selectedPage, maxItemsPerPage, searchString, isSortAsc, sortName).then(
+         (result: MultiResultOfListOfCategoryAndInteger) => {
+            if (isUnmounted.current) return;
             setAlert(alert.Clear);
-            setTblTotalItemCount(result.totalCount);
-            populateCategoryTable(result.categoryList);
-         }
-      });
+            setTblTotalItemCount(result.part2);
+            populateCategoryTable(result.part1);
+         }).catch((alert) => {
+            if (isUnmounted.current) return;
+            setAlert(alert);
+         });
+
+      //useSearchCategory(selectedPage, maxItemsPerPage, searchString, isSortAsc, sortName).then
+      //   (result=> {
+      //   if (isUnmounted.current) return;
+
+      //   if (result.alert.List.length > 0) {
+      //      alert.List = result.alert.List;
+      //      alert.Type = result.alert.Type;
+      //      setAlert(alert);
+      //   }
+      //   else {
+      //      setAlert(alert.Clear);
+      //      setTblTotalItemCount(result.totalCount);
+      //      populateCategoryTable(result.categoryList);
+      //   }
+      //});
    };
 
-   const populateCategoryTable = (categoryList: Category[]) => {
+   const populateCategoryTable = (categoryList?: Category[]) => {
       let tData = new TableData();
       tData.headers.push(new TableHeaderData("Name", "Name", true));
       tData.headers.push(new TableHeaderData("No. Products"));
       tData.headers.push(new TableHeaderData("", "", false));
 
-      categoryList.map(category =>
+      categoryList?.map(category =>
          tData.rows.push(new TableRowData([
             category.name,
             category.totalProducts,
@@ -88,7 +100,7 @@ const CategoryManagement = (props: IProps) => {
             </div>
          ])));
       if (categoryList.length == 0) {
-         setAlert(new AlertObj([new Error("0", "No Result Found")], AlertTypes.Warning));
+         setAlert(new AlertObj([new ErrorDto("0", "No Result Found")], AlertTypes.Warning));
       } else {
          setAlert(alert.Clear);
       }
