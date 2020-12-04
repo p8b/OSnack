@@ -28,7 +28,7 @@ const UserAccount = (props: IProps) => {
          return;
       }
 
-      errorAlertPasswordInfo.Clear();
+      errorAlertPasswordInfo.clear();
 
       errorAlertAccountInfo.PleaseWait(500, isUnmounted);
       setIsOpenConfirmPassword(false);
@@ -61,15 +61,12 @@ const UserAccount = (props: IProps) => {
          errors.List.push(new ErrorDto('0', "Passwords mismatch."));
 
       setIsOpenConfirmPassword(false);
-      errorAlertAccountInfo.Clear();
+      errorAlertAccountInfo.clear();
 
       if (errors.List.length > 0) {
          errorAlertPasswordInfo.set(errors);
          return;
       }
-      //else {
-      //   errorAlertPasswordInfo.PleaseWait(500, isUnmounted)
-      //}
 
       setCurrentPassword(currentPass);
       setSelectedAction("");
@@ -99,14 +96,14 @@ const UserAccount = (props: IProps) => {
       <div className="row">
          <div className="row col-12 col-md-6 m-0">
             <Input label="Name"
-               showDanger={errorAlertAccountInfo.alert.checkExist("firstName")}
+               showDanger={errorAlertAccountInfo.checkExist("firstName")}
                value={user.firstName}
                className="col-12"
                onChange={(i) => { setUser({ ...user, firstName: i.target.value }); }}
             />
             <Input label="Surname"
                value={user.surname}
-               showDanger={errorAlertAccountInfo.alert.checkExist("surname")}
+               showDanger={errorAlertAccountInfo.checkExist("surname")}
                className="col-12"
                onChange={(i) => { setUser({ ...user, surname: i.target.value }); }}
             />
@@ -114,7 +111,7 @@ const UserAccount = (props: IProps) => {
                className="col-12"
                type="text"
                value={user.phoneNumber || undefined}
-               showDanger={errorAlertAccountInfo.alert.checkExist("phoneNumber")}
+               showDanger={errorAlertAccountInfo.checkExist("phoneNumber")}
                validationPattern={CommonRegex.UkNumber}
                onChange={i => setUser({ ...user, phoneNumber: i.target.value })}
             />
@@ -122,13 +119,13 @@ const UserAccount = (props: IProps) => {
                <Input label={`Email ${user.emailConfirmed ? "(Verified)" : "(Not Verified)"}`}
                   value={user.email}
                   type="email"
-               showValid={user.emailConfirmed || errorAlertAccountInfo.alert.checkExist("email")}
+                  showValid={user.emailConfirmed || errorAlertAccountInfo.checkExist("email")}
                   showDanger={!user.emailConfirmed}
                   className="col-12"
                   onChange={(i) => { setUser({ ...user, email: i.target.value }); }}
                />
             }
-            <Alert alert={errorAlertAccountInfo.alert} onClosed={() => errorAlertAccountInfo.Clear()} />
+            <Alert alert={errorAlertAccountInfo.alert} onClosed={() => errorAlertAccountInfo.clear()} />
             <div className="col-12">
                <Button children="Confirm Changes"
                   className="col-auto btn-lg btn-green"
@@ -156,8 +153,8 @@ const UserAccount = (props: IProps) => {
                   <Input label={"Password*"}
                      type="password"
                      value={user.password}
-                  className="col-12" key="password"
-                  showDanger={errorAlertPasswordInfo.alert.checkExist("passwordhash")}
+                     className="col-12" key="password"
+                     showDanger={errorAlertPasswordInfo.checkExist("passwordhash")}
                      onChange={i => setUser({ ...user, password: i.target.value })}
                   />
 
@@ -165,11 +162,11 @@ const UserAccount = (props: IProps) => {
                      type="password"
                      value={confirmPassword}
                      className="col-12" key="confirmPassword"
-                  showDanger={errorAlertPasswordInfo.alert.checkExist("passwordhash")}
+                     showDanger={errorAlertPasswordInfo.checkExist("passwordhash")}
                      onChange={i => setConfirmPassword(i.target.value)}
                   />
 
-               <Alert alert={errorAlertPasswordInfo.alert} onClosed={() => errorAlertPasswordInfo.Clear()} />
+                  <Alert alert={errorAlertPasswordInfo.alert} onClosed={errorAlertPasswordInfo.clear} />
                   <div className="col-12">
                      <Button children="Change Password"
                         className="col-auto btn-lg btn-green"
@@ -189,8 +186,8 @@ const UserAccount = (props: IProps) => {
             }}
             onCancel={() => {
                setSelectedAction("");
-               errorAlertPasswordInfo.Clear();
-               errorAlertAccountInfo.Clear();
+               errorAlertPasswordInfo.clear();
+               errorAlertAccountInfo.clear();
                setIsOpenConfirmPassword(false);
             }}
          />

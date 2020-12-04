@@ -93,7 +93,7 @@ const EmailTemplatesEdit = (props: IProps) => {
          }
          else {
             setIsOpenDetailsModal(false);
-            errorAlert.Clear();
+            errorAlert.clear();
             setIsSaved(true);
             setTemplate(result.template);
             setInitialLockedStatus(result.template.locked);
@@ -105,11 +105,11 @@ const EmailTemplatesEdit = (props: IProps) => {
       errorAlert.PleaseWait(500, isUnmounted);
       useDeleteEmailTemplate(template).then((message) => {
          if (isUnmounted.current) return;
-         errorAlert.SetSingleSuccess("Deleted", message);
+         errorAlert.setSingleSuccess("Deleted", message);
          sleep(3000, isUnmounted).then(() => { setIsTemplateRecognised(false); });
       }).catch((alert) => {
          if (isUnmounted.current) return;
-         errorAlert.Clear;
+         errorAlert.clear();
          setIsOpenDetailsModal(true);
       });
    };
@@ -193,11 +193,11 @@ const EmailTemplatesEdit = (props: IProps) => {
          </div>
          <EmailTemplateEditDetailsModal emailTemplate={template}
             alert={errorAlert.alert}
-            clearAlert={() => errorAlert.Clear()}
-            isOpen={isOpenDetailsModal || errorAlert.alert.List.length > 0}
-            onCancel={() => { setIsOpenDetailsModal(false); errorAlert.Clear(); }}
+            clearAlert={() => errorAlert.clear()}
+            isOpen={isOpenDetailsModal || (errorAlert.alert.List.length > 0)}
+            onCancel={() => { setIsOpenDetailsModal(false); errorAlert.clear(); }}
             onSubmit={(temp) => {
-               errorAlert.Clear();
+               errorAlert.clear();
                setIsOpenDetailsModal(false);
                setTemplate(temp);
             }}
@@ -216,4 +216,3 @@ declare type IProps = {
    };
 };
 export default EmailTemplatesEdit;
-

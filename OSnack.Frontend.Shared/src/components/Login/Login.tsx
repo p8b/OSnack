@@ -32,7 +32,7 @@ const Login = (props: IProps) => {
             useLoginOfficialAuthentication(loginInfo).then((user: User) => {
                if (isUnmounted.current) return;
                auth.setState({ isAuthenticated: true, user: user });
-               errorAlert.Clear;
+               errorAlert.clear();
             }).catch((result: AlertObj) => {
                if (isUnmounted.current) return;
                errorAlert.set(result);
@@ -42,7 +42,7 @@ const Login = (props: IProps) => {
             useLoginSecretAuthentication(loginInfo).then((user: User) => {
                if (isUnmounted.current) return;
                auth.setState({ isAuthenticated: true, user: user });
-               errorAlert.Clear;
+               errorAlert.clear();
             }).catch((result: AlertObj) => {
                if (isUnmounted.current) return;
                errorAlert.set(result);
@@ -63,7 +63,7 @@ const Login = (props: IProps) => {
             useExternalLoginOfficialAuthentication(info).then((user: User) => {
                if (user.id && user.id <= 0) {
                   props.externalLoginFailed(user);
-                  errorAlert.Clear;
+                  errorAlert.clear();
                } else {
                   auth.setState({ isAuthenticated: true, user: user });
                }
@@ -77,7 +77,7 @@ const Login = (props: IProps) => {
 
                if (user.id && user.id <= 0) {
                   props.externalLoginFailed(user);
-                  errorAlert.Clear;
+                  errorAlert.clear();
                } else {
                   auth.setState({ isAuthenticated: true, user: user });
                }
@@ -115,7 +115,7 @@ const Login = (props: IProps) => {
             id="email"
             value={loginInfo.email}
             validationPattern={CommonRegex.Email}
-            showDanger={errorAlert.alert.checkExist("email")}
+            showDanger={errorAlert.checkExist("email")}
             onChange={i => setLoginInfo({ ...loginInfo, email: i.target.value })}
          />
 
@@ -123,7 +123,7 @@ const Login = (props: IProps) => {
             type="password"
             onPressedEnter={login}
             value={loginInfo.password}
-            showDanger={errorAlert.alert.checkExist("password")}
+            showDanger={errorAlert.checkExist("password")}
             onChange={i => setLoginInfo({ ...loginInfo, password: i.target.value })}
          />
 
@@ -138,7 +138,7 @@ const Login = (props: IProps) => {
 
          </div>
 
-         <Alert alert={errorAlert.alert} className="col-12" onClosed={() => errorAlert.Clear} />
+         <Alert alert={errorAlert.alert} className="col-12" onClosed={errorAlert.clear} />
 
          <Button children="Login" className="col-12 btn-lg btn-green mt-2 " onClick={login} />
          {  !props.disableExternalLogin &&
@@ -150,7 +150,7 @@ const Login = (props: IProps) => {
                   onSuccess={externalLogin}
                   onFailure={externalLoginFailed}
                   onClick={externalLoginWait}
-                  onClosedWithoutAction={() => errorAlert.Clear()}
+                  onClosedWithoutAction={() => errorAlert.clear()}
                /> ****/}
                <GoogleLogin clientId="78803002607-eqki0ohr9viovu2e5q0arpg8on9p8huq.apps.googleusercontent.com"
                   children="Sign in with Google"
@@ -159,7 +159,7 @@ const Login = (props: IProps) => {
                   onSuccess={externalLogin}
                   onFailure={externalLoginFailed}
                   onClick={externalLoginWait}
-                  onClosedWithoutAction={() => errorAlert.Clear}
+                  onClosedWithoutAction={errorAlert.clear}
                />
             </>
          }

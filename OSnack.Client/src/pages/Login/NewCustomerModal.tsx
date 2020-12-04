@@ -49,7 +49,7 @@ const NewCustomerModal = (props: IProps) => {
          useCreateCustomerUser(user).then(user => {
             if (isUnmounted.current) return;
             setRedirectToMain(true);
-            errorAlert.Clear();
+            errorAlert.clear();
          }).catch(alert => {
             if (isUnmounted.current) return;
             errorAlert.set(alert);
@@ -78,24 +78,24 @@ const NewCustomerModal = (props: IProps) => {
          <div className="row">
             <Input label="Name *" className="col-6" key="name"
                value={user.firstName}
-               showDanger={errorAlert.alert.checkExist("firstname")}
+               showDanger={errorAlert.checkExist("firstname")}
                onChange={i => setUser({ ...user, firstName: i.target.value })}
             />
 
             <Input label="Surname *" className="col-6" key="surname"
-               showDanger={errorAlert.alert.checkExist("surname")}
+               showDanger={errorAlert.checkExist("surname")}
                value={user.surname}
                onChange={i => setUser({ ...user, surname: i.target.value })}
             />
             <Input label="Phone Number" className="col-6" key="phoneNumber"
                value={user.phoneNumber}
-               showDanger={errorAlert.alert.checkExist("phoneNumber")}
+               showDanger={errorAlert.checkExist("phoneNumber")}
                validationPattern={CommonRegex.UkNumber}
                onChange={i => setUser({ ...user, phoneNumber: i.target.value })}
             />
 
             <Input label={`Email ${getRegistrationType()}`} className="col-6" key="email1"
-               showDanger={errorAlert.alert.checkExist("email")}
+               showDanger={errorAlert.checkExist("email")}
                showValid={externalLogin}
                value={user.email}
                disabled={externalLogin}
@@ -108,7 +108,7 @@ const NewCustomerModal = (props: IProps) => {
                      type="password"
                      value={user.password}
                      className="col-6" key="password"
-                     showDanger={errorAlert.alert.checkExist("passwordhash")}
+                     showDanger={errorAlert.checkExist("passwordhash")}
                      onChange={i => setUser({ ...user, password: i.target.value })}
                   />
 
@@ -116,7 +116,7 @@ const NewCustomerModal = (props: IProps) => {
                      type="password"
                      value={confirmPassword}
                      className="col-6" key="confirmPassword"
-                     showDanger={errorAlert.alert.checkExist("passwordhash")}
+                     showDanger={errorAlert.checkExist("passwordhash")}
                      onChange={i => setConfirmPassword(i.target.value)}
                   />
                </>
@@ -131,12 +131,12 @@ const NewCustomerModal = (props: IProps) => {
             </div>
             <div className="col-12 mt-2">
                <Alert alert={errorAlert.alert} className="col-12 mb-1"
-                  onClosed={() => errorAlert.Clear()}
+                  onClosed={() => errorAlert.clear()}
                />
                <Button children="Submit" className="btn-lg col-12 col-sm-6 mt-2 btn-green"
                   onClick={() => createNewCustomer()} />
                <Button children="Cancel" className="btn-lg col-12 col-sm-6 mt-2 btn-white"
-                  onClick={() => { errorAlert.Clear(); props.onCancel(); }} />
+                  onClick={() => { errorAlert.clear(); props.onCancel(); }} />
             </div>
          </div>
       </Modal >

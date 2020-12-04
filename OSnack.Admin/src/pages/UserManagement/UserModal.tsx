@@ -26,7 +26,7 @@ const UserModal = (props: IProps) => {
       errorAlert.PleaseWait(500, isUnmounted);
       useCreateUserUser(user).then(user => {
          if (isUnmounted.current) return;
-         errorAlert.Clear();
+         errorAlert.clear();
          setUser(user);
          props.onSuccess();
       }).catch(alert => {
@@ -39,7 +39,7 @@ const UserModal = (props: IProps) => {
       console.log(user);
       useUpdateUserUser(user).then(user => {
          if (isUnmounted.current) return;
-         errorAlert.Clear();
+         errorAlert.clear();
          setUser(user);
          props.onSuccess();
       }).catch(alert => {
@@ -51,7 +51,7 @@ const UserModal = (props: IProps) => {
       errorAlert.PleaseWait(500, isUnmounted);
       useDeleteUser(user).then(message => {
          if (isUnmounted.current) return;
-         errorAlert.SetSingleSuccess("", "confirm");
+         errorAlert.setSingleSuccess("", "confirm");
          setUser(user);
          props.onSuccess();
       }).catch(alert => {
@@ -69,12 +69,12 @@ const UserModal = (props: IProps) => {
          {/***** Name & Surname ****/}
          <div className="row">
             <Input label="Name"
-               showDanger={errorAlert.alert.checkExistFilterRequired("FirstName")}
+               showDanger={errorAlert.checkExistFilterRequired("FirstName")}
                value={user.firstName}
                onChange={i => { setUser({ ...user, firstName: i.target.value }); }}
                className="col-12 col-sm-6" />
             <Input label="Surname"
-               showDanger={errorAlert.alert.checkExistFilterRequired("Surname")}
+               showDanger={errorAlert.checkExistFilterRequired("Surname")}
                value={user.surname}
                onChange={i => { setUser({ ...user, surname: i.target.value }); }}
                className="col-12 col-sm-6" />
@@ -83,12 +83,12 @@ const UserModal = (props: IProps) => {
          <div className="row">
             <Input label={`Phone No.`}
                value={user.phoneNumber}
-               showDanger={errorAlert.alert.checkExistFilterRequired("PhoneNumber")}
+               showDanger={errorAlert.checkExistFilterRequired("PhoneNumber")}
                onChange={i => { setUser({ ...user, phoneNumber: i.target.value }); }}
                className="col-12 col-sm-6" />
             <InputDropdown dropdownTitle={user.role?.name || "Select Option"}
                label="Role*"
-               showDanger={errorAlert.alert.checkExistFilterRequired("Role")}
+               showDanger={errorAlert.checkExistFilterRequired("Role")}
                className="col-12 col-sm-6 " >
                {props.roleList.map(role =>
                   <button className="dropdown-item" key={role.id}
@@ -104,7 +104,7 @@ const UserModal = (props: IProps) => {
             <Input label={`Email ${user.id && user.id > 0 ? (user.emailConfirmed ? "(Verified)" : "(Not Verified)") : ""}`}
                value={user.email}
                disabled={user.registrationMethod?.type != null}
-               showDanger={errorAlert.alert.checkExistFilterRequired("Email")}
+               showDanger={errorAlert.checkExistFilterRequired("Email")}
                onChange={i => { setUser({ ...user, email: i.target.value }); }}
                className="col-12 col-sm-6" />
             <Input label={`Registration Method`}
@@ -116,7 +116,7 @@ const UserModal = (props: IProps) => {
 
          <Alert alert={errorAlert.alert}
             className="col-12 mb-2"
-            onClosed={() => { errorAlert.Clear(); }}
+            onClosed={() => { errorAlert.clear(); }}
          />
 
          {/***** buttons ****/}
@@ -143,7 +143,7 @@ const UserModal = (props: IProps) => {
             }
             <Button children="Cancel"
                className={`col-12 mt-2 btn-white btn-lg ${user.id === 0 ? "col-sm-6" : "col-sm-4"}`}
-               onClick={() => { errorAlert.Clear(); props.onClose(); }} />
+               onClick={() => { errorAlert.clear(); props.onClose(); }} />
          </div>
       </Modal >
    );

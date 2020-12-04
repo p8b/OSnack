@@ -25,7 +25,7 @@ const ConfrimEmail = (props: IProps) => {
          justCheckToken: true
       }).then((user) => {
          if (isUnmounted.current) return;
-         errorAlert.Clear();
+         errorAlert.clear();
          setIsDone(false);
       }).catch((alert) => {
          if (isUnmounted.current) return;
@@ -56,7 +56,7 @@ const ConfrimEmail = (props: IProps) => {
             justCheckToken: false
          }).then((user) => {
             if (isUnmounted.current) return;
-            errorAlert.SetSingleSuccess("", "Password Updated");
+            errorAlert.setSingleSuccess("", "Password Updated");
             setIsDone(true);
          }).catch((alert) => {
             if (isUnmounted.current) return;
@@ -86,7 +86,7 @@ const ConfrimEmail = (props: IProps) => {
                   value={confirmPassword}
                   onChange={i => setConfirmPassword(i.target.value)}
                />
-               <Alert alert={errorAlert.alert} onClosed={() => errorAlert.Clear()} />
+               <Alert alert={errorAlert.alert} onClosed={() => errorAlert.clear()} />
                <Button children="Continue" className="btn-lg col-12 col-sm-6 mt-2 btn-lg  btn-green"
                   onClick={onSubmit} />
                <Button children="Close" className="btn-lg col-12 col-sm-6 mt-2 btn-lg  btn-white"

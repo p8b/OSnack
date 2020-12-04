@@ -13,7 +13,7 @@ const ConfrimEmail = (props: IProps) => {
       errorAlert.PleaseWait(500, isUnmounted);
       useConfirmEmailUser(window.location.pathname).then(() => {
          if (isUnmounted.current) return;
-         errorAlert.SetSingleSuccess("", "Success");
+         errorAlert.setSingleSuccess("", "Success");
       }).catch((alert) => {
          if (isUnmounted.current) return;
          errorAlert.set(alert);

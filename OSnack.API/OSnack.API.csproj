@@ -50,9 +50,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="NSwag.AspNetCore" Version="13.9.4.3" />
-    <PackageReference Include="NSwag.CodeGeneration.TypeScript" Version="13.9.4.1" />
-    <PackageReference Include="NuGet.CommandLine" Version="4.4.1">
+    <PackageReference Include="NSwag.AspNetCore" Version="13.9.4" />
+    <PackageReference Include="NSwag.CodeGeneration.TypeScript" Version="13.9.4" />
+    <PackageReference Include="NSwag.Generation.AspNetCore" Version="13.9.4" />
+    <PackageReference Include="NuGet.CommandLine" Version="5.8.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

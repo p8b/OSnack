@@ -87,9 +87,9 @@ const Shop = (props: IProps) => {
          setTblTotalItemCount(result.part2 || 0);
          setProductList(result.part1!);
          if (result.part2 === 0)
-            errorAlert.SetSingleWarning("", "No Result Found");
+            errorAlert.setSingleWarning("", "No Result Found");
          else
-            errorAlert.Clear();
+            errorAlert.clear();
       }
       ).catch(alert => {
          if (isUnmounted.current) return;
@@ -155,7 +155,7 @@ const Shop = (props: IProps) => {
                </DropDown>
                <Alert alert={errorAlert.alert}
                   className="col-12 mb-2"
-                  onClosed={() => { errorAlert.Clear(); }}
+                  onClosed={() => { errorAlert.clear(); }}
                />
             </div>
             <div className="row p-3 justify-content-center">

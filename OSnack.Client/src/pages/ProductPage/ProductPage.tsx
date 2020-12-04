@@ -31,7 +31,7 @@ const ProductPage = (props: IProps) => {
             setProduct(result.part1!);
             window.scrollTo(0, 0);
             setRelatedProducts(result.part2!);
-            errorAlert.Clear();
+            errorAlert.clear();
          }).catch(alert => {
             if (isUnmounted.current) return;
             errorAlert.set(alert);

@@ -38,7 +38,7 @@ const AddressModal = (props: IProps) => {
       errorAlert.PleaseWait(500, isUnmounted);
       usePostAddress(address).then(address => {
          if (isUnmounted.current) return;
-         errorAlert.Clear();
+         errorAlert.clear();
          setAddress(address);
          props.onClose();
          props.onSuccess();
@@ -68,7 +68,7 @@ const AddressModal = (props: IProps) => {
       errorAlert.PleaseWait(500, isUnmounted);
       usePutAddress(address).then(address => {
          if (isUnmounted.current) return;
-         errorAlert.Clear();
+         errorAlert.clear();
          props.onClose();
          props.onSuccess();
       }).catch(alert => {
@@ -81,8 +81,8 @@ const AddressModal = (props: IProps) => {
       errorAlert.PleaseWait(500, isUnmounted);
       useDeleteAddress(address).then(message => {
          if (isUnmounted.current) return;
-         errorAlert.Clear();
-         errorAlert.SetSingleSuccess("Deleted", message);
+         errorAlert.clear();
+         errorAlert.setSingleSuccess("Deleted", message);
          props.onClose();
          props.onSuccess();
       }).catch(alert => {
@@ -129,7 +129,7 @@ const AddressModal = (props: IProps) => {
 
          <Alert alert={errorAlert.alert}
             className="col-12 mb-2"
-            onClosed={() => { errorAlert.Clear(); }}
+            onClosed={() => { errorAlert.clear(); }}
          />
 
          {/***** buttons ****/}
@@ -156,7 +156,7 @@ const AddressModal = (props: IProps) => {
             }
             <Button children="Cancel"
                className={`col-12 mt-2 btn-white btn-lg ${address.id === 0 ? "col-sm-6" : "col-sm-4"}`}
-               onClick={() => { errorAlert.Clear(); props.onClose(); }} />
+               onClick={() => { errorAlert.clear(); props.onClose(); }} />
          </div>
       </Modal >
    );

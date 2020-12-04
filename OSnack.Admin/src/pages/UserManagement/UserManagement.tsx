@@ -34,7 +34,7 @@ const UserManagement = (props: IProps) => {
       useGetRole().then(roles => {
          if (isUnmounted.current) return;
          setRoleList(roles);
-         errorAlert.Clear();
+         errorAlert.clear();
       }).catch(alert => {
          if (isUnmounted.current) return;
          errorAlert.set(alert);
@@ -77,7 +77,7 @@ const UserManagement = (props: IProps) => {
             if (isUnmounted.current) return;
             setTblTotalItemCount(result.part2 || 0);
             populateUserTable(result.part1!);
-            errorAlert.Clear();
+            errorAlert.clear();
          }
       ).catch(alert => {
          if (isUnmounted.current) return;
@@ -107,9 +107,9 @@ const UserManagement = (props: IProps) => {
             </div>
          ])));
       if (userList.length == 0) {
-         errorAlert.SetSingleWarning("0", "No Result Found");
+         errorAlert.setSingleWarning("0", "No Result Found");
       } else {
-         errorAlert.Clear();
+         errorAlert.clear();
       }
       setTableData(tData);
    };
@@ -161,7 +161,7 @@ const UserManagement = (props: IProps) => {
 
                <Alert alert={errorAlert.alert}
                   className="col-12 mb-2"
-                  onClosed={() => { errorAlert.Clear(); }}
+                  onClosed={() => { errorAlert.clear(); }}
                />
             </div>
 

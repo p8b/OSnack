@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
-import Alert, { AlertObj, AlertTypes, ErrorDto, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import Table, { TableData, TableHeaderData, TableRowData } from 'osnack-frontend-shared/src/components/Table/Table';
 import { Category, Product, ProductUnitType } from 'osnack-frontend-shared/src/_core/apiModels';
@@ -82,7 +82,7 @@ const ProductManagement = (props: IProps) => {
             if (isUnmounted.current) return;
             setTblTotalItemCount(products.part2 || 0);
             populateProductTable(products.part1 ? products.part1 : []);
-            errorAlert.Clear();
+            errorAlert.clear();
          }).catch(alert => {
             if (isUnmounted.current) return;
             errorAlert.set(alert);
@@ -112,9 +112,9 @@ const ProductManagement = (props: IProps) => {
             </div>
          ])));
       if (productList.length == 0) {
-         errorAlert.SetSingleWarning("0", "No Result Found");
+         errorAlert.setSingleWarning("0", "No Result Found");
       } else {
-         errorAlert.Clear();
+         errorAlert.clear();
       }
       setTableData(tData);
    };
@@ -190,7 +190,7 @@ const ProductManagement = (props: IProps) => {
 
                <Alert alert={errorAlert.alert}
                   className="col-12 mb-2"
-                  onClosed={() => { errorAlert.Clear(); }}
+                  onClosed={() => { errorAlert.clear(); }}
                />
             </div>
 

@@ -36,10 +36,10 @@ const CategoryModal = (props: IProps) => {
                if (isUnmounted.current) return;
 
                setOriginalImageBase64(originalImgBase64 as string);
-               errorAlert.Clear();
+               errorAlert.clear();
             }).catch(() => {
                if (isUnmounted.current) return;
-               errorAlert.SetSingleWarning("", "Image Not Found!");
+               errorAlert.setSingleWarning("", "Image Not Found!");
             });
       }
    }, [props.category]);
@@ -60,7 +60,7 @@ const CategoryModal = (props: IProps) => {
       errorAlert.PleaseWait(500, isUnmounted);
       usePostCategory(category).then((category) => {
          if (isUnmounted.current) return;
-         errorAlert.Clear();
+         errorAlert.clear();
          resetImageUpload();
          props.onSuccess();
       }).catch((alert) => {
@@ -91,7 +91,7 @@ const CategoryModal = (props: IProps) => {
       errorAlert.PleaseWait(500, isUnmounted);
       usePutCategory(cat).then((category) => {
          if (isUnmounted.current) return;
-         errorAlert.Clear();
+         errorAlert.clear();
          resetImageUpload();
          props.onSuccess();
       }).catch((alert) => {
@@ -103,7 +103,7 @@ const CategoryModal = (props: IProps) => {
       errorAlert.PleaseWait(500, isUnmounted);
       useDeleteCategory(category).then((category) => {
          if (isUnmounted.current) return;
-         errorAlert.Clear();
+         errorAlert.clear();
          resetImageUpload();
          props.onSuccess();
       }).catch((alert) => {
@@ -159,7 +159,7 @@ const CategoryModal = (props: IProps) => {
 
          <Alert alert={errorAlert.alert}
             className="col-12 mb-2"
-            onClosed={() => { errorAlert.Clear(); }}
+            onClosed={() => { errorAlert.clear(); }}
          />
 
          {/***** buttons ****/}
@@ -186,7 +186,7 @@ const CategoryModal = (props: IProps) => {
             }
             <Button children="Cancel"
                className={`col-12 mt-2 btn-white btn-lg ${category.id === 0 ? "col-sm-6" : "col-sm-4"}`}
-               onClick={() => { errorAlert.Clear(); resetImageUpload(); props.onClose(); }} />
+               onClick={() => { errorAlert.clear(); resetImageUpload(); props.onClose(); }} />
          </div>
       </Modal >
    );

@@ -30,7 +30,7 @@ const MyAddresses = (props: IProps) => {
          if (isUnmounted.current) return;
 
          setAddressList(addresses);
-         errorAlert.Clear();
+         errorAlert.clear();
       }).catch(alert => {
          if (isUnmounted.current) return;
          errorAlert.set(alert);
@@ -58,7 +58,7 @@ const MyAddresses = (props: IProps) => {
          <div id="test" className="row justify-content-center m-0 p-0">
             <Alert alert={errorAlert.alert}
                className="col-12 mb-2"
-               onClosed={() => { errorAlert.Clear(); }}
+               onClosed={() => { errorAlert.clear(); }}
             />
             <ButtonCard cardClassName="card-lg col-12 row p-0 m-0 "
                onClick={newAddress}>
@@ -120,4 +120,3 @@ const MyAddresses = (props: IProps) => {
 declare type IProps = {
 };
 export default MyAddresses;
-

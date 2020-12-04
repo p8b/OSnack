@@ -9,7 +9,6 @@ import Container from '../../components/Container';
 import NewCustomer from './NewCustomerModal';
 
 const LoginPage = (props: IProps) => {
-
    const [newUser, setNewUser] = useState(new User());
    const toggleContainerModal = React.createRef<HTMLDivElement>();
    const [outsideClickModal, setOutsideClickModal] = useDetectOutsideClick(toggleContainerModal, false);

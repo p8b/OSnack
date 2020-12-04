@@ -57,7 +57,7 @@ const CategoryManagement = (props: IProps) => {
       useSearchCategory(selectedPage, maxItemsPerPage, searchString, isSortAsc, sortName).then(
          (result: MultiResultOfListOfCategoryAndInteger) => {
             if (isUnmounted.current) return;
-            errorAlert.Clear();
+            errorAlert.clear();
             setTblTotalItemCount(result.part2 || 0);
             populateCategoryTable(result.part1);
          }).catch((alert) => {
@@ -83,9 +83,9 @@ const CategoryManagement = (props: IProps) => {
             </div>
          ])));
       if (categoryList?.length == 0) {
-         errorAlert.SetSingleWarning("0", "No Result Found");
+         errorAlert.setSingleWarning("0", "No Result Found");
       } else {
-         errorAlert.Clear();
+         errorAlert.clear();
       }
       setTableData(tData);
    };
@@ -117,7 +117,7 @@ const CategoryManagement = (props: IProps) => {
 
             <Alert alert={errorAlert.alert}
                className="col-12 mb-2"
-               onClosed={() => { errorAlert.Clear(); }}
+               onClosed={() => { errorAlert.clear(); }}
             />
 
             {/***** Category Table  ****/}

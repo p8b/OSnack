@@ -40,10 +40,10 @@ const ProductModal = (props: IProps) => {
             .then(originalImgBase64 => {
                if (isUnmounted.current) return;
                setOriginalImageBase64(originalImgBase64 as string);
-               errorAlert.Clear();
+               errorAlert.clear();
             }).catch(() => {
                if (isUnmounted.current) return;
-               errorAlert.SetSingleWarning("", "Image Not Found!");
+               errorAlert.setSingleWarning("", "Image Not Found!");
             });
       }
    }, [props.product]);
@@ -59,7 +59,7 @@ const ProductModal = (props: IProps) => {
          setProduct(product);
          resetImageUpload();
          props.onSuccess();
-         errorAlert.Clear();
+         errorAlert.clear();
       }).catch(alert => {
          if (isUnmounted.current) return;
          errorAlert.set(alert);
@@ -79,7 +79,7 @@ const ProductModal = (props: IProps) => {
          setProduct(product);
          resetImageUpload();
          props.onSuccess();
-         errorAlert.Clear();
+         errorAlert.clear();
       }).catch(alert => {
          if (isUnmounted.current) return;
          errorAlert.set(alert);
@@ -92,7 +92,7 @@ const ProductModal = (props: IProps) => {
       useDeleteProduct(product).then(message => {
          if (isUnmounted.current) return;
          resetImageUpload();
-         errorAlert.Clear();
+         errorAlert.clear();
          props.onSuccess();
       }).catch(alert => {
          if (isUnmounted.current) return;
@@ -144,12 +144,12 @@ const ProductModal = (props: IProps) => {
                value={product.name}
                onChange={i => { setProduct({ ...product, name: i.target.value }); }}
                className="col-12 col-sm-6"
-               showDanger={errorAlert.alert.checkExistFilterRequired("Name")}
+               showDanger={errorAlert.checkExistFilterRequired("Name")}
             />
 
             <InputDropDown dropdownTitle={product.category?.name || "Select Option"}
                label="Category*"
-               showDanger={errorAlert.alert.checkExistFilterRequired("Category")}
+               showDanger={errorAlert.checkExistFilterRequired("Category")}
                className="col-12 col-sm-6 " >
                {props.categoryList.map(category =>
                   <button className="dropdown-item" key={category.id}
@@ -167,7 +167,7 @@ const ProductModal = (props: IProps) => {
                value={product.unitQuantity}
                onChange={i => { setProduct({ ...product, unitQuantity: i.target.value as unknown as number }); }}
                className="col-12 col-sm-6"
-               showDanger={errorAlert.alert.checkExistFilterRequired("UnitQuantity")}
+               showDanger={errorAlert.checkExistFilterRequired("UnitQuantity")}
             />
             {console.log(enumToArray(ProductUnitType))}
             <InputDropDown dropdownTitle={productUnitTypeList.find((pu) => pu.id == product.unitType)?.name || "Select Option"}
@@ -190,7 +190,7 @@ const ProductModal = (props: IProps) => {
                value={product.price}
                onChange={i => { setProduct({ ...product, price: i.target.value as unknown as number }); }}
                className="col-12 col-sm-6"
-               showDanger={errorAlert.alert.checkExistFilterRequired("Price")}
+               showDanger={errorAlert.checkExistFilterRequired("Price")}
 
             />
             <div className="col-12 col-sm-6 m-auto">
@@ -228,7 +228,7 @@ const ProductModal = (props: IProps) => {
 
          <Alert alert={errorAlert.alert}
             className="col-12 mb-2"
-            onClosed={() => { errorAlert.Clear(); }}
+            onClosed={() => { errorAlert.clear(); }}
          />
 
          {/***** buttons ****/}
@@ -255,7 +255,7 @@ const ProductModal = (props: IProps) => {
             }
             <Button children="Cancel"
                className={`col-12 mt-2 btn-white btn-lg ${product.id === 0 ? "col-sm-6" : "col-sm-4"}`}
-               onClick={() => { errorAlert.Clear(); resetImageUpload(); props.onClose(); }} />
+               onClick={() => { errorAlert.clear(); resetImageUpload(); props.onClose(); }} />
          </div>
       </Modal >
    );

@@ -30,7 +30,7 @@ const EmailTemplatePanel = (props: IProps) => {
 
          setTempList(emailTemplateList);
          setDefaultEmailTemplate(emailTemplateList.find(tl => tl.isDefaultTemplate) || new EmailTemplate());
-         errorAlert.Clear();
+         errorAlert.clear();
       }).catch((alert) => {
          if (isUnmounted.current) return;
          errorAlert.set(alert);
@@ -45,7 +45,7 @@ const EmailTemplatePanel = (props: IProps) => {
          <PageHeader title="Email Templates" className="line-header-lg" />
          <Alert alert={errorAlert.alert}
             className="col-12 mb-2"
-            onClosed={() => { errorAlert.Clear(); }}
+            onClosed={() => { errorAlert.clear(); }}
          />
          <div id="test" className="row justify-content-center">
             <ButtonCard cardClassName="d-flex align-items-center"

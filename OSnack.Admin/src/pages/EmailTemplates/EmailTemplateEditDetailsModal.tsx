@@ -66,7 +66,7 @@ const EmailTemplateEditDetailsModal = (props: IProps) => {
             <Input label="Name *" className="col-10"
                value={template.name}
                disabled={template.locked}
-               showDanger={errorAlert.alert.checkExist("name")}
+               showDanger={errorAlert.checkExist("name")}
                onChange={i => setTemplate({ ...template, name: i.target?.value })}
             />
             <button className={`col-2 btn ${template.locked ? "lock-icon" : "unlock-icon"}`}
@@ -75,13 +75,13 @@ const EmailTemplateEditDetailsModal = (props: IProps) => {
             <div className="col-12 col-sm-6 p-0 m-0">
                <Input label="Subject *" className="col-12"
                   value={template.subject}
-                  showDanger={errorAlert.alert.checkExist("Subject")}
+                  showDanger={errorAlert.checkExist("Subject")}
                   onChange={i => setTemplate({ ...template, subject: i.target?.value })}
                />
                <Input label="Token URL Path*" className="col-12"
                   value={template.tokenUrlPath}
                   disabled={!isTokenUrlRequired}
-                  showDanger={errorAlert.alert.checkExist("TokenUrlPath")}
+                  showDanger={errorAlert.checkExist("TokenUrlPath")}
                   onChange={i => setTemplate({ ...template, tokenUrlPath: i.target?.value })}
                />
             </div>
@@ -105,7 +105,7 @@ const EmailTemplateEditDetailsModal = (props: IProps) => {
                </InputDropdown>
                <div className="row col-12 justify-content-center">
                   {template.serverVariables?.map(sv =>
-                     <div className={`badge col-auto m-1 ${errorAlert.alert.checkExist(sv.replacementValue) ? "red" : ""}`} key={sv.enumValue}>
+                     <div className={`badge col-auto m-1 ${errorAlert.checkExist(sv.replacementValue) ? "red" : ""}`} key={sv.enumValue}>
                         <CopyText text={sv.replacementValue} />
 
                         <span className="" onClick={() => {
@@ -124,14 +124,14 @@ const EmailTemplateEditDetailsModal = (props: IProps) => {
             </div>
             <div className="col-12 mt-2">
                <Alert alert={errorAlert.alert} className="col-12 mb-1"
-                  onClosed={() => errorAlert.Clear()}
+                  onClosed={() => errorAlert.clear()}
                />
                {!isTemplateDeleted() &&
                   <>
                      <Button children={`${isNewTemplate ? "Continue" : "Edit"}`} className="btn-lg col-12 col-sm-6 mt-2 btn-green"
                         onClick={onSubmit} />
                      <Button children="Cancel" className="btn-lg col-12 col-sm-6 mt-2 btn-white"
-                        onClick={() => { errorAlert.Clear(); props.onCancel(); }} />
+                        onClick={() => { errorAlert.clear(); props.onCancel(); }} />
                   </>
                }
             </div>

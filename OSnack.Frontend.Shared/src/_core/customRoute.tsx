@@ -1,6 +1,7 @@
 ﻿import React, { useContext, useState } from "react";
 import { Route, Redirect } from "react-router-dom";
 import { Loading } from "../components/Loading/Loading";
+import { AlertObj } from "../components/Texts/Alert";
 import { useAntiforgeryTokenAuthentication } from "../hooks/PublicHooks/useAuthenticationHook";
 import { User } from "./apiModels";
 import { AuthContext } from "./authenticationContext";
@@ -11,15 +12,28 @@ const CustomRoute = (props: IProps) => {
    const [authChecking, setAuthChecking] = useState(true);
    if (prevPath !== props.path) {
       setAuthChecking(true);
+      const successResult = (user: User) => {
+         auth.setState({ isAuthenticated: true, user: user });
+         setAuthChecking(false);
+      };
 
-      useAntiforgeryTokenAuthentication().then(() => {
+      const catchResult = (error: AlertObj) => {
+         auth.setState({ isAuthenticated: false, user: new User() });
+         setAuthChecking(false);
+      };
+
+      props.authenticate().then(user => {
+         successResult(user);
+      }
+      ).catch((error) => {
+         if (error.httpStatus === 404) {
+            useAntiforgeryTokenAuthentication().then(() => { });
+         }
          props.authenticate().then(user => {
-            auth.setState({ isAuthenticated: true, user: user });
-            setAuthChecking(false);
+            successResult(user);
          }
          ).catch((error) => {
-            auth.setState({ isAuthenticated: false, user: new User() });
-            setAuthChecking(false);
+            catchResult(error);
          });
       });
 

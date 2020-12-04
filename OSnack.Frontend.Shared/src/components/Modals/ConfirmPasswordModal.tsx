@@ -13,14 +13,14 @@ const ConfirmPasswordModal = (props: IProps) => {
    useEffect(() => () => { isUnmounted.current = true; }, []);
    useEffect(() => {
       if (!props.isOpen)
-         errorAlert.Clear();
+         errorAlert.clear();
    }, [props.isOpen]);
 
    const onSubmit = async () => {
       errorAlert.PleaseWait(500, isUnmounted);
       useConfirmCurrentUserPasswordAuthentication(password).then(user => {
          if (isUnmounted.current) return;
-         errorAlert.Clear();
+         errorAlert.clear();
          props.onSuccess(password);
          setPassword("");
       }).catch(alert => {
@@ -36,7 +36,7 @@ const ConfirmPasswordModal = (props: IProps) => {
             value={password}
             onChange={i => setPassword(i.target.value)}
          />
-         <Alert alert={errorAlert.alert} onClosed={() => errorAlert.Clear()} />
+         <Alert alert={errorAlert.alert} onClosed={() => errorAlert.clear()} />
          <Button children="Continue" className="btn-lg col-12 col-sm-6 mt-2 btn-lg  btn-green"
             onClick={onSubmit} />
 
