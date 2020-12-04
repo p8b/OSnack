@@ -25,6 +25,8 @@ Majid-Joveini-CV.pdf
 # Folders
 .localhistory/
 .vshistory/
+StaticFiles/
+StaticFiles/**
 bin/
 obj/
 cert/

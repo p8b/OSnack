@@ -50,6 +50,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="NSwag.AspNetCore" Version="13.9.4.3" />
+    <PackageReference Include="NSwag.CodeGeneration.TypeScript" Version="13.9.4.1" />
+    <PackageReference Include="NuGet.CommandLine" Version="4.4.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
@@ -61,8 +67,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\OpenSourceLib\NSwag\src\NSwag.AspNetCore\NSwag.AspNetCore.csproj" />
-    <ProjectReference Include="..\..\..\OpenSourceLib\NSwag\src\NSwag.CodeGeneration.TypeScript\NSwag.CodeGeneration.TypeScript.csproj" />
     <ProjectReference Include="..\..\P8B.Libs\P8B.Core.CSharp\P8B.Core.CSharp.csproj" />
   </ItemGroup>
 

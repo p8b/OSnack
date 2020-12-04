@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
 
-using OSnack.API.Database;
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 
@@ -36,6 +34,7 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpPost("Post/[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test 
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> CreateUser([FromBody] User newUser)
       {
          try
@@ -90,7 +89,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPost("Post/[action]")]
-      [Authorize(AppConst.AccessPolicies.Public)]
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Public)]
       public async Task<IActionResult> CreateCustomer([FromBody] User newCustomer)
       {
          try
@@ -154,7 +153,9 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPost("Post/[action]")]
-      [Authorize(AppConst.AccessPolicies.Public)]
+      [ApiExplorerSettings(GroupName = AppConst.AccessPolicies.Public)]
+      [ProducesResponseType(StatusCodes.Status201Created)]
+      [ProducesDefaultResponseType]
       public async Task<IActionResult> RequestPasswordReset([FromBody] string email)
       {
          try

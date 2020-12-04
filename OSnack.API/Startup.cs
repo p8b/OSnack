@@ -9,6 +9,7 @@ using System.Text.Json.Serialization;
 
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -37,6 +38,7 @@ using OSnack.API.Extras;
 
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Extentions;
+using P8B.Core.CSharp.Models;
 using P8B.Core.CSharp.Models.Interfaces;
 using P8B.UK.API.Extras.Overrides;
 using P8B.UK.API.Services;
@@ -127,6 +129,11 @@ namespace OSnack.API
          /// Add Authorization policies for Admin, Manager, Staff and Customer
          services.AddAuthorization(options =>
          {
+            options.AddPolicy(AppConst.AccessPolicies.Public, policy =>
+            {
+               policy.AuthenticationSchemes.Add(AuthSchemeApplication);
+               policy.Requirements.Add(new EmptyRequirement());
+            });
             options.AddPolicy(AppConst.AccessPolicies.Official, policy =>
             {
                policy.AuthenticationSchemes.Add(AuthSchemeApplication);
@@ -183,9 +190,19 @@ namespace OSnack.API
             {
                document.DocumentName = $"OSnack {policy}";
                document.Title = $"OSnack {policy}";
-               document.AuthorizationGroupNames = new string[] { policy };
+               document.AuthorizationPolicyNames = new string[] { policy };
+               document.IsModelOnly = false;
             });
          }
+
+         services.AddSingleton<IAuthorizationHandler, EmptyHandler>();
+         services.AddOpenApiDocument(document =>
+         {
+            document.DocumentName = $"OSnack Models";
+            document.Title = $"OSnack Models";
+            document.AuthorizationPolicyNames = new string[] { };
+            document.IsModelOnly = true;
+         });
       }
       public void Configure(IApplicationBuilder app,
          IWebHostEnvironment env,

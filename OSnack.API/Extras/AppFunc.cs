@@ -63,56 +63,67 @@ namespace OSnack.API.Extras
             Directory.CreateDirectory(zipFolder);
             Directory.CreateDirectory(@$"{zipFolder}\apiHooks");
          }
-         foreach (var hook in tg.GetAllCodeArtifacts())
+         if (document.Tags.Any(t => t.Name.Equals("IsModelOnly")))
          {
-
-            string tempScrtip = string.IsNullOrEmpty(hook.BaseTypeName) ?
-              hook.Code.Replace("import { @@Models@@ } from \"../../_core/apiModels\";", "") :
-              hook.Code;
-
-            using FileStream fs = File.Create($"{zipFolder}\\apiHooks\\use{hook.TypeName}Hook.tsx");
-            byte[] info = new UTF8Encoding(true).GetBytes(tempScrtip.Replace("@@Models@@", hook.BaseTypeName.Replace("@", "")));
-            // Add some information to the file.
-            fs.Write(info, 0, info.Length);
-
-         }
-
-         string simpleModels = "";
-         string extendedModels = "";
-         string enums = "";
-         foreach (var modelType in tg.GetAllDtoTypes())
-         {
-            if (modelType.TypeName != "ErrorDto")
+            string simpleModels = "";
+            string extendedModels = "";
+            string enums = "";
+            foreach (var modelType in tg.GetAllDtoTypes())
             {
-               switch (modelType.Type)
+               if (modelType.TypeName != "ErrorDto")
                {
+                  switch (modelType.Type)
+                  {
 
-                  case NJsonSchema.CodeGeneration.CodeArtifactType.Enum:
-                     enums += modelType.Code + '\n';
-                     break;
+                     case NJsonSchema.CodeGeneration.CodeArtifactType.Enum:
+                        enums += modelType.Code + '\n';
+                        break;
 
-                  case NJsonSchema.CodeGeneration.CodeArtifactType.Class:
-                     if (modelType.BaseTypeName == null)
-                        simpleModels += modelType.Code + '\n';
-                     else
-                        extendedModels += modelType.Code + '\n';
-                     break;
+                     case NJsonSchema.CodeGeneration.CodeArtifactType.Class:
+                        if (modelType.BaseTypeName == null)
+                           simpleModels += modelType.Code + '\n';
+                        else
+                           extendedModels += modelType.Code + '\n';
+                        break;
 
-                  default:
-                     break;
+                     default:
+                        break;
+                  }
                }
+            }
+
+            using (FileStream fs1 = File.Create($"{zipFolder}\\apiModels.tsx"))
+            {
+
+               byte[] info2 = new UTF8Encoding(true).GetBytes($"{enums }{simpleModels}{extendedModels}");
+               // Add some information to the file.
+               fs1.Write(info2, 0, info2.Length);
+
+            }
+         }
+         else
+         {
+            var modelsPath = "";
+            if (document.Tags.Any(t => !t.Name.Equals(AppConst.AccessPolicies.Public)))
+               modelsPath = "osnack-frontend-shared/src/_core/apiModels";
+            foreach (var hook in tg.GetAllCodeArtifacts())
+            {
+
+               string tempScrtip = string.IsNullOrEmpty(hook.BaseTypeName) ?
+                 hook.Code.Replace("import { @@Models@@ } from \"../../_core/apiModels\";", "") :
+                 hook.Code;
+
+               if (!string.IsNullOrWhiteSpace(modelsPath))
+                  tempScrtip = tempScrtip.Replace("../../_core/apiModels", modelsPath);
+               using FileStream fs = File.Create($"{zipFolder}\\apiHooks\\use{hook.TypeName}Hook.tsx");
+               byte[] info = new UTF8Encoding(true).GetBytes(tempScrtip.Replace("@@Models@@", hook.BaseTypeName.Replace("@", "")));
+               // Add some information to the file.
+               fs.Write(info, 0, info.Length);
+
             }
          }
 
-         using (FileStream fs1 = File.Create($"{zipFolder}\\apiModels.tsx"))
-         {
-
-            byte[] info2 = new UTF8Encoding(true).GetBytes($"{enums }{simpleModels}{extendedModels}");
-            // Add some information to the file.
-            fs1.Write(info2, 0, info2.Length);
-
-         }
-
+         document.Tags.Clear();
          if (zipIt)
          {
             ZipFile.CreateFromDirectory(zipFolder, zipFilePath);
