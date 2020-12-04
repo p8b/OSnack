@@ -3,12 +3,16 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 using Newtonsoft.Json;
+
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
+
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Extentions;
 using P8B.Core.CSharp.Models;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -144,6 +148,7 @@ namespace OSnack.API.Controllers
 
             externalLoginUser.Role = await _DbContext.Roles.FirstOrDefaultAsync(r => r.Name == "Customer").ConfigureAwait(false);
             // else if the user is not registered but information is received from external login
+            externalLoginUser.Id = -1;
             return StatusCode(206, externalLoginUser);
          }
          catch (Exception)

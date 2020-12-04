@@ -6,15 +6,14 @@ import { Category, MultiResultOfListOfCategoryAndInteger } from 'osnack-frontend
 import CategoryModal from './CategoryModal';
 import Container from '../../components/Container';
 import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
-import { useSearchCategory } from 'osnack-frontend-shared/src/hooks/apiHooks/useCategoryHook';
+import { useSearchCategory } from 'osnack-frontend-shared/src/hooks/PublicHooks/useCategoryHook';
 import { ConstMaxNumberOfPerItemsPage, GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
-import Alert, { AlertObj, AlertTypes, ErrorDto } from 'osnack-frontend-shared/src/components/Texts/Alert';
-import { sleep } from 'osnack-frontend-shared/src/_core/appFunc';
+import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 
 const CategoryManagement = (props: IProps) => {
    const isUnmounted = useRef(false);
-   const [alert, setAlert] = useState(new AlertObj());
+   const errorAlert = useAlert(new AlertObj());
    const [searchValue, setSearchValue] = useState("");
    const [selectedCategory, setSelectedCategory] = useState(new Category());
    const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false);
@@ -54,33 +53,17 @@ const CategoryManagement = (props: IProps) => {
       if (maxItemsPerPage != tblMaxItemsPerPage)
          setTblMaxItemsPerPage(maxItemsPerPage);
 
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+      errorAlert.PleaseWait(500, isUnmounted);
       useSearchCategory(selectedPage, maxItemsPerPage, searchString, isSortAsc, sortName).then(
          (result: MultiResultOfListOfCategoryAndInteger) => {
             if (isUnmounted.current) return;
-            setAlert(alert.Clear);
-            setTblTotalItemCount(result.part2);
+            errorAlert.Clear();
+            setTblTotalItemCount(result.part2 || 0);
             populateCategoryTable(result.part1);
          }).catch((alert) => {
             if (isUnmounted.current) return;
-            setAlert(alert);
+            errorAlert.set(alert);
          });
-
-      //useSearchCategory(selectedPage, maxItemsPerPage, searchString, isSortAsc, sortName).then
-      //   (result=> {
-      //   if (isUnmounted.current) return;
-
-      //   if (result.alert.List.length > 0) {
-      //      alert.List = result.alert.List;
-      //      alert.Type = result.alert.Type;
-      //      setAlert(alert);
-      //   }
-      //   else {
-      //      setAlert(alert.Clear);
-      //      setTblTotalItemCount(result.totalCount);
-      //      populateCategoryTable(result.categoryList);
-      //   }
-      //});
    };
 
    const populateCategoryTable = (categoryList?: Category[]) => {
@@ -99,10 +82,10 @@ const CategoryManagement = (props: IProps) => {
                   children="Edit" />
             </div>
          ])));
-      if (categoryList.length == 0) {
-         setAlert(new AlertObj([new ErrorDto("0", "No Result Found")], AlertTypes.Warning));
+      if (categoryList?.length == 0) {
+         errorAlert.SetSingleWarning("0", "No Result Found");
       } else {
-         setAlert(alert.Clear);
+         errorAlert.Clear();
       }
       setTableData(tData);
    };
@@ -132,9 +115,9 @@ const CategoryManagement = (props: IProps) => {
                onClick={() => { setIsOpenCategoryModal(true); }}
             />
 
-            <Alert alert={alert}
+            <Alert alert={errorAlert.alert}
                className="col-12 mb-2"
-               onClosed={() => { setAlert(alert.Clear); }}
+               onClosed={() => { errorAlert.Clear(); }}
             />
 
             {/***** Category Table  ****/}

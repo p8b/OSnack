@@ -1,15 +1,14 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import ButtonCard from 'osnack-frontend-shared/src/components/Buttons/ButtonCard';
-import { useAllEmailTemplate } from 'osnack-frontend-shared/src/hooks/apiHooks/useEmailTemplateHook';
 import { EmailTemplate } from 'osnack-frontend-shared/src/_core/apiModels';
-import Alert, { AlertObj } from 'osnack-frontend-shared/src/components/Texts/Alert';
-import { sleep } from 'osnack-frontend-shared/src/_core/appFunc';
+import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Redirect } from 'react-router-dom';
+import { useAllEmailTemplate } from '../../SecretHooks/useEmailTemplateHook';
 
 const EmailTemplatePanel = (props: IProps) => {
    const isUnmounted = useRef(false);
-   const [alert, setAlert] = useState(new AlertObj());
+   const errorAlert = useAlert(new AlertObj());
    const [redirectToEditPage, setRedirectToEditPage] = useState(false);
    const [emailTemplate, setEmailTemplate] = useState(new EmailTemplate());
    const [tempList, setTempList] = useState<EmailTemplate[]>([]);
@@ -25,25 +24,17 @@ const EmailTemplatePanel = (props: IProps) => {
       setRedirectToEditPage(true);
    };
    const reloadTemplateList = () => {
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+      errorAlert.PleaseWait(500, isUnmounted);
       useAllEmailTemplate().then((emailTemplateList) => {
          if (isUnmounted.current) return;
 
          setTempList(emailTemplateList);
          setDefaultEmailTemplate(emailTemplateList.find(tl => tl.isDefaultTemplate) || new EmailTemplate());
-         setAlert(alert.Clear);
+         errorAlert.Clear();
       }).catch((alert) => {
          if (isUnmounted.current) return;
-         setAlert(alert);
+         errorAlert.set(alert);
       });
-
-      //useGetAllEmailTemplates().then((result) => {
-      //   if (isUnmounted.current) return;
-
-      //   setTempList(result.templateList);
-      //   setDefaultEmailTemplate(result.templateList.find(tl => tl.isDefaultTemplate) || new EmailTemplate());
-      //   setAlert(alert.Clear);
-      //});
    };
 
    if (redirectToEditPage)
@@ -52,9 +43,9 @@ const EmailTemplatePanel = (props: IProps) => {
    return (
       <>
          <PageHeader title="Email Templates" className="line-header-lg" />
-         <Alert alert={alert}
+         <Alert alert={errorAlert.alert}
             className="col-12 mb-2"
-            onClosed={() => { setAlert(alert.Clear); }}
+            onClosed={() => { errorAlert.Clear(); }}
          />
          <div id="test" className="row justify-content-center">
             <ButtonCard cardClassName="d-flex align-items-center"

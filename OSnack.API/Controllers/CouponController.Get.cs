@@ -74,7 +74,7 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpGet("Get/[action]/{couponCode?}")]
       [Authorize(AppConst.AccessPolicies.Official)]      /// Ready for test
-      public async Task<IActionResult> Validate(Coupon couponCode)
+      public async Task<IActionResult> Validate(string couponCode)
       {
          try
          {

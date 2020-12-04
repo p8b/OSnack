@@ -1,65 +1,7 @@
-import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
-import { httpCaller } from "../../_core/appFunc";
-import { API_URL, CommonErrors } from "../../_core/constant.Variables";
-import { EmailTemplate, MultiResultOfEmailTemplateAndEmailTemplate, ServerVariables } from "../../_core/apiModels";
-export const usePostEmailTemplate = async (emailTemplate: EmailTemplate): Promise<EmailTemplate> =>{
-        let url_ = API_URL + "/EmailTemplate/Post";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = emailTemplate;
-        const response = await httpCaller.POST(url_, content_);
-
-        switch(response?.status){
-
-        case 201: 
-            return response.json().then((responseJson: EmailTemplate) => {
-                return responseJson;
-            });
-
-        case 422: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
-            });
-
-        case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
-            });
-
-        default:
-            CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status}`;
-            throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
-    }
-}
-export const usePutEmailTemplate = async (emailTemplate: EmailTemplate): Promise<EmailTemplate> =>{
-        let url_ = API_URL + "/EmailTemplate/Put";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = emailTemplate;
-        const response = await httpCaller.PUT(url_, content_);
-
-        switch(response?.status){
-
-        case 200: 
-            return response.json().then((responseJson: EmailTemplate) => {
-                return responseJson;
-            });
-
-        case 422: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
-            });
-
-        case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
-            });
-
-        default:
-            CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status}`;
-            throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
-    }
-}
+import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/components/Texts/Alert";
+import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
+import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
+import { EmailTemplate, MultiResultOfEmailTemplateAndEmailTemplate, ServerVariables } from "osnack-frontend-shared/src/_core/apiModels";
 export const useDeleteEmailTemplate = async (emailTemplate: EmailTemplate): Promise<string> =>{
         let url_ = API_URL + "/EmailTemplate/Delete";
         url_ = url_.replace(/[?&]$/, "");
@@ -149,6 +91,64 @@ export const useGetServerVariablesEmailTemplate = async (): Promise<ServerVariab
         case 200: 
             return response.json().then((responseJson: ServerVariables[]) => {
                 return responseJson;
+            });
+
+        case 417: 
+            return response.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response.status);
+            });
+
+        default:
+            CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status}`;
+            throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
+    }
+}
+export const usePostEmailTemplate = async (emailTemplate: EmailTemplate): Promise<EmailTemplate> =>{
+        let url_ = API_URL + "/EmailTemplate/Post";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = emailTemplate;
+        const response = await httpCaller.POST(url_, content_);
+
+        switch(response?.status){
+
+        case 201: 
+            return response.json().then((responseJson: EmailTemplate) => {
+                return responseJson;
+            });
+
+        case 422: 
+            return response.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response.status);
+            });
+
+        case 417: 
+            return response.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response.status);
+            });
+
+        default:
+            CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status}`;
+            throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
+    }
+}
+export const usePutEmailTemplate = async (emailTemplate: EmailTemplate): Promise<EmailTemplate> =>{
+        let url_ = API_URL + "/EmailTemplate/Put";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = emailTemplate;
+        const response = await httpCaller.PUT(url_, content_);
+
+        switch(response?.status){
+
+        case 200: 
+            return response.json().then((responseJson: EmailTemplate) => {
+                return responseJson;
+            });
+
+        case 422: 
+            return response.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response.status);
             });
 
         case 417: 

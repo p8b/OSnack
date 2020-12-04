@@ -189,7 +189,7 @@ namespace OSnack.API
             services.AddOpenApiDocument(document =>
             {
                document.DocumentName = $"OSnack {policy}";
-               document.Title = $"OSnack {policy}";
+               document.Title = $"{policy}";
                document.AuthorizationPolicyNames = new string[] { policy };
                document.IsModelOnly = false;
             });
@@ -199,7 +199,7 @@ namespace OSnack.API
          services.AddOpenApiDocument(document =>
          {
             document.DocumentName = $"OSnack Models";
-            document.Title = $"OSnack Models";
+            document.Title = $"Models";
             document.AuthorizationPolicyNames = new string[] { };
             document.IsModelOnly = true;
          });

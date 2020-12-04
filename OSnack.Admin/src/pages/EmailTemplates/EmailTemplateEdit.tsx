@@ -4,21 +4,18 @@ import ButtonPopupConfirm from 'osnack-frontend-shared/src/components/Buttons/Bu
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { EmailTemplate, MultiResultOfEmailTemplateAndEmailTemplate, ServerVariables } from 'osnack-frontend-shared/src/_core/apiModels';
-import { AlertObj } from 'osnack-frontend-shared/src/components/Texts/Alert';;
-import {
-   usePostEmailTemplate, usePutEmailTemplate, useDeleteEmailTemplate,
-   useGetEmailTemplate, useGetServerVariablesEmailTemplate
-} from 'osnack-frontend-shared/src/hooks/apiHooks/useEmailTemplateHook';
+import { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';;
 import CopyText from 'osnack-frontend-shared/src/components/Texts/CopyText';
 import { sleep } from 'osnack-frontend-shared/src/_core/appFunc';
 import EmailTemplateEditDetailsModal from './EmailTemplateEditDetailsModal';
 import { Redirect, useHistory } from 'react-router-dom';
+import { useDeleteEmailTemplate, useGetEmailTemplate, useGetServerVariablesEmailTemplate, usePostEmailTemplate, usePutEmailTemplate } from '../../SecretHooks/useEmailTemplateHook';
 
 const EmailTemplatesEdit = (props: IProps) => {
    const history = useHistory();
    const isUnmounted = useRef(false);
    const emailEditorRef = useRef<any>();
-   const [alert, setAlert] = useState(new AlertObj());
+   const errorAlert = useAlert(new AlertObj());
 
    const [template, setTemplate] = useState(new EmailTemplate());
    const [defaultTemplate, setDefaultTemplate] = useState(new EmailTemplate());
@@ -40,22 +37,13 @@ const EmailTemplatesEdit = (props: IProps) => {
       setInitialLockedStatus(props.location.state.emailTemplate.locked);
       setDefaultTemplate(props.location.state.defaultEmailTemplate);
 
-      if (props.location.state.emailTemplate.id > 0)
+      if (props.location.state.emailTemplate.id && props.location.state.emailTemplate.id > 0)
          useGetEmailTemplate(props.location.state.emailTemplate.id).then(
             (result: MultiResultOfEmailTemplateAndEmailTemplate) => {
                setTemplate(result.part1 ? result.part1 : new EmailTemplate());
                setInitialLockedStatus(result.part1?.locked);
                setDefaultTemplate(result.part2 ? result.part2 : new EmailTemplate());
             });
-
-      //useGetEmailTemplate(props.location.state.emailTemplate).then(result => {
-      //   if (!isUnmounted.current) {
-      //      setTemplate(result.template);
-      //      setInitialLockedStatus(result.template.locked);
-      //      setDefaultTemplate(result.defaultTemplate);
-      //   }
-      //});
-
 
       useGetServerVariablesEmailTemplate().then(result => {
          setServerVariables(result);
@@ -75,8 +63,7 @@ const EmailTemplatesEdit = (props: IProps) => {
 
    const saveTemplate = () => {
       if (!isEditorLoaded) return;
-
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+      errorAlert.PleaseWait(500, isUnmounted);
 
       emailEditorRef.current?.editor!.exportHtml(async (data: { design: any; html: string; }) => {
          if (isUnmounted.current) return;
@@ -101,14 +88,12 @@ const EmailTemplatesEdit = (props: IProps) => {
             });
 
          if (result.alert.List.length > 0) {
-            alert.List = result.alert.List;
-            alert.Type = result.alert.Type;
-            setAlert(alert);
+            errorAlert.set(result.alert);
             setIsOpenDetailsModal(true);
          }
          else {
             setIsOpenDetailsModal(false);
-            setAlert(alert.Clear);
+            errorAlert.Clear();
             setIsSaved(true);
             setTemplate(result.template);
             setInitialLockedStatus(result.template.locked);
@@ -117,31 +102,16 @@ const EmailTemplatesEdit = (props: IProps) => {
       });
    };
    const onDelete = async () => {
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+      errorAlert.PleaseWait(500, isUnmounted);
       useDeleteEmailTemplate(template).then((message) => {
          if (isUnmounted.current) return;
-         setAlert(alert.addSingleSuccess("Deleted", message));
+         errorAlert.SetSingleSuccess("Deleted", message);
          sleep(3000, isUnmounted).then(() => { setIsTemplateRecognised(false); });
       }).catch((alert) => {
          if (isUnmounted.current) return;
-         setAlert(alert);
+         errorAlert.Clear;
          setIsOpenDetailsModal(true);
       });
-
-      //useDeleteEmailTemplate(template).then(result => {
-      //   if (isUnmounted.current) return;
-
-      //   if (result.alert.List.length > 0) {
-      //      alert.List = result.alert.List;
-      //      alert.Type = result.alert.Type;
-      //      setAlert(alert);
-      //      setIsOpenDetailsModal(true);
-      //   }
-      //   else {
-      //      setAlert(alert.addSingleSuccess("Deleted", "Deleted"));
-      //      sleep(3000, isUnmounted).then(() => { setIsTemplateRecognised(false); });
-      //   }
-      //});
    };
 
    const insertDefault = async () => {
@@ -181,7 +151,7 @@ const EmailTemplatesEdit = (props: IProps) => {
          return <></>;
    };
    const renderDeleteButton = () => {
-      if (!template.isDefaultTemplate && template.id > 0 && !initialLockedStatus)
+      if (!template.isDefaultTemplate && template.id && template.id > 0 && !initialLockedStatus)
          return <ButtonPopupConfirm title=""
             popupMessage="Are your Sure?"
             onConfirmClick={onDelete}
@@ -222,12 +192,12 @@ const EmailTemplatesEdit = (props: IProps) => {
             <EmailEditor ref={emailEditorRef} onLoad={UnlayerLoaded} />
          </div>
          <EmailTemplateEditDetailsModal emailTemplate={template}
-            alert={alert}
-            clearAlert={() => setAlert(alert.Clear)}
-            isOpen={isOpenDetailsModal || alert.List.length > 0}
-            onCancel={() => { setIsOpenDetailsModal(false); setAlert(alert.Clear); }}
+            alert={errorAlert.alert}
+            clearAlert={() => errorAlert.Clear()}
+            isOpen={isOpenDetailsModal || errorAlert.alert.List.length > 0}
+            onCancel={() => { setIsOpenDetailsModal(false); errorAlert.Clear(); }}
             onSubmit={(temp) => {
-               setAlert(alert.Clear);
+               errorAlert.Clear();
                setIsOpenDetailsModal(false);
                setTemplate(temp);
             }}

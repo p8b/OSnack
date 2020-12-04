@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
-import Alert, { AlertObj, AlertTypes, ErrorDto } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import Alert, { AlertObj, AlertTypes, ErrorDto, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import Table, { TableData, TableHeaderData, TableRowData } from 'osnack-frontend-shared/src/components/Table/Table';
 import { Category, Product, ProductUnitType } from 'osnack-frontend-shared/src/_core/apiModels';
@@ -9,14 +9,14 @@ import Container from '../../components/Container';
 import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
 import { ConstMaxNumberOfPerItemsPage, GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
-import { useAllCategory } from 'osnack-frontend-shared/src/hooks/apiHooks/useCategoryHook';
-import { useSearchProduct } from 'osnack-frontend-shared/src/hooks/apiHooks/useProductHook';
-import { enumToArray, sleep } from 'osnack-frontend-shared/src/_core/appFunc';
+import { useSearchSecretProduct } from '../../SecretHooks/useProductHook';
+import { enumToArray } from 'osnack-frontend-shared/src/_core/appFunc';
 import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
+import { useAllCategory } from 'osnack-frontend-shared/src/hooks/PublicHooks/useCategoryHook';
 
 const ProductManagement = (props: IProps) => {
    const isUnmounted = useRef(false);
-   const [alert, setAlert] = useState(new AlertObj());
+   const errorAlert = useAlert(new AlertObj());
    const [searchValue, setSearchValue] = useState("");
    const [selectedProduct, setSelectedProduct] = useState(new Product());
    const [categoryList, setCategoryList] = useState<Category[]>([]);
@@ -38,7 +38,7 @@ const ProductManagement = (props: IProps) => {
          setCategoryList(categories);
       }).catch(alert => {
          if (isUnmounted.current) return;
-         setAlert(alert);
+         errorAlert.set(alert);
       });
       onSearch();
       return () => { isUnmounted.current = true; };
@@ -76,32 +76,17 @@ const ProductManagement = (props: IProps) => {
          setSelectedStatusFilter(statusFilter);
 
 
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      useSearchProduct(selectedPage, maxItemsPerPage, categoryFilter, searchString, statusFilter, isSortAsc, sortName)
+      errorAlert.PleaseWait(500, isUnmounted);
+      useSearchSecretProduct(selectedPage, maxItemsPerPage, categoryFilter, searchString, statusFilter, isSortAsc, sortName)
          .then(products => {
             if (isUnmounted.current) return;
-            setTblTotalItemCount(products.part2);
+            setTblTotalItemCount(products.part2 || 0);
             populateProductTable(products.part1 ? products.part1 : []);
-            setAlert(alert.Clear);
+            errorAlert.Clear();
          }).catch(alert => {
             if (isUnmounted.current) return;
-            setAlert(alert);
+            errorAlert.set(alert);
          });
-
-      //useSearchProduct(selectedPage, maxItemsPerPage, categoryFilter, searchString, statusFilter, isSortAsc, sortName).then(result => {
-      //   if (isUnmounted.current) return;
-
-      //   if (result.alert.List.length > 0) {
-      //      alert.List = result.alert.List;
-      //      alert.Type = result.alert.Type;
-      //      setAlert(alert);
-      //   }
-      //   else {
-      //      setTblTotalItemCount(result.totalCount);
-      //      populateProductTable(result.productList);
-      //      setAlert(alert.Clear);
-      //   }
-      //});
    };
 
    const populateProductTable = (productList: Product[]) => {
@@ -127,9 +112,9 @@ const ProductManagement = (props: IProps) => {
             </div>
          ])));
       if (productList.length == 0) {
-         setAlert(new AlertObj([new ErrorDto("0", "No Result Found")], AlertTypes.Warning));
+         errorAlert.SetSingleWarning("0", "No Result Found");
       } else {
-         setAlert(alert.Clear);
+         errorAlert.Clear();
       }
       setTableData(tData);
    };
@@ -172,7 +157,7 @@ const ProductManagement = (props: IProps) => {
             </div>
             <div className="row col-12 p-0 m-0 pt-3 ">
 
-               <DropDown title={`Category: ${categoryList.find((c) => c.id.toString() == selectedCategoryFilter)?.name || "All"}`}
+               <DropDown title={`Category: ${categoryList.find((c) => c.id?.toString() == selectedCategoryFilter)?.name || "All"}`}
                   className="col-12 col-sm-6 col-md-4 ml-auto m-0 p-1"
                   titleClassName="btn btn-white filter-icon">
                   <button className="dropdown-item"
@@ -181,7 +166,7 @@ const ProductManagement = (props: IProps) => {
                   </button>
                   {categoryList.map(category =>
                      <button className="dropdown-item" key={category.id}
-                        onClick={() => { onSearch(undefined, undefined, undefined, undefined, undefined, category.id.toString()); }} >
+                        onClick={() => { onSearch(undefined, undefined, undefined, undefined, undefined, category.id?.toString()); }} >
                         {category.name}
                      </button>
                   )}
@@ -203,9 +188,9 @@ const ProductManagement = (props: IProps) => {
                   </button>
                </DropDown>
 
-               <Alert alert={alert}
+               <Alert alert={errorAlert.alert}
                   className="col-12 mb-2"
-                  onClosed={() => { setAlert(alert.Clear); }}
+                  onClosed={() => { errorAlert.Clear(); }}
                />
             </div>
 

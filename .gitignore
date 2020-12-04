@@ -20,13 +20,14 @@ Generated\ Files/
 *.lock.json
 *-lock.json
 Settings.json
-Majid-Joveini-CV.pdf
 
 # Folders
-.localhistory/
-.vshistory/
+
 StaticFiles/
 StaticFiles/**
+
+.localhistory/
+.vshistory/
 bin/
 obj/
 cert/

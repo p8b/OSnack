@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import { DefaultNav, LoginNav } from "./NavMenuItems";
 import { AuthContext } from "osnack-frontend-shared/src/_core/authenticationContext";
-import { useLogoutAuthentication } from "osnack-frontend-shared/src/hooks/apiHooks/useAuthenticationHook";
+import { useLogoutAuthentication } from "osnack-frontend-shared/src/hooks/OfficialHooks/useAuthenticationHook";
 import { User } from "osnack-frontend-shared/src/_core/apiModels";
 import DropDown from "osnack-frontend-shared/src/components/Buttons/DropDown";
 import NavLink from "osnack-frontend-shared/src/components/Buttons/NavLink";

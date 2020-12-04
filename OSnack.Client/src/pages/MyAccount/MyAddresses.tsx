@@ -1,18 +1,16 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
-//import { AuthContext } from 'osnack-frontend-shared/src/_core/authenticationContext';
 import ButtonCard from 'osnack-frontend-shared/src/components/Buttons/ButtonCard';
-import Alert, { AlertObj } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Address } from 'osnack-frontend-shared/src/_core/apiModels';
-import { sleep } from 'osnack-frontend-shared/src/_core/appFunc';
-import { useAllAddress, useSetDefaultAddress } from 'osnack-frontend-shared/src/hooks/apiHooks/useAddressHook';
 import AddressModal from './AddressModal';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
+import { useAllAddress, useSetDefaultAddress } from 'osnack-frontend-shared/src/hooks/OfficialHooks/useAddressHook';
 
 const MyAddresses = (props: IProps) => {
    //const auth = useContext(AuthContext);
    const isUnmounted = useRef(false);
-   const [alert, setAlert] = useState(new AlertObj());
+   const errorAlert = useAlert(new AlertObj());
    const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false);
    const [selectAddress, setSelectAddress] = useState(new Address());
    const [addressList, setAddressList] = useState<Address[]>([]);
@@ -27,15 +25,15 @@ const MyAddresses = (props: IProps) => {
       setIsOpenCategoryModal(true);
    };
    const reloadAddressList = () => {
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+      errorAlert.PleaseWait(500, isUnmounted);
       useAllAddress().then(addresses => {
          if (isUnmounted.current) return;
 
          setAddressList(addresses);
-         setAlert(alert.Clear);
+         errorAlert.Clear();
       }).catch(alert => {
          if (isUnmounted.current) return;
-         setAlert(alert);
+         errorAlert.set(alert);
       });
    };
 
@@ -45,12 +43,12 @@ const MyAddresses = (props: IProps) => {
    };
 
    const setDefault = (addressId: number) => {
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+      errorAlert.PleaseWait(500, isUnmounted);
       useSetDefaultAddress(addressId).then(() => {
          reloadAddressList();
       }).catch(alert => {
          if (isUnmounted.current) return;
-         setAlert(alert);
+         errorAlert.set(alert);
       });
    };
 
@@ -58,9 +56,9 @@ const MyAddresses = (props: IProps) => {
       <>
          <PageHeader title="My Addresses" className="line-header-lg" />
          <div id="test" className="row justify-content-center m-0 p-0">
-            <Alert alert={alert}
+            <Alert alert={errorAlert.alert}
                className="col-12 mb-2"
-               onClosed={() => { setAlert(alert.Clear); }}
+               onClosed={() => { errorAlert.Clear(); }}
             />
             <ButtonCard cardClassName="card-lg col-12 row p-0 m-0 "
                onClick={newAddress}>
@@ -99,7 +97,7 @@ const MyAddresses = (props: IProps) => {
                               <Button className="btn-sm  col-6 m-0 radius-none"
                                  onClick={(e) => {
                                     e.stopPropagation();
-                                    setDefault(addr.id);
+                                    setDefault(addr.id || 0);
                                  }}
 
                                  children="Set as Default" />

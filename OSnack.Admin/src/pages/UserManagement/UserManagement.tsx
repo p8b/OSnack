@@ -7,16 +7,15 @@ import Container from '../../components/Container';
 import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
 import { ConstMaxNumberOfPerItemsPage, GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
-import Alert, { AlertObj, AlertTypes, ErrorDto } from 'osnack-frontend-shared/src/components/Texts/Alert';
-import { useGetUser } from 'osnack-frontend-shared/src/hooks/apiHooks/useUserHook';
+import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import { useGetUser } from '../../SecretHooks/useUserHook';
 import UserModal from './UserModal';
 import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
-import { useGetRole } from 'osnack-frontend-shared/src/hooks/apiHooks/useRoleHook';
-import { sleep } from 'osnack-frontend-shared/src/_core/appFunc';
+import { useGetRole } from '../../SecretHooks/useRoleHook';
 
 const UserManagement = (props: IProps) => {
    const isUnmounted = useRef(false);
-   const [alert, setAlert] = useState(new AlertObj());
+   const errorAlert = useAlert(new AlertObj());
    const [searchValue, setSearchValue] = useState("");
    const [selectedUser, setSelectedUser] = useState(new User());
    const [selectedRoleFilter, setselectedRoleFilter] = useState(GetAllRecords);
@@ -31,14 +30,14 @@ const UserManagement = (props: IProps) => {
    const [tblMaxItemsPerPage, setTblMaxItemsPerPage] = useState(ConstMaxNumberOfPerItemsPage);
 
    useEffect(() => {
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+      errorAlert.PleaseWait(500, isUnmounted);
       useGetRole().then(roles => {
          if (isUnmounted.current) return;
          setRoleList(roles);
-         setAlert(alert.Clear);
+         errorAlert.Clear();
       }).catch(alert => {
          if (isUnmounted.current) return;
-         setAlert(alert);
+         errorAlert.set(alert);
       });
 
       onSearch();
@@ -72,17 +71,17 @@ const UserManagement = (props: IProps) => {
          setselectedRoleFilter(roleFilter);
 
 
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+      errorAlert.PleaseWait(500, isUnmounted);
       useGetUser(selectedPage, maxItemsPerPage, searchString, roleFilter, isSortAsc, sortName).then(
          result => {
             if (isUnmounted.current) return;
-            setTblTotalItemCount(result.part2);
+            setTblTotalItemCount(result.part2 || 0);
             populateUserTable(result.part1!);
-            setAlert(alert.Clear);
+            errorAlert.Clear();
          }
       ).catch(alert => {
          if (isUnmounted.current) return;
-         setAlert(alert);
+         errorAlert.set(alert);
       });
 
    };
@@ -108,9 +107,9 @@ const UserManagement = (props: IProps) => {
             </div>
          ])));
       if (userList.length == 0) {
-         setAlert(new AlertObj([new ErrorDto("0", "No Result Found")], AlertTypes.Warning));
+         errorAlert.SetSingleWarning("0", "No Result Found");
       } else {
-         setAlert(alert.Clear);
+         errorAlert.Clear();
       }
       setTableData(tData);
    };
@@ -145,7 +144,7 @@ const UserManagement = (props: IProps) => {
             </div>
             <div className="row col-12 p-0 m-0 pt-3 ">
 
-               <DropDown title={`Role: ${roleList.find((r) => r.id.toString() == selectedRoleFilter)?.name || "All"}`}
+               <DropDown title={`Role: ${roleList.find((r) => r.id?.toString() == selectedRoleFilter)?.name || "All"}`}
                   className="col-12 col-sm-6 col-md-4 ml-auto m-0 p-1"
                   titleClassName="btn btn-white filter-icon ">
                   <button className="dropdown-item"
@@ -154,15 +153,15 @@ const UserManagement = (props: IProps) => {
                   </button>
                   {roleList.map(role =>
                      <button className="dropdown-item" key={role.id}
-                        onClick={() => { onSearch(undefined, undefined, undefined, undefined, role.id.toString()); }} >
+                        onClick={() => { onSearch(undefined, undefined, undefined, undefined, role.id?.toString()); }} >
                         {role.name}
                      </button>
                   )}
                </DropDown>
 
-               <Alert alert={alert}
+               <Alert alert={errorAlert.alert}
                   className="col-12 mb-2"
-                  onClosed={() => { setAlert(alert.Clear); }}
+                  onClosed={() => { errorAlert.Clear(); }}
                />
             </div>
 

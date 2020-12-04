@@ -6,18 +6,18 @@ import { Input } from "osnack-frontend-shared/src/components/Inputs/Input";
 import { Button } from "osnack-frontend-shared/src/components/Buttons/Button";
 
 import { EmailTemplate, ServerVariables } from "osnack-frontend-shared/src/_core/apiModels";
-import Alert, { AlertObj } from "osnack-frontend-shared/src/components/Texts/Alert";
+import Alert, { AlertObj, useAlert } from "osnack-frontend-shared/src/components/Texts/Alert";
 import InputDropdown from "osnack-frontend-shared/src/components/Inputs/InputDropDown";
 
 const EmailTemplateEditDetailsModal = (props: IProps) => {
-   const [alert, setAlert] = useState(new AlertObj());
+   const errorAlert = useAlert(new AlertObj());
    const [template, setTemplate] = useState(props.emailTemplate);
    const [isNewTemplate, setIsNewTemplate] = useState(true);
    const [isTokenUrlRequired, setIsTokenUrlRequired] = useState(false);
    const [serverVariables, setServerVariables] = useState<ServerVariables[]>([]);
 
    useEffect(() => {
-      if (props.emailTemplate.id > 0)
+      if (props.emailTemplate.id && props.emailTemplate.id > 0)
          setIsNewTemplate(false);
       else
          setIsNewTemplate(true);
@@ -43,7 +43,7 @@ const EmailTemplateEditDetailsModal = (props: IProps) => {
       }
    }, [template.serverVariables]);
    useEffect(() => {
-      setAlert(props.alert || new AlertObj());
+      errorAlert.set(props.alert || new AlertObj());
    }, [props.alert]);
 
    const onSubmit = async () => {
@@ -66,7 +66,7 @@ const EmailTemplateEditDetailsModal = (props: IProps) => {
             <Input label="Name *" className="col-10"
                value={template.name}
                disabled={template.locked}
-               showDanger={alert.checkExist("name")}
+               showDanger={errorAlert.alert.checkExist("name")}
                onChange={i => setTemplate({ ...template, name: i.target?.value })}
             />
             <button className={`col-2 btn ${template.locked ? "lock-icon" : "unlock-icon"}`}
@@ -75,13 +75,13 @@ const EmailTemplateEditDetailsModal = (props: IProps) => {
             <div className="col-12 col-sm-6 p-0 m-0">
                <Input label="Subject *" className="col-12"
                   value={template.subject}
-                  showDanger={alert.checkExist("Subject")}
+                  showDanger={errorAlert.alert.checkExist("Subject")}
                   onChange={i => setTemplate({ ...template, subject: i.target?.value })}
                />
                <Input label="Token URL Path*" className="col-12"
                   value={template.tokenUrlPath}
                   disabled={!isTokenUrlRequired}
-                  showDanger={alert.checkExist("TokenUrlPath")}
+                  showDanger={errorAlert.alert.checkExist("TokenUrlPath")}
                   onChange={i => setTemplate({ ...template, tokenUrlPath: i.target?.value })}
                />
             </div>
@@ -105,7 +105,7 @@ const EmailTemplateEditDetailsModal = (props: IProps) => {
                </InputDropdown>
                <div className="row col-12 justify-content-center">
                   {template.serverVariables?.map(sv =>
-                     <div className={`badge col-auto m-1 ${alert.checkExist(sv.replacementValue) ? "red" : ""}`} key={sv.enumValue}>
+                     <div className={`badge col-auto m-1 ${errorAlert.alert.checkExist(sv.replacementValue) ? "red" : ""}`} key={sv.enumValue}>
                         <CopyText text={sv.replacementValue} />
 
                         <span className="" onClick={() => {
@@ -123,15 +123,15 @@ const EmailTemplateEditDetailsModal = (props: IProps) => {
                </div>
             </div>
             <div className="col-12 mt-2">
-               <Alert alert={alert} className="col-12 mb-1"
-                  onClosed={() => setAlert(alert.Clear)}
+               <Alert alert={errorAlert.alert} className="col-12 mb-1"
+                  onClosed={() => errorAlert.Clear()}
                />
                {!isTemplateDeleted() &&
                   <>
                      <Button children={`${isNewTemplate ? "Continue" : "Edit"}`} className="btn-lg col-12 col-sm-6 mt-2 btn-green"
                         onClick={onSubmit} />
                      <Button children="Cancel" className="btn-lg col-12 col-sm-6 mt-2 btn-white"
-                        onClick={() => { setAlert(alert.Clear); props.onCancel(); }} />
+                        onClick={() => { errorAlert.Clear(); props.onCancel(); }} />
                   </>
                }
             </div>

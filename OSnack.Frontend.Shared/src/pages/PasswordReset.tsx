@@ -3,14 +3,13 @@ import { Redirect } from 'react-router-dom';
 import { Button } from '../components/Buttons/Button';
 import { Input } from '../components/Inputs/Input';
 import Modal from '../components/Modals/Modal';
-import Alert, { AlertObj, AlertTypes, ErrorDto } from '../components/Texts/Alert';
+import Alert, { AlertObj, AlertTypes, ErrorDto, useAlert } from '../components/Texts/Alert';
 import PageHeader from '../components/Texts/PageHeader';
-import { useUpdatePasswordWithTokenUser } from '../hooks/apiHooks/useUserHook';
-import { sleep } from '../_core/appFunc';
+import { useUpdatePasswordWithTokenUser } from '../hooks/PublicHooks/useUserHook';
 
 const ConfrimEmail = (props: IProps) => {
    const isUnmounted = useRef(false);
-   const [alert, setAlert] = useState(new AlertObj());
+   const errorAlert = useAlert(new AlertObj());
    const [redirectToHome, setRedirectToHome] = useState(false);
    const [isDone, setIsDone] = useState(true);
    const [email, setEmail] = useState("");
@@ -18,7 +17,7 @@ const ConfrimEmail = (props: IProps) => {
    const [confirmPassword, setConfirmPassword] = useState("");
 
    useEffect(() => {
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+      errorAlert.PleaseWait(500, isUnmounted);
       useUpdatePasswordWithTokenUser({
          pathName: window.location.pathname,
          email: email,
@@ -26,23 +25,12 @@ const ConfrimEmail = (props: IProps) => {
          justCheckToken: true
       }).then((user) => {
          if (isUnmounted.current) return;
-         setAlert(alert.Clear);
+         errorAlert.Clear();
          setIsDone(false);
       }).catch((alert) => {
          if (isUnmounted.current) return;
-         setAlert(alert);
+         errorAlert.set(alert);
       });
-      //useResetPasswordWithToken(window.location.pathname, email, password, true).then(result => {
-      //   if (isUnmounted.current) return;
-      //   if (result.alert.List.length > 0) {
-      //      alert.List = result.alert.List;
-      //      alert.Type = result.alert.Type;
-      //      setAlert(alert);
-      //   } else {
-      //      setAlert(alert.Clear);
-      //      setIsDone(false);
-      //   }
-      //});
    }, []);
 
    const onSubmit = () => {
@@ -55,12 +43,12 @@ const ConfrimEmail = (props: IProps) => {
          errors.List.push(new ErrorDto('0', "Passwords mismatch."));
 
       if (errors.List.length > 0) {
-         setAlert(errors);
+         errorAlert.set(errors);
       }
       else {
 
 
-         sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+         errorAlert.PleaseWait(500, isUnmounted);
          useUpdatePasswordWithTokenUser({
             pathName: window.location.pathname,
             email: email,
@@ -68,26 +56,13 @@ const ConfrimEmail = (props: IProps) => {
             justCheckToken: false
          }).then((user) => {
             if (isUnmounted.current) return;
-            setAlert(alert.addSingleSuccess("Password Updated"));
+            errorAlert.SetSingleSuccess("", "Password Updated");
             setIsDone(true);
          }).catch((alert) => {
             if (isUnmounted.current) return;
-            setAlert(alert);
+            errorAlert.set(alert);
          });
-
-         //useResetPasswordWithToken(window.location.pathname, email, password).then(result => {
-         //   if (isUnmounted.current) return;
-         //   if (result.alert.List.length > 0) {
-         //      alert.List = result.alert.List;
-         //      alert.Type = result.alert.Type;
-         //      setAlert(alert);
-         //   }
-         //   else {
-         //      setAlert(alert.addSingleSuccess("Password Updated"));
-         //      setIsDone(true);
-         //   }
-         //});
-      }
+      };
    };
 
    if (redirectToHome) return <Redirect to="" />;
@@ -111,7 +86,7 @@ const ConfrimEmail = (props: IProps) => {
                   value={confirmPassword}
                   onChange={i => setConfirmPassword(i.target.value)}
                />
-               <Alert alert={alert} onClosed={() => setAlert(alert.Clear)} />
+               <Alert alert={errorAlert.alert} onClosed={() => errorAlert.Clear()} />
                <Button children="Continue" className="btn-lg col-12 col-sm-6 mt-2 btn-lg  btn-green"
                   onClick={onSubmit} />
                <Button children="Close" className="btn-lg col-12 col-sm-6 mt-2 btn-lg  btn-white"
@@ -119,7 +94,7 @@ const ConfrimEmail = (props: IProps) => {
             </>
          }
          {isDone &&
-            <Alert alert={alert} onClosed={() => setRedirectToHome(true)} />
+            <Alert alert={errorAlert.alert} onClosed={() => setRedirectToHome(true)} />
          }
       </Modal>
    );

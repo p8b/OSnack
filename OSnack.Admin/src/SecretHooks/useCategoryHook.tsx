@@ -1,12 +1,12 @@
-import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
-import { httpCaller } from "../../_core/appFunc";
-import { API_URL, CommonErrors } from "../../_core/constant.Variables";
-import { Product } from "../../_core/apiModels";
-export const useDeleteProduct = async (product: Product): Promise<string> =>{
-        let url_ = API_URL + "/Product/Delete";
+import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/components/Texts/Alert";
+import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
+import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
+import { Category } from "osnack-frontend-shared/src/_core/apiModels";
+export const useDeleteCategory = async (category: Category): Promise<string> =>{
+        let url_ = API_URL + "/Category/Delete";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = product;
+        const content_ = category;
         const response = await httpCaller.DELETE(url_, content_);
 
         switch(response?.status){
@@ -26,22 +26,27 @@ export const useDeleteProduct = async (product: Product): Promise<string> =>{
                 throw new AlertObj(data, AlertTypes.Error, response.status);
             });
 
+        case 412: 
+            return response.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response.status);
+            });
+
         default:
             CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status}`;
             throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
     }
 }
-export const usePostProduct = async (newProduct: Product): Promise<Product> =>{
-        let url_ = API_URL + "/Product/Post";
+export const usePostCategory = async (newCategory: Category): Promise<Category> =>{
+        let url_ = API_URL + "/Category/Post";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = newProduct;
+        const content_ = newCategory;
         const response = await httpCaller.POST(url_, content_);
 
         switch(response?.status){
 
         case 201: 
-            return response.json().then((responseJson: Product) => {
+            return response.json().then((responseJson: Category) => {
                 return responseJson;
             });
 
@@ -65,18 +70,23 @@ export const usePostProduct = async (newProduct: Product): Promise<Product> =>{
             throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
     }
 }
-export const usePutProduct = async (modifiedProduct: Product): Promise<Product> =>{
-        let url_ = API_URL + "/Product/Put";
+export const usePutCategory = async (modifiedCategory: Category): Promise<Category> =>{
+        let url_ = API_URL + "/Category/Put";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = modifiedProduct;
+        const content_ = modifiedCategory;
         const response = await httpCaller.PUT(url_, content_);
 
         switch(response?.status){
 
         case 200: 
-            return response.json().then((responseJson: Product) => {
+            return response.json().then((responseJson: Category) => {
                 return responseJson;
+            });
+
+        case 404: 
+            return response.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response.status);
             });
 
         case 412: 

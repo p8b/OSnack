@@ -5,14 +5,14 @@ import { Input } from 'osnack-frontend-shared/src/components/Inputs/Input';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import ButtonPopupConfirm from 'osnack-frontend-shared/src/components/Buttons/ButtonPopupConfirm';
 import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
-import Alert, { AlertObj, AlertTypes, ErrorDto } from 'osnack-frontend-shared/src/components/Texts/Alert';
-import { useCreateUserUser, useUpdateUserUser, useDeleteUser } from 'osnack-frontend-shared/src/hooks/apiHooks/useUserHook';
+import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import { useCreateUserUser, useUpdateUserUser, useDeleteUser } from '../../SecretHooks/useUserHook';
 import InputDropdown from 'osnack-frontend-shared/src/components/Inputs/InputDropDown';
-import { enumToArray, sleep } from 'osnack-frontend-shared/src/_core/appFunc';
+import { enumToArray } from 'osnack-frontend-shared/src/_core/appFunc';
 
 const UserModal = (props: IProps) => {
    const isUnmounted = useRef(false);
-   const [alert, setAlert] = useState(new AlertObj());
+   const errorAlert = useAlert(new AlertObj());
    const [user, setUser] = useState(new User());
    const [registrationMethodList] = useState(enumToArray(RegistrationTypes));
 
@@ -23,42 +23,40 @@ const UserModal = (props: IProps) => {
    }, [props.user]);
 
    const createUser = async () => {
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+      errorAlert.PleaseWait(500, isUnmounted);
       useCreateUserUser(user).then(user => {
          if (isUnmounted.current) return;
-         setAlert(alert.Clear);
+         errorAlert.Clear();
          setUser(user);
          props.onSuccess();
       }).catch(alert => {
          if (isUnmounted.current) return;
-         setAlert(alert);
+         errorAlert.set(alert);
       });
    };
    const updateUser = async () => {
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+      errorAlert.PleaseWait(500, isUnmounted);
       console.log(user);
       useUpdateUserUser(user).then(user => {
          if (isUnmounted.current) return;
-         setAlert(alert.Clear);
+         errorAlert.Clear();
          setUser(user);
          props.onSuccess();
       }).catch(alert => {
          if (isUnmounted.current) return;
-         setAlert(alert);
+         errorAlert.set(alert);
       });
    };
    const deleteUser = async () => {
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+      errorAlert.PleaseWait(500, isUnmounted);
       useDeleteUser(user).then(message => {
          if (isUnmounted.current) return;
-         alert.List.push(new ErrorDto("confirm", message));
-         alert.Type = AlertTypes.Success;
-         setAlert(alert);
+         errorAlert.SetSingleSuccess("", "confirm");
          setUser(user);
          props.onSuccess();
       }).catch(alert => {
          if (isUnmounted.current) return;
-         setAlert(alert);
+         errorAlert.set(alert);
       });
    };
 
@@ -71,12 +69,12 @@ const UserModal = (props: IProps) => {
          {/***** Name & Surname ****/}
          <div className="row">
             <Input label="Name"
-               showDanger={alert.checkExistFilterRequired("FirstName")}
+               showDanger={errorAlert.alert.checkExistFilterRequired("FirstName")}
                value={user.firstName}
                onChange={i => { setUser({ ...user, firstName: i.target.value }); }}
                className="col-12 col-sm-6" />
             <Input label="Surname"
-               showDanger={alert.checkExistFilterRequired("Surname")}
+               showDanger={errorAlert.alert.checkExistFilterRequired("Surname")}
                value={user.surname}
                onChange={i => { setUser({ ...user, surname: i.target.value }); }}
                className="col-12 col-sm-6" />
@@ -85,12 +83,12 @@ const UserModal = (props: IProps) => {
          <div className="row">
             <Input label={`Phone No.`}
                value={user.phoneNumber}
-               showDanger={alert.checkExistFilterRequired("PhoneNumber")}
+               showDanger={errorAlert.alert.checkExistFilterRequired("PhoneNumber")}
                onChange={i => { setUser({ ...user, phoneNumber: i.target.value }); }}
                className="col-12 col-sm-6" />
             <InputDropdown dropdownTitle={user.role?.name || "Select Option"}
                label="Role*"
-               showDanger={alert.checkExistFilterRequired("Role")}
+               showDanger={errorAlert.alert.checkExistFilterRequired("Role")}
                className="col-12 col-sm-6 " >
                {props.roleList.map(role =>
                   <button className="dropdown-item" key={role.id}
@@ -103,10 +101,10 @@ const UserModal = (props: IProps) => {
 
          {/***** Email & Registration Type ****/}
          <div className="row">
-            <Input label={`Email ${user.id > 0 ? (user.emailConfirmed ? "(Verified)" : "(Not Verified)") : ""}`}
+            <Input label={`Email ${user.id && user.id > 0 ? (user.emailConfirmed ? "(Verified)" : "(Not Verified)") : ""}`}
                value={user.email}
                disabled={user.registrationMethod?.type != null}
-               showDanger={alert.checkExistFilterRequired("Email")}
+               showDanger={errorAlert.alert.checkExistFilterRequired("Email")}
                onChange={i => { setUser({ ...user, email: i.target.value }); }}
                className="col-12 col-sm-6" />
             <Input label={`Registration Method`}
@@ -116,9 +114,9 @@ const UserModal = (props: IProps) => {
                className="col-12 col-sm-6" />
          </div>
 
-         <Alert alert={alert}
+         <Alert alert={errorAlert.alert}
             className="col-12 mb-2"
-            onClosed={() => { setAlert(alert.Clear); }}
+            onClosed={() => { errorAlert.Clear(); }}
          />
 
          {/***** buttons ****/}
@@ -145,7 +143,7 @@ const UserModal = (props: IProps) => {
             }
             <Button children="Cancel"
                className={`col-12 mt-2 btn-white btn-lg ${user.id === 0 ? "col-sm-6" : "col-sm-4"}`}
-               onClick={() => { setAlert(alert.Clear); props.onClose(); }} />
+               onClick={() => { errorAlert.Clear(); props.onClose(); }} />
          </div>
       </Modal >
    );

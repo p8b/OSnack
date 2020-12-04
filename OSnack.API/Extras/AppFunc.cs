@@ -55,13 +55,15 @@ namespace OSnack.API.Extras
                      }
          });
          string zipFilePath = Path.Combine(@$"{webHostRoot}\StaticFiles\tsApiFiles\{document.Info.Title}.zip");
-         string zipFolder = Path.Combine(@$"{webHostRoot}\StaticFiles\tsApiFiles\{document.Info.Title}");
+         string zipFolder = Path.Combine(@$"{webHostRoot}\StaticFiles\tsApiFiles\{document.Info.Title}Hooks");
+         if (document.Tags.Any(t => t.Name.Equals("IsModelOnly")))
+            zipFolder = Path.Combine(@$"{webHostRoot}\StaticFiles\tsApiFiles");
 
          try { File.Delete(zipFilePath); } catch (Exception) { }
          if (!Directory.Exists(zipFolder))
          {
             Directory.CreateDirectory(zipFolder);
-            Directory.CreateDirectory(@$"{zipFolder}\apiHooks");
+            //Directory.CreateDirectory(@$"{zipFolder}");
          }
          if (document.Tags.Any(t => t.Name.Equals("IsModelOnly")))
          {
@@ -104,8 +106,8 @@ namespace OSnack.API.Extras
          else
          {
             var modelsPath = "";
-            if (document.Tags.Any(t => !t.Name.Equals(AppConst.AccessPolicies.Public)))
-               modelsPath = "osnack-frontend-shared/src/_core/apiModels";
+            if (document.Tags.Any(t => t.Name.Equals(AppConst.AccessPolicies.Secret) || t.Name.Equals(AppConst.AccessPolicies.TopSecret)))
+               modelsPath = "osnack-frontend-shared/src/";
             foreach (var hook in tg.GetAllCodeArtifacts())
             {
 
@@ -114,8 +116,10 @@ namespace OSnack.API.Extras
                  hook.Code;
 
                if (!string.IsNullOrWhiteSpace(modelsPath))
-                  tempScrtip = tempScrtip.Replace("../../_core/apiModels", modelsPath);
-               using FileStream fs = File.Create($"{zipFolder}\\apiHooks\\use{hook.TypeName}Hook.tsx");
+               {
+                  tempScrtip = tempScrtip.Replace("../../", modelsPath);
+               }
+               using FileStream fs = File.Create($"{zipFolder}\\use{hook.TypeName}Hook.tsx");
                byte[] info = new UTF8Encoding(true).GetBytes(tempScrtip.Replace("@@Models@@", hook.BaseTypeName.Replace("@", "")));
                // Add some information to the file.
                fs.Write(info, 0, info.Length);

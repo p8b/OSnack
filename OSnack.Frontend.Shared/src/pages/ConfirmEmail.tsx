@@ -1,36 +1,23 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import Modal from '../components/Modals/Modal';
-import Alert, { AlertObj } from '../components/Texts/Alert';
-import { useConfirmEmailUser } from '../hooks/apiHooks/useUserHook';
-import { sleep } from '../_core/appFunc';
+import Alert, { AlertObj, useAlert } from '../components/Texts/Alert';
+import { useConfirmEmailUser } from '../hooks/PublicHooks/useUserHook';
 
 const ConfrimEmail = (props: IProps) => {
    const isUnmounted = useRef(false);
-   const [alert, setAlert] = useState(new AlertObj().PleaseWait);
+   const errorAlert = useAlert(new AlertObj());
    const [redirectToHome, setRedirectToHome] = useState(false);
 
    useEffect(() => {
-
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+      errorAlert.PleaseWait(500, isUnmounted);
       useConfirmEmailUser(window.location.pathname).then(() => {
          if (isUnmounted.current) return;
-         setAlert(alert.addSingleSuccess("Success"));
+         errorAlert.SetSingleSuccess("", "Success");
       }).catch((alert) => {
          if (isUnmounted.current) return;
-         setAlert(alert);
+         errorAlert.set(alert);
       });
-      //useConfirmEmailWithToken(window.location.pathname).then(result => {
-      //   if (isUnmounted.current) return;
-      //   if (result.isSuccess) {
-      //      setAlert(alert.addSingleSuccess("Success"));
-      //   }
-      //   else {
-      //      alert.List = result.alert.List;
-      //      alert.Type = result.alert.Type;
-      //      setAlert(alert);
-      //   }
-      //});
       return () => { isUnmounted.current = true; };
    }, []);
 
@@ -39,7 +26,7 @@ const ConfrimEmail = (props: IProps) => {
    return (
       <Modal className="col-11 col-sm-10 col-md-9 col-lg-4 pl-4 pr-4"
          isOpen={true}>
-         <Alert alert={alert} onClosed={() => setRedirectToHome(true)} />
+         <Alert alert={errorAlert.alert} onClosed={() => setRedirectToHome(true)} />
       </Modal>
    );
 };

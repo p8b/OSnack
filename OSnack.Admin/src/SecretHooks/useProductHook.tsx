@@ -1,7 +1,7 @@
-import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
-import { httpCaller } from "../../_core/appFunc";
-import { API_URL, CommonErrors } from "../../_core/constant.Variables";
-import { Product, MultiResultOfListOfProductAndInteger, MultiResultOfProductAndListOfProduct, Score, ProblemDetails } from "../../_core/apiModels";
+import { AlertObj, AlertTypes, o } from "osnack-frontend-shared/src/components/Texts/Alert";
+import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
+import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
+import { Product, MultiResultOfListOfProductAndInteger } from "osnack-frontend-shared/src/_core/apiModels";
 export const useDeleteProduct = async (product: Product): Promise<string> =>{
         let url_ = API_URL + "/Product/Delete";
         url_ = url_.replace(/[?&]$/, "");
@@ -17,12 +17,12 @@ export const useDeleteProduct = async (product: Product): Promise<string> =>{
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
+            return response.json().then((data: o[]) => {
                 throw new AlertObj(data, AlertTypes.Error, response.status);
             });
 
         case 404: 
-            return response.json().then((data: ErrorDto[]) => {
+            return response.json().then((data: o[]) => {
                 throw new AlertObj(data, AlertTypes.Error, response.status);
             });
 
@@ -31,8 +31,8 @@ export const useDeleteProduct = async (product: Product): Promise<string> =>{
             throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
     }
 }
-export const useSearchProduct = async (selectedPage: number, maxItemsPerPage: number, filterCategory: string | null, searchValue: string | null, filterStatus: string | null, isSortAsce: boolean, sortName: string | null): Promise<MultiResultOfListOfProductAndInteger> =>{
-        let url_ = API_URL + "/Product/GET/Search/{selectedPage}/{maxItemsPerPage}/{filterCategory}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}";
+export const useSearchSecretProduct = async (selectedPage: number, maxItemsPerPage: number, filterCategory: string | null, searchValue: string | null, filterStatus: string | null, isSortAsce: boolean, sortName: string | null): Promise<MultiResultOfListOfProductAndInteger> =>{
+        let url_ = API_URL + "/Product/GET/SearchSecret/{selectedPage}/{maxItemsPerPage}/{filterCategory}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}";
         if (selectedPage === undefined || selectedPage === null)
             throw new Error("The parameter 'selectedPage' must be defined.");
         url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
@@ -66,36 +66,7 @@ export const useSearchProduct = async (selectedPage: number, maxItemsPerPage: nu
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
-            });
-
-        default:
-            CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status}`;
-            throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
-    }
-}
-export const useProductAndRelateProduct = async (categoryName: string | null, productName: string | null): Promise<MultiResultOfProductAndListOfProduct> =>{
-        let url_ = API_URL + "/Product/GET/ProductAndRelate/{categoryName}/{productName}";
-        if (categoryName === undefined || categoryName === null)
-            throw new Error("The parameter 'categoryName' must be defined.");
-        url_ = url_.replace("{categoryName}", encodeURIComponent("" + categoryName));
-        if (productName === undefined || productName === null)
-            throw new Error("The parameter 'productName' must be defined.");
-        url_ = url_.replace("{productName}", encodeURIComponent("" + productName));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const response = await httpCaller.GET(url_);
-
-        switch(response?.status){
-
-        case 200: 
-            return response.json().then((responseJson: MultiResultOfProductAndListOfProduct) => {
-                return responseJson;
-            });
-
-        case 417: 
-            return response.json().then((data: ErrorDto[]) => {
+            return response.json().then((data: o[]) => {
                 throw new AlertObj(data, AlertTypes.Error, response.status);
             });
 
@@ -119,49 +90,17 @@ export const usePostProduct = async (newProduct: Product): Promise<Product> =>{
             });
 
         case 422: 
-            return response.json().then((data: ErrorDto[]) => {
+            return response.json().then((data: o[]) => {
                 throw new AlertObj(data, AlertTypes.Error, response.status);
             });
 
         case 412: 
-            return response.json().then((data: ErrorDto[]) => {
+            return response.json().then((data: o[]) => {
                 throw new AlertObj(data, AlertTypes.Error, response.status);
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
-            });
-
-        default:
-            CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status}`;
-            throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
-    }
-}
-export const useScoreProduct = async (newScore: Score): Promise<void> =>{
-        let url_ = API_URL + "/Product/Post/Score/Score";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = newScore;
-        const response = await httpCaller.POST(url_, content_);
-
-        switch(response?.status){
-
-        case 201: 
-            return;
-
-        case 422: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
-            });
-
-        case 412: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
-            });
-
-        case 417: 
-            return response.json().then((data: ErrorDto[]) => {
+            return response.json().then((data: o[]) => {
                 throw new AlertObj(data, AlertTypes.Error, response.status);
             });
 
@@ -185,17 +124,17 @@ export const usePutProduct = async (modifiedProduct: Product): Promise<Product> 
             });
 
         case 412: 
-            return response.json().then((data: ErrorDto[]) => {
+            return response.json().then((data: o[]) => {
                 throw new AlertObj(data, AlertTypes.Error, response.status);
             });
 
         case 422: 
-            return response.json().then((data: ErrorDto[]) => {
+            return response.json().then((data: o[]) => {
                 throw new AlertObj(data, AlertTypes.Error, response.status);
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
+            return response.json().then((data: o[]) => {
                 throw new AlertObj(data, AlertTypes.Error, response.status);
             });
 

@@ -1,19 +1,19 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import { Category } from 'osnack-frontend-shared/src/_core/apiModels';
 import { API_URL } from 'osnack-frontend-shared/src/_core/constant.Variables';
-import { getBase64fromUrlImage, sleep } from 'osnack-frontend-shared/src/_core/appFunc';
+import { getBase64fromUrlImage } from 'osnack-frontend-shared/src/_core/appFunc';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Input } from 'osnack-frontend-shared/src/components/Inputs/Input';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import ButtonPopupConfirm from 'osnack-frontend-shared/src/components/Buttons/ButtonPopupConfirm';
 import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
 import ImageUpload from '../../components/ImageUpload/ImageUpload';
-import { usePostCategory, usePutCategory, useDeleteCategory } from 'osnack-frontend-shared/src/hooks/apiHooks/useCategoryHook';
-import Alert, { AlertObj, AlertTypes, ErrorDto } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import Alert, { AlertObj, AlertTypes, ErrorDto, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import { useDeleteCategory, usePostCategory, usePutCategory } from '../../SecretHooks/useCategoryHook';
 
 const CategoryModal = (props: IProps) => {
    const isUnmounted = useRef(false);
-   const [alert, setAlert] = useState(new AlertObj());
+   const errorAlert = useAlert(new AlertObj());
    const [category, setCategory] = useState(new Category());
    const [imageBase64, setImageBase64] = useState("");
    const [originalImageBase64, setOriginalImageBase64] = useState("");
@@ -21,10 +21,10 @@ const CategoryModal = (props: IProps) => {
    useEffect(() => {
       setCategory(props.category);
       /// if the category already exists get the image and convert it to string base64
-      if (props.category.id > 0) {
+      if (props.category.id && props.category.id > 0) {
          setIsNewImageSet(false);
 
-         sleep(500, isUnmounted).then(() => { setAlert(alert.Loading); });
+         errorAlert.PleaseWait(500, isUnmounted);
          getBase64fromUrlImage(`${API_URL}/${props.category.imagePath}`)
             .then(imgBase64 => {
                if (isUnmounted.current) return;
@@ -36,13 +36,11 @@ const CategoryModal = (props: IProps) => {
                if (isUnmounted.current) return;
 
                setOriginalImageBase64(originalImgBase64 as string);
-               setAlert(alert.Clear);
+               errorAlert.Clear();
             }).catch(() => {
                if (isUnmounted.current) return;
-
-               setAlert(alert.addSingleWarning("Image Not Found!"));
+               errorAlert.SetSingleWarning("", "Image Not Found!");
             });
-
       }
    }, [props.category]);
 
@@ -56,33 +54,19 @@ const CategoryModal = (props: IProps) => {
          errors.List.push(new ErrorDto("1", "Image Required."));
 
       if (errors.List.length > 0) {
-         setAlert(errors);
+         errorAlert.set(errors);
          return;
       }
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+      errorAlert.PleaseWait(500, isUnmounted);
       usePostCategory(category).then((category) => {
-         setAlert(alert.Clear);
+         if (isUnmounted.current) return;
+         errorAlert.Clear();
          resetImageUpload();
          props.onSuccess();
-
       }).catch((alert) => {
          if (isUnmounted.current) return;
-         setAlert(alert);
+         errorAlert.set(alert);
       });
-
-      //useCreateCategory(category).then(result => {
-      //   if (isUnmounted.current) return;
-
-      //   if (result.alert.List.length > 0) {
-      //      alert.List = result.alert.List;
-      //      alert.Type = result.alert.Type;
-      //      setAlert(alert);
-      //   } else {
-      //      setAlert(alert.Clear);
-      //      resetImageUpload();
-      //      props.onSuccess();
-      //   }
-      //});
    };
    const updateCategory = async () => {
       let errors = new AlertObj([], AlertTypes.Error);
@@ -94,7 +78,7 @@ const CategoryModal = (props: IProps) => {
          errors.List.push(new ErrorDto("1", "Image Required."));
 
       if (errors.List.length > 0) {
-         setAlert(errors);
+         errorAlert.set(errors);
          return;
       }
 
@@ -104,53 +88,28 @@ const CategoryModal = (props: IProps) => {
          cat.originalImageBase64 = '';
       } if (isUnmounted.current) return;
 
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+      errorAlert.PleaseWait(500, isUnmounted);
       usePutCategory(cat).then((category) => {
-         setAlert(alert.Clear);
+         if (isUnmounted.current) return;
+         errorAlert.Clear();
          resetImageUpload();
          props.onSuccess();
       }).catch((alert) => {
          if (isUnmounted.current) return;
-         setAlert(alert);
+         errorAlert.set(alert);
       });
-      //useModifyCategory(cat).then(result => {
-      //   if (isUnmounted.current) return;
-
-      //   if (result.alert.List.length > 0) {
-      //      alert.List = result.alert.List;
-      //      alert.Type = result.alert.Type;
-      //      setAlert(alert);
-      //   } else {
-      //      setAlert(alert.Clear);
-      //      resetImageUpload();
-      //      props.onSuccess();
-      //   }
-      //});
    };
    const deleteCategory = async () => {
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+      errorAlert.PleaseWait(500, isUnmounted);
       useDeleteCategory(category).then((category) => {
-         setAlert(alert.Clear);
+         if (isUnmounted.current) return;
+         errorAlert.Clear();
          resetImageUpload();
          props.onSuccess();
       }).catch((alert) => {
          if (isUnmounted.current) return;
-         setAlert(alert);
+         errorAlert.set(alert);
       });
-
-      //useDeleteCategory(category).then(result => {
-      //   if (isUnmounted.current) return;
-
-      //   if (result.alert.List.length > 0) {
-      //      alert.List = result.alert.List;
-      //      alert.Type = result.alert.Type;
-      //      setAlert(alert);
-      //   } else {
-      //      setAlert(alert.Clear);
-      //      resetImageUpload();
-      //      props.onSuccess();
-      //   }
-      //});
    };
 
    const resetImageUpload = () => {
@@ -165,14 +124,14 @@ const CategoryModal = (props: IProps) => {
    const onImageUploadError = (errMsg: string) => {
       let errors = new AlertObj([], AlertTypes.Error);
       errors.List.push(new ErrorDto("0", errMsg));
-      setAlert(errors);
+      errorAlert.set(errors);
    };
    const onImageUploadLoading = (progress: number) => {
       let errors = new AlertObj();
       errors.Type = AlertTypes.Warning;
       if (progress < 100)
          errors.List.push(new ErrorDto("0", `uploading ${progress}%`));
-      setAlert(errors);
+      errorAlert.set(errors);
    };
 
    return (
@@ -198,9 +157,9 @@ const CategoryModal = (props: IProps) => {
             />
          </div>
 
-         <Alert alert={alert}
+         <Alert alert={errorAlert.alert}
             className="col-12 mb-2"
-            onClosed={() => { setAlert(alert.Clear); }}
+            onClosed={() => { errorAlert.Clear(); }}
          />
 
          {/***** buttons ****/}
@@ -227,7 +186,7 @@ const CategoryModal = (props: IProps) => {
             }
             <Button children="Cancel"
                className={`col-12 mt-2 btn-white btn-lg ${category.id === 0 ? "col-sm-6" : "col-sm-4"}`}
-               onClick={() => { setAlert(alert.Clear); resetImageUpload(); props.onClose(); }} />
+               onClick={() => { errorAlert.Clear(); resetImageUpload(); props.onClose(); }} />
          </div>
       </Modal >
    );

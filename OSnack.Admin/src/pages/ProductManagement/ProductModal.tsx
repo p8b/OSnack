@@ -1,23 +1,23 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import { Category, Product, ProductUnitType } from 'osnack-frontend-shared/src/_core/apiModels';
-import { getBase64fromUrlImage, enumToArray, sleep } from 'osnack-frontend-shared/src/_core/appFunc';
+import { getBase64fromUrlImage, enumToArray } from 'osnack-frontend-shared/src/_core/appFunc';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Input } from 'osnack-frontend-shared/src/components/Inputs/Input';
 import InputDropDown from 'osnack-frontend-shared/src/components/Inputs/InputDropDown';
 import { Toggler } from 'osnack-frontend-shared/src/components/Inputs/Toggler';
-import Alert, { AlertObj, AlertTypes, ErrorDto } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import Alert, { AlertObj, AlertTypes, ErrorDto, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import ButtonPopupConfirm from 'osnack-frontend-shared/src/components/Buttons/ButtonPopupConfirm';
 import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
 import ImageUpload from '../../components/ImageUpload/ImageUpload';
-import { usePostProduct, usePutProduct, useDeleteProduct } from 'osnack-frontend-shared/src/hooks/apiHooks/useProductHook';
+import { usePostProduct, usePutProduct, useDeleteProduct } from '../../SecretHooks/useProductHook';
 import { TextArea } from 'osnack-frontend-shared/src/components/Inputs/TextArea';
 import { API_URL } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import ProductNutritionalInfoModal from './ProductNutritionalInfoModal';
 
 const ProductModal = (props: IProps) => {
    const isUnmounted = useRef(false);
-   const [alert, setAlert] = useState(new AlertObj());
+   const errorAlert = useAlert(new AlertObj());
    const [product, setProduct] = useState(new Product());
    const [productUnitTypeList] = useState(enumToArray(ProductUnitType));
    const [imageBase64, setImageBase64] = useState("");
@@ -28,9 +28,9 @@ const ProductModal = (props: IProps) => {
    useEffect(() => {
       setProduct(props.product);
       /// if the category already exists get the image and convert it to string base64
-      if (props.product.id > 0) {
+      if (props.product.id && props.product.id > 0) {
          setIsNewImageSet(false);
-         sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+         errorAlert.PleaseWait(500, isUnmounted);
          getBase64fromUrlImage(`${API_URL}/${props.product.imagePath}`)
             .then(imgBase64 => {
                if (isUnmounted.current) return;
@@ -40,10 +40,10 @@ const ProductModal = (props: IProps) => {
             .then(originalImgBase64 => {
                if (isUnmounted.current) return;
                setOriginalImageBase64(originalImgBase64 as string);
-               setAlert(alert.Clear);
+               errorAlert.Clear();
             }).catch(() => {
                if (isUnmounted.current) return;
-               setAlert(alert.addSingleWarning("Image Not Found!"));
+               errorAlert.SetSingleWarning("", "Image Not Found!");
             });
       }
    }, [props.product]);
@@ -53,16 +53,16 @@ const ProductModal = (props: IProps) => {
    }, [props.isOpen]);
 
    const createProduct = async () => {
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+      errorAlert.PleaseWait(500, isUnmounted);
       usePostProduct(product).then(product => {
          if (isUnmounted.current) return;
          setProduct(product);
          resetImageUpload();
          props.onSuccess();
-         setAlert(alert.Clear);
+         errorAlert.Clear();
       }).catch(alert => {
          if (isUnmounted.current) return;
-         setAlert(alert);
+         errorAlert.set(alert);
       });
    };
    const updateProduct = async () => {
@@ -73,30 +73,30 @@ const ProductModal = (props: IProps) => {
          prod.originalImageBase64 = '';
       }
 
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+      errorAlert.PleaseWait(500, isUnmounted);
       usePutProduct(product).then(product => {
          if (isUnmounted.current) return;
          setProduct(product);
          resetImageUpload();
          props.onSuccess();
-         setAlert(alert.Clear);
+         errorAlert.Clear();
       }).catch(alert => {
          if (isUnmounted.current) return;
-         setAlert(alert);
+         errorAlert.set(alert);
       });
 
    };
 
    const deleteProduct = async () => {
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+      errorAlert.PleaseWait(500, isUnmounted);
       useDeleteProduct(product).then(message => {
          if (isUnmounted.current) return;
          resetImageUpload();
-         setAlert(alert.Clear);
+         errorAlert.Clear();
          props.onSuccess();
       }).catch(alert => {
          if (isUnmounted.current) return;
-         setAlert(alert);
+         errorAlert.set(alert);
       });
 
    };
@@ -112,14 +112,14 @@ const ProductModal = (props: IProps) => {
    const onImageUploadError = (errMsg: string) => {
       let errors = new AlertObj([], AlertTypes.Error);
       errors.List.push(new ErrorDto("0", errMsg));
-      setAlert(errors);
+      errorAlert.set(errors);
    };
    const onImageUploadLoading = (progress: number) => {
       let errors = new AlertObj();
       errors.Type = AlertTypes.Warning;
       if (progress < 100)
          errors.List.push(new ErrorDto("0", `uploading ${progress}%`));
-      setAlert(errors);
+      errorAlert.set(errors);
    };
 
    return (
@@ -133,7 +133,7 @@ const ProductModal = (props: IProps) => {
                   className="toggler-xlg circle col pb-3"
                   lblValueTrue="Shop Status Active"
                   lblValueFalse="Shop Status Disabled"
-                  value={product.status}
+                  value={product.status || false}
                   onChange={i => { setProduct({ ...product, status: i }); }}
                />
             </div>
@@ -144,12 +144,12 @@ const ProductModal = (props: IProps) => {
                value={product.name}
                onChange={i => { setProduct({ ...product, name: i.target.value }); }}
                className="col-12 col-sm-6"
-               showDanger={alert.checkExistFilterRequired("Name")}
+               showDanger={errorAlert.alert.checkExistFilterRequired("Name")}
             />
 
             <InputDropDown dropdownTitle={product.category?.name || "Select Option"}
                label="Category*"
-               showDanger={alert.checkExistFilterRequired("Category")}
+               showDanger={errorAlert.alert.checkExistFilterRequired("Category")}
                className="col-12 col-sm-6 " >
                {props.categoryList.map(category =>
                   <button className="dropdown-item" key={category.id}
@@ -167,7 +167,7 @@ const ProductModal = (props: IProps) => {
                value={product.unitQuantity}
                onChange={i => { setProduct({ ...product, unitQuantity: i.target.value as unknown as number }); }}
                className="col-12 col-sm-6"
-               showDanger={alert.checkExistFilterRequired("UnitQuantity")}
+               showDanger={errorAlert.alert.checkExistFilterRequired("UnitQuantity")}
             />
             {console.log(enumToArray(ProductUnitType))}
             <InputDropDown dropdownTitle={productUnitTypeList.find((pu) => pu.id == product.unitType)?.name || "Select Option"}
@@ -190,7 +190,7 @@ const ProductModal = (props: IProps) => {
                value={product.price}
                onChange={i => { setProduct({ ...product, price: i.target.value as unknown as number }); }}
                className="col-12 col-sm-6"
-               showDanger={alert.checkExistFilterRequired("Price")}
+               showDanger={errorAlert.alert.checkExistFilterRequired("Price")}
 
             />
             <div className="col-12 col-sm-6 m-auto">
@@ -201,7 +201,7 @@ const ProductModal = (props: IProps) => {
             </div>
             {/***** Nutritional information Modal ****/}
             <ProductNutritionalInfoModal isOpen={nutritionalInfoModalIsOpen}
-               alert={alert}
+               alert={errorAlert.alert}
                nutritionalInfo={product.nutritionalInfo}
                onSubmit={(info) => { setProduct({ ...product, nutritionalInfo: info }); setNutritionalInfoModalIsOpen(false); }}
             />
@@ -226,9 +226,9 @@ const ProductModal = (props: IProps) => {
          </div>
 
 
-         <Alert alert={alert}
+         <Alert alert={errorAlert.alert}
             className="col-12 mb-2"
-            onClosed={() => { setAlert(alert.Clear); }}
+            onClosed={() => { errorAlert.Clear(); }}
          />
 
          {/***** buttons ****/}
@@ -255,7 +255,7 @@ const ProductModal = (props: IProps) => {
             }
             <Button children="Cancel"
                className={`col-12 mt-2 btn-white btn-lg ${product.id === 0 ? "col-sm-6" : "col-sm-4"}`}
-               onClick={() => { setAlert(alert.Clear); resetImageUpload(); props.onClose(); }} />
+               onClick={() => { errorAlert.Clear(); resetImageUpload(); props.onClose(); }} />
          </div>
       </Modal >
    );

@@ -1,32 +1,30 @@
-import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
-import { httpCaller } from "../../_core/appFunc";
-import { API_URL, CommonErrors } from "../../_core/constant.Variables";
-import { Address } from "../../_core/apiModels";
-export const useDeleteAddress = async (address: Address): Promise<string> =>{
-        let url_ = API_URL + "/Address/Delete";
+import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/components/Texts/Alert";
+import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
+import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
+import { Score, ProblemDetails } from "osnack-frontend-shared/src/_core/apiModels";
+export const usePostScore = async (newScore: Score): Promise<void> =>{
+        let url_ = API_URL + "/Score/Post";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = address;
-        const response = await httpCaller.DELETE(url_, content_);
+        const content_ = newScore;
+        const response = await httpCaller.POST(url_, content_);
 
         switch(response?.status){
 
-        case 200: 
-            return response.json().then((responseJson: string) => {
-                return responseJson;
-            });
+        case 201: 
+            return;
 
-        case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
-            });
-
-        case 404: 
+        case 422: 
             return response.json().then((data: ErrorDto[]) => {
                 throw new AlertObj(data, AlertTypes.Error, response.status);
             });
 
         case 412: 
+            return response.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response.status);
+            });
+
+        case 417: 
             return response.json().then((data: ErrorDto[]) => {
                 throw new AlertObj(data, AlertTypes.Error, response.status);
             });

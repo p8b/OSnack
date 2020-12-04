@@ -1,5 +1,5 @@
 ﻿
-import Alert, { AlertObj } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import Container from '../../components/Container';
@@ -8,15 +8,14 @@ import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
 import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
 import { Category, Product } from 'osnack-frontend-shared/src/_core/apiModels';
 import { ConstMaxNumberOfPerItemsPage, GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
-import { sleep } from 'osnack-frontend-shared/src/_core/appFunc';
-import { useSearchProduct } from 'osnack-frontend-shared/src/hooks/apiHooks/useProductHook';
-import { useAllCategory } from 'osnack-frontend-shared/src/hooks/apiHooks/useCategoryHook';
+import { useSearchPublicProduct } from 'osnack-frontend-shared/src/hooks/PublicHooks/useProductHook';
+import { useAllCategory } from 'osnack-frontend-shared/src/hooks/PublicHooks/useCategoryHook';
 import ShopItem from './ShopItem';
 import { useHistory } from 'react-router-dom';
 
 const Shop = (props: IProps) => {
    const isUnmounted = useRef(false);
-   const [alert, setAlert] = useState(new AlertObj());
+   const errorAlert = useAlert(new AlertObj());
    const [searchValue, setSearchValue] = useState("");
    const [categoryList, setCategoryList] = useState<Category[]>([]);
    const [productList, setProductList] = useState<Product[]>([]);
@@ -32,7 +31,7 @@ const Shop = (props: IProps) => {
    const history = useHistory();
 
    useEffect(() => {
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+      errorAlert.PleaseWait(500, isUnmounted);
       useAllCategory().then(categories => {
          if (isUnmounted.current) return;
          setCategoryList(categories);
@@ -41,14 +40,14 @@ const Shop = (props: IProps) => {
             console.log(decodeURIComponent(uriPathNameArr[2]).toLowerCase());
             const uriSelectedCategory = categories.filter(val => val.name?.toLowerCase().trim() == decodeURIComponent(uriPathNameArr[2]).toLowerCase());
             if (uriSelectedCategory.length > 0)
-               onSearch(undefined, undefined, undefined, undefined, uriSelectedCategory[0].id.toString());
+               onSearch(undefined, undefined, undefined, undefined, uriSelectedCategory[0].id?.toString());
          } else {
             onSearch();
          }
       }
       ).catch(alert => {
          if (isUnmounted.current) return;
-         setAlert(alert);
+         errorAlert.set(alert);
       });
       return () => { isUnmounted.current = true; };
    }, []);
@@ -81,20 +80,20 @@ const Shop = (props: IProps) => {
          setSelectedCategoryFilter(categoryFilter);
       }
 
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      useSearchProduct(selectedPage, maxItemsPerPage, categoryFilter, searchString, "true", isSortAsc, sortName).then(result => {
+      errorAlert.PleaseWait(500, isUnmounted);
+      useSearchPublicProduct(selectedPage, maxItemsPerPage, categoryFilter, searchString, isSortAsc, sortName).then(result => {
          if (isUnmounted.current) return;
 
-         setTblTotalItemCount(result.part2);
+         setTblTotalItemCount(result.part2 || 0);
          setProductList(result.part1!);
          if (result.part2 === 0)
-            setAlert(alert.addSingleWarning("No Result Found"));
+            errorAlert.SetSingleWarning("", "No Result Found");
          else
-            setAlert(alert.Clear);
+            errorAlert.Clear();
       }
       ).catch(alert => {
          if (isUnmounted.current) return;
-         setAlert(alert);
+         errorAlert.set(alert);
       });
    };
 
@@ -123,7 +122,7 @@ const Shop = (props: IProps) => {
                   className="col-12 col-sm-4 col-md-6 pt-2"
                   onSearch={() => { onSearch(tblIsSortAsc, tblSortName); }}
                />
-               <DropDown title={`Category: ${categoryList.find((c) => c.id.toString() == selectedCategoryFilter)?.name || "All"}`}
+               <DropDown title={`Category: ${categoryList.find((c) => c.id?.toString() == selectedCategoryFilter)?.name || "All"}`}
                   className="col-12 col-sm-4 col-md-3 ml-auto m-0 p-0 pt-2"
                   titleClassName="btn btn btn-white filter-icon"
                   closeOnClickInsideMenu
@@ -139,7 +138,7 @@ const Shop = (props: IProps) => {
                      <button className="dropdown-item" key={category.id}
                         onClick={() => {
                            history.push(`/Shop/Category/${encodeURIComponent(category.name || "")}`);
-                           onSearch(undefined, undefined, undefined, undefined, category.id.toString());
+                           onSearch(undefined, undefined, undefined, undefined, category.id?.toString());
                         }}>
                         {category.name}
                      </button>
@@ -154,9 +153,9 @@ const Shop = (props: IProps) => {
                      </button>
                   )}
                </DropDown>
-               <Alert alert={alert}
+               <Alert alert={errorAlert.alert}
                   className="col-12 mb-2"
-                  onClosed={() => { setAlert(alert.Clear); }}
+                  onClosed={() => { errorAlert.Clear(); }}
                />
             </div>
             <div className="row p-3 justify-content-center">

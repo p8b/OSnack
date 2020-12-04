@@ -53,7 +53,7 @@ export enum AlertTypes {
 export class ErrorDto {
    key?: string | undefined;
    value?: string | undefined;
-   constructor(key?: string, value?: string) {
+   constructor(key: string = "", value: string = "") {
       this.key = key;
       this.value = value;
    }
@@ -128,12 +128,17 @@ export const useAlert = (init: AlertObj) => {
 
       };
    };
+   const SetSingleSuccess = (key: string, value: string) => {
+      setAlert(new AlertObj([new ErrorDto(key, value)], AlertTypes.Success));
+   };
+   const SetSingleWarning = (key: string, value: string) => {
+      setAlert(new AlertObj([new ErrorDto(key, value)], AlertTypes.Warning));
+   };
    const set = (value: AlertObj) => {
       setAlert(value);
    };
    const Clear = () => {
       setAlert(new AlertObj());
    };
-   return { alert, set, PleaseWait, Clear };
+   return { alert, set, PleaseWait, Clear, SetSingleSuccess, SetSingleWarning };
 };
-

@@ -1,7 +1,7 @@
-import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
-import { httpCaller } from "../../_core/appFunc";
-import { API_URL, CommonErrors } from "../../_core/constant.Variables";
-import { ProblemDetails, Order } from "../../_core/apiModels";
+import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/components/Texts/Alert";
+import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
+import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
+import { ProblemDetails, Order } from "osnack-frontend-shared/src/_core/apiModels";
 export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, filterStatus: string | null, isSortAsce: boolean, sortName: string | null): Promise<void> =>{
         let url_ = API_URL + "/Order/Get/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}";
         if (selectedPage === undefined || selectedPage === null)

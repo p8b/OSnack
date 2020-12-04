@@ -2,13 +2,13 @@
 
 import { DefaultNav, LoginNav } from "./NavMenuItems";
 import { AuthContext } from "osnack-frontend-shared/src/_core/authenticationContext";
-import { useLogoutAuthentication } from "osnack-frontend-shared/src/hooks/apiHooks/useAuthenticationHook";
 import { User } from "osnack-frontend-shared/src/_core/apiModels";
 import { useDetectOutsideClick } from "osnack-frontend-shared/src/hooks/function/useDetectOutsideClick";
 import DropDown from "osnack-frontend-shared/src/components/Buttons/DropDown";
 import NavLink from "osnack-frontend-shared/src/components/Buttons/NavLink";
 import { Link } from "react-router-dom";
 import CartIcon from "./CartIcon";
+import { useLogoutAuthentication } from "osnack-frontend-shared/src/hooks/OfficialHooks/useAuthenticationHook";
 
 // Navigation menu component
 const NavMenu = (props: IProps) => {

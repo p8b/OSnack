@@ -7,14 +7,11 @@ import { Input } from "../../components/Inputs/Input";
 import { CheckBox } from "../../components/Inputs/CheckBox";
 import { Button } from "../../components/Buttons/Button";
 import GoogleLogin from "../../components/Buttons/GoogleLogin";
-import {
-   useLoginOfficialAuthentication, useLoginSecretAuthentication
-   , useExternalLoginOfficialAuthentication, useExternalLoginSecretAuthentication
-} from "../../hooks/apiHooks/useAuthenticationHook";
 import { AuthContext } from "../../_core/authenticationContext";
 import { ExternalLoginInfo, LoginInfo, User } from "../../_core/apiModels";
 import ForgotPasswordModal from "../Modals/ForgotPasswordModal";
 import Alert, { AlertObj, AlertTypes, ErrorDto, useAlert } from "../Texts/Alert";
+import { useExternalLoginOfficialAuthentication, useExternalLoginSecretAuthentication, useLoginOfficialAuthentication, useLoginSecretAuthentication } from "../../hooks/PublicHooks/useAuthenticationHook";
 
 const Login = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -54,17 +51,6 @@ const Login = (props: IProps) => {
          default:
             break;
       }
-      //useLogin(loginInfo, props.access).then(result => {
-      //   if (isUnmounted.current) return;
-      //   if (result.alert.List.length > 0) {
-      //      alert.List = result.alert.List;
-      //      alert.Type = result.alert.Type;
-      //      setAlert(alert);
-      //   } else if (result.isAuthenticated) {
-      //      auth.setState({ isAuthenticated: result.isAuthenticated, user: result.user });
-      //      setAlert(alert.Clear);
-      //   }
-      //});
    };
    const externalLogin = async (info: ExternalLoginInfo) => {
 
@@ -75,11 +61,10 @@ const Login = (props: IProps) => {
       switch (props.access) {
          case ClientAppAccess.Official:
             useExternalLoginOfficialAuthentication(info).then((user: User) => {
-
-               if (false /*!result.isAuthenticated*/) {
+               if (user.id && user.id <= 0) {
                   props.externalLoginFailed(user);
                   errorAlert.Clear;
-               } else if (true /*result.isAuthenticated*/) {
+               } else {
                   auth.setState({ isAuthenticated: true, user: user });
                }
             }).catch((result: AlertObj) => {
@@ -90,10 +75,10 @@ const Login = (props: IProps) => {
          case ClientAppAccess.Secret:
             useExternalLoginSecretAuthentication(info).then((user: User) => {
 
-               if (false /*!result.isAuthenticated*/) {
+               if (user.id && user.id <= 0) {
                   props.externalLoginFailed(user);
                   errorAlert.Clear;
-               } else if (true /*result.isAuthenticated*/) {
+               } else {
                   auth.setState({ isAuthenticated: true, user: user });
                }
             }).catch((result: AlertObj) => {
@@ -104,16 +89,6 @@ const Login = (props: IProps) => {
          default:
             break;
       }
-      //sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
-      //useExternalLogin(info, props.access).then(result => {
-      //   if (isUnmounted.current) return;
-      //   if (result.alert.List.length > 0) {
-      //      alert.List = result.alert.List;
-      //      alert.Type = result.alert.Type;
-      //      setAlert(alert);
-      //   }
-      //   /// pass the state user info to create new customer
-      //});
    };
 
    const externalLoginWait = () => { errorAlert.PleaseWait(); };
@@ -175,7 +150,7 @@ const Login = (props: IProps) => {
                   onSuccess={externalLogin}
                   onFailure={externalLoginFailed}
                   onClick={externalLoginWait}
-                  onClosedWithoutAction={() => setAlert(alert.Clear)}
+                  onClosedWithoutAction={() => errorAlert.Clear()}
                /> ****/}
                <GoogleLogin clientId="78803002607-eqki0ohr9viovu2e5q0arpg8on9p8huq.apps.googleusercontent.com"
                   children="Sign in with Google"

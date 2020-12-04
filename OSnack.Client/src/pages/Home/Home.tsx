@@ -1,12 +1,12 @@
 ﻿import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import Container from '../../components/Container';
-import { useAllCategory } from 'osnack-frontend-shared/src/hooks/apiHooks/useCategoryHook';
 import { API_URL } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import { ShopContext } from '../../_core/shopContext';
 import { Category } from 'osnack-frontend-shared/src/_core/apiModels';
 import Carousel from '../../components/Carousel';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
+import { useAllCategory } from 'osnack-frontend-shared/src/hooks/PublicHooks/useCategoryHook';
 import { onImageError } from 'osnack-frontend-shared/src/_core/appFunc';
 
 const Home = (props: IProps) => {
@@ -38,7 +38,7 @@ const Home = (props: IProps) => {
             <div className="shop-card-category">
                <a className="col link-shop-card-img m-0 justify-text-center"
                   onClick={() => {
-                     setShopState({ ...shopState, shopCategoryFilter: category.id.toString() });
+                     setShopState({ ...shopState, shopCategoryFilter: category.id?.toString() });
                      history.push(`/Shop/Category/${encodeURIComponent(category.name || "")}`);
                   }} >
                   <img src={`${API_URL}\\${category.imagePath}`}

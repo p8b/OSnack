@@ -2,18 +2,18 @@
 import { Redirect, useHistory } from "react-router-dom";
 import { RegistrationTypes, User } from "osnack-frontend-shared/src/_core/apiModels";
 import { CommonRegex } from "osnack-frontend-shared/src/_core/constant.Variables";
-import { enumToArray, sleep } from "osnack-frontend-shared/src/_core/appFunc";
+import { enumToArray } from "osnack-frontend-shared/src/_core/appFunc";
 import PageHeader from "osnack-frontend-shared/src/components/Texts/PageHeader";
 import { Input } from "osnack-frontend-shared/src/components/Inputs/Input";
 import { CheckBox } from "osnack-frontend-shared/src/components/Inputs/CheckBox";
 import { Button } from "osnack-frontend-shared/src/components/Buttons/Button";
-import { useCreateCustomerUser } from "osnack-frontend-shared/src/hooks/apiHooks/useUserHook";
+import { useCreateCustomerUser } from "osnack-frontend-shared/src/hooks/PublicHooks/useUserHook";
 import Modal from "osnack-frontend-shared/src/components/Modals/Modal";
-import Alert, { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/components/Texts/Alert";
+import Alert, { AlertObj, AlertTypes, ErrorDto, useAlert } from "osnack-frontend-shared/src/components/Texts/Alert";
 
 const NewCustomerModal = (props: IProps) => {
    const isUnmounted = useRef(false);
-   const [alert, setAlert] = useState(new AlertObj());
+   const errorAlert = useAlert(new AlertObj());
    const [user, setUser] = useState(new User());
    const [termsAndCondition, setTermsAndCondition] = useState(false);
    const [confirmPassword, setConfirmPassword] = useState("");
@@ -42,17 +42,17 @@ const NewCustomerModal = (props: IProps) => {
       if (!termsAndCondition)
          errors.push(new ErrorDto("0", "You must agree to terms and conditions"));
       if (errors.length > 0)
-         setAlert(new AlertObj(errors, AlertTypes.Error));
+         errorAlert.set(new AlertObj(errors, AlertTypes.Error));
       else {
 
-         sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+         errorAlert.PleaseWait(500, isUnmounted);
          useCreateCustomerUser(user).then(user => {
             if (isUnmounted.current) return;
             setRedirectToMain(true);
-            setAlert(alert.Clear);
+            errorAlert.Clear();
          }).catch(alert => {
             if (isUnmounted.current) return;
-            setAlert(alert);
+            errorAlert.set(alert);
          });
       };
    };
@@ -78,24 +78,24 @@ const NewCustomerModal = (props: IProps) => {
          <div className="row">
             <Input label="Name *" className="col-6" key="name"
                value={user.firstName}
-               showDanger={alert.checkExist("firstname")}
+               showDanger={errorAlert.alert.checkExist("firstname")}
                onChange={i => setUser({ ...user, firstName: i.target.value })}
             />
 
             <Input label="Surname *" className="col-6" key="surname"
-               showDanger={alert.checkExist("surname")}
+               showDanger={errorAlert.alert.checkExist("surname")}
                value={user.surname}
                onChange={i => setUser({ ...user, surname: i.target.value })}
             />
             <Input label="Phone Number" className="col-6" key="phoneNumber"
                value={user.phoneNumber}
-               showDanger={alert.checkExist("phoneNumber")}
+               showDanger={errorAlert.alert.checkExist("phoneNumber")}
                validationPattern={CommonRegex.UkNumber}
                onChange={i => setUser({ ...user, phoneNumber: i.target.value })}
             />
 
             <Input label={`Email ${getRegistrationType()}`} className="col-6" key="email1"
-               showDanger={alert.checkExist("email")}
+               showDanger={errorAlert.alert.checkExist("email")}
                showValid={externalLogin}
                value={user.email}
                disabled={externalLogin}
@@ -108,7 +108,7 @@ const NewCustomerModal = (props: IProps) => {
                      type="password"
                      value={user.password}
                      className="col-6" key="password"
-                     showDanger={alert.checkExist("passwordhash")}
+                     showDanger={errorAlert.alert.checkExist("passwordhash")}
                      onChange={i => setUser({ ...user, password: i.target.value })}
                   />
 
@@ -116,7 +116,7 @@ const NewCustomerModal = (props: IProps) => {
                      type="password"
                      value={confirmPassword}
                      className="col-6" key="confirmPassword"
-                     showDanger={alert.checkExist("passwordhash")}
+                     showDanger={errorAlert.alert.checkExist("passwordhash")}
                      onChange={i => setConfirmPassword(i.target.value)}
                   />
                </>
@@ -130,13 +130,13 @@ const NewCustomerModal = (props: IProps) => {
                />
             </div>
             <div className="col-12 mt-2">
-               <Alert alert={alert} className="col-12 mb-1"
-                  onClosed={() => setAlert(alert.Clear)}
+               <Alert alert={errorAlert.alert} className="col-12 mb-1"
+                  onClosed={() => errorAlert.Clear()}
                />
                <Button children="Submit" className="btn-lg col-12 col-sm-6 mt-2 btn-green"
                   onClick={() => createNewCustomer()} />
                <Button children="Cancel" className="btn-lg col-12 col-sm-6 mt-2 btn-white"
-                  onClick={() => { setAlert(alert.Clear); props.onCancel(); }} />
+                  onClick={() => { errorAlert.Clear(); props.onCancel(); }} />
             </div>
          </div>
       </Modal >

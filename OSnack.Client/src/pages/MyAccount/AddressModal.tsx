@@ -6,13 +6,12 @@ import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import ButtonPopupConfirm from 'osnack-frontend-shared/src/components/Buttons/ButtonPopupConfirm';
 import { TextArea } from 'osnack-frontend-shared/src/components/Inputs/TextArea';
 import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
-import Alert, { AlertObj, AlertTypes, ErrorDto } from 'osnack-frontend-shared/src/components/Texts/Alert';
-import { usePostAddress, usePutAddress, useDeleteAddress } from 'osnack-frontend-shared/src/hooks/apiHooks/useAddressHook';
-import { sleep } from 'osnack-frontend-shared/src/_core/appFunc';
+import Alert, { AlertObj, AlertTypes, ErrorDto, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import { useDeleteAddress, usePostAddress, usePutAddress } from 'osnack-frontend-shared/src/hooks/OfficialHooks/useAddressHook';
 
 const AddressModal = (props: IProps) => {
    const isUnmounted = useRef(false);
-   const [alert, setAlert] = useState(new AlertObj());
+   const errorAlert = useAlert(new AlertObj());
    const [address, setAddress] = useState(new Address());
    useEffect(() => {
       setAddress(props.address);
@@ -33,19 +32,19 @@ const AddressModal = (props: IProps) => {
 
 
       if (errors.List.length > 0) {
-         setAlert(errors);
+         errorAlert.set(errors);
          return;
       }
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+      errorAlert.PleaseWait(500, isUnmounted);
       usePostAddress(address).then(address => {
          if (isUnmounted.current) return;
-         setAlert(alert.Clear);
+         errorAlert.Clear();
          setAddress(address);
          props.onClose();
          props.onSuccess();
       }).catch(alert => {
          if (isUnmounted.current) return;
-         setAlert(alert);
+         errorAlert.set(alert);
       });
    };
    const updateAddress = async () => {
@@ -62,34 +61,33 @@ const AddressModal = (props: IProps) => {
          errors.List.push(new ErrorDto("0", "City is required."));
 
       if (errors.List.length > 0) {
-         setAlert(errors);
+         errorAlert.set(errors);
          return;
       }
 
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+      errorAlert.PleaseWait(500, isUnmounted);
       usePutAddress(address).then(address => {
          if (isUnmounted.current) return;
-         setAlert(alert.Clear);
+         errorAlert.Clear();
          props.onClose();
          props.onSuccess();
       }).catch(alert => {
          if (isUnmounted.current) return;
-         setAlert(alert);
+         errorAlert.set(alert);
       });
 
    };
    const deleteAddress = async () => {
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+      errorAlert.PleaseWait(500, isUnmounted);
       useDeleteAddress(address).then(message => {
          if (isUnmounted.current) return;
-         setAlert(alert.Clear);
-         alert.List.push(new ErrorDto("Deleted", message));
-         setAlert(alert);
+         errorAlert.Clear();
+         errorAlert.SetSingleSuccess("Deleted", message);
          props.onClose();
          props.onSuccess();
       }).catch(alert => {
          if (isUnmounted.current) return;
-         setAlert(alert);
+         errorAlert.set(alert);
       });
 
    };
@@ -129,9 +127,9 @@ const AddressModal = (props: IProps) => {
                className="col-12" />
          </div>
 
-         <Alert alert={alert}
+         <Alert alert={errorAlert.alert}
             className="col-12 mb-2"
-            onClosed={() => { setAlert(alert.Clear); }}
+            onClosed={() => { errorAlert.Clear(); }}
          />
 
          {/***** buttons ****/}
@@ -158,7 +156,7 @@ const AddressModal = (props: IProps) => {
             }
             <Button children="Cancel"
                className={`col-12 mt-2 btn-white btn-lg ${address.id === 0 ? "col-sm-6" : "col-sm-4"}`}
-               onClick={() => { setAlert(alert.Clear); props.onClose(); }} />
+               onClick={() => { errorAlert.Clear(); props.onClose(); }} />
          </div>
       </Modal >
    );

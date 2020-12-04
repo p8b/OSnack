@@ -1,9 +1,9 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 
-import Alert, { AlertObj } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Product, ProductUnitType } from 'osnack-frontend-shared/src/_core/apiModels';
-import { enumToArray, sleep } from 'osnack-frontend-shared/src/_core/appFunc';
-import { useProductAndRelateProduct } from 'osnack-frontend-shared/src/hooks/apiHooks/useProductHook';
+import { enumToArray } from 'osnack-frontend-shared/src/_core/appFunc';
+import { useProductAndRelateProduct } from 'osnack-frontend-shared/src/hooks/PublicHooks/useProductHook';
 import { Redirect, useHistory } from 'react-router-dom';
 import { API_URL } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
@@ -14,7 +14,7 @@ import ShopItem from '../Shop/ShopItem';
 
 const ProductPage = (props: IProps) => {
    const isUnmounted = useRef(false);
-   const [alert, setAlert] = useState(new AlertObj());
+   const errorAlert = useAlert(new AlertObj());
    const [product, setProduct] = useState(new Product());
    const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
    const [redirectToShop, setRedirectToShop] = useState<boolean>(false);
@@ -23,7 +23,7 @@ const ProductPage = (props: IProps) => {
    useEffect(() => () => { isUnmounted.current = true; }, []);
 
    useEffect(() => {
-      sleep(500, isUnmounted).then(() => { setAlert(alert.PleaseWait); });
+      errorAlert.PleaseWait(500, isUnmounted);
       const uriPathNameArr = window.location.pathname.split('/').filter(val => val.length > 0);
       if (uriPathNameArr.length === 4 && uriPathNameArr[1].toLowerCase() == "product") {
          useProductAndRelateProduct(uriPathNameArr[2], uriPathNameArr[3]).then(result => {
@@ -31,10 +31,10 @@ const ProductPage = (props: IProps) => {
             setProduct(result.part1!);
             window.scrollTo(0, 0);
             setRelatedProducts(result.part2!);
-            setAlert(alert.Clear);
+            errorAlert.Clear();
          }).catch(alert => {
             if (isUnmounted.current) return;
-            setAlert(alert);
+            errorAlert.set(alert);
          });
       } else {
          setRedirectToShop(true);
@@ -47,9 +47,9 @@ const ProductPage = (props: IProps) => {
    return (
       <Container className="wide-container m-0">
          <PageHeader title="Product Details" />
-         <Alert className="col-12" alert={alert} />
+         <Alert className="col-12" alert={errorAlert.alert} />
          <Container className="bg-white">
-            {product.id > 0 &&
+            {product.id && product.id > 0 &&
                <div className="col-12 p-3 ">
                   <nav >
                      <ol className="breadcrumb">
