@@ -22,7 +22,6 @@ const EmailTemplateEdit = lazy(() => import("./pages/EmailTemplates/EmailTemplat
 
 const App = () => {
    const [isOpenMainContainer, setIsOpenMainContainer] = useState(true);
-   console.log(1);
    return (
       <BrowserRouter>
          <AuthenticationContext>

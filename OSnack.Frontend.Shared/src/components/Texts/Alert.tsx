@@ -119,25 +119,27 @@ export class AlertObj {
 
 export const useAlert = (init: AlertObj) => {
    const [alert, setAlert] = useState(init);
+   const isWaitNeeded = useRef(true);
 
    const PleaseWait = (waitms: number = 500, isCancel: React.MutableRefObject<boolean> = useRef(false)) => {
-      sleep(waitms, isCancel).then(() => {
+      sleep(waitms, (isCancel && isWaitNeeded)).then(() => {
          setAlert(new AlertObj([new ErrorDto("0", "Just a moment please...")], AlertTypes.Warning));
       });
-      if (alert.List.length === 0) {
-
-      };
    };
    const SetSingleSuccess = (key: string, value: string) => {
+      isWaitNeeded.current == false;
       setAlert(new AlertObj([new ErrorDto(key, value)], AlertTypes.Success));
    };
    const SetSingleWarning = (key: string, value: string) => {
+      isWaitNeeded.current == false;
       setAlert(new AlertObj([new ErrorDto(key, value)], AlertTypes.Warning));
    };
    const set = (value: AlertObj) => {
+      isWaitNeeded.current == false;
       setAlert(value);
    };
    const Clear = () => {
+      isWaitNeeded.current == false;
       setAlert(new AlertObj());
    };
    return { alert, set, PleaseWait, Clear, SetSingleSuccess, SetSingleWarning };

@@ -91,7 +91,7 @@ const Login = (props: IProps) => {
       }
    };
 
-   const externalLoginWait = () => { errorAlert.PleaseWait(); };
+   const externalLoginWait = () => { errorAlert.PleaseWait(500, isUnmounted); };
 
    const externalLoginFailed = (err: string) => {
       errorAlert.set(new AlertObj([new ErrorDto(Math.random().toString(), err)], AlertTypes.Error));

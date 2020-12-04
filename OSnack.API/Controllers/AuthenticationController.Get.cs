@@ -26,6 +26,7 @@ namespace OSnack.API.Controllers
       /// The setup is done in the startup.cs
       /// </summary>
       [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+      [Authorize(AppConst.AccessPolicies.Public)]
       [HttpGet("Get/[action]")]
       public void AntiforgeryToken()
       {

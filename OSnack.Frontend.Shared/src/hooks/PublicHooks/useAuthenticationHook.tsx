@@ -2,6 +2,22 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { LoginInfo, User, ExternalLoginInfo } from "../../_core/apiModels";
+export const useAntiforgeryTokenAuthentication = async (): Promise<void> =>{
+        let url_ = API_URL + "/Authentication/Get/AntiforgeryToken";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const response = await httpCaller.GET(url_);
+
+        switch(response?.status){
+
+        case 200: 
+            return;
+
+        default:
+            CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status}`;
+            throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
+    }
+}
 export const useLoginOfficialAuthentication = async (loginInfo: LoginInfo): Promise<User> =>{
         let url_ = API_URL + "/Authentication/Post/LoginOfficial";
         url_ = url_.replace(/[?&]$/, "");
