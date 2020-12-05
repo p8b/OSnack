@@ -81,27 +81,27 @@ export const useAlert = (init: AlertObj) => {
    const isWaitCanceled = useRef(false);
 
    const PleaseWait = (ms: number = 500, isCanceled: React.MutableRefObject<boolean> = useRef(false)) => {
-      isWaitCanceled.current == false;
+      isWaitCanceled.current = false;
 
-      sleep(ms, isWaitCanceled).then(() => {
-         if (alert.List.length === 0)
+      sleep(ms, isCanceled).then(() => {
+         if (alert.List.length === 0 && !isWaitCanceled.current)
             setAlert({ ...alert, List: [new ErrorDto("0", "Just a moment please...")], Type: AlertTypes.Warning });
       });
    };
    const setSingleSuccess = (key: string, value: string) => {
-      isWaitCanceled.current == true;
+      isWaitCanceled.current = true;
       setAlert({ ...alert, List: [new ErrorDto(key, value)], Type: AlertTypes.Success });
    };
    const setSingleWarning = (key: string, value: string) => {
-      isWaitCanceled.current == true;
+      isWaitCanceled.current = true;
       setAlert({ ...alert, List: [new ErrorDto(key, value)], Type: AlertTypes.Warning });
    };
    const set = (value: AlertObj) => {
-      isWaitCanceled.current == true;
+      isWaitCanceled.current = true;
       setAlert({ ...alert, List: value.List, Type: value.Type });
    };
    const clear = () => {
-      isWaitCanceled.current == true;
+      isWaitCanceled.current = true;
       setAlert({ ...alert, List: [], Type: AlertTypes.default });
    };
 
