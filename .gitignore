@@ -25,6 +25,7 @@ Settings.json
 
 StaticFiles/
 StaticFiles/**
+!StaticFiles/liquid
 
 .localhistory/
 .vshistory/
