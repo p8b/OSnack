@@ -3,7 +3,7 @@ import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { UpdateCurrentUserData, User } from "../../_core/apiModels";
 export const useUpdateCurrentUserUser = async (data: UpdateCurrentUserData): Promise<User> =>{
-        let url_ = API_URL + "/User/Put/UpdateCurrentUser";
+        let url_ = API_URL + "/User/Put/UpdateCurrent";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = data;
@@ -37,7 +37,7 @@ export const useUpdateCurrentUserUser = async (data: UpdateCurrentUserData): Pro
     }
 }
 export const useUpdateCurrentUserPasswordUser = async (data: UpdateCurrentUserData): Promise<User> =>{
-        let url_ = API_URL + "/User/Put/UpdateCurrentUserPassword";
+        let url_ = API_URL + "/User/Put/UpdateCurrentUser";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = data;

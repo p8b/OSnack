@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useRef, useState } from 'react';
+﻿import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Address } from 'osnack-frontend-shared/src/_core/apiModels';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Input } from 'osnack-frontend-shared/src/components/Inputs/Input';
@@ -8,9 +8,11 @@ import { TextArea } from 'osnack-frontend-shared/src/components/Inputs/TextArea'
 import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
 import Alert, { AlertObj, AlertTypes, ErrorDto, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { useDeleteAddress, usePostAddress, usePutAddress } from 'osnack-frontend-shared/src/hooks/OfficialHooks/useAddressHook';
+import  { AuthContext } from 'osnack-frontend-shared/src/_core/authenticationContext';
 
 const AddressModal = (props: IProps) => {
    const isUnmounted = useRef(false);
+   const Auth = useContext(AuthContext);
    const errorAlert = useAlert(new AlertObj());
    const [address, setAddress] = useState(new Address());
    useEffect(() => {
@@ -36,6 +38,7 @@ const AddressModal = (props: IProps) => {
          return;
       }
       errorAlert.PleaseWait(500, isUnmounted);
+      address.userId = Auth.state.user.id;
       usePostAddress(address).then(address => {
          if (isUnmounted.current) return;
          errorAlert.clear();
@@ -66,6 +69,7 @@ const AddressModal = (props: IProps) => {
       }
 
       errorAlert.PleaseWait(500, isUnmounted);
+      address.userId = Auth.state.user.id;
       usePutAddress(address).then(address => {
          if (isUnmounted.current) return;
          errorAlert.clear();

@@ -175,14 +175,6 @@ namespace OSnack.API
          services.AddControllers()
              .AddNewtonsoftJson(options => options.SerializerSettings.Converters.Add(new StringEnumConverter()));
 
-         services.AddApiVersioning(options =>
-         {
-            options.AssumeDefaultVersionWhenUnspecified = true;
-            options.DefaultApiVersion = new ApiVersion(1, 0);
-            options.ReportApiVersions = true;
-         });
-
-
          // Register the Swagger services
          foreach (var policy in AppConst.AccessPolicies.List)
          {

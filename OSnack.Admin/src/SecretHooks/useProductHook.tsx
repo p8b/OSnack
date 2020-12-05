@@ -1,4 +1,4 @@
-import { AlertObj, AlertTypes, o } from "osnack-frontend-shared/src/components/Texts/Alert";
+import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/components/Texts/Alert";
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
 import { Product, MultiResultOfListOfProductAndInteger } from "osnack-frontend-shared/src/_core/apiModels";
@@ -17,12 +17,12 @@ export const useDeleteProduct = async (product: Product): Promise<string> =>{
             });
 
         case 417: 
-            return response.json().then((data: o[]) => {
+            return response.json().then((data: ErrorDto[]) => {
                 throw new AlertObj(data, AlertTypes.Error, response.status);
             });
 
         case 404: 
-            return response.json().then((data: o[]) => {
+            return response.json().then((data: ErrorDto[]) => {
                 throw new AlertObj(data, AlertTypes.Error, response.status);
             });
 
@@ -66,7 +66,7 @@ export const useSearchSecretProduct = async (selectedPage: number, maxItemsPerPa
             });
 
         case 417: 
-            return response.json().then((data: o[]) => {
+            return response.json().then((data: ErrorDto[]) => {
                 throw new AlertObj(data, AlertTypes.Error, response.status);
             });
 
@@ -90,17 +90,17 @@ export const usePostProduct = async (newProduct: Product): Promise<Product> =>{
             });
 
         case 422: 
-            return response.json().then((data: o[]) => {
+            return response.json().then((data: ErrorDto[]) => {
                 throw new AlertObj(data, AlertTypes.Error, response.status);
             });
 
         case 412: 
-            return response.json().then((data: o[]) => {
+            return response.json().then((data: ErrorDto[]) => {
                 throw new AlertObj(data, AlertTypes.Error, response.status);
             });
 
         case 417: 
-            return response.json().then((data: o[]) => {
+            return response.json().then((data: ErrorDto[]) => {
                 throw new AlertObj(data, AlertTypes.Error, response.status);
             });
 
@@ -124,17 +124,17 @@ export const usePutProduct = async (modifiedProduct: Product): Promise<Product> 
             });
 
         case 412: 
-            return response.json().then((data: o[]) => {
+            return response.json().then((data: ErrorDto[]) => {
                 throw new AlertObj(data, AlertTypes.Error, response.status);
             });
 
         case 422: 
-            return response.json().then((data: o[]) => {
+            return response.json().then((data: ErrorDto[]) => {
                 throw new AlertObj(data, AlertTypes.Error, response.status);
             });
 
         case 417: 
-            return response.json().then((data: o[]) => {
+            return response.json().then((data: ErrorDto[]) => {
                 throw new AlertObj(data, AlertTypes.Error, response.status);
             });
 

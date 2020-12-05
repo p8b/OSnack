@@ -63,7 +63,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [Authorize(AppConst.AccessPolicies.Official)]
-      [HttpGet("Get/[action]")]
+      [HttpPost("Post/[action]")]
       public async Task<IActionResult> SilentOfficial() => await Silence().ConfigureAwait(false);
 
       #region ***  ***
@@ -72,7 +72,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [Authorize(AppConst.AccessPolicies.Secret)]
-      [HttpGet("Get/[action]")]
+      [HttpPost("Post/[action]")]
       public async Task<IActionResult> SilentSecret() => await Silence().ConfigureAwait(false);
 
       private async Task<IActionResult> Silence()
