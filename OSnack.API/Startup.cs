@@ -1,13 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
-using Microsoft.AspNetCore.Antiforgery;
+﻿using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -16,7 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -24,24 +14,21 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Primitives;
 
-using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-
-using NJsonSchema.Infrastructure;
-
-using NSwag.CodeGeneration.TypeScript;
 
 using OSnack.API.Database;
 using OSnack.API.Database.Context.ClassOverrides;
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 
-using P8B.Core.CSharp;
 using P8B.Core.CSharp.Extentions;
 using P8B.Core.CSharp.Models;
 using P8B.Core.CSharp.Models.Interfaces;
 using P8B.UK.API.Extras.Overrides;
 using P8B.UK.API.Services;
+
+using System;
+using System.IO;
 
 namespace OSnack.API
 {
@@ -160,7 +147,10 @@ namespace OSnack.API
             });
          });
 
-
+         services.Configure<ApiBehaviorOptions>(options =>
+         {
+            options.SuppressModelStateInvalidFilter = true;
+         });
 
          //// Add email service as a Transient service middle-ware so that each class implementing this
          //// middle-ware will receive a new object of oEmailService class

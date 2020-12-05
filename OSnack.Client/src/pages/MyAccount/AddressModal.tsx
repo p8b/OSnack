@@ -8,7 +8,7 @@ import { TextArea } from 'osnack-frontend-shared/src/components/Inputs/TextArea'
 import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
 import Alert, { AlertObj, AlertTypes, ErrorDto, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { useDeleteAddress, usePostAddress, usePutAddress } from 'osnack-frontend-shared/src/hooks/OfficialHooks/useAddressHook';
-import  { AuthContext } from 'osnack-frontend-shared/src/_core/authenticationContext';
+import { AuthContext } from 'osnack-frontend-shared/src/_core/authenticationContext';
 
 const AddressModal = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -16,6 +16,8 @@ const AddressModal = (props: IProps) => {
    const errorAlert = useAlert(new AlertObj());
    const [address, setAddress] = useState(new Address());
    useEffect(() => {
+      if (props.address.id === undefined)
+         props.address.id = 0;
       setAddress(props.address);
    }, [props.address]);
 
