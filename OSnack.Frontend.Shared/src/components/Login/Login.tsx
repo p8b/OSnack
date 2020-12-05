@@ -11,7 +11,7 @@ import { AuthContext } from "../../_core/authenticationContext";
 import { ExternalLoginInfo, LoginInfo, User } from "../../_core/apiModels";
 import ForgotPasswordModal from "../Modals/ForgotPasswordModal";
 import Alert, { AlertObj, AlertTypes, ErrorDto, useAlert } from "../Texts/Alert";
-import { useExternalLoginOfficialAuthentication, useExternalLoginSecretAuthentication, useLoginOfficialAuthentication, useLoginSecretAuthentication } from "../../hooks/PublicHooks/useAuthenticationHook";
+import { useAntiforgeryTokenAuthentication, useExternalLoginOfficialAuthentication, useExternalLoginSecretAuthentication, useLoginOfficialAuthentication, useLoginSecretAuthentication } from "../../hooks/PublicHooks/useAuthenticationHook";
 
 const Login = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -25,28 +25,35 @@ const Login = (props: IProps) => {
       document.getElementById("email")?.focus();
    }, []);
 
+   const loginSuccess = (user: User) => {
+      if (isUnmounted.current) return;
+      useAntiforgeryTokenAuthentication().then(() => {
+         auth.setState({ isAuthenticated: true, user: user });
+         errorAlert.clear();
+      }).catch();
+   };
+   const loginFailed = (errors: AlertObj) => {
+      if (isUnmounted.current) return;
+      errorAlert.set(errors);
+
+   };
+   const externalLoginSuccess = (user: User) => {
+      if (isUnmounted.current) return;
+      if (user.id && user.id <= 0) {
+         props.externalLoginFailed(user);
+         errorAlert.clear();
+      } else {
+         loginSuccess(user);
+      }
+   };
    const login = async () => {
       errorAlert.PleaseWait(500, isUnmounted);
       switch (props.access) {
          case ClientAppAccess.Official:
-            useLoginOfficialAuthentication(loginInfo).then((user: User) => {
-               if (isUnmounted.current) return;
-               auth.setState({ isAuthenticated: true, user: user });
-               errorAlert.clear();
-            }).catch((result: AlertObj) => {
-               if (isUnmounted.current) return;
-               errorAlert.set(result);
-            });
+            useLoginOfficialAuthentication(loginInfo).then(loginSuccess).catch(loginFailed);
             break;
          case ClientAppAccess.Secret:
-            useLoginSecretAuthentication(loginInfo).then((user: User) => {
-               if (isUnmounted.current) return;
-               auth.setState({ isAuthenticated: true, user: user });
-               errorAlert.clear();
-            }).catch((result: AlertObj) => {
-               if (isUnmounted.current) return;
-               errorAlert.set(result);
-            });
+            useLoginSecretAuthentication(loginInfo).then(loginSuccess).catch(loginFailed);
             break;
          default:
             break;
@@ -60,31 +67,10 @@ const Login = (props: IProps) => {
       errorAlert.PleaseWait(500, isUnmounted);
       switch (props.access) {
          case ClientAppAccess.Official:
-            useExternalLoginOfficialAuthentication(info).then((user: User) => {
-               if (user.id && user.id <= 0) {
-                  props.externalLoginFailed(user);
-                  errorAlert.clear();
-               } else {
-                  auth.setState({ isAuthenticated: true, user: user });
-               }
-            }).catch((result: AlertObj) => {
-               if (isUnmounted.current) return;
-               errorAlert.set(result);
-            });
+            useExternalLoginOfficialAuthentication(info).then(externalLoginSuccess).catch(loginFailed);
             break;
          case ClientAppAccess.Secret:
-            useExternalLoginSecretAuthentication(info).then((user: User) => {
-
-               if (user.id && user.id <= 0) {
-                  props.externalLoginFailed(user);
-                  errorAlert.clear();
-               } else {
-                  auth.setState({ isAuthenticated: true, user: user });
-               }
-            }).catch((result: AlertObj) => {
-               if (isUnmounted.current) return;
-               errorAlert.set(result);
-            });
+            useExternalLoginSecretAuthentication(info).then(externalLoginSuccess).catch(loginFailed);
             break;
          default:
             break;

@@ -1,17 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 using OSnack.API.Database;
-using OSnack.API.Database.Models;
-using P8B.Core.CSharp.Models;
 using OSnack.API.Database.Context.ClassOverrides;
-using Microsoft.AspNetCore.Antiforgery;
-using Microsoft.AspNetCore.Hosting;
+using OSnack.API.Database.Models;
+
+using P8B.Core.CSharp.Models;
+
+using System.Collections.Generic;
 
 namespace OSnack.API.Controllers
 {
-   [Route("Authentication")]
+   [Route("[controller]")]
    [AutoValidateAntiforgeryToken]
    [ApiControllerAttribute]
    public partial class AuthenticationController : ControllerBase
