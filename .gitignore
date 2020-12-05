@@ -23,9 +23,6 @@ Settings.json
 
 # Folders
 
-StaticFiles/
-StaticFiles/**
-!StaticFiles/liquid
 
 .localhistory/
 .vshistory/
@@ -41,3 +38,5 @@ build/
 OSnack.Admin/debug.logTemplate/debug.log
 OSnack.Client/debug.log
 *.log
+
+/OSnack.API/StaticFiles/tsApiFiles

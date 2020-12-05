@@ -25,8 +25,8 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
-      [HttpPut("[action]")]
       [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test  
+      [HttpPut("[action]")]
       public async Task<IActionResult> Put([FromBody] Address modifiedAddress)
       {
          try

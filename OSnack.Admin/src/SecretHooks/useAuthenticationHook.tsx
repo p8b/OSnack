@@ -6,23 +6,27 @@ export const useSilentSecretAuthentication = async (): Promise<User> =>{
         let url_ = API_URL + "/Authentication/Post/SilentSecret";
         url_ = url_.replace(/[?&]$/, "");
 
-        const response = await httpCaller.POST(url_);
+        let response = await httpCaller.POST(url_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.POST(url_);
+        }
 
         switch(response?.status){
 
         case 200: 
-            return response.json().then((responseJson: User) => {
+            return response?.json().then((responseJson: User) => {
                 return responseJson;
             });
 
         case 401: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:

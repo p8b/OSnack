@@ -7,28 +7,32 @@ export const useDeleteAddress = async (address: Address): Promise<string> =>{
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = address;
-        const response = await httpCaller.DELETE(url_, content_);
+        let response = await httpCaller.DELETE(url_, content_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.DELETE(url_, content_);
+        }
 
         switch(response?.status){
 
         case 200: 
-            return response.json().then((responseJson: string) => {
+            return response?.json().then((responseJson: string) => {
                 return responseJson;
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 404: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 412: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:
@@ -40,18 +44,22 @@ export const useAllAddress = async (): Promise<Address[]> =>{
         let url_ = API_URL + "/Address/Get/All";
         url_ = url_.replace(/[?&]$/, "");
 
-        const response = await httpCaller.GET(url_);
+        let response = await httpCaller.GET(url_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.GET(url_);
+        }
 
         switch(response?.status){
 
         case 200: 
-            return response.json().then((responseJson: Address[]) => {
+            return response?.json().then((responseJson: Address[]) => {
                 return responseJson;
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:
@@ -64,23 +72,27 @@ export const usePostAddress = async (newAddress: Address): Promise<Address> =>{
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = newAddress;
-        const response = await httpCaller.POST(url_, content_);
+        let response = await httpCaller.POST(url_, content_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.POST(url_, content_);
+        }
 
         switch(response?.status){
 
         case 201: 
-            return response.json().then((responseJson: Address) => {
+            return response?.json().then((responseJson: Address) => {
                 return responseJson;
             });
 
         case 422: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:
@@ -93,23 +105,27 @@ export const usePutAddress = async (modifiedAddress: Address): Promise<Address> 
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = modifiedAddress;
-        const response = await httpCaller.PUT(url_, content_);
+        let response = await httpCaller.PUT(url_, content_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.PUT(url_, content_);
+        }
 
         switch(response?.status){
 
         case 200: 
-            return response.json().then((responseJson: Address) => {
+            return response?.json().then((responseJson: Address) => {
                 return responseJson;
             });
 
         case 422: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:
@@ -122,7 +138,11 @@ export const useSetDefaultAddress = async (addressId: number): Promise<void> =>{
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = addressId;
-        const response = await httpCaller.PUT(url_, content_);
+        let response = await httpCaller.PUT(url_, content_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.PUT(url_, content_);
+        }
 
         switch(response?.status){
 
@@ -130,8 +150,8 @@ export const useSetDefaultAddress = async (addressId: number): Promise<void> =>{
             return;
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:

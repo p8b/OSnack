@@ -7,28 +7,32 @@ export const useDeleteCategory = async (category: Category): Promise<string> =>{
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = category;
-        const response = await httpCaller.DELETE(url_, content_);
+        let response = await httpCaller.DELETE(url_, content_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.DELETE(url_, content_);
+        }
 
         switch(response?.status){
 
         case 200: 
-            return response.json().then((responseJson: string) => {
+            return response?.json().then((responseJson: string) => {
                 return responseJson;
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 404: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 412: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:
@@ -41,28 +45,32 @@ export const usePostCategory = async (newCategory: Category): Promise<Category> 
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = newCategory;
-        const response = await httpCaller.POST(url_, content_);
+        let response = await httpCaller.POST(url_, content_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.POST(url_, content_);
+        }
 
         switch(response?.status){
 
         case 201: 
-            return response.json().then((responseJson: Category) => {
+            return response?.json().then((responseJson: Category) => {
                 return responseJson;
             });
 
         case 422: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 412: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:
@@ -75,33 +83,37 @@ export const usePutCategory = async (modifiedCategory: Category): Promise<Catego
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = modifiedCategory;
-        const response = await httpCaller.PUT(url_, content_);
+        let response = await httpCaller.PUT(url_, content_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.PUT(url_, content_);
+        }
 
         switch(response?.status){
 
         case 200: 
-            return response.json().then((responseJson: Category) => {
+            return response?.json().then((responseJson: Category) => {
                 return responseJson;
             });
 
         case 404: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 412: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 422: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:

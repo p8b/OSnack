@@ -6,18 +6,22 @@ export const useGetRole = async (): Promise<Role[]> =>{
         let url_ = API_URL + "/Role/Get";
         url_ = url_.replace(/[?&]$/, "");
 
-        const response = await httpCaller.GET(url_);
+        let response = await httpCaller.GET(url_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.GET(url_);
+        }
 
         switch(response?.status){
 
         case 200: 
-            return response.json().then((responseJson: Role[]) => {
+            return response?.json().then((responseJson: Role[]) => {
                 return responseJson;
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:

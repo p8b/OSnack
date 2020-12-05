@@ -7,23 +7,27 @@ export const useDeleteProduct = async (product: Product): Promise<string> =>{
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = product;
-        const response = await httpCaller.DELETE(url_, content_);
+        let response = await httpCaller.DELETE(url_, content_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.DELETE(url_, content_);
+        }
 
         switch(response?.status){
 
         case 200: 
-            return response.json().then((responseJson: string) => {
+            return response?.json().then((responseJson: string) => {
                 return responseJson;
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 404: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:
@@ -56,18 +60,22 @@ export const useSearchSecretProduct = async (selectedPage: number, maxItemsPerPa
         url_ = url_.replace("{sortName}", encodeURIComponent("" + sortName));
         url_ = url_.replace(/[?&]$/, "");
 
-        const response = await httpCaller.GET(url_);
+        let response = await httpCaller.GET(url_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.GET(url_);
+        }
 
         switch(response?.status){
 
         case 200: 
-            return response.json().then((responseJson: MultiResultOfListOfProductAndInteger) => {
+            return response?.json().then((responseJson: MultiResultOfListOfProductAndInteger) => {
                 return responseJson;
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:
@@ -80,28 +88,32 @@ export const usePostProduct = async (newProduct: Product): Promise<Product> =>{
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = newProduct;
-        const response = await httpCaller.POST(url_, content_);
+        let response = await httpCaller.POST(url_, content_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.POST(url_, content_);
+        }
 
         switch(response?.status){
 
         case 201: 
-            return response.json().then((responseJson: Product) => {
+            return response?.json().then((responseJson: Product) => {
                 return responseJson;
             });
 
         case 422: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 412: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:
@@ -114,28 +126,32 @@ export const usePutProduct = async (modifiedProduct: Product): Promise<Product> 
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = modifiedProduct;
-        const response = await httpCaller.PUT(url_, content_);
+        let response = await httpCaller.PUT(url_, content_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.PUT(url_, content_);
+        }
 
         switch(response?.status){
 
         case 200: 
-            return response.json().then((responseJson: Product) => {
+            return response?.json().then((responseJson: Product) => {
                 return responseJson;
             });
 
         case 412: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 422: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:

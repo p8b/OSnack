@@ -7,23 +7,27 @@ export const useDeleteEmailTemplate = async (emailTemplate: EmailTemplate): Prom
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = emailTemplate;
-        const response = await httpCaller.DELETE(url_, content_);
+        let response = await httpCaller.DELETE(url_, content_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.DELETE(url_, content_);
+        }
 
         switch(response?.status){
 
         case 200: 
-            return response.json().then((responseJson: string) => {
+            return response?.json().then((responseJson: string) => {
                 return responseJson;
             });
 
         case 422: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:
@@ -35,18 +39,22 @@ export const useAllEmailTemplate = async (): Promise<EmailTemplate[]> =>{
         let url_ = API_URL + "/EmailTemplate/Get/All";
         url_ = url_.replace(/[?&]$/, "");
 
-        const response = await httpCaller.GET(url_);
+        let response = await httpCaller.GET(url_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.GET(url_);
+        }
 
         switch(response?.status){
 
         case 200: 
-            return response.json().then((responseJson: EmailTemplate[]) => {
+            return response?.json().then((responseJson: EmailTemplate[]) => {
                 return responseJson;
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:
@@ -61,18 +69,22 @@ export const useGetEmailTemplate = async (templateId: number): Promise<MultiResu
         url_ = url_.replace("{templateId}", encodeURIComponent("" + templateId));
         url_ = url_.replace(/[?&]$/, "");
 
-        const response = await httpCaller.GET(url_);
+        let response = await httpCaller.GET(url_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.GET(url_);
+        }
 
         switch(response?.status){
 
         case 200: 
-            return response.json().then((responseJson: MultiResultOfEmailTemplateAndEmailTemplate) => {
+            return response?.json().then((responseJson: MultiResultOfEmailTemplateAndEmailTemplate) => {
                 return responseJson;
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:
@@ -84,18 +96,22 @@ export const useGetServerVariablesEmailTemplate = async (): Promise<ServerVariab
         let url_ = API_URL + "/EmailTemplate/GetServerVariables";
         url_ = url_.replace(/[?&]$/, "");
 
-        const response = await httpCaller.GET(url_);
+        let response = await httpCaller.GET(url_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.GET(url_);
+        }
 
         switch(response?.status){
 
         case 200: 
-            return response.json().then((responseJson: ServerVariables[]) => {
+            return response?.json().then((responseJson: ServerVariables[]) => {
                 return responseJson;
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:
@@ -108,23 +124,27 @@ export const usePostEmailTemplate = async (emailTemplate: EmailTemplate): Promis
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = emailTemplate;
-        const response = await httpCaller.POST(url_, content_);
+        let response = await httpCaller.POST(url_, content_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.POST(url_, content_);
+        }
 
         switch(response?.status){
 
         case 201: 
-            return response.json().then((responseJson: EmailTemplate) => {
+            return response?.json().then((responseJson: EmailTemplate) => {
                 return responseJson;
             });
 
         case 422: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:
@@ -137,23 +157,27 @@ export const usePutEmailTemplate = async (emailTemplate: EmailTemplate): Promise
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = emailTemplate;
-        const response = await httpCaller.PUT(url_, content_);
+        let response = await httpCaller.PUT(url_, content_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.PUT(url_, content_);
+        }
 
         switch(response?.status){
 
         case 200: 
-            return response.json().then((responseJson: EmailTemplate) => {
+            return response?.json().then((responseJson: EmailTemplate) => {
                 return responseJson;
             });
 
         case 422: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:

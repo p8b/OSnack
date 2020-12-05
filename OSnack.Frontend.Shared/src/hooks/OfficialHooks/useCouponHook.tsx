@@ -9,7 +9,11 @@ export const useValidateCoupon = async (couponCode: string | null): Promise<void
         url_ = url_.replace("{couponCode}", encodeURIComponent("" + couponCode));
         url_ = url_.replace(/[?&]$/, "");
 
-        const response = await httpCaller.GET(url_);
+        let response = await httpCaller.GET(url_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.GET(url_);
+        }
 
         switch(response?.status){
 
@@ -17,13 +21,13 @@ export const useValidateCoupon = async (couponCode: string | null): Promise<void
             return;
 
         case 412: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:

@@ -7,23 +7,27 @@ export const useDeleteUser = async (thisUser: User): Promise<string> =>{
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = thisUser;
-        const response = await httpCaller.DELETE(url_, content_);
+        let response = await httpCaller.DELETE(url_, content_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.DELETE(url_, content_);
+        }
 
         switch(response?.status){
 
         case 200: 
-            return response.json().then((responseJson: string) => {
+            return response?.json().then((responseJson: string) => {
                 return responseJson;
             });
 
         case 412: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:
@@ -53,18 +57,22 @@ export const useGetUser = async (selectedPage: number, maxItemsPerPage: number, 
         url_ = url_.replace("{sortName}", encodeURIComponent("" + sortName));
         url_ = url_.replace(/[?&]$/, "");
 
-        const response = await httpCaller.GET(url_);
+        let response = await httpCaller.GET(url_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.GET(url_);
+        }
 
         switch(response?.status){
 
         case 200: 
-            return response.json().then((responseJson: MultiResultOfListOfUserAndInteger) => {
+            return response?.json().then((responseJson: MultiResultOfListOfUserAndInteger) => {
                 return responseJson;
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:
@@ -77,28 +85,32 @@ export const useCreateUserUser = async (newUser: User): Promise<User> =>{
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = newUser;
-        const response = await httpCaller.POST(url_, content_);
+        let response = await httpCaller.POST(url_, content_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.POST(url_, content_);
+        }
 
         switch(response?.status){
 
         case 201: 
-            return response.json().then((responseJson: User) => {
+            return response?.json().then((responseJson: User) => {
                 return responseJson;
             });
 
         case 422: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 412: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:
@@ -111,28 +123,32 @@ export const useUpdateUserUser = async (modifiedUser: User): Promise<User> =>{
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = modifiedUser;
-        const response = await httpCaller.PUT(url_, content_);
+        let response = await httpCaller.PUT(url_, content_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.PUT(url_, content_);
+        }
 
         switch(response?.status){
 
         case 200: 
-            return response.json().then((responseJson: User) => {
+            return response?.json().then((responseJson: User) => {
                 return responseJson;
             });
 
         case 422: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 412: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:
@@ -150,23 +166,27 @@ export const useUserLockoutUser = async (userId: number, lockoutEnabled: boolean
         url_ = url_.replace("{lockoutEnabled}", encodeURIComponent("" + lockoutEnabled));
         url_ = url_.replace(/[?&]$/, "");
 
-        const response = await httpCaller.PUT(url_);
+        let response = await httpCaller.PUT(url_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.PUT(url_);
+        }
 
         switch(response?.status){
 
         case 200: 
-            return response.json().then((responseJson: User) => {
+            return response?.json().then((responseJson: User) => {
                 return responseJson;
             });
 
         case 412: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:

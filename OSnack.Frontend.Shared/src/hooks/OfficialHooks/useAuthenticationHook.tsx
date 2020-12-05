@@ -6,7 +6,11 @@ export const useLogoutAuthentication = async (): Promise<void> =>{
         let url_ = API_URL + "/Authentication/Get/Logout";
         url_ = url_.replace(/[?&]$/, "");
 
-        const response = await httpCaller.GET(url_);
+        let response = await httpCaller.GET(url_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.GET(url_);
+        }
 
         switch(response?.status){
 
@@ -14,8 +18,8 @@ export const useLogoutAuthentication = async (): Promise<void> =>{
             return;
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:
@@ -27,23 +31,27 @@ export const useSilentOfficialAuthentication = async (): Promise<User> =>{
         let url_ = API_URL + "/Authentication/Post/SilentOfficial";
         url_ = url_.replace(/[?&]$/, "");
 
-        const response = await httpCaller.POST(url_);
+        let response = await httpCaller.POST(url_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.POST(url_);
+        }
 
         switch(response?.status){
 
         case 200: 
-            return response.json().then((responseJson: User) => {
+            return response?.json().then((responseJson: User) => {
                 return responseJson;
             });
 
         case 401: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:
@@ -56,23 +64,27 @@ export const useConfirmCurrentUserPasswordAuthentication = async (password: stri
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = password;
-        const response = await httpCaller.POST(url_, content_);
+        let response = await httpCaller.POST(url_, content_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.POST(url_, content_);
+        }
 
         switch(response?.status){
 
         case 200: 
-            return response.json().then((responseJson: User) => {
+            return response?.json().then((responseJson: User) => {
                 return responseJson;
             });
 
         case 401: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 417: 
-            return response.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response.status);
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         default:

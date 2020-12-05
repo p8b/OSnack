@@ -51,7 +51,8 @@ namespace OSnack.API.Extras
                      {
                         EnumStyle=NJsonSchema.CodeGeneration.TypeScript.TypeScriptEnumStyle.Enum,
                         TypeStyle=NJsonSchema.CodeGeneration.TypeScript.TypeScriptTypeStyle.Class,
-                        GenerateConstructorInterface=false
+                        GenerateConstructorInterface=false,
+                        TemplateDirectory=Path.Combine(@$"{webHostRoot}\StaticFiles\liquid")
                      }
          });
          string zipFilePath = Path.Combine(@$"{webHostRoot}\StaticFiles\tsApiFiles\{document.Info.Title}.zip");
