@@ -2,7 +2,6 @@
 
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Product, ProductUnitType } from 'osnack-frontend-shared/src/_core/apiModels';
-import { enumToArray } from 'osnack-frontend-shared/src/_core/appFunc';
 import { useProductAndRelateProduct } from 'osnack-frontend-shared/src/hooks/PublicHooks/useProductHook';
 import { Redirect, useHistory } from 'react-router-dom';
 import { API_URL } from 'osnack-frontend-shared/src/_core/constant.Variables';
@@ -26,7 +25,7 @@ const ProductPage = (props: IProps) => {
       errorAlert.PleaseWait(500, isUnmounted);
       const uriPathNameArr = window.location.pathname.split('/').filter(val => val.length > 0);
       if (uriPathNameArr.length === 4 && uriPathNameArr[1].toLowerCase() == "product") {
-         useProductAndRelateProduct(uriPathNameArr[2], uriPathNameArr[3]).then(result => {
+         useProductAndRelateProduct(uriPathNameArr[2], decodeURI(uriPathNameArr[3])).then(result => {
             if (isUnmounted.current) return;
             setProduct(result.part1!);
             window.scrollTo(0, 0);
@@ -66,7 +65,7 @@ const ProductPage = (props: IProps) => {
                         <h1>{name}</h1>
                         <p>Category: {product.category.name}</p>
                         <p className="pt-4 pb-4">{product.description}</p>
-                        <b className="mb-5">£{product.price} ({product.unitQuantity} {enumToArray(ProductUnitType).filter(t => t.name == product.unitType)[0]?.name})</b>
+                        <b className="mb-5">£{product.price} ({product.unitQuantity} {ProductUnitType[product.unitType]})</b>
                         <QuantityInput
                            btnOnZeroTitle="Add"
                            btnOnZeroClassName="radius-none btn-green cart-icon"
