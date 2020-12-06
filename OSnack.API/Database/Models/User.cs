@@ -6,6 +6,7 @@ using NJsonSchema.Annotations;
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -14,6 +15,9 @@ namespace OSnack.API.Database.Models
    [Table("Users")]
    public class User : IdentityUser<int>
    {
+      [Key]
+      [DefaultValue(0)]
+      public override int Id { get; set; }
       public User() => UserName = $"p8b{new Random().Next(0, 99)}";
 
       #region nvarchar(256), Required, StringLength(256)

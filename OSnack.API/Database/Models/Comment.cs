@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OSnack.API.Database.Models
@@ -7,6 +8,7 @@ namespace OSnack.API.Database.Models
    public class Comment
    {
       [Key]
+      [DefaultValue(0)]
       public int Id { get; set; }
 
       [Column(TypeName = "nvarchar(500)")]

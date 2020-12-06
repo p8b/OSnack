@@ -8,6 +8,7 @@ using P8B.Core.CSharp.Attributes;
 using OSnack.API.Extras.CustomTypes;
 using Microsoft.AspNetCore.Authentication;
 using OSnack.API.Database.ModelsDependencies;
+using System.ComponentModel;
 
 namespace OSnack.API.Database.Models
 {
@@ -15,6 +16,7 @@ namespace OSnack.API.Database.Models
    public class Product : OrderProductBase
    {
       [Key]
+      [DefaultValue(0)]
       public int Id { get; set; }
 
       [Column(TypeName = "nvarchar(256)")]

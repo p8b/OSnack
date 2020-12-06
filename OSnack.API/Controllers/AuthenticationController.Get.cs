@@ -59,7 +59,7 @@ namespace OSnack.API.Controllers
 
       #region ***  ***
       [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
-      [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status401Unauthorized)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [Authorize(AppConst.AccessPolicies.Official)]
@@ -68,7 +68,7 @@ namespace OSnack.API.Controllers
 
       #region ***  ***
       [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
-      [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status401Unauthorized)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [Authorize(AppConst.AccessPolicies.Secret)]
@@ -92,7 +92,10 @@ namespace OSnack.API.Controllers
             SetAntiforgeryCookie();
 
             if (user == null)
-               return Unauthorized();
+            {
+               CoreFunc.Error(ref ErrorsList, "Wrong Password");
+               return Unauthorized(ErrorsList);
+            }
             else
                return Ok(user);
          }

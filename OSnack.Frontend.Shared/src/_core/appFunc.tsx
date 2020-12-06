@@ -160,7 +160,7 @@ export const getBase64fromUrlImage = (url: string) =>
  * @param enumObj any enum
  *///Turn enum to array of type "ddLookup".
 export const enumToArray = (enumObj: any) =>
-   Object.keys(enumObj)
+   Object.keys(enumObj).filter((value: any) => isNaN(Number(value)) === false)
       .map((k: any) => new ddLookup(k, (enumObj[k] as string).replace(/_/g, ' ')));
 
 export const uuidv4 = () => {

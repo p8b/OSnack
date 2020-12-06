@@ -58,7 +58,7 @@ export const useSearchSecretProduct = async (selectedPage: number, maxItemsPerPa
         if (sortName === undefined || sortName === null)
             throw new Error("The parameter 'sortName' must be defined.");
         url_ = url_.replace("{sortName}", encodeURIComponent("" + sortName));
-        url_ = url_.replace(/[?&]$/, "");
+   url_ = url_.replace(/[?&]$/, "");
 
         let response = await httpCaller.GET(url_);
         if( response?.status === 400){

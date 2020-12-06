@@ -1,32 +1,37 @@
 export enum RegistrationTypes {
-    Application = "Application",
-    Google = "Google",
-    Facebook = "Facebook",
-    Github = "Github",
+
+    Application = 0,
+    Google = 1,
+    Facebook = 2,
+    Github = 3,
 }
 export enum CouponType {
-    FreeDelivery = "FreeDelivery",
-    DiscountPrice = "DiscountPrice",
-    PercentageOfTotal = "PercentageOfTotal",
+
+    FreeDelivery = 0,
+    DiscountPrice = 1,
+    PercentageOfTotal = 2,
 }
 export enum EmailTemplateServerVariables {
-    UserName = "UserName",
-    RegistrationMethod = "RegistrationMethod",
-    Role = "Role",
-    TokenUrl = "TokenUrl",
-    ExpiaryDateTime = "ExpiaryDateTime",
+
+    UserName = 0,
+    RegistrationMethod = 1,
+    Role = 2,
+    TokenUrl = 3,
+    ExpiaryDateTime = 4,
 }
 export enum OrderStatusType {
-    Placed = "Placed",
-    Hold = "Hold",
-    Confirmed = "Confirmed",
-    Delivered = "Delivered",
-    Canceled = "Canceled",
+
+    Placed = 0,
+    Hold = 1,
+    Confirmed = 2,
+    Delivered = 3,
+    Canceled = 4,
 }
 export enum ProductUnitType {
-    Kg = "Kg",
-    Grams = "Grams",
-    Per_Item = "Per_Item",
+
+    Kg = 0,
+    Grams = 1,
+    Per_Item = 2,
 }
 export abstract class OrderAddressBase {
     name!: string;
@@ -37,7 +42,7 @@ export abstract class OrderAddressBase {
 
 }
 export class Role {
-    id?: number;
+    id?: number = 0;
     name!: string;
     accessClaim!: string;
 
@@ -46,15 +51,6 @@ export class RegistrationMethod {
     externalLinkedId?: string | undefined;
     type!: RegistrationTypes;
     registeredDate?: Date;
-
-}
-export class ProblemDetails {
-    type?: string | undefined;
-    title?: string | undefined;
-    status?: number | undefined;
-    detail?: string | undefined;
-    instance?: string | undefined;
-    extensions?: { [key: string]: any; } | undefined;
 
 }
 export class LoginInfo {
@@ -72,7 +68,7 @@ export class ExternalLoginInfo {
 
 }
 export class Category {
-    id?: number;
+    id?: number = 0;
     name!: string;
     imagePath?: string | undefined;
     originalImagePath?: string | undefined;
@@ -84,6 +80,15 @@ export class Category {
 export class MultiResultOfListOfCategoryAndInteger {
     part1?: Category[] | undefined;
     part2?: number;
+
+}
+export class ProblemDetails {
+    type?: string | undefined;
+    title?: string | undefined;
+    status?: number | undefined;
+    detail?: string | undefined;
+    instance?: string | undefined;
+    extensions?: { [key: string]: any; } | undefined;
 
 }
 export class Coupon {
@@ -101,7 +106,7 @@ export class MultiResultOfListOfCouponAndInteger {
 
 }
 export class EmailTemplate {
-    id?: number;
+    id?: number = 0;
     name!: string;
     subject!: string;
     tokenUrlPath?: string | undefined;
@@ -113,7 +118,7 @@ export class EmailTemplate {
 
 }
 export class ServerVariables {
-    id?: number;
+    id?: number = 0;
     enumValue!: EmailTemplateServerVariables;
     replacementValue!: string;
 
@@ -129,14 +134,14 @@ export class Newsletter {
 
 }
 export class DeliveryOption {
-    id?: number;
+    id?: number = 0;
     name!: string;
     price!: number;
     minimumOrderTotal!: number;
 
 }
 export class Payment {
-    id?: number;
+    id?: number = 0;
     paymentProvider!: string;
     reference!: string;
     dateTime!: Date;
@@ -150,7 +155,7 @@ export abstract class OrderProductBase {
 
 }
 export class NutritionalInfo {
-    id?: number;
+    id?: number = 0;
     perGram?: number;
     energyKJ?: number | undefined;
     energyKcal?: number | undefined;
@@ -164,7 +169,7 @@ export class NutritionalInfo {
 
 }
 export class Comment {
-    id?: number;
+    id?: number = 0;
     description!: string;
     orderItem?: OrderItem | undefined;
     orderItemId?: number;
@@ -172,7 +177,7 @@ export class Comment {
 
 }
 export class Score {
-    id?: number;
+    id?: number = 0;
     rate?: number;
     orderItem?: OrderItem | undefined;
     orderItemId?: number;
@@ -207,18 +212,19 @@ export class UserBase {
 
 }
 export class Address extends OrderAddressBase {
-    id?: number;
+    id?: number = 0;
     isDefault?: boolean;
     instructions?: string | undefined;
     userId?: number;
 
 }
 export class User extends UserBase {
+    id?: number = 0;
     firstName!: string;
     surname!: string;
-    role!: Role;
+    role: Role = new Role();
     phoneNumber?: string | undefined;
-    registrationMethod!: RegistrationMethod;
+    registrationMethod: RegistrationMethod = new RegistrationMethod();
     email!: string;
     addresses?: Address[] | undefined;
     password?: string | undefined;
@@ -226,34 +232,34 @@ export class User extends UserBase {
 
 }
 export class Order extends OrderAddressBase {
-    id?: number;
+    id?: number = 0;
     date?: Date;
     status!: OrderStatusType;
-    deliveryOption!: DeliveryOption;
+    deliveryOption: DeliveryOption = new DeliveryOption();
     totalPrice?: number;
     deliveryPrice?: number;
-    address!: Address;
-    payment!: Payment;
+    address: Address = new Address();
+    payment: Payment = new Payment();
     coupon?: Coupon | undefined;
     orderItems?: OrderItem[] | undefined;
 
 }
 export class OrderItem extends OrderProductBase {
-    id?: number;
+    id?: number = 0;
     productCategoryName!: string;
     productId?: number | undefined;
     quantity!: number;
 
 }
 export class Product extends OrderProductBase {
-    id?: number;
+    id?: number = 0;
     description?: string | undefined;
     imagePath?: string | undefined;
     originalImagePath?: string | undefined;
     imageBase64!: string;
     originalImageBase64!: string;
     status?: boolean;
-    category!: Category;
+    category: Category = new Category();
     nutritionalInfo?: NutritionalInfo | undefined;
     comments?: Comment[] | undefined;
     scores?: Score[] | undefined;

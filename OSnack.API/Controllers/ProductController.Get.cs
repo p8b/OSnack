@@ -42,7 +42,7 @@ namespace OSnack.API.Controllers
           int selectedPage, int maxItemsPerPage,
           string filterCategory, string searchValue,
           string filterStatus, bool isSortAsce, string sortName) =>
-         await Search(selectedPage, maxItemsPerPage, filterCategory, searchValue, null, isSortAsce, sortName).ConfigureAwait(false);
+         await Search(selectedPage, maxItemsPerPage, filterCategory, searchValue, filterStatus, isSortAsce, sortName).ConfigureAwait(false);
 
       private async Task<IActionResult> Search(
           int selectedPage,
@@ -78,7 +78,7 @@ namespace OSnack.API.Controllers
                 .ConfigureAwait(false);
             return Ok(new MultiResult<List<Product>, int>(list, totalCount));
          }
-         catch (Exception)
+         catch (Exception ex)
          {
             CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
             return StatusCode(417, ErrorsList);

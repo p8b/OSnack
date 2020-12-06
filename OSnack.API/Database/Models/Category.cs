@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,6 +11,7 @@ namespace OSnack.API.Database.Models
    public class Category
    {
       [Key]
+      [DefaultValue(0)]
       public int Id { get; set; }
 
       [Column(TypeName = "nvarchar(256)")]

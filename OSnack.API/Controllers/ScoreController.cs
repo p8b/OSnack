@@ -36,12 +36,13 @@ namespace OSnack.API.Controllers
       #region *** 201 Created, 400 BadRequest, 422 UnprocessableEntity, 412 PreconditionFailed, 417 ExpectationFailed ***
       [HttpPost("[action]")]
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(StatusCodes.Status201Created)]
-      [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-      [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(Score), StatusCodes.Status201Created)]
       #endregion
-      [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test   
+      [Authorize(AppConst.AccessPolicies.Secret)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
+      [ProducesDefaultResponseType]
+      /// Ready For Test   
       public async Task<IActionResult> Post([FromBody] Score newScore)
       {
          try
@@ -71,7 +72,7 @@ namespace OSnack.API.Controllers
 
             /// return 201 created status with the new object
             /// and success message
-            return Created("Success", newScore);
+            return Created("Succes", newScore);
          }
          catch (Exception) // DbUpdateException, DbUpdateConcurrencyException
          {

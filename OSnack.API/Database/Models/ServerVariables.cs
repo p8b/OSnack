@@ -1,5 +1,5 @@
 ﻿using OSnack.API.Extras.CustomTypes;
-
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,6 +10,7 @@ namespace OSnack.API.Database.Models
    {
 
       [Key]
+      [DefaultValue(0)]
       public int Id { get; set; }
 
       [Required]

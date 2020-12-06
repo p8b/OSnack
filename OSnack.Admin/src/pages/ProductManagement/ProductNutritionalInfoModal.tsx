@@ -120,6 +120,6 @@ declare type IProps = {
    isOpen: boolean;
    onSubmit: (nutritionalInfo: NutritionalInfo) => void;
    nutritionalInfo?: NutritionalInfo;
-   alert: AlertObj;
+   alert: any;
 };
 export default ProductNutritionalInfoModal;

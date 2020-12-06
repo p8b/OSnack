@@ -10,6 +10,7 @@ using P8B.Core.CSharp.Models;
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
@@ -22,6 +23,7 @@ namespace OSnack.API.Database.Models
    public class EmailTemplate
    {
       [Key]
+      [DefaultValue(0)]
       public int Id { get; set; }
 
       [StringLength(50, ErrorMessage = "Must be less than 50 Characters \n")]

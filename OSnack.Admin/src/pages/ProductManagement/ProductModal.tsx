@@ -169,7 +169,7 @@ const ProductModal = (props: IProps) => {
                className="col-12 col-sm-6"
                showDanger={errorAlert.checkExistFilterRequired("UnitQuantity")}
             />
-            {console.log(enumToArray(ProductUnitType))}
+         
             <InputDropDown dropdownTitle={productUnitTypeList.find((pu) => pu.id == product.unitType)?.name || "Select Option"}
                label="Unit Type*"
                className="col-12 col-sm-6 " >
@@ -201,7 +201,7 @@ const ProductModal = (props: IProps) => {
             </div>
             {/***** Nutritional information Modal ****/}
             <ProductNutritionalInfoModal isOpen={nutritionalInfoModalIsOpen}
-               alert={errorAlert.alert}
+               alert={errorAlert}
                nutritionalInfo={product.nutritionalInfo}
                onSubmit={(info) => { setProduct({ ...product, nutritionalInfo: info }); setNutritionalInfoModalIsOpen(false); }}
             />

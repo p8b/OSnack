@@ -40,7 +40,7 @@ namespace OSnack.API.Controllers
 
             if (address.IsDefault == true)
             {
-               CoreFunc.Error(ref ErrorsList, "You cannot delete your default address.");
+               CoreFunc.Error(ref ErrorsList, "Unable to Delete default Address.");
                return StatusCode(412, ErrorsList);
             }
 

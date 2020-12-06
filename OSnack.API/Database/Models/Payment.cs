@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
@@ -9,6 +10,7 @@ namespace OSnack.API.Database.Models
    public class Payment
    {
       [Key]
+      [DefaultValue(0)]
       public int Id { get; set; }
 
       [Required(ErrorMessage = "Provider is required \n")]

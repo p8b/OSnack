@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using OSnack.API.Database.Models;
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -16,6 +17,7 @@ namespace OSnack.API.Extras
    {
 
       [Key]
+      [DefaultValue(0)]
       public int Id { get; set; }
 
       [StringLength(50, ErrorMessage = "Must be less than 50 Characters \n")]

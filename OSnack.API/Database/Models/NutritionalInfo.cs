@@ -4,6 +4,7 @@ using P8B.Core.CSharp.Attributes;
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace OSnack.API.Database.Models
    public class NutritionalInfo
    {
       [Key]
+      [DefaultValue(0)]
       public int Id { get; set; }
 
       public int PerGram { get; set; } = 100;

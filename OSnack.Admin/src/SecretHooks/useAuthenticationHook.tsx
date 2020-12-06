@@ -1,7 +1,7 @@
 import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/components/Texts/Alert";
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
-import { User, ProblemDetails } from "osnack-frontend-shared/src/_core/apiModels";
+import { User } from "osnack-frontend-shared/src/_core/apiModels";
 export const useSilentSecretAuthentication = async (): Promise<User> =>{
         let url_ = API_URL + "/Authentication/Post/SilentSecret";
         url_ = url_.replace(/[?&]$/, "");

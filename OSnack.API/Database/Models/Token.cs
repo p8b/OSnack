@@ -4,6 +4,7 @@ using OSnack.API.Extras.CustomTypes;
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -14,9 +15,10 @@ namespace OSnack.API.Database.Models
    public class Token
    {
       [Key]
+      [DefaultValue(0)]
       public int Id { get; set; }
-      [JsonIgnore]
 
+      [JsonIgnore]
       [Column(TypeName = "nvarchar(MAX)")]
       [Required(ErrorMessage = "Value is Required \n")]
       public string Value { get; set; }
