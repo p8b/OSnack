@@ -1,13 +1,15 @@
-﻿import React, { useEffect } from 'react';
+﻿import React, { useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { Product, ProductUnitType } from 'osnack-frontend-shared/src/_core/apiModels';
-import { enumToArray, onImageError } from 'osnack-frontend-shared/src/_core/appFunc';
+import { onImageError } from 'osnack-frontend-shared/src/_core/appFunc';
 import { API_URL } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import QuantityInput from 'osnack-frontend-shared/src/components/Inputs/QuantityInput';
+import { ShopContext } from '../../_core/shopContext';
 
 const ShopItem = (props: IProps) => {
    const history = useHistory();
+   const basket = useContext(ShopContext);
    useEffect(() => {
    }, []);
    return (
@@ -26,12 +28,12 @@ const ShopItem = (props: IProps) => {
             btnOnZeroClassName="radius-none btn-green cart-icon"
             btnMinusClassName="radius-none-t"
             btnPlusClassName="radius-none-t"
-            value={0}
-            onChange={(val) => { }}
+            value={basket.getQuantity(props.product)}
+            onChange={(val) => { basket.set(props.product, val); }}
             className="col-12"
          />
          <div className="pt-3">
-            <b>£{props.product.price}</b><span> - {props.product.unitQuantity} {enumToArray(ProductUnitType).filter(t => t.name == props.product.unitType)[0]?.name}</span>
+            <b>£{props.product.price}</b><span> - {props.product.unitQuantity} {ProductUnitType[props.product.unitType]}</span>
          </div>
          <div className="pt-2 pb-1 h4">{props.product.name}</div>
       </div>

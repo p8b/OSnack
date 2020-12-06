@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useRef, useState } from 'react';
+﻿import React, { useContext, useEffect, useRef, useState } from 'react';
 
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Product, ProductUnitType } from 'osnack-frontend-shared/src/_core/apiModels';
@@ -10,6 +10,7 @@ import Container from '../../components/Container';
 import QuantityInput from 'osnack-frontend-shared/src/components/Inputs/QuantityInput';
 import Tabs from './Tabs';
 import ShopItem from '../Shop/ShopItem';
+import { ShopContext } from '../../_core/shopContext';
 
 const ProductPage = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -18,6 +19,7 @@ const ProductPage = (props: IProps) => {
    const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
    const [redirectToShop, setRedirectToShop] = useState<boolean>(false);
    const history = useHistory();
+   const basket = useContext(ShopContext);
 
    useEffect(() => () => { isUnmounted.current = true; }, []);
 
@@ -71,8 +73,8 @@ const ProductPage = (props: IProps) => {
                            btnOnZeroClassName="radius-none btn-green cart-icon"
                            btnMinusClassName="radius-none-t"
                            btnPlusClassName="radius-none-t"
-                           value={0}
-                           onChange={(val) => { }}
+                           value={basket.getQuantity(product)}
+                           onChange={(val) => { basket.set(product, val); }}
                            className="w-50 pt-3 pb-3"
                         />
                      </div>
