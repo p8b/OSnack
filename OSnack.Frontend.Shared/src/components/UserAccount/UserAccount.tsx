@@ -34,9 +34,10 @@ const UserAccount = (props: IProps) => {
       setIsOpenConfirmPassword(false);
       useUpdateCurrentUserUser({ user: user, currentPassword: currentPass }).then((user) => {
          if (isUnmounted.current) return;
-         setIsOpenConfirmPassword(true);
+         // setIsOpenConfirmPassword(true);
          setSelectedAction("Details");
          setCurrentPassword("");
+         errorAlertAccountInfo.setSingleSuccess("Update", "Updated.");
       }).catch((alert) => {
          if (isUnmounted.current) return;
          errorAlertAccountInfo.set(alert);
@@ -85,10 +86,8 @@ const UserAccount = (props: IProps) => {
 
    const getRegistrationType = () => {
       let regType = user.registrationMethod?.type;
-      if (regType != null && regType != RegistrationTypes.Application) {
-         let typeList = enumToArray(RegistrationTypes);
-         return `Linked to ${typeList.find(i => i.name == regType)?.name} account`;
-      }
+      if (regType != null && regType != RegistrationTypes.Application)
+         return `Linked to ${RegistrationTypes[regType]} account`;
       return "";
    };
 
