@@ -5,10 +5,12 @@
     background-clip: padding-box;
     border: 0px none;
     outline: 0;
+    box-sizing: border-box !important;
     padding: .2rem !important;
     margin: 0 !important;
     border-bottom: 0.15rem solid rgb(128, 128, 128);
     font-size: 1.2rem !important;
+    z-index: 2;
     @extend .radius-none;
 
     &.danger {
@@ -35,6 +37,10 @@
     }
 }
 
+.col-form-label {
+    z-index: 1;
+}
+
 .slider {
     width: 100%;
     height: 15px;
@@ -52,8 +58,9 @@
 .input-right-label {
     display: inline-block;
     position: absolute;
-    z-index: 1;
+    z-index: 2;
     right: 1rem;
+    bottom: .6rem;
     text-align: right;
     padding: 0.38rem;
     background-color: white;
@@ -106,4 +113,8 @@ textarea {
         background-color: rgb(224, 224, 224) !important;
         color: black;
     }
+}
+
+.form-control-lg {
+    height: calc(1.5em + 1rem);
 }

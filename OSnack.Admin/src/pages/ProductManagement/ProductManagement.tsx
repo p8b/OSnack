@@ -103,7 +103,7 @@ const ProductManagement = (props: IProps) => {
             product.name,
             product.category.name,
             `£${product.price}`,
-            `${product.unitQuantity} ${productUnitTypeList.find(ut => ut.id == product.unitType)?.name}`,
+            `${product.unitQuantity} ${productUnitTypeList.find(ut => ut.value == product.unitType)?.name}`,
             product.status ? "Active" : "Disabled",
             <div className="col-auto p-0 m-0">
                <button className="btn btn-sm btn-blue col-12 m-0 mt-1 mt-xl-0 edit-icon"

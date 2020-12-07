@@ -169,13 +169,13 @@ const ProductModal = (props: IProps) => {
                className="col-12 col-sm-6"
                showDanger={errorAlert.checkExistFilterRequired("UnitQuantity")}
             />
-         
-            <InputDropDown dropdownTitle={productUnitTypeList.find((pu) => pu.id == product.unitType)?.name || "Select Option"}
+
+            <InputDropDown dropdownTitle={productUnitTypeList.find((pu) => pu.value == product.unitType)?.name || "Select Option"}
                label="Unit Type*"
                className="col-12 col-sm-6 " >
                {productUnitTypeList.map(productUnitType =>
                   <button className="dropdown-item" key={productUnitType.id}
-                     onClick={() => { setProduct({ ...product, unitType: ProductUnitType[productUnitType.id as keyof typeof ProductUnitType] }); }} >
+                     onClick={() => { setProduct({ ...product, unitType: productUnitType.value as ProductUnitType }); }} >
                      {productUnitType.name}
                   </button>
                )}

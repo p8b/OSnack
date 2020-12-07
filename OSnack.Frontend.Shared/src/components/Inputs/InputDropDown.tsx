@@ -2,25 +2,27 @@
 import DropDown from '../Buttons/DropDown';
 
 const InputDropdown = (props: IProps) => {
-    return (
-        <div className={`pb-3 ${props.className}`}>
-            <label children={props.label}
-                className={`col-form-label p-0 m-0 `} />
+   return (
+      <div className={`pb-3 m-0 ${props.className}`}>
+         <label children={props.label}
+            className={`col-form-label p-0 m-0 `} />
 
-            <DropDown title={props.dropdownTitle}
-                className="w-100 "
-             titleClassName={`btn input-dropdown no-shadow w-100 dropdown-icon ${props.showDanger ? "danger" : ""}`}>
-                {props.children}
-            </DropDown>
-        </div>
-    );
+         <DropDown title={props.dropdownTitle}
+            className="w-100 "
+            preventCloseOnClickInsideMenu={props.preventCloseOnClickInsideMenu}
+            titleClassName={`btn input-dropdown no-shadow w-100 dropdown-icon ${props.showDanger ? "danger" : ""}`}>
+            {props.children}
+         </DropDown>
+      </div>
+   );
 };
 
 interface IProps {
-    label: string;
-    dropdownTitle: string;
-    className?: string;
-    showDanger?: boolean;
-    children: any;
+   label: string;
+   dropdownTitle: string;
+   className?: string;
+   showDanger?: boolean;
+   children: any;
+   preventCloseOnClickInsideMenu?: boolean;
 }
 export default InputDropdown;

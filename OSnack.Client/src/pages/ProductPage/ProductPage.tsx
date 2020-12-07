@@ -56,7 +56,7 @@ const ProductPage = (props: IProps) => {
                      <ol className="breadcrumb">
                         <li className="breadcrumb-item" onClick={() => { history.push("/Shop"); }}>Shop</li>
                         <li className="breadcrumb-item" onClick={() => { history.push(`/Shop/Category/${product.category.name}`); }}>{product.category.name}</li>
-                        <li className="breadcrumb-item active" >{name}</li>
+                        <li className="breadcrumb-item active" >{product.name}</li>
                      </ol>
                   </nav>
                   <div className="row ">
@@ -64,15 +64,15 @@ const ProductPage = (props: IProps) => {
                         <img className="shop-card-img" src={`${API_URL}/${product.imagePath}`} alt={name} />
                      </div>
                      <div className="col-12 col-sm-8 p-sm-4 ">
-                        <h1>{name}</h1>
+                        <h1>{product.name}</h1>
                         <p>Category: {product.category.name}</p>
                         <p className="pt-4 pb-4">{product.description}</p>
                         <b className="mb-5">£{product.price} ({product.unitQuantity} {ProductUnitType[product.unitType]})</b>
                         <QuantityInput
                            btnOnZeroTitle="Add"
                            btnOnZeroClassName="radius-none btn-green cart-icon"
-                           btnMinusClassName="radius-none-t"
-                           btnPlusClassName="radius-none-t"
+                           btnMinusClassName="radius-none"
+                           btnPlusClassName="radius-none"
                            value={basket.getQuantity(product)}
                            onChange={(val) => { basket.set(product, val); }}
                            className="w-50 pt-3 pb-3"

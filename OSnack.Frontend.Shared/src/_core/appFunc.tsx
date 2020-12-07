@@ -1,4 +1,4 @@
-﻿import { ddLookup } from "./appClasses";
+﻿import { EnumObj } from "./appClasses";
 import 'whatwg-fetch';
 import { AntiforgeryTokenCookieName, API_URL } from "./constant.Variables";
 
@@ -161,7 +161,7 @@ export const getBase64fromUrlImage = (url: string) =>
  *///Turn enum to array of type "ddLookup".
 export const enumToArray = (enumObj: any) =>
    Object.keys(enumObj).filter((value: any) => isNaN(Number(value)) === false)
-      .map((k: any) => new ddLookup(k, (enumObj[k] as string).replace(/_/g, ' ')));
+      .map((k: any) => new EnumObj(k, (enumObj[k] as string).replace(/_/g, ' '), enumObj[k]));
 
 export const uuidv4 = () => {
    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {

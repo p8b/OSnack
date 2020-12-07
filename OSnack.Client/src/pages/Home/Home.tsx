@@ -1,8 +1,7 @@
-﻿import React, { useContext, useEffect, useRef, useState } from 'react';
+﻿import React, { useEffect, useRef, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import Container from '../../components/Container';
 import { API_URL } from 'osnack-frontend-shared/src/_core/constant.Variables';
-import { ShopContext } from '../../_core/shopContext';
 import { Category } from 'osnack-frontend-shared/src/_core/apiModels';
 import Carousel from '../../components/Carousel';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
@@ -13,7 +12,6 @@ const Home = (props: IProps) => {
    const isUnmounted = useRef(false);
    const [heroImgLoaded, setHeroImgLoaded] = useState(false);
    const [carouselItems, setCarouselItems] = useState<any[]>([]);
-   const { shopState, setShopState } = useContext(ShopContext);
    const history = useHistory();
 
    useEffect(() => {
@@ -38,7 +36,6 @@ const Home = (props: IProps) => {
             <div className="shop-card-category">
                <a className="col link-shop-card-img m-0 justify-text-center"
                   onClick={() => {
-                     setShopState({ ...shopState, shopCategoryFilter: category.id?.toString() });
                      history.push(`/Shop/Category/${encodeURIComponent(category.name || "")}`);
                   }} >
                   <img src={`${API_URL}\\${category.imagePath}`}
@@ -83,4 +80,3 @@ const Home = (props: IProps) => {
 declare type IProps = {
 };
 export default Home;
-

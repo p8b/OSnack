@@ -11,7 +11,7 @@ const initShopContext = {
    state: initState,
    //set: (state: ShopState) => { },
    set: (product: Product, quantity: number) => { },
-   getQuantity: function (product: Product): number { return 0; },
+   getQuantity: function (product: Product): number | undefined { return undefined; },
    clear: () => { }
 };
 
@@ -57,7 +57,6 @@ const ShopContextContainer = ({ children }: Props): JSX.Element => {
             }
          }
       }
-      console.log(_State);
       if (!isFound)
          _State.List.push(convertProductToOrderItem(product, quantity));
       setState(_State);
@@ -81,7 +80,7 @@ const ShopContextContainer = ({ children }: Props): JSX.Element => {
 
       if (item != undefined)
          return item.quantity;
-      return 0;
+      return undefined;
    };
    const clear = () => { setState(initState); };
 

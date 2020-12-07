@@ -26,8 +26,8 @@ const ShopItem = (props: IProps) => {
          <QuantityInput
             btnOnZeroTitle=""
             btnOnZeroClassName="radius-none btn-green cart-icon"
-            btnMinusClassName="radius-none-t"
-            btnPlusClassName="radius-none-t"
+            btnMinusClassName="radius-none"
+            btnPlusClassName="radius-none"
             value={basket.getQuantity(props.product)}
             onChange={(val) => { basket.set(props.product, val); }}
             className="col-12"

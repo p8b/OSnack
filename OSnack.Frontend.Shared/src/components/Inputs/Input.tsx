@@ -1,7 +1,7 @@
 ﻿import React, { useEffect, useState } from 'react';
 
 export const Input = (props: IProps) => {
-   const id: string = props.id ? Math.random().toString() : props.id!;
+   const id: string = props.id === undefined ? Math.random().toString() : props.id!;
    const [lblPos, setLblPos] = useState("lower");
 
    const validationClassName = (targetInput: EventTarget & HTMLInputElement) => {
@@ -33,7 +33,7 @@ export const Input = (props: IProps) => {
             <label children={props.label} htmlFor={id}
                className={`col-form-label p-0 m-0 ${lblPos}`} />
          }
-         <input id={id} type={props?.type || "text"}
+         <input id={id} ref={props.ref} type={props?.type || "text"}
             className={`line-limit-1 ${props.showDanger ? "danger" : ""} ${props.showValid ? "valid" : ""} ${props.inputClassName || ""}`}
             value={props.value}
             onFocus={i => { lblPosition("initial"); }}
@@ -66,6 +66,7 @@ export const Input = (props: IProps) => {
 
 interface IProps {
    id?: string;
+   ref?: React.RefObject<HTMLInputElement>;
    label?: string;
    value: string | number | undefined;
    className?: string;

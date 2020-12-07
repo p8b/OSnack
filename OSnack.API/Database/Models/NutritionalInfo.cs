@@ -2,14 +2,9 @@
 
 using P8B.Core.CSharp.Attributes;
 
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OSnack.API.Database.Models
 {
@@ -22,39 +17,39 @@ namespace OSnack.API.Database.Models
       public int PerGram { get; set; } = 100;
 
       [Column(TypeName = "decimal(5,2)")]
-      [PositiveDecimalIncludingZero(ErrorMessage = "Must be positive number \n")]
+      [PositiveDecimalIncludingZero(ErrorMessage = "Must be positive number \n", AllowNull = true)]
       public decimal? EnergyKJ { get; set; }
 
       [Column(TypeName = "decimal(5,2)")]
-      [PositiveDecimalIncludingZero(ErrorMessage = "Must be positive number \n")]
+      [PositiveDecimalIncludingZero(ErrorMessage = "Must be positive number \n", AllowNull = true)]
       public decimal? EnergyKcal { get; set; }
 
       [Column(TypeName = "decimal(5,2)")]
-      [PositiveDecimalIncludingZero(ErrorMessage = "Must be positive number \n")]
+      [PositiveDecimalIncludingZero(ErrorMessage = "Must be positive number \n", AllowNull = true)]
       public decimal? Fat { get; set; }
 
       [Column(TypeName = "decimal(5,2)")]
-      [PositiveDecimalIncludingZero(ErrorMessage = "Must be positive number \n")]
+      [PositiveDecimalIncludingZero(ErrorMessage = "Must be positive number \n", AllowNull = true)]
       public decimal? SaturateFat { get; set; }
 
       [Column(TypeName = "decimal(5,2)")]
-      [PositiveDecimalIncludingZero(ErrorMessage = "Must be positive number \n")]
+      [PositiveDecimalIncludingZero(ErrorMessage = "Must be positive number \n", AllowNull = true)]
       public decimal? Carbohydrate { get; set; }
 
       [Column(TypeName = "decimal(5,2)")]
-      [PositiveDecimalIncludingZero(ErrorMessage = "Must be positive number \n")]
+      [PositiveDecimalIncludingZero(ErrorMessage = "Must be positive number \n", AllowNull = true)]
       public decimal? carbohydrateSugar { get; set; }
 
       [Column(TypeName = "decimal(5,2)")]
-      [PositiveDecimalIncludingZero(ErrorMessage = "Must be positive number \n")]
+      [PositiveDecimalIncludingZero(ErrorMessage = "Must be positive number \n", AllowNull = true)]
       public decimal? Fibre { get; set; }
 
       [Column(TypeName = "decimal(5,2)")]
-      [PositiveDecimalIncludingZero(ErrorMessage = "Must be positive number \n")]
+      [PositiveDecimalIncludingZero(ErrorMessage = "Must be positive number \n", AllowNull = true)]
       public decimal? Protein { get; set; }
 
       [Column(TypeName = "decimal(5,2)")]
-      [PositiveDecimalIncludingZero(ErrorMessage = "Must be positive number \n")]
+      [PositiveDecimalIncludingZero(ErrorMessage = "Must be positive number \n", AllowNull = true)]
       public decimal? Salt { get; set; }
 
       [JsonIgnore]
