@@ -11,7 +11,7 @@ const MyAddresses = (props: IProps) => {
    //const auth = useContext(AuthContext);
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
-   const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false);
+   const [isOpenAddressModal, setIsOpenAddressModal] = useState(false);
    const [selectAddress, setSelectAddress] = useState(new Address());
    const [addressList, setAddressList] = useState<Address[]>([]);
 
@@ -22,7 +22,7 @@ const MyAddresses = (props: IProps) => {
 
    const newAddress = () => {
       setSelectAddress(new Address());
-      setIsOpenCategoryModal(true);
+      setIsOpenAddressModal(true);
    };
    const reloadAddressList = () => {
       errorAlert.PleaseWait(500, isUnmounted);
@@ -37,8 +37,8 @@ const MyAddresses = (props: IProps) => {
       });
    };
 
-   const resetCategoryModal = () => {
-      setIsOpenCategoryModal(false);
+   const resetAddressModal = () => {
+      setIsOpenAddressModal(false);
       setSelectAddress(new Address());
    };
 
@@ -73,7 +73,7 @@ const MyAddresses = (props: IProps) => {
                      <ButtonCard key={addr.id} cardClassName="card-lg col-12 row p-0 m-0"
                         onClick={() => {
                            setSelectAddress(addr);
-                           setIsOpenCategoryModal(true);
+                           setIsOpenAddressModal(true);
                         }}>
 
                         <p className={` tick-icon mb-auto ml-auto ${addr.isDefault ? '' : 'hide'}`} />
@@ -109,10 +109,10 @@ const MyAddresses = (props: IProps) => {
             }
          </div>
          {/***** Add/ modify category modal  ****/}
-         <AddressModal isOpen={isOpenCategoryModal}
+         <AddressModal isOpen={isOpenAddressModal}
             onSuccess={() => { reloadAddressList(); }}
             address={selectAddress}
-            onClose={resetCategoryModal} />
+            onClose={resetAddressModal} />
       </>
    );
 };

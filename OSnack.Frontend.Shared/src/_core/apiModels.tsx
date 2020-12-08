@@ -5,12 +5,25 @@ export enum RegistrationTypes {
     Facebook = 2,
     Github = 3,
 }
+
+export const RegistrationTypesList=[
+{Id:0,Name:"Application".replace(/_/g, ' '),Value:RegistrationTypes.Application},
+{Id:1,Name:"Google".replace(/_/g, ' '),Value:RegistrationTypes.Google},
+{Id:2,Name:"Facebook".replace(/_/g, ' '),Value:RegistrationTypes.Facebook},
+{Id:3,Name:"Github".replace(/_/g, ' '),Value:RegistrationTypes.Github},
+]
 export enum CouponType {
 
     FreeDelivery = 0,
     DiscountPrice = 1,
     PercentageOfTotal = 2,
 }
+
+export const CouponTypeList=[
+{Id:0,Name:"FreeDelivery".replace(/_/g, ' '),Value:CouponType.FreeDelivery},
+{Id:1,Name:"DiscountPrice".replace(/_/g, ' '),Value:CouponType.DiscountPrice},
+{Id:2,Name:"PercentageOfTotal".replace(/_/g, ' '),Value:CouponType.PercentageOfTotal},
+]
 export enum EmailTemplateServerVariables {
 
     UserName = 0,
@@ -19,6 +32,14 @@ export enum EmailTemplateServerVariables {
     TokenUrl = 3,
     ExpiaryDateTime = 4,
 }
+
+export const EmailTemplateServerVariablesList=[
+{Id:0,Name:"UserName".replace(/_/g, ' '),Value:EmailTemplateServerVariables.UserName},
+{Id:1,Name:"RegistrationMethod".replace(/_/g, ' '),Value:EmailTemplateServerVariables.RegistrationMethod},
+{Id:2,Name:"Role".replace(/_/g, ' '),Value:EmailTemplateServerVariables.Role},
+{Id:3,Name:"TokenUrl".replace(/_/g, ' '),Value:EmailTemplateServerVariables.TokenUrl},
+{Id:4,Name:"ExpiaryDateTime".replace(/_/g, ' '),Value:EmailTemplateServerVariables.ExpiaryDateTime},
+]
 export enum OrderStatusType {
 
     Placed = 0,
@@ -27,12 +48,26 @@ export enum OrderStatusType {
     Delivered = 3,
     Canceled = 4,
 }
+
+export const OrderStatusTypeList=[
+{Id:0,Name:"Placed".replace(/_/g, ' '),Value:OrderStatusType.Placed},
+{Id:1,Name:"Hold".replace(/_/g, ' '),Value:OrderStatusType.Hold},
+{Id:2,Name:"Confirmed".replace(/_/g, ' '),Value:OrderStatusType.Confirmed},
+{Id:3,Name:"Delivered".replace(/_/g, ' '),Value:OrderStatusType.Delivered},
+{Id:4,Name:"Canceled".replace(/_/g, ' '),Value:OrderStatusType.Canceled},
+]
 export enum ProductUnitType {
 
     Kg = 0,
     Grams = 1,
     Per_Item = 2,
 }
+
+export const ProductUnitTypeList=[
+{Id:0,Name:"Kg".replace(/_/g, ' '),Value:ProductUnitType.Kg},
+{Id:1,Name:"Grams".replace(/_/g, ' '),Value:ProductUnitType.Grams},
+{Id:2,Name:"Per_Item".replace(/_/g, ' '),Value:ProductUnitType.Per_Item},
+]
 export abstract class OrderAddressBase {
     name!: string;
     firstLine!: string;
@@ -105,6 +140,13 @@ export class MultiResultOfListOfCouponAndInteger {
     part2?: number;
 
 }
+export class DeliveryOption {
+    id?: number = 0;
+    name!: string;
+    price!: number;
+    minimumOrderTotal!: number;
+
+}
 export class EmailTemplate {
     id?: number = 0;
     name!: string;
@@ -133,11 +175,9 @@ export class Newsletter {
     displayName?: string | undefined;
 
 }
-export class DeliveryOption {
-    id?: number = 0;
-    name!: string;
-    price!: number;
-    minimumOrderTotal!: number;
+export class TupleOfListOfOrderAndInteger {
+    item1?: Order[];
+    item2?: number;
 
 }
 export class Payment {

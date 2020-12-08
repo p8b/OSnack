@@ -31,7 +31,7 @@ namespace OSnack.API.Controllers
          try
          {
             List<EmailTemplate> templateList = await _DbContext.EmailTemplates
-               .Include(et => et.ServerVariables)
+              // .Include(et => et.ServerVariables)
                .OrderByDescending(et => et.Name)
                .ToListAsync().ConfigureAwait(false);
 
@@ -51,7 +51,7 @@ namespace OSnack.API.Controllers
             }
             return Ok(templateList);
          }
-         catch (Exception)
+         catch (Exception ex)
          {
             CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
             return StatusCode(417, ErrorsList);

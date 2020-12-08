@@ -1,5 +1,5 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
-import { RegistrationTypes, Role, User } from 'osnack-frontend-shared/src/_core/apiModels';
+import { RegistrationTypesList, Role, User } from 'osnack-frontend-shared/src/_core/apiModels';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Input } from 'osnack-frontend-shared/src/components/Inputs/Input';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
@@ -8,13 +8,12 @@ import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { useCreateUserUser, useUpdateUserUser, useDeleteUser } from '../../SecretHooks/useUserHook';
 import InputDropdown from 'osnack-frontend-shared/src/components/Inputs/InputDropDown';
-import { enumToArray } from 'osnack-frontend-shared/src/_core/appFunc';
 
 const UserModal = (props: IProps) => {
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
    const [user, setUser] = useState(new User());
-   const [registrationMethodList] = useState(enumToArray(RegistrationTypes));
+   const [registrationMethodList] = useState(RegistrationTypesList);
 
    useEffect(() => () => { isUnmounted.current = true; }, []);
 
@@ -108,7 +107,7 @@ const UserModal = (props: IProps) => {
                onChange={i => { setUser({ ...user, email: i.target.value }); }}
                className="col-12 col-sm-6" />
             <Input label={`Registration Method`}
-               value={registrationMethodList.find((rm) => rm.id.toString() === user.registrationMethod?.type?.toString())?.name}
+               value={registrationMethodList.find((rm) => rm.Value === user.registrationMethod)?.Name}
                onChange={i => { }}
                disabled
                className="col-12 col-sm-6" />

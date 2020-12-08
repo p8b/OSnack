@@ -38,11 +38,12 @@ namespace OSnack.API.Controllers
       /// </summary>
       #region *** 200 OK, 417 ExpectationFailed ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(Tuple<List<Order>, int>), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("[action]/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}")]
-      [Authorize(AppConst.AccessPolicies.Secret)] /// Done  
+      [Authorize(AppConst.AccessPolicies.Secret)]
+      /// Done  
       public async Task<IActionResult> Get(
           int selectedPage,
           int maxNumberPerItemsPage,
@@ -77,7 +78,7 @@ namespace OSnack.API.Controllers
                 .ToListAsync()
                 .ConfigureAwait(false);
             /// return the list of Categories
-            return Ok(new { list, totalCount });
+            return Ok(new Tuple<List<Order>, int>(list, totalCount));
          }
          catch (Exception) //ArgumentNullException
          {
@@ -92,11 +93,12 @@ namespace OSnack.API.Controllers
       /// </summary>
       #region *** 200 OK, 417 ExpectationFailed ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(Tuple<List<Order>, int>), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("[action]/MyOrder/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}/{isSortAsce}/{sortName}")]
-      [Authorize(AppConst.AccessPolicies.Official)] /// Done
+      [Authorize(AppConst.AccessPolicies.Official)]
+      /// Done
       public async Task<IActionResult> Get(
           int selectedPage,
           int maxNumberPerItemsPage,
@@ -135,7 +137,7 @@ namespace OSnack.API.Controllers
                 .ToListAsync()
                 .ConfigureAwait(false);
             /// return the list of Categories
-            return Ok(new { list, totalCount });
+            return Ok(new Tuple<List<Order>, int>(list, totalCount));
          }
          catch (Exception) //ArgumentNullException
          {
@@ -276,12 +278,13 @@ namespace OSnack.API.Controllers
       #region *** 200 OK, 304 NotModified,412 PreconditionFailed ,422 UnprocessableEntity, 417 ExpectationFailed***
       [HttpPut("[action]")]
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
-      [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
       #endregion
-      [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test     
+      [Authorize(AppConst.AccessPolicies.Secret)]
+
+      /// Ready For Test     
       public async Task<IActionResult> Put([FromBody] Order modifiedOrder)
       {
          try
@@ -319,12 +322,11 @@ namespace OSnack.API.Controllers
       #region *** 200 OK, 304 NotModified,412 PreconditionFailed ,422 UnprocessableEntity, 417 ExpectationFailed***
       [HttpPut("[action]")]
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
-      [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
-      [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
+      [Authorize(AppConst.AccessPolicies.Secret)]
+      /// Ready For Test
       public async Task<IActionResult> PutOrderStatus([FromBody] Order modifiedOrder)
       {
          try
@@ -357,12 +359,12 @@ namespace OSnack.API.Controllers
       #region *** 200 OK,417 ExpectationFailed, 400 BadRequest,404 NotFound,412 PreconditionFailed ***
       [HttpDelete("[action]")]
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
-      [ProducesResponseType(StatusCodes.Status404NotFound)]
-      [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
+      [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status404NotFound)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
-      [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test 
+      [Authorize(AppConst.AccessPolicies.Secret)]
+      /// Ready For Test 
       public async Task<IActionResult> Delete([FromBody] Order order)
       {
          try

@@ -1,8 +1,8 @@
 import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
-import { ProblemDetails } from "../../_core/apiModels";
-export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: number, filterStatus: string | null, isSortAsce: boolean, sortName: string | null): Promise<void> =>{
+import { TupleOfListOfOrderAndInteger } from "../../_core/apiModels";
+export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: number, filterStatus: string | null, isSortAsce: boolean, sortName: string | null): Promise<TupleOfListOfOrderAndInteger> =>{
         let url_ = API_URL + "/Order/Get/MyOrder/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}/{isSortAsce}/{sortName}";
         if (selectedPage === undefined || selectedPage === null)
             throw new Error("The parameter 'selectedPage' must be defined.");
@@ -30,7 +30,9 @@ export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: n
         switch(response?.status){
 
         case 200: 
-            return;
+            return response?.json().then((responseJson: TupleOfListOfOrderAndInteger) => {
+                return responseJson;
+            });
 
         case 417: 
             return response?.json().then((data: ErrorDto[]) => {

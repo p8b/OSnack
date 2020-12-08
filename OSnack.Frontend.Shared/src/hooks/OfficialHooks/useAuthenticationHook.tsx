@@ -1,7 +1,7 @@
 import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
-import { User, ProblemDetails } from "../../_core/apiModels";
+import { User } from "../../_core/apiModels";
 export const useLogoutAuthentication = async (): Promise<void> =>{
         let url_ = API_URL + "/Authentication/Get/Logout";
         url_ = url_.replace(/[?&]$/, "");

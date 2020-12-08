@@ -12,7 +12,8 @@ const initShopContext = {
    //set: (state: ShopState) => { },
    set: (product: Product, quantity: number) => { },
    getQuantity: function (product: Product): number | undefined { return undefined; },
-   clear: () => { }
+   clear: () => { },
+   getTotalItems: function (): number { return 0; }
 };
 
 const reducerShop = (state: ShopState, newState: ShopState) => {
@@ -40,31 +41,24 @@ const ShopContextContainer = ({ children }: Props): JSX.Element => {
 
 
    const set = (product: Product, quantity: number) => {
-      clear();
       var _State = state;
+      //_State.List = [];
       let isFound = false;
-      if (_State === undefined) {
-         _State = new ShopState();
-         _State.List = [];
-      }
       for (var i = 0; i < state.List?.length; i++) {
-         if (_State.List[i].id === product.id) {
+         if (state.List[i].productId === product.id) {
             isFound = true;
-            if (quantity > 0) {
-               _State.List[i] = convertProductToOrderItem(product, quantity);
-            } else {
-               _State.List.splice(i, 1);
-            }
+            _State.List[i].quantity = quantity;
+            break;
          }
       }
       if (!isFound)
          _State.List.push(convertProductToOrderItem(product, quantity));
+      _State.List = _State.List.filter(oi => oi.quantity > 0).reverse();
       setState(_State);
    };
 
    const convertProductToOrderItem = (product: Product, quantity: number) => {
       var item = new OrderItem();
-      item.id = product.id;
       item.name = product.name;
       item.price = product.price;
       item.productCategoryName = product.category.name;
@@ -76,7 +70,7 @@ const ShopContextContainer = ({ children }: Props): JSX.Element => {
    };
 
    const getQuantity = (product: Product) => {
-      const item = state.List?.find(p => p.id === product.id);
+      const item = state.List?.find(p => p.productId === product.id);
 
       if (item != undefined)
          return item.quantity;
@@ -84,12 +78,20 @@ const ShopContextContainer = ({ children }: Props): JSX.Element => {
    };
    const clear = () => { setState(initState); };
 
+   const getTotalItems = () => {
+      let totalItem = 0;
+      state.List.map((orderItem) => {
+         totalItem += orderItem.quantity;
+      });
+      return totalItem;
+   };
+
    useEffect(() => {
       localStorage.setItem(localStorageName, JSON.stringify(state));
    }, [state]);
 
    return (
-      <ShopContext.Provider value={{ state, set, getQuantity, clear }}>
+      <ShopContext.Provider value={{ state, set, getQuantity, clear, getTotalItems }}>
          {children}
       </ShopContext.Provider >
    );

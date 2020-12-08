@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
-import { Category, Product, ProductUnitType } from 'osnack-frontend-shared/src/_core/apiModels';
-import { getBase64fromUrlImage, enumToArray } from 'osnack-frontend-shared/src/_core/appFunc';
+import { Category, Product, ProductUnitTypeList } from 'osnack-frontend-shared/src/_core/apiModels';
+import { getBase64fromUrlImage } from 'osnack-frontend-shared/src/_core/appFunc';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Input } from 'osnack-frontend-shared/src/components/Inputs/Input';
 import InputDropDown from 'osnack-frontend-shared/src/components/Inputs/InputDropDown';
@@ -19,7 +19,7 @@ const ProductModal = (props: IProps) => {
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
    const [product, setProduct] = useState(new Product());
-   const [productUnitTypeList] = useState(enumToArray(ProductUnitType));
+   const [productUnitTypeList] = useState(ProductUnitTypeList);
    const [imageBase64, setImageBase64] = useState("");
    const [originalImageBase64, setOriginalImageBase64] = useState("");
    const [nutritionalInfoModalIsOpen, setNutritionalInfoModalIsOpen] = useState(false);
@@ -170,13 +170,13 @@ const ProductModal = (props: IProps) => {
                showDanger={errorAlert.checkExistFilterRequired("UnitQuantity")}
             />
 
-            <InputDropDown dropdownTitle={productUnitTypeList.find((pu) => pu.value == product.unitType)?.name || "Select Option"}
+            <InputDropDown dropdownTitle={productUnitTypeList.find((pu) => pu.Value == product.unitType)?.Name || "Select Option"}
                label="Unit Type*"
                className="col-12 col-sm-6 " >
                {productUnitTypeList.map(productUnitType =>
-                  <button className="dropdown-item" key={productUnitType.id}
-                     onClick={() => { setProduct({ ...product, unitType: productUnitType.value as ProductUnitType }); }} >
-                     {productUnitType.name}
+                  <button className="dropdown-item" key={productUnitType.Id}
+                     onClick={() => { setProduct({ ...product, unitType: productUnitType.Value }); }} >
+                     {productUnitType.Name}
                   </button>
                )}
             </InputDropDown>

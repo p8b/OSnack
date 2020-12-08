@@ -1,7 +1,6 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import { useUpdateCurrentUserPasswordUser, useUpdateCurrentUserUser } from '../../hooks/OfficialHooks/useUserHook';
 import { User, RegistrationTypes } from '../../_core/apiModels';
-import { enumToArray } from '../../_core/appFunc';
 import { CommonRegex } from '../../_core/constant.Variables';
 import { Button } from '../Buttons/Button';
 import { Input } from '../Inputs/Input';

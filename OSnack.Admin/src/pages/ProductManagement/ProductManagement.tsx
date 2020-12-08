@@ -3,14 +3,13 @@ import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import Table, { TableData, TableHeaderData, TableRowData } from 'osnack-frontend-shared/src/components/Table/Table';
-import { Category, Product, ProductUnitType } from 'osnack-frontend-shared/src/_core/apiModels';
+import { Category, Product, ProductUnitTypeList } from 'osnack-frontend-shared/src/_core/apiModels';
 import ProductModal from './ProductModal';
 import Container from '../../components/Container';
 import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
 import { ConstMaxNumberOfPerItemsPage, GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
 import { useSearchSecretProduct } from '../../SecretHooks/useProductHook';
-import { enumToArray } from 'osnack-frontend-shared/src/_core/appFunc';
 import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
 import { useAllCategory } from 'osnack-frontend-shared/src/hooks/PublicHooks/useCategoryHook';
 
@@ -23,7 +22,7 @@ const ProductManagement = (props: IProps) => {
    const [selectedCategoryFilter, setSelectedCategoryFilter] = useState(GetAllRecords);
    const [selectedStatusFilter, setSelectedStatusFilter] = useState(GetAllRecords);
    const [isOpenProductModal, setIsOpenProductModal] = useState(false);
-   const [productUnitTypeList] = useState(enumToArray(ProductUnitType));
+   const [productUnitTypeList] = useState(ProductUnitTypeList);
 
    const [tableData, setTableData] = useState(new TableData());
    const [tblSortName, setTblsortName] = useState("Name");
@@ -53,7 +52,6 @@ const ProductManagement = (props: IProps) => {
       categoryFilter = selectedCategoryFilter
    ) => {
       let searchString = GetAllRecords;
-
       if (searchValue != null && searchValue != "")
          searchString = searchValue;
 
@@ -80,7 +78,9 @@ const ProductManagement = (props: IProps) => {
       useSearchSecretProduct(selectedPage, maxItemsPerPage, categoryFilter, searchString, statusFilter, isSortAsc, sortName)
          .then(products => {
             if (isUnmounted.current) return;
+            console.log(products);
             setTblTotalItemCount(products.part2 || 0);
+            console.log(tblTotalItemCount);
             populateProductTable(products.part1 ? products.part1 : []);
             errorAlert.clear();
          }).catch(alert => {
@@ -103,7 +103,7 @@ const ProductManagement = (props: IProps) => {
             product.name,
             product.category.name,
             `£${product.price}`,
-            `${product.unitQuantity} ${productUnitTypeList.find(ut => ut.value == product.unitType)?.name}`,
+            `${product.unitQuantity} ${productUnitTypeList.find(ut => ut.Value == product.unitType)?.Name}`,
             product.status ? "Active" : "Disabled",
             <div className="col-auto p-0 m-0">
                <button className="btn btn-sm btn-blue col-12 m-0 mt-1 mt-xl-0 edit-icon"
@@ -204,7 +204,7 @@ const ProductManagement = (props: IProps) => {
                <Pagination
                   maxItemsPerPage={tblMaxItemsPerPage}
                   selectedPage={tblSelectedPage}
-                  onChange={(selectedPage, maxItemsPerPage) => { onSearch(tblIsSortAsc, tblSortName, selectedPage, maxItemsPerPage); }}
+                  onChange={(selectedPage, maxItemsPerPage) => { onSearch(tblIsSortAsc, tblSortName, selectedPage, maxItemsPerPage); console.log("me?"); }}
                   listCount={tblTotalItemCount} />
             </div>
 

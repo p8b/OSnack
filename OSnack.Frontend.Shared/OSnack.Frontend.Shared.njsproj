@@ -321,6 +321,7 @@
     <TypeScriptCompile Include="src\hooks\OfficialHooks\useUserHook.tsx" />
     <TypeScriptCompile Include="src\hooks\PublicHooks\useAuthenticationHook.tsx" />
     <TypeScriptCompile Include="src\hooks\PublicHooks\useCategoryHook.tsx" />
+    <TypeScriptCompile Include="src\hooks\PublicHooks\useDeliveryOptionHook.tsx" />
     <TypeScriptCompile Include="src\hooks\PublicHooks\useNewsletterHook.tsx" />
     <TypeScriptCompile Include="src\hooks\PublicHooks\useProductHook.tsx" />
     <TypeScriptCompile Include="src\hooks\PublicHooks\useUserHook.tsx" />

@@ -23,11 +23,12 @@ namespace OSnack.API.Controllers
       #region ***  ***
       [Consumes(MediaTypeNames.Application.Json)]
       [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
-      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status404NotFound)]
       #endregion
       [HttpDelete("[action]")]
-      [Authorize(AppConst.AccessPolicies.Secret)]  /// Done    
+      [Authorize(AppConst.AccessPolicies.Secret)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status404NotFound)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
+      /// Done    
       public async Task<IActionResult> Delete([FromBody] Product product)
       {
          try

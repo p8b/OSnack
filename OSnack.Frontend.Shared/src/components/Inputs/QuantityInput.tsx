@@ -15,7 +15,7 @@ const QuantityInput = (props: IProps) => {
    };
    const manualChanged = async (val: number) => {
       if (!props.disabled)
-         props.onChange(val);
+         props.onChange((val || 0) * 1);
    };
    return (
       <div className={props.className}>

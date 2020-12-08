@@ -89,6 +89,7 @@ const CategoryManagement = (props: IProps) => {
       }
       setTableData(tData);
    };
+
    const editCategory = (category: Category) => {
       setSelectedCategory(category);
       setIsOpenCategoryModal(true);

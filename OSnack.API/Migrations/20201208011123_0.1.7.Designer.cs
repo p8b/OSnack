@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OSnack.API.Database;
 
 namespace OSnack.API.Migrations
 {
     [DbContext(typeof(OSnackDbContext))]
-    partial class OSnackDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201208011123_0.1.7")]
+    partial class _017
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -182,9 +184,6 @@ namespace OSnack.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
-
-                    b.Property<bool>("IsPremitive")
-                        .HasColumnType("bit");
 
                     b.Property<decimal>("MinimumOrderTotal")
                         .HasColumnType("decimal(7,2)");
@@ -570,6 +569,9 @@ namespace OSnack.API.Migrations
                     b.Property<int?>("EmailTemplateId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("EmailTemplateId2")
+                        .HasColumnType("int");
+
                     b.Property<int>("EnumValue")
                         .HasColumnType("int");
 
@@ -580,6 +582,8 @@ namespace OSnack.API.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("EmailTemplateId");
+
+                    b.HasIndex("EmailTemplateId2");
 
                     b.ToTable("ServerVariablesForEmail");
                 });
@@ -840,10 +844,16 @@ namespace OSnack.API.Migrations
 
             modelBuilder.Entity("OSnack.API.Database.Models.ServerVariables", b =>
                 {
+                    b.HasOne("OSnack.API.Database.Models.EmailTemplate", "EmailTemplate")
+                        .WithMany()
+                        .HasForeignKey("EmailTemplateId");
+
                     b.HasOne("OSnack.API.Database.Models.EmailTemplate", null)
                         .WithMany("ServerVariables")
-                        .HasForeignKey("EmailTemplateId")
+                        .HasForeignKey("EmailTemplateId2")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("EmailTemplate");
                 });
 
             modelBuilder.Entity("OSnack.API.Database.Models.Token", b =>

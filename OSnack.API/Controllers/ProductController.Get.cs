@@ -78,7 +78,7 @@ namespace OSnack.API.Controllers
                 .ConfigureAwait(false);
             return Ok(new MultiResult<List<Product>, int>(list, totalCount));
          }
-         catch (Exception ex)
+         catch (Exception)
          {
             CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
             return StatusCode(417, ErrorsList);

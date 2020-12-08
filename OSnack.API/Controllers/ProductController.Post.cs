@@ -23,12 +23,13 @@ namespace OSnack.API.Controllers
       #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
       [ProducesResponseType(typeof(Product), StatusCodes.Status201Created)]
-      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
-      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
-      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPost("[action]")]
-      [Authorize(AppConst.AccessPolicies.Secret)]  /// Done 
+      [Authorize(AppConst.AccessPolicies.Secret)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
+      /// Done 
       public async Task<IActionResult> Post([FromBody] Product newProduct)
       {
          try
@@ -107,12 +108,15 @@ namespace OSnack.API.Controllers
       #region *** 201 Created, 400 BadRequest, 422 UnprocessableEntity, 412 PreconditionFailed, 417 ExpectationFailed ***
       [Consumes(MediaTypeNames.Application.Json)]
       [ProducesResponseType(StatusCodes.Status201Created)]
-      [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-      [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+
       #endregion
       [HttpPost("Post/[action]/Score")]
-      [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test 
+      [Authorize(AppConst.AccessPolicies.Official)]
+      [ProducesResponseType(typeof(Score), StatusCodes.Status201Created)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
+      [ProducesDefaultResponseType]
+      /// Ready For Test 
       public async Task<IActionResult> Score([FromBody] Score newScore)
       {
          try

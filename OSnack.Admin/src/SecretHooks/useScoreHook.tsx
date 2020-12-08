@@ -1,8 +1,8 @@
 import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/components/Texts/Alert";
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
-import { Score, ProblemDetails } from "osnack-frontend-shared/src/_core/apiModels";
-export const usePostScore = async (newScore: Score): Promise<void> =>{
+import { Score } from "osnack-frontend-shared/src/_core/apiModels";
+export const usePostScore = async (newScore: Score): Promise<Score> =>{
         let url_ = API_URL + "/Score/Post";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -16,19 +16,16 @@ export const usePostScore = async (newScore: Score): Promise<void> =>{
         switch(response?.status){
 
         case 201: 
-            return;
-
-        case 422: 
-            return response?.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response?.status);
-            });
-
-        case 412: 
-            return response?.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response?.status);
+            return response?.json().then((responseJson: Score) => {
+                return responseJson;
             });
 
         case 417: 
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
+            });
+
+        case 422: 
             return response?.json().then((data: ErrorDto[]) => {
                 throw new AlertObj(data, AlertTypes.Error, response?.status);
             });

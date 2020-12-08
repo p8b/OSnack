@@ -7,3 +7,7 @@ export enum {{ Name }} {
     {{ enumeration.Name }} = {{ enumeration.Value }},
 {% endfor -%}
 }
+
+export const {{Name}}List=[
+{% for enumeration in Enums -%} {Id:{{ enumeration.Value }},Name:"{{ enumeration.Name }}".replace(/_/g, ' '),Value:{{Name}}.{{enumeration.Name}}},
+{% endfor -%}]

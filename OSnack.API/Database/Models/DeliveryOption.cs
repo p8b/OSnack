@@ -9,7 +9,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace OSnack.API.Extras
+namespace OSnack.API.Database.Models
 {
 
    [Table("DeliveryOption")]
@@ -33,6 +33,8 @@ namespace OSnack.API.Extras
       [Column(TypeName = "decimal(7,2)")]
       [Required(ErrorMessage = "Minimum Order Total Is Required \n")]
       public decimal MinimumOrderTotal { get; set; }
+
+      public bool IsPremitive { get; set; } = false;
 
       [JsonIgnore]
       public ICollection<Order> Orders { get; set; }

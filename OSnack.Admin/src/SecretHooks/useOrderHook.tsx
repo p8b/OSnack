@@ -1,8 +1,8 @@
 import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/components/Texts/Alert";
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
-import { ProblemDetails, Order } from "osnack-frontend-shared/src/_core/apiModels";
-export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, filterStatus: string | null, isSortAsce: boolean, sortName: string | null): Promise<void> =>{
+import { Order } from "osnack-frontend-shared/src/_core/apiModels";
+export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, filterStatus: string | null, isSortAsce: boolean, sortName: string | null): Promise<Order[]> =>{
         let url_ = API_URL + "/Order/Get/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}";
         if (selectedPage === undefined || selectedPage === null)
             throw new Error("The parameter 'selectedPage' must be defined.");
@@ -33,7 +33,9 @@ export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: n
         switch(response?.status){
 
         case 200: 
-            return;
+            return response?.json().then((responseJson: Order[]) => {
+                return responseJson;
+            });
 
         case 417: 
             return response?.json().then((data: ErrorDto[]) => {
@@ -45,7 +47,7 @@ export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: n
             throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
     }
 }
-export const usePutOrder = async (modifiedOrder: Order): Promise<void> =>{
+export const usePutOrder = async (modifiedOrder: Order): Promise<Order> =>{
         let url_ = API_URL + "/Order/Put";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -59,9 +61,11 @@ export const usePutOrder = async (modifiedOrder: Order): Promise<void> =>{
         switch(response?.status){
 
         case 200: 
-            return;
+            return response?.json().then((responseJson: Order) => {
+                return responseJson;
+            });
 
-        case 412: 
+        case 417: 
             return response?.json().then((data: ErrorDto[]) => {
                 throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
@@ -71,17 +75,12 @@ export const usePutOrder = async (modifiedOrder: Order): Promise<void> =>{
                 throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
-        case 417: 
-            return response?.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response?.status);
-            });
-
         default:
             CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status}`;
             throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
     }
 }
-export const usePutOrderStatusOrder = async (modifiedOrder: Order): Promise<void> =>{
+export const usePutOrderStatusOrder = async (modifiedOrder: Order): Promise<Order> =>{
         let url_ = API_URL + "/Order/PutOrderStatus";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -95,16 +94,8 @@ export const usePutOrderStatusOrder = async (modifiedOrder: Order): Promise<void
         switch(response?.status){
 
         case 200: 
-            return;
-
-        case 412: 
-            return response?.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response?.status);
-            });
-
-        case 422: 
-            return response?.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response?.status);
+            return response?.json().then((responseJson: Order) => {
+                return responseJson;
             });
 
         case 417: 
@@ -117,7 +108,7 @@ export const usePutOrderStatusOrder = async (modifiedOrder: Order): Promise<void
             throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
     }
 }
-export const useDeleteOrder = async (order: Order): Promise<void> =>{
+export const useDeleteOrder = async (order: Order): Promise<string> =>{
         let url_ = API_URL + "/Order/Delete";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -131,11 +122,8 @@ export const useDeleteOrder = async (order: Order): Promise<void> =>{
         switch(response?.status){
 
         case 200: 
-            return;
-
-        case 417: 
-            return response?.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response?.status);
+            return response?.json().then((responseJson: string) => {
+                return responseJson;
             });
 
         case 404: 
@@ -143,7 +131,7 @@ export const useDeleteOrder = async (order: Order): Promise<void> =>{
                 throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
-        case 412: 
+        case 417: 
             return response?.json().then((data: ErrorDto[]) => {
                 throw new AlertObj(data, AlertTypes.Error, response?.status);
             });

@@ -16,6 +16,7 @@ const AddressModal = (props: IProps) => {
    const errorAlert = useAlert(new AlertObj());
    const [address, setAddress] = useState(new Address());
    useEffect(() => {
+      console.log(props.address);
       if (props.address.id === undefined)
          props.address.id = 0;
       setAddress(props.address);
@@ -46,7 +47,7 @@ const AddressModal = (props: IProps) => {
          errorAlert.clear();
          setAddress(address);
          props.onClose();
-         props.onSuccess();
+         props.onSuccess(address);
       }).catch(alert => {
          if (isUnmounted.current) return;
          errorAlert.set(alert);
@@ -76,7 +77,7 @@ const AddressModal = (props: IProps) => {
          if (isUnmounted.current) return;
          errorAlert.clear();
          props.onClose();
-         props.onSuccess();
+         props.onSuccess(address);
       }).catch(alert => {
          if (isUnmounted.current) return;
          errorAlert.set(alert);
@@ -90,7 +91,7 @@ const AddressModal = (props: IProps) => {
          errorAlert.clear();
          errorAlert.setSingleSuccess("Deleted", message);
          props.onClose();
-         props.onSuccess();
+         props.onSuccess(address);
       }).catch(alert => {
          if (isUnmounted.current) return;
          errorAlert.set(alert);
@@ -107,7 +108,7 @@ const AddressModal = (props: IProps) => {
          {/***** Name ****/}
          <div className="row">
             <Input label="Name"
-               value={address.name}
+               value={address.name || ""}
                onChange={i => { setAddress({ ...address, name: i.target.value }); }}
                className="col-12" />
             <Input label="First Line"
@@ -172,7 +173,7 @@ declare type IProps = {
    address: Address;
    isOpen: boolean;
    onClose: () => void;
-   onSuccess: () => void;
+   onSuccess: (address: Address) => void;
    modalRef?: any;
 };
 export default AddressModal;
