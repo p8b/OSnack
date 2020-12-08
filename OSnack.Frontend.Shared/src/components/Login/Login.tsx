@@ -140,8 +140,8 @@ const Login = (props: IProps) => {
                /> ****/}
                <GoogleLogin clientId="78803002607-eqki0ohr9viovu2e5q0arpg8on9p8huq.apps.googleusercontent.com"
                   children="Sign in with Google"
-                  className="btn-lg btn-g col-12 mt-2 "
-                  redirectURI={window.location.href}
+               className="btn-lg btn-g col-12 mt-2 "
+               redirectURI={window.location.href}
                   onSuccess={externalLogin}
                   onFailure={externalLoginFailed}
                   onClick={externalLoginWait}

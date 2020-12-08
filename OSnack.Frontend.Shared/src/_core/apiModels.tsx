@@ -145,6 +145,7 @@ export class DeliveryOption {
     name!: string;
     price!: number;
     minimumOrderTotal!: number;
+    isPremitive?: boolean;
 
 }
 export class EmailTemplate {

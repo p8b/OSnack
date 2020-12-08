@@ -16,7 +16,6 @@ const AddressModal = (props: IProps) => {
    const errorAlert = useAlert(new AlertObj());
    const [address, setAddress] = useState(new Address());
    useEffect(() => {
-      console.log(props.address);
       if (props.address.id === undefined)
          props.address.id = 0;
       setAddress(props.address);

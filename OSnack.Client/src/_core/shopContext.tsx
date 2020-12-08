@@ -11,6 +11,7 @@ const initShopContext = {
    state: initState,
    //set: (state: ShopState) => { },
    set: (product: Product, quantity: number) => { },
+   updateOrderItem: (orderItem: OrderItem) => { },
    getQuantity: function (product: Product): number | undefined { return undefined; },
    clear: () => { },
    getTotalItems: function (): number { return 0; }
@@ -56,6 +57,18 @@ const ShopContextContainer = ({ children }: Props): JSX.Element => {
       _State.List = _State.List.filter(oi => oi.quantity > 0).reverse();
       setState(_State);
    };
+   const updateOrderItem = (orderItem: OrderItem) => {
+      var _State = state;
+      for (var i = 0; i < state.List?.length; i++) {
+         if (state.List[i].productId === orderItem.productId) {
+
+            _State.List[i] = orderItem;
+            break;
+         }
+      }
+      _State.List = _State.List.filter(oi => oi.quantity > 0);
+      setState(_State);
+   };
 
    const convertProductToOrderItem = (product: Product, quantity: number) => {
       var item = new OrderItem();
@@ -91,7 +104,7 @@ const ShopContextContainer = ({ children }: Props): JSX.Element => {
    }, [state]);
 
    return (
-      <ShopContext.Provider value={{ state, set, getQuantity, clear, getTotalItems }}>
+      <ShopContext.Provider value={{ state, set, getQuantity, clear, getTotalItems, updateOrderItem }}>
          {children}
       </ShopContext.Provider >
    );

@@ -159,9 +159,9 @@ export const getBase64fromUrlImage = (url: string) =>
  * The name of each enum object is used as the name of "ddLookup" object
  * @param enumObj any enum
  *///Turn enum to array of type "ddLookup".
-export const enumToArray = (enumObj: any) =>
-   Object.keys(enumObj).filter((value: any) => isNaN(Number(value)) === false)
-      .map((k: any) => new EnumObj(k, (enumObj[k] as string).replace(/_/g, ' '), enumObj[k]));
+//export const enumToArray = (enumObj: any) =>
+//   Object.keys(enumObj).filter((value: any) => isNaN(Number(value)) === false)
+//      .map((k: any) => new EnumObj(k, (enumObj[k] as string).replace(/_/g, ' '), enumObj[k]));
 
 export const uuidv4 = () => {
    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {

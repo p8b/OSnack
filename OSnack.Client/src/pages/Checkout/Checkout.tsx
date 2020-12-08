@@ -17,6 +17,7 @@ import NewCustomerModal from '../Login/NewCustomerModal';
 import { Access } from '../../_core/appConstant.Variables';
 import { useDetectOutsideClick } from 'osnack-frontend-shared/src/hooks/function/useDetectOutsideClick';
 import AddressModal from '../MyAccount/AddressModal';
+import QuantityInput from 'osnack-frontend-shared/src/components/Inputs/QuantityInput';
 
 const Checkout = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -24,14 +25,14 @@ const Checkout = (props: IProps) => {
    const auth = useContext(AuthContext);
    const basket = useContext(ShopContext);
    const toggleContainerModal = React.createRef<HTMLDivElement>();
-   const [newUser, setNewUser] = useState(new User());
    const [outsideClickModal, setOutsideClickModal] = useDetectOutsideClick(toggleContainerModal, false);
    const [isOpenAddressModal, setIsOpenAddressModal] = useState(false);
    const [selectedCoupon, setSelectedCoupon] = useState(new Coupon());
    const [addressList, setAddressList] = useState<Address[]>([]);
    const [selectedAddress, setSelectedAddress] = useState(new Address());
-   const [deliveryList, setdeliveryList] = useState<DeliveryOption[]>([]);
+   const [availableDeliveryList, setAvailableDeliveryList] = useState<DeliveryOption[]>([]);
    const [selectedDelivery, setSelectedDelivery] = useState(new DeliveryOption());
+   const [selectedDeliveryOptionList, setSelectedDeliveryOptionList] = useState<DeliveryOption[]>([]);
    const [tableData, setTableData] = useState(new TableData());
    const [totalDiscount, setTotalDiscount] = useState(0);
    const [totalPrice, setTotalPrice] = useState(0);
@@ -41,7 +42,7 @@ const Checkout = (props: IProps) => {
       setSelectedCoupon({ ...selectedCoupon, type: CouponType.DiscountPrice, discountAmount: 1 });
       errorAlert.PleaseWait(500, isUnmounted);
       useAllDeliveryOption().then(deliveryList => {
-         setdeliveryList(deliveryList);
+         populateOrderItemsTable(deliveryList);
       }).catch(alert => errorAlert.set(alert));
       if (auth.state.isAuthenticated) {
          useAllAddress().then(addresslist => {
@@ -49,21 +50,24 @@ const Checkout = (props: IProps) => {
             setSelectedAddress(addresslist.find(t => t.isDefault == true) || new Address);
          }).catch(alert => errorAlert.set(alert));
       }
-      populateOrderItemsTable();
+
    }, []);
 
 
-   const populateOrderItemsTable = () => {
+   const populateOrderItemsTable = (deliveryList: DeliveryOption[], selectDelivery?: DeliveryOption) => {
+
+
       let tData = new TableData();
       tData.headers.push(new TableHeaderData("Product", "", true));
-      tData.headers.push(new TableHeaderData("Quantity. "));
+      tData.headers.push(new TableHeaderData("Quantity"));
       tData.headers.push(new TableHeaderData("Price", "", false));
 
       let totalPriceTemp = 0;
       let recalculateTotalPriceAtTheEnd = false;
       switch (selectedCoupon.type) {
          case CouponType.FreeDelivery:
-            setSelectedDelivery(deliveryList.find(d => d.name == "Free") || new DeliveryOption());
+            selectDelivery = deliveryList.find(d => d.price == 0 && d.minimumOrderTotal == 0 && d.isPremitive) || new DeliveryOption();
+            setSelectedDelivery(selectDelivery);
             setTotalDiscount(0);
             break;
          case CouponType.DiscountPrice:
@@ -77,13 +81,20 @@ const Checkout = (props: IProps) => {
             break;
       }
 
-
-      totalPriceTemp += selectedDelivery.price;
       basket.state.List.map(orderItem => {
-         totalPriceTemp += (orderItem.quantity * orderItem.price);
+         totalPriceTemp += (orderItem.quantity * orderItem.price) as number;
          tData.rows.push(new TableRowData([
             orderItem.name,
-            orderItem.quantity,
+            <QuantityInput
+               key={orderItem.productId}
+               btnOnZeroTitle=""
+               btnOnZeroClassName="radius-none btn-green cart-icon"
+               btnMinusClassName="radius-none"
+               btnPlusClassName="radius-none"
+               value={orderItem.quantity}
+               onChange={(val) => { orderItem.quantity = val; basket.updateOrderItem(orderItem); populateOrderItemsTable(deliveryList); }}
+               className="col-12"
+            />,
             orderItem.price
          ]));
 
@@ -103,13 +114,44 @@ const Checkout = (props: IProps) => {
       } else {
          errorAlert.clear();
       }
+
+      let availableList: DeliveryOption[] = [];
+      if (deliveryList.find(d => d.price == 0 && d.minimumOrderTotal > 0 && d.isPremitive) &&
+         totalPriceTemp > (deliveryList.find(d => d.price == 0 && d.minimumOrderTotal > 0 && d.isPremitive)!.minimumOrderTotal)) {
+         let _delivery: DeliveryOption = deliveryList.find(d => d.price == 0 && d.minimumOrderTotal > 0 && d.isPremitive)!;
+         if (selectDelivery == undefined || !selectDelivery.isPremitive) {
+            setSelectedDelivery(_delivery);
+         } else {
+            setSelectedDelivery(selectDelivery);
+         }
+         totalPriceTemp += _delivery.price;
+         availableList.push(_delivery);
+         deliveryList.filter(d => !d.isPremitive).map(delivery => {
+            availableList.push(delivery);
+         });
+      }
+      else {
+         let _delivery: DeliveryOption = deliveryList.find(d => d.price != 0 && d.minimumOrderTotal == 0 && d.isPremitive)!;
+         if (selectDelivery == undefined || !selectDelivery?.isPremitive) {
+            setSelectedDelivery(_delivery);
+         } else {
+            setSelectedDelivery(selectDelivery);
+         }
+         availableList.push(_delivery);
+         totalPriceTemp += _delivery.price;
+         deliveryList.filter(d => !d.isPremitive).map(delivery => {
+            availableList.push(delivery);
+         });
+
+      }
+      setAvailableDeliveryList(availableList);
+      setSelectedDeliveryOptionList(deliveryList);
       setTotalPrice(totalPriceTemp);
       setTableData(tData);
    };
 
    const externalLoginFailed = (user: User) => {
       setOutsideClickModal(true);
-      setNewUser(user);
    };
 
    const couponCheck = () => { };
@@ -153,28 +195,26 @@ const Checkout = (props: IProps) => {
                               <td className="pl-0 pr-0 ml-0 mr-0 ">
                                  <InputDropDown key="deliveryOptions"
                                     label=""
-                                    dropdownTitle={selectedDelivery.name || "Delivery Option"}
+                                    dropdownTitle={selectedDelivery?.name || "Delivery Option"}
                                     className="col-12 col-md-auto mt-2 pr-2 pl-md-1 mt-md-0 align-self-end dropup"
-                                    //titleClassName="btn-white "
-                                    //spanClassName="text-center dropdown-menu-right bg-white"
+
                                     children={
                                        <div className="p-0 m-0">
-                                          {deliveryList.map(delivery => {
-                                             if (delivery.name != "Free") {
-                                                return <a className="dropdown-item p-1 text-nav" key={delivery.name}
-                                                   onClick={() => setSelectedDelivery(delivery)}
-                                                   children={<div children={`${delivery.name} - £${delivery.price?.toFixed(2)}`} />}
-                                                />;
-                                             }
-                                             else { return <a key={Math.random()} className="dropdown-item p-1 text-nav disabled" children={delivery.name} />; }
-                                          }
-                                          )
-                                          }
+                                          {availableDeliveryList.map(delivery => {
+                                             return <a className="dropdown-item p-1 text-nav" key={delivery?.name}
+                                                onClick={() => {
+
+                                                   populateOrderItemsTable(selectedDeliveryOptionList, delivery);
+                                                   setTotalPrice(totalPrice - selectedDelivery.price + delivery.price);
+                                                }}
+                                                children={<div children={`${delivery?.name} - £${delivery?.price?.toFixed(2)}`} />}
+                                             />;
+                                          })}
                                        </div>
                                     } />
                               </td>
                               <td>
-                                 £<b id="DiscountAmount">{selectedDelivery.price?.toFixed(2)}</b>
+                                 £<b id="DiscountAmount">{selectedDelivery?.price?.toFixed(2)}</b>
                               </td>
                            </tr>
                            {/* Total Price Row */}
@@ -283,11 +323,7 @@ const Checkout = (props: IProps) => {
                            </div>
                            <NewCustomerModal isOpen={outsideClickModal}
                               modalRef={toggleContainerModal}
-                              onCancel={() => {
-                                 setOutsideClickModal(false);
-                                 setNewUser(new User());
-                              }}
-                              newUser={newUser}
+                              onCancel={() => setOutsideClickModal(false)}
                            />
                         </>
                      }

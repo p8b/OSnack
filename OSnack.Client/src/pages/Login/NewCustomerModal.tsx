@@ -1,8 +1,7 @@
 ﻿import React, { useState, useEffect, useRef } from "react";
 import { Redirect, useHistory } from "react-router-dom";
-import { RegistrationTypes, User } from "osnack-frontend-shared/src/_core/apiModels";
+import { RegistrationTypes, RegistrationTypesList, User } from "osnack-frontend-shared/src/_core/apiModels";
 import { CommonRegex } from "osnack-frontend-shared/src/_core/constant.Variables";
-import { enumToArray } from "osnack-frontend-shared/src/_core/appFunc";
 import PageHeader from "osnack-frontend-shared/src/components/Texts/PageHeader";
 import { Input } from "osnack-frontend-shared/src/components/Inputs/Input";
 import { CheckBox } from "osnack-frontend-shared/src/components/Inputs/CheckBox";
@@ -23,7 +22,7 @@ const NewCustomerModal = (props: IProps) => {
 
    useEffect(() => () => { isUnmounted.current = true; }, []);
    useEffect(() => {
-      if (props.newUser !== null) setUser(props.newUser);
+      if (props.newUser !== undefined) setUser(props.newUser);
       setTermsAndCondition(false);
    }, [props.newUser]);
 
@@ -60,9 +59,8 @@ const NewCustomerModal = (props: IProps) => {
    const getRegistrationType = () => {
       let regType = user.registrationMethod?.type;
       if (regType != null && regType != RegistrationTypes.Application) {
-         let typeList = enumToArray(RegistrationTypes);
          externalLogin = true;
-         return `(${typeList.find(i => i.name == regType)?.name} account)`;
+         return `(${RegistrationTypesList.find(i => i.Value == regType)?.Name} account)`;
       }
       return "*";
    };
@@ -145,7 +143,7 @@ const NewCustomerModal = (props: IProps) => {
 
 type IProps = {
    isOpen: boolean,
-   newUser: User,
+   newUser?: User,
    onCancel: () => void;
    modalRef?: any;
 };
