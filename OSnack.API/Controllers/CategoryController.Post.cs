@@ -5,16 +5,14 @@ using Microsoft.EntityFrameworkCore;
 
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
+using OSnack.API.Extras.CustomTypes;
 
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Models;
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Net.Mime;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OSnack.API.Controllers
@@ -66,9 +64,10 @@ namespace OSnack.API.Controllers
                        newCategory.OriginalImageBase64,
                        $"Images\\Categories\\{folderName}");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                CoreFunc.Error(ref ErrorsList, "Image cannot be saved.");
+               _LoggingService.LogException(Request.Path, ex, User, AppLogType.FileModification);
                return StatusCode(412, ErrorsList);
             }
             try
@@ -79,22 +78,21 @@ namespace OSnack.API.Controllers
                /// save the changes to the database
                await _DbContext.SaveChangesAsync().ConfigureAwait(false);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                CoreFunc.DeleteFromWWWRoot(newCategory.ImagePath, _WebHost.WebRootPath);
                CoreFunc.DeleteFromWWWRoot(newCategory.OriginalImagePath, _WebHost.WebRootPath);
                CoreFunc.ClearEmptyImageFolders(_WebHost.WebRootPath);
-               throw;
+               CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User, AppLogType.FileModification));
             }
 
             /// return 201 created status with the new object
             /// and success message
             return Created("", newCategory);
          }
-         catch (Exception) // DbUpdateException, DbUpdateConcurrencyException
+         catch (Exception ex)
          {
-            /// Add the error below to the error list and return bad request
-            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
       }

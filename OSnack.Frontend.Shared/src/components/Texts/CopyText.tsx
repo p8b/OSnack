@@ -11,7 +11,7 @@ const CopyText = (props: IProps) => {
    };
    return (
 
-      <div className={`custom-tooltip ${props.className || ""}`}
+      <div className={`custom-tooltip cursor-pointer ${props.className || ""}`}
          onClick={copy}>
          {props.text}
          <span id="myToolTip"

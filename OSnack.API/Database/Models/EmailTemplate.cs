@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication;
-
+﻿
 using Newtonsoft.Json;
 
-using OSnack.API.Extras;
 using OSnack.API.Extras.CustomTypes;
 
 using P8B.Core.CSharp;
@@ -14,7 +12,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
-using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace OSnack.API.Database.Models
@@ -34,6 +31,7 @@ namespace OSnack.API.Database.Models
       public string Subject { get; set; } = "";
 
       public string TokenUrlPath { get; set; }
+
       public List<ServerVariables> ServerVariables { get; set; }
 
       public bool Locked { get; set; } = true;

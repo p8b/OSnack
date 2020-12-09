@@ -53,9 +53,9 @@ namespace OSnack.API.Controllers
 
             return Created("Success", newAddress);
          }
-         catch (Exception)
+         catch (Exception ex)
          {
-            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
       }

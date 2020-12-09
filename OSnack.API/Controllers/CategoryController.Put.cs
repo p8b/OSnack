@@ -5,16 +5,14 @@ using Microsoft.EntityFrameworkCore;
 
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
+using OSnack.API.Extras.CustomTypes;
 
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Models;
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Net.Mime;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OSnack.API.Controllers
@@ -96,9 +94,10 @@ namespace OSnack.API.Controllers
                           modifiedCategory.OriginalImageBase64,
                           $"Images\\Categories\\{folderName}");
                }
-               catch (Exception)
+               catch (Exception ex)
                {
                   CoreFunc.Error(ref ErrorsList, "Image cannot be saved.");
+                  _LoggingService.LogException(Request.Path, ex, User, AppLogType.FileModification);
                   return StatusCode(412, ErrorsList);
                }
             }
@@ -111,7 +110,7 @@ namespace OSnack.API.Controllers
                await _DbContext.SaveChangesAsync().ConfigureAwait(false);
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                if (containsNewImages)
                {
@@ -119,6 +118,7 @@ namespace OSnack.API.Controllers
                   CoreFunc.DeleteFromWWWRoot(modifiedCategory.OriginalImagePath, _WebHost.WebRootPath);
                   CoreFunc.ClearEmptyImageFolders(_WebHost.WebRootPath);
                }
+               _LoggingService.LogException(Request.Path, ex, User, AppLogType.FileModification);
             }
 
             if (containsNewImages)
@@ -129,9 +129,9 @@ namespace OSnack.API.Controllers
             }
             return Ok(modifiedCategory);
          }
-         catch (Exception)
+         catch (Exception ex)
          {
-            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
       }

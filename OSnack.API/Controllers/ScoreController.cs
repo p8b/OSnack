@@ -1,18 +1,19 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+
 using OSnack.API.Database;
 using OSnack.API.Database.Models;
+using OSnack.API.Extras;
+
+using P8B.Core.CSharp;
+using P8B.Core.CSharp.Models;
+using P8B.UK.API.Services;
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Mime;
-using System.Text;
 using System.Threading.Tasks;
-using P8B.Core.CSharp.Models;
-using P8B.Core.CSharp;
-using OSnack.API.Extras;
-using Microsoft.AspNetCore.Authorization;
 
 namespace OSnack.API.Controllers
 {
@@ -22,13 +23,18 @@ namespace OSnack.API.Controllers
    public class ScoreController : ControllerBase
    {
       private OSnackDbContext _DbContext { get; }
+      private LoggingService _LoggingService { get; }
       private List<Error> ErrorsList = new List<Error>();
 
       /// <summary>
       ///     Class Constructor. Set the local properties
       /// </summary>
       /// <param name="db">Receive the AppDbContext instance from the ASP.Net Pipeline</param>
-      public ScoreController(OSnackDbContext db) => _DbContext = db;
+      public ScoreController(OSnackDbContext db, LoggingService loggingService)
+      {
+         _DbContext = db;
+         _LoggingService = loggingService;
+      }
 
       /// <summary>
       ///     Create a new Score
@@ -74,14 +80,11 @@ namespace OSnack.API.Controllers
             /// and success message
             return Created("Succes", newScore);
          }
-         catch (Exception) // DbUpdateException, DbUpdateConcurrencyException
+         catch (Exception ex)
          {
-            /// Add the error below to the error list and return bad request
-            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
       }
    }
 }
-
-

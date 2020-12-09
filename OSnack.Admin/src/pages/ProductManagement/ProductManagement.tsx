@@ -78,9 +78,7 @@ const ProductManagement = (props: IProps) => {
       useSearchSecretProduct(selectedPage, maxItemsPerPage, categoryFilter, searchString, statusFilter, isSortAsc, sortName)
          .then(products => {
             if (isUnmounted.current) return;
-            console.log(products);
             setTblTotalItemCount(products.part2 || 0);
-            console.log(tblTotalItemCount);
             populateProductTable(products.part1 ? products.part1 : []);
             errorAlert.clear();
          }).catch(alert => {
@@ -98,19 +96,20 @@ const ProductManagement = (props: IProps) => {
       tData.headers.push(new TableHeaderData("Status", "Status", true));
       tData.headers.push(new TableHeaderData("", "", false));
 
-      productList.map(product =>
+      productList.map(product => {
          tData.rows.push(new TableRowData([
             product.name,
             product.category.name,
             `£${product.price}`,
-            `${product.unitQuantity} ${productUnitTypeList.find(ut => ut.Value == product.unitType)?.Name}`,
+            `${product.unitQuantity} ${productUnitTypeList.find(pu => pu.value == product.unitType)?.name}`,
             product.status ? "Active" : "Disabled",
             <div className="col-auto p-0 m-0">
                <button className="btn btn-sm btn-blue col-12 m-0 mt-1 mt-xl-0 edit-icon"
                   onClick={() => { editProduct(product); }}
                   children="Edit" />
             </div>
-         ])));
+         ]));
+      });
       if (productList.length == 0) {
          errorAlert.setSingleWarning("0", "No Result Found");
       } else {
@@ -204,7 +203,7 @@ const ProductManagement = (props: IProps) => {
                <Pagination
                   maxItemsPerPage={tblMaxItemsPerPage}
                   selectedPage={tblSelectedPage}
-                  onChange={(selectedPage, maxItemsPerPage) => { onSearch(tblIsSortAsc, tblSortName, selectedPage, maxItemsPerPage); console.log("me?"); }}
+                  onChange={(selectedPage, maxItemsPerPage) => { onSearch(tblIsSortAsc, tblSortName, selectedPage, maxItemsPerPage); }}
                   listCount={tblTotalItemCount} />
             </div>
 

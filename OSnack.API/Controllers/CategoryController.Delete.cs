@@ -5,15 +5,14 @@ using Microsoft.EntityFrameworkCore;
 
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
+using OSnack.API.Extras.CustomTypes;
 
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Models;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Mime;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OSnack.API.Controllers
@@ -60,15 +59,15 @@ namespace OSnack.API.Controllers
                CoreFunc.DeleteFromWWWRoot(category.OriginalImagePath, _WebHost.WebRootPath);
                CoreFunc.ClearEmptyImageFolders(_WebHost.WebRootPath);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-               _DbContext.AppLogs.Add(new AppLog { Massage = string.Format("Category deleted record but Images was not. The path is: {0}", category.ImagePath) });
+               _LoggingService.LogException(Request.Path, ex, User, AppLogType.FileModification);
             }
             return Ok($"Category '{category.Name}' was deleted");
          }
-         catch (Exception)
+         catch (Exception ex)
          {
-            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
       }

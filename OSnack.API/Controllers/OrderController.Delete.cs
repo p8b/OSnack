@@ -16,37 +16,37 @@ using System.Threading.Tasks;
 
 namespace OSnack.API.Controllers
 {
-   public partial class AddressController
+   public partial class OrderController
    {
-      #region*** ***
+      /// <summary>
+      /// Delete Order
+      /// </summary>
+      #region *** 200 OK,417 ExpectationFailed, 400 BadRequest,404 NotFound,412 PreconditionFailed ***
+      [HttpDelete("[action]")]
       [Consumes(MediaTypeNames.Application.Json)]
       [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status404NotFound)]
-      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
-      [HttpDelete("[action]")]
-      [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test 
-      public async Task<IActionResult> Delete([FromBody] Address address)
+      [Authorize(AppConst.AccessPolicies.Secret)]
+      /// Ready For Test 
+      public async Task<IActionResult> Delete([FromBody] Order order)
       {
          try
          {
-            if (!await _DbContext.Addresses.AnyAsync(a => a.Id == address.Id).ConfigureAwait(false))
+            /// if the Order record with the same id is not found
+            if (!await _DbContext.Categories.AnyAsync(d => d.Id == order.Id).ConfigureAwait(false))
             {
-               CoreFunc.Error(ref ErrorsList, "Address not found");
+               CoreFunc.Error(ref ErrorsList, "Order not found");
                return NotFound(ErrorsList);
             }
 
-            if (address.IsDefault == true)
-            {
-               CoreFunc.Error(ref ErrorsList, "Unable to Delete default Address.");
-               return StatusCode(412, ErrorsList);
-            }
-
-            _DbContext.Addresses.Remove(address);
+            /// now delete the Order record
+            _DbContext.Orders.Remove(order);
+            /// save the changes to the database
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
-
-            return Ok($"Address was deleted");
+            /// return 200 OK status
+            return Ok($"Order '{order.Id}' was deleted");
          }
          catch (Exception ex)
          {

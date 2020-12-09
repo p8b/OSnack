@@ -50,9 +50,9 @@ namespace OSnack.API.Controllers
 
             return Ok();
          }
-         catch (Exception)
+         catch (Exception ex)
          {
-            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
       }
@@ -99,9 +99,9 @@ namespace OSnack.API.Controllers
             else
                return Ok(user);
          }
-         catch (Exception)
+         catch (Exception ex)
          {
-            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
       }

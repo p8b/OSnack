@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-using OSnack.API.Database;
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 
@@ -45,10 +44,9 @@ namespace OSnack.API.Controllers
             /// return 200 OK status
             return Ok($"User ID ('{thisUser.Id}') was deleted");
          }
-         catch (Exception)
+         catch (Exception ex)
          {
-            /// Add the error below to the error list and return bad request
-            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
       }

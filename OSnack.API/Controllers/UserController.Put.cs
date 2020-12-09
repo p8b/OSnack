@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-using Newtonsoft.Json;
-
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 using OSnack.API.Extras.AppInterfaces;
@@ -107,10 +105,9 @@ namespace OSnack.API.Controllers
             /// thus return 200 ok status with the updated object
             return Ok(user);
          }
-         catch (Exception) // DbUpdateException, DbUpdateConcurrencyException
+         catch (Exception ex)
          {
-            /// Add the error below to the error list and return bad request
-            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
       }
@@ -180,10 +177,9 @@ namespace OSnack.API.Controllers
             /// thus return 200 ok status with the updated object
             return Ok(user);
          }
-         catch (Exception) // DbUpdateException, DbUpdateConcurrencyException
+         catch (Exception ex)
          {
-            /// Add the error below to the error list and return bad request
-            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
       }
@@ -218,10 +214,9 @@ namespace OSnack.API.Controllers
             /// thus return 200 ok status with the updated object
             return Ok(user);
          }
-         catch (Exception) // DbUpdateException, DbUpdateConcurrencyException
+         catch (Exception ex)
          {
-            /// Add the error below to the error list and return bad request
-            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
       }
@@ -283,9 +278,9 @@ namespace OSnack.API.Controllers
                return StatusCode(412, ErrorsList);
             }
          }
-         catch (Exception)
+         catch (Exception ex)
          {
-            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
       }
@@ -321,9 +316,9 @@ namespace OSnack.API.Controllers
             }
             return Ok(result);
          }
-         catch (Exception)
+         catch (Exception ex)
          {
-            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
       }
@@ -408,10 +403,9 @@ namespace OSnack.API.Controllers
 
             return Ok(result);
          }
-         catch (Exception) // DbUpdateException, DbUpdateConcurrencyException
+         catch (Exception ex)
          {
-            /// Add the error below to the error list and return bad request
-            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
       }

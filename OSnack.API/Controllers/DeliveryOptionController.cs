@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+
 using OSnack.API.Database;
+
 using P8B.Core.CSharp.Models;
+using P8B.UK.API.Services;
+
+using System.Collections.Generic;
 
 namespace OSnack.API.Controllers
 {
@@ -14,10 +15,15 @@ namespace OSnack.API.Controllers
    public partial class DeliveryOptionController : ControllerBase
    {
       private OSnackDbContext _DbContext { get; }
+      private LoggingService _LoggingService { get; }
 
       private List<Error> ErrorsList = new List<Error>();
 
-      public DeliveryOptionController(OSnackDbContext _db) => _DbContext = _db;
+      public DeliveryOptionController(OSnackDbContext db, LoggingService loggingService)
+      {
+         _DbContext = db;
+         _LoggingService = loggingService;
+      }
 
    }
 }

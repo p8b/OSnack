@@ -46,6 +46,7 @@ const ProductModal = (props: IProps) => {
                errorAlert.setSingleWarning("", "Image Not Found!");
             });
       }
+      console.log(props.product);
    }, [props.product]);
    useEffect(() => {
       if (!props.isOpen)
@@ -121,6 +122,7 @@ const ProductModal = (props: IProps) => {
          errors.List.push(new ErrorDto("0", `uploading ${progress}%`));
       errorAlert.set(errors);
    };
+
 
    return (
       <Modal className="col-11 col-sm-10 col-md-8 col-lg-6 pl-4 pr-4"

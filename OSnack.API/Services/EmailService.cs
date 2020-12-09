@@ -1,26 +1,25 @@
-﻿using MimeKit;
-using MailKit.Net.Smtp;
+﻿using MailKit.Net.Smtp;
+using MailKit.Security;
+
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+
+using MimeKit;
+
+using OSnack.API.Database;
+using OSnack.API.Database.Models;
+using OSnack.API.Extras.CustomTypes;
+
+using P8B.Core.CSharp.Extentions;
 using P8B.Core.CSharp.Models;
 using P8B.Core.CSharp.Models.Interfaces;
 
-using System.Threading.Tasks;
-using System.Net.Security;
-using MailKit.Security;
-using OSnack.API.Database;
-using Microsoft.AspNetCore.Http;
-using OSnack.API.Database.Models;
 using System;
-using OSnack.API.Extras.CustomTypes;
-using P8B.Core.CSharp.Extentions;
-using Newtonsoft.Json;
 using System.IO;
-using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Hosting;
-using P8B.Core.CSharp;
-using OSnack.API.Extras;
-using Microsoft.EntityFrameworkCore;
+using System.Net.Security;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace P8B.UK.API.Services
 {
@@ -29,6 +28,7 @@ namespace P8B.UK.API.Services
 
       #region *** Properties ***
       private byte[] _Attachment { set; get; }
+      private LoggingService _LoggingService { get; }
       private EmailSettings _EmailSettings { get; }
       private OSnackDbContext _DbContext { get; }
       private IWebHostEnvironment _WebEnv { get; }
@@ -37,6 +37,7 @@ namespace P8B.UK.API.Services
       public EmailService() { }
       public EmailService(
           EmailSettings emailSettings,
+          LoggingService loggingService,
           IWebHostEnvironment webEnv,
           OSnackDbContext dbContext)
       {
@@ -45,6 +46,7 @@ namespace P8B.UK.API.Services
          _EmailSettings = emailSettings;
          _DbContext = dbContext;
          _WebEnv = webEnv;
+         _LoggingService = loggingService;
       }
 
       /// <summary>
@@ -54,23 +56,15 @@ namespace P8B.UK.API.Services
       /// <returns>bool: true (if email is send correctly) else false</returns>
       public async Task<bool> ExternalRegistrationWelcomeAsync(User user)
       {
+         string templateName = "Welcome External Registration";
          try
          {
-
-            return await PopulateHtmlWithServerVariables("Welcome External Registration", user)
+            return await PopulateHtmlWithServerVariables(templateName, user)
                .ConfigureAwait(false);
          }
-         catch (Exception err)
+         catch (Exception ex)
          {
-            /// if there are any exceptions, Log the exception error
-            /// on the database and return false to the caller
-            await _DbContext.AppLogs.AddAsync(new AppLog
-            {
-               Massage = err.Message,
-               JsonObject = JsonConvert.SerializeObject(err),
-               User = user
-            }).ConfigureAwait(false);
-            await _DbContext.SaveChangesAsync().ConfigureAwait(false);
+            _LoggingService.LogEmailFailure(ex.Message, new { ex, templateName }, user);
             return false;
          }
       }
@@ -84,9 +78,10 @@ namespace P8B.UK.API.Services
       /// <returns>bool: true (if email is send correctly) else false</returns>
       public async Task<bool> EmailConfirmationAsync(User user, string DomainUrl)
       {
+         string templateName = "Email Confirmation";
          try
          {
-            return await PopulateHtmlWithServerVariables("Email Confirmation", user
+            return await PopulateHtmlWithServerVariables(templateName, user
                , new Token
                {
                   Type = TokenTypes.ConfirmEmail,
@@ -95,17 +90,9 @@ namespace P8B.UK.API.Services
                , DateTime.UtcNow.AddYears(1))
                .ConfigureAwait(false);
          }
-         catch (Exception err)
+         catch (Exception ex)
          {
-            /// if there are any exceptions, Log the exception error
-            /// on the database and return false to the caller
-            await _DbContext.AppLogs.AddAsync(new AppLog
-            {
-               Massage = err.Message,
-               JsonObject = JsonConvert.SerializeObject(err),
-               User = user
-            }).ConfigureAwait(false);
-            await _DbContext.SaveChangesAsync();
+            _LoggingService.LogEmailFailure(ex.Message, new { ex, templateName, domainUrl = DomainUrl }, user);
             return false;
          }
       }
@@ -115,9 +102,10 @@ namespace P8B.UK.API.Services
       /// <returns>bool: true (if email is send correctly) else false</returns>
       public async Task<bool> NewEmployeePasswordAsync(User user, string DomainUrl)
       {
+         string templateName = "Welcome New Employee";
          try
          {
-            return await PopulateHtmlWithServerVariables("Welcome New Employee", user
+            return await PopulateHtmlWithServerVariables(templateName, user
                , new Token
                {
                   Type = TokenTypes.ChangePassword,
@@ -126,17 +114,9 @@ namespace P8B.UK.API.Services
                , DateTime.UtcNow.AddDays(5))
                .ConfigureAwait(false);
          }
-         catch (Exception err)
+         catch (Exception ex)
          {
-            /// if there are any exceptions, Log the exception error
-            /// on the database and return false to the caller
-            await _DbContext.AppLogs.AddAsync(new AppLog
-            {
-               Massage = err.Message,
-               JsonObject = JsonConvert.SerializeObject(err),
-               User = user
-            }).ConfigureAwait(false);
-            await _DbContext.SaveChangesAsync().ConfigureAwait(false);
+            _LoggingService.LogEmailFailure(ex.Message, new { ex, templateName, domainUrl = DomainUrl }, user);
             return false;
          }
       }
@@ -149,6 +129,7 @@ namespace P8B.UK.API.Services
       /// <returns>bool: true (if email is send correctly) else false</returns>
       public async Task<bool> PasswordResetAsync(User user, string DomainUrl)
       {
+         string templateName = "Welcome New Employee";
          try
          {
             return await PopulateHtmlWithServerVariables("Password Reset", user
@@ -159,18 +140,9 @@ namespace P8B.UK.API.Services
                }
                , DateTime.UtcNow.AddHours(5));
          }
-         catch (Exception)
+         catch (Exception ex)
          {
-
-            ///// if there are any exceptions, Log the exception error
-            ///// on the database and return false to the caller
-            //await _DbContext.AppLogs.AddAsync(new oAppLog
-            //{
-            //   Massage = err.Message,
-            //   JsonObject = JsonConvert.SerializeObject(err),
-            //   User = user
-            //});
-            //await _DbContext.SaveChangesAsync().ConfigureAwait(false);
+            _LoggingService.LogEmailFailure(ex.Message, new { ex, templateName, domainUrl = DomainUrl }, user);
             return false;
          }
       }

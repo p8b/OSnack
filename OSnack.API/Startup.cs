@@ -14,8 +14,6 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Primitives;
 
-using Newtonsoft.Json.Converters;
-
 using OSnack.API.Database;
 using OSnack.API.Database.Context.ClassOverrides;
 using OSnack.API.Database.Models;
@@ -155,6 +153,7 @@ namespace OSnack.API
          //// Add email service as a Transient service middle-ware so that each class implementing this
          //// middle-ware will receive a new object of oEmailService class
          services.AddTransient<IEmailService, EmailService>();
+         services.AddTransient<ILoggingService, LoggingService>();
 
          //// Add MVC services to the pipeline
          services.AddMvc(options => options.EnableEndpointRouting = false)

@@ -31,9 +31,9 @@ namespace OSnack.API.Controllers
             return Ok(await _DbContext.Addresses.
                 Where(t => t.User.Id == AppFunc.GetUserId(User)).ToListAsync());
          }
-         catch (Exception)
+         catch (Exception ex)
          {
-            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
       }

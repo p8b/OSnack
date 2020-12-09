@@ -8,6 +8,7 @@ using OSnack.API.Extras;
 
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Models;
+using P8B.UK.API.Services;
 
 using System;
 using System.Collections.Generic;
@@ -22,13 +23,14 @@ namespace OSnack.API.Controllers
    public class NewsletterController : ControllerBase
    {
       private OSnackDbContext _DbContext { get; }
+      private LoggingService _LoggingService { get; }
       private List<Error> ErrorsList = new List<Error>();
 
-      /// <summary>
-      ///     Class Constructor. Set the local properties
-      /// </summary>
-      /// <param name="db">Receive the AppDbContext instance from the ASP.Net Pipeline</param>
-      public NewsletterController(OSnackDbContext db) => _DbContext = db;
+      public NewsletterController(OSnackDbContext db, LoggingService loggingService)
+      {
+         _DbContext = db;
+         _LoggingService = loggingService;
+      }
 
       /// <summary>
       ///     Subscribe to newsletter
@@ -66,10 +68,9 @@ namespace OSnack.API.Controllers
             /// and success message
             return Created("Success", newsletter);
          }
-         catch (Exception) // DbUpdateException, DbUpdateConcurrencyException
+         catch (Exception ex)
          {
-            /// Add the error below to the error list and return bad request
-            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
       }
@@ -101,10 +102,9 @@ namespace OSnack.API.Controllers
             /// return 200 OK status
             return Ok($"{email} is now unsubscribed");
          }
-         catch (Exception)
+         catch (Exception ex)
          {
-            /// Add the error below to the error list
-            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
       }

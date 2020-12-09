@@ -5,15 +5,14 @@ using Microsoft.EntityFrameworkCore;
 
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
+using OSnack.API.Extras.CustomTypes;
 
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Models;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Mime;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OSnack.API.Controllers
@@ -72,9 +71,10 @@ namespace OSnack.API.Controllers
                        newProduct.OriginalImageBase64,
                        $"Images\\Products\\{folderName}");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                CoreFunc.Error(ref ErrorsList, "Image cannot be saved.");
+               _LoggingService.LogException(Request.Path, ex, User, AppLogType.FileModification);
                return StatusCode(412, ErrorsList);
             }
 
@@ -84,19 +84,19 @@ namespace OSnack.API.Controllers
                _DbContext.Entry(newProduct.Category).State = EntityState.Unchanged;
                await _DbContext.SaveChangesAsync().ConfigureAwait(false);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                CoreFunc.DeleteFromWWWRoot(newProduct.ImagePath, _WebHost.WebRootPath);
                CoreFunc.DeleteFromWWWRoot(newProduct.OriginalImagePath, _WebHost.WebRootPath);
                CoreFunc.ClearEmptyImageFolders(_WebHost.WebRootPath);
-               throw;
+               throw ex;
             }
 
             return Created("", newProduct);
          }
-         catch (Exception)
+         catch (Exception ex)
          {
-            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
       }
@@ -140,10 +140,9 @@ namespace OSnack.API.Controllers
             /// and success message
             return Created("Success", newScore);
          }
-         catch (Exception) // DbUpdateException, DbUpdateConcurrencyException
+         catch (Exception ex)
          {
-            /// Add the error below to the error list and return bad request
-            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
       }

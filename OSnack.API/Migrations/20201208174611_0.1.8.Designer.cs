@@ -10,7 +10,7 @@ using OSnack.API.Database;
 namespace OSnack.API.Migrations
 {
     [DbContext(typeof(OSnackDbContext))]
-    [Migration("20201208143739_0.1.8")]
+    [Migration("20201208174611_0.1.8")]
     partial class _018
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -842,10 +842,12 @@ namespace OSnack.API.Migrations
 
             modelBuilder.Entity("OSnack.API.Database.Models.ServerVariables", b =>
                 {
-                    b.HasOne("OSnack.API.Database.Models.EmailTemplate", null)
+                    b.HasOne("OSnack.API.Database.Models.EmailTemplate", "EmailTemplate")
                         .WithMany("ServerVariables")
                         .HasForeignKey("EmailTemplateId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("EmailTemplate");
                 });
 
             modelBuilder.Entity("OSnack.API.Database.Models.Token", b =>

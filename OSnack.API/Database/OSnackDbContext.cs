@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 using OSnack.API.Database.Models;
-using OSnack.API.Extras;
 using OSnack.API.Extras.ClassOverrides;
 
 namespace OSnack.API.Database
@@ -72,7 +71,7 @@ namespace OSnack.API.Database
          builder.Entity<Product>().HasOne(t => t.NutritionalInfo).WithOne(r => r.Product).OnDelete(DeleteBehavior.Cascade);
          builder.Entity<AppLog>().HasOne(l => l.User).WithOne().OnDelete(DeleteBehavior.Cascade);
          builder.Entity<ServerVariables>().HasKey(s => s.Id);
-         builder.Entity<EmailTemplate>().HasMany(e => e.ServerVariables).WithOne().OnDelete(DeleteBehavior.Cascade);
+         builder.Entity<EmailTemplate>().HasMany(e => e.ServerVariables).WithOne(e => e.EmailTemplate).OnDelete(DeleteBehavior.Cascade);
 
 
          builder.Entity<Token>().HasOne(t => t.User).WithMany().OnDelete(DeleteBehavior.Cascade);

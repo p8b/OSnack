@@ -13,7 +13,6 @@ using P8B.Core.CSharp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OSnack.API.Controllers
@@ -78,9 +77,9 @@ namespace OSnack.API.Controllers
                 .ConfigureAwait(false);
             return Ok(new MultiResult<List<Product>, int>(list, totalCount));
          }
-         catch (Exception)
+         catch (Exception ex)
          {
-            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
       }
@@ -135,9 +134,9 @@ namespace OSnack.API.Controllers
 
             return Ok(new MultiResult<Product, List<Product>>(product, relatedProducts));
          }
-         catch (Exception)
+         catch (Exception ex)
          {
-            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
       }

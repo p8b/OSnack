@@ -45,4 +45,11 @@
       Grams = 1,
       Per_Item = 2
    }
+   public enum AppLogType
+   {
+      Exception = 0,
+      Information = 1,
+      FileModification = 2,
+      EmailFailure = 3,
+   }
 }

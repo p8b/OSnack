@@ -90,7 +90,7 @@ const EmailTemplateEditDetailsModal = (props: IProps) => {
                   label="Server Variables Required"
                   className="col-12">
                   {serverVariables.map(sv =>
-                     <div className="dropdown-item" key={Math.random()}
+                     <div className="dropdown-item cursor-pointer" key={Math.random()}
                         onClick={() => {
                            let arr: ServerVariables[] = [sv];
                            if (template.serverVariables!.length > 0)

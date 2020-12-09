@@ -1,4 +1,7 @@
-﻿using OSnack.API.Extras.CustomTypes;
+﻿using Newtonsoft.Json;
+
+using OSnack.API.Extras.CustomTypes;
+
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -19,6 +22,8 @@ namespace OSnack.API.Database.Models
       [Required]
       public string ReplacementValue { get; set; }
 
+      [JsonIgnore]
+      public EmailTemplate EmailTemplate { get; set; }
       public ServerVariables() { }
       public ServerVariables(EmailTemplateServerVariables enumValue)
       {

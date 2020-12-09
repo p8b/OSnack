@@ -13,7 +13,6 @@ using P8B.Core.CSharp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OSnack.API.Controllers
@@ -31,7 +30,7 @@ namespace OSnack.API.Controllers
          try
          {
             List<EmailTemplate> templateList = await _DbContext.EmailTemplates
-              // .Include(et => et.ServerVariables)
+               // .Include(et => et.ServerVariables)
                .OrderByDescending(et => et.Name)
                .ToListAsync().ConfigureAwait(false);
 
@@ -53,7 +52,7 @@ namespace OSnack.API.Controllers
          }
          catch (Exception ex)
          {
-            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User)); ;
             return StatusCode(417, ErrorsList);
          }
       }
@@ -80,9 +79,9 @@ namespace OSnack.API.Controllers
 
             return Ok(new MultiResult<EmailTemplate, EmailTemplate>(template, defaultTemplate));
          }
-         catch (Exception)
+         catch (Exception ex)
          {
-            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
       }
@@ -107,10 +106,9 @@ namespace OSnack.API.Controllers
 
             return Ok(List);
          }
-         catch (Exception) //ArgumentNullException
+         catch (Exception ex)
          {
-            /// in the case any exceptions return the following error
-            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
       }

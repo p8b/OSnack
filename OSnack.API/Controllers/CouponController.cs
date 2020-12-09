@@ -3,6 +3,7 @@
 using OSnack.API.Database;
 
 using P8B.Core.CSharp.Models;
+using P8B.UK.API.Services;
 
 using System.Collections.Generic;
 
@@ -14,8 +15,13 @@ namespace OSnack.API.Controllers
    public partial class CouponController : ControllerBase
    {
       private OSnackDbContext _DbContext { get; }
+      private LoggingService _LoggingService { get; }
       private List<Error> ErrorsList = new List<Error>();
 
-      public CouponController(OSnackDbContext db) => _DbContext = db;
+      public CouponController(OSnackDbContext db, LoggingService loggingService)
+      {
+         _DbContext = db;
+         _LoggingService = loggingService;
+      }
    }
 }

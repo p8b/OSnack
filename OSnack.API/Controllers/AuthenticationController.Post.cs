@@ -60,7 +60,7 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpPost("Post/[action]")]
       [Authorize(AppConst.AccessPolicies.Public)]
-      public async Task<IActionResult> ExternalLoginOfficial([FromBody] P8B.Core.CSharp.Models.ExternalLoginInfo externalLoginInfo) =>
+      public async Task<IActionResult> ExternalLoginOfficial([FromBody] ExternalLoginDetails externalLoginInfo) =>
          await ExternalLogin(externalLoginInfo, AppConst.AccessPolicies.Official).ConfigureAwait(false);
       #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
@@ -73,10 +73,10 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpPost("Post/[action]")]
       [Authorize(AppConst.AccessPolicies.Public)]
-      public async Task<IActionResult> ExternalLoginSecret([FromBody] P8B.Core.CSharp.Models.ExternalLoginInfo externalLoginInfo) =>
+      public async Task<IActionResult> ExternalLoginSecret([FromBody] ExternalLoginDetails externalLoginInfo) =>
          await ExternalLogin(externalLoginInfo, AppConst.AccessPolicies.Secret).ConfigureAwait(false);
 
-      private async Task<IActionResult> ExternalLogin(P8B.Core.CSharp.Models.ExternalLoginInfo externalLoginInfo, string Access)
+      private async Task<IActionResult> ExternalLogin(ExternalLoginDetails externalLoginInfo, string Access)
       {
          try
          {
@@ -151,9 +151,9 @@ namespace OSnack.API.Controllers
             externalLoginUser.Id = -1;
             return StatusCode(206, externalLoginUser);
          }
-         catch (Exception)
+         catch (Exception ex)
          {
-            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
       }
@@ -278,10 +278,9 @@ namespace OSnack.API.Controllers
 
             return Ok(user);
          }
-         catch (Exception)
+         catch (Exception ex)
          {
-            /// Add the error below to the error list and return bad request
-            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
       }
@@ -325,15 +324,14 @@ namespace OSnack.API.Controllers
                return Unauthorized(ErrorsList);
             }
          }
-         catch (Exception)
+         catch (Exception ex)
          {
-            /// Add the error below to the error list and return bad request
-            CoreFunc.Error(ref ErrorsList, CoreConst.CommonErrors.ServerError);
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
       }
 
-      private async Task<User> GetGoogleUserInfo(P8B.Core.CSharp.Models.ExternalLoginInfo externalLoginInfo)
+      private async Task<User> GetGoogleUserInfo(P8B.Core.CSharp.Models.ExternalLoginDetails externalLoginInfo)
       {
          ExternalEmailSecret googleSecrets = AppConst.Settings.ExternalLoginSecrets.FindObj(e => e.Provider.EqualCurrentCultureIgnoreCase("Google"));
          var caller = new HttpClient();
@@ -365,7 +363,7 @@ namespace OSnack.API.Controllers
          };
       }
 
-      private async Task<User> GetFacebookUserInfo(P8B.Core.CSharp.Models.ExternalLoginInfo externalLoginInfo)
+      private async Task<User> GetFacebookUserInfo(P8B.Core.CSharp.Models.ExternalLoginDetails externalLoginInfo)
       {
          ExternalEmailSecret facebookSecrets = AppConst.Settings.ExternalLoginSecrets.FindObj(e => e.Provider.EqualCurrentCultureIgnoreCase("Facebook"));
 
