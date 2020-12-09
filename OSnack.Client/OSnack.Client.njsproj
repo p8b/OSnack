@@ -187,6 +187,7 @@
     <TypeScriptCompile Include="src\components\NavMenu\NavMenu.tsx" />
     <TypeScriptCompile Include="src\components\NavMenu\NavMenuItems.tsx" />
     <TypeScriptCompile Include="src\pages\About\About.tsx" />
+    <TypeScriptCompile Include="src\pages\Checkout\BasketItem.tsx" />
     <TypeScriptCompile Include="src\pages\Checkout\Checkout.tsx" />
     <TypeScriptCompile Include="src\pages\ContactUs\ContactUs.tsx" />
     <TypeScriptCompile Include="src\pages\Login\NewCustomerModal.tsx" />

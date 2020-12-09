@@ -21,23 +21,23 @@ const QuantityInput = (props: IProps) => {
       <div className={props.className}>
          <div className="row">
             {props.btnOnZeroTitle != undefined && (props.value == 0 || props.value == undefined) && document.activeElement?.id !== id &&
-               <Button className={`col-12 btn-lg m-0 ${props.btnOnZeroClassName}`}
+               <Button className={`col-12 btn-sm m-0 ${props.btnOnZeroClassName}`}
                   onClick={PlusOne} children={props.btnOnZeroTitle} />
             }
             {(props.value && props.value > 0 || document.activeElement?.id === id) &&
                <>
                   {!props.disabled &&
-                     <Button className={`col-3 btn-lg btn-danger minus-icon radius-none-r  ${props.btnMinusClassName}`}
+                     <Button className={`col-3 btn-sm btn-danger minus-icon radius-none-r  ${props.btnMinusClassName}`}
                         onClick={MinusOne} />
                   }
                   <Input id={id} type="number" positiveNumbersOnly value={props.value}
                      className="col-6 p-0 mb-0 d-flex align-items-end"
-                     inputClassName={`text-center form-control-lg ${props.inputClassName}`}
+                     inputClassName={`text-center  ${props.inputClassName}`}
                      onBlur={(i) => { manualChanged(i.target.value as unknown as number); }}
                      onChange={(i) => { props.onChange(i.target.value as unknown as number); }}
                   />
                   {!props.disabled &&
-                     <Button className={`col-3 btn-lg btn-success plus-icon radius-none-l ${props.btnPlusClassName}`}
+                     <Button className={`col-3 btn-sm btn-success plus-icon radius-none-l ${props.btnPlusClassName}`}
                         onClick={PlusOne}
                      />
                   }

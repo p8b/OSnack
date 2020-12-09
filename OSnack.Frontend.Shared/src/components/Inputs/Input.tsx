@@ -45,6 +45,7 @@ export const Input = (props: IProps) => {
                lblPosition(i.target.value);
                props.onBlur && props.onBlur(i);
             }}
+            placeholder={props.placeholder}
             min={props.positiveNumbersOnly ? "0" : undefined}
             disabled={props.disabled || false}
             onKeyDown={e => {
@@ -68,6 +69,7 @@ interface IProps {
    id?: string;
    ref?: React.RefObject<HTMLInputElement>;
    label?: string;
+   placeholder?: string;
    value: string | number | undefined;
    className?: string;
    inputClassName?: string;

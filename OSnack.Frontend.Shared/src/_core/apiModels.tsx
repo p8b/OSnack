@@ -193,6 +193,7 @@ export abstract class OrderProductBase {
     price!: number;
     unitQuantity!: number;
     unitType!: ProductUnitType;
+    imagePath?: string | undefined;
 
 }
 export class NutritionalInfo {
@@ -295,7 +296,6 @@ export class OrderItem extends OrderProductBase {
 export class Product extends OrderProductBase {
     id?: number = 0;
     description?: string | undefined;
-    imagePath?: string | undefined;
     originalImagePath?: string | undefined;
     imageBase64!: string;
     originalImageBase64!: string;
