@@ -28,15 +28,14 @@ namespace OSnack.API.Controllers
       private readonly IWebHostEnvironment _WebHostingEnv;
 
 
-      public AuthenticationController(OSnackDbContext db, OSnackSignInManager<User> sm, UserManager<User> um,
-         LoggingService loggingService, IAntiforgery af, IWebHostEnvironment env)
+      public AuthenticationController(OSnackDbContext db, OSnackSignInManager<User> sm, UserManager<User> um, IAntiforgery af, IWebHostEnvironment env)
       {
          _DbContext = db;
          _SignInManager = sm;
          _UserManager = um;
          _Antiforgery = af;
          _WebHostingEnv = env;
-         _LoggingService = loggingService;
+         _LoggingService = new LoggingService(db);
       }
    }
 }

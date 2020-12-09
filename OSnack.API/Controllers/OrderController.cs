@@ -18,14 +18,10 @@ namespace OSnack.API.Controllers
       private LoggingService _LoggingService { get; }
       private List<Error> ErrorsList = new List<Error>();
 
-      /// <summary>
-      ///     Class Constructor. Set the local properties
-      /// </summary>
-      /// <param name="db">Receive the AppDbContext instance from the ASP.Net Pipeline</param>
-      public OrderController(OSnackDbContext db, LoggingService loggingService)
+      public OrderController(OSnackDbContext db)
       {
          _DbContext = db;
-         _LoggingService = loggingService;
+         _LoggingService = new LoggingService(db);
       }
 
 

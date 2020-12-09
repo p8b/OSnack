@@ -30,10 +30,10 @@ namespace OSnack.API.Controllers
       ///     Class Constructor. Set the local properties
       /// </summary>
       /// <param name="db">Receive the AppDbContext instance from the ASP.Net Pipeline</param>
-      public ScoreController(OSnackDbContext db, LoggingService loggingService)
+      public ScoreController(OSnackDbContext db)
       {
          _DbContext = db;
-         _LoggingService = loggingService;
+         _LoggingService = new LoggingService(db);
       }
 
       /// <summary>

@@ -20,11 +20,11 @@ namespace OSnack.API.Controllers
       private IWebHostEnvironment _WebHost { get; }
       private List<Error> ErrorsList = new List<Error>();
 
-      public CategoryController(OSnackDbContext db, LoggingService loggingService, IWebHostEnvironment webEnv)
+      public CategoryController(OSnackDbContext db, IWebHostEnvironment webEnv)
       {
          _DbContext = db;
          _WebHost = webEnv;
-         _LoggingService = loggingService;
+         _LoggingService = new LoggingService(db);
       }
    }
 }

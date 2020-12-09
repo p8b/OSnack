@@ -18,10 +18,10 @@ namespace OSnack.API.Controllers
       private LoggingService _LoggingService { get; }
       private List<Error> ErrorsList = new List<Error>();
 
-      public RoleController(OSnackDbContext db, LoggingService loggingService)
+      public RoleController(OSnackDbContext db)
       {
          _DbContext = db;
-         _LoggingService = loggingService;
+         _LoggingService = new LoggingService(db);
       }
    }
 }

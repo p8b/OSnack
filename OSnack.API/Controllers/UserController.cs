@@ -22,10 +22,10 @@ namespace OSnack.API.Controllers
       private LoggingService _LoggingService { get; }
       private UserManager<User> _UserManager { get; }
       private SignInManager<User> _SignInManager { get; }
-      private EmailService EmailService { get; }
+      private EmailService _EmailService { get; }
       private List<Error> ErrorsList = new List<Error>();
 
-      public UserController(OSnackDbContext db, LoggingService loggingService,
+      public UserController(OSnackDbContext db,
           UserManager<User> um,
           IWebHostEnvironment webEnv,
           SignInManager<User> sm)
@@ -33,8 +33,8 @@ namespace OSnack.API.Controllers
          _DbContext = db;
          _UserManager = um;
          _SignInManager = sm;
-         _LoggingService = loggingService;
-         EmailService = new EmailService(AppConst.Settings.EmailSettings, loggingService, webEnv, _DbContext);
+         _LoggingService = new LoggingService(db);
+         _EmailService = new EmailService(AppConst.Settings.EmailSettings, _LoggingService, webEnv, _DbContext);
       }
    }
 }

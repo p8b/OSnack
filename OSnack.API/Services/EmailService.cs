@@ -12,7 +12,6 @@ using OSnack.API.Extras.CustomTypes;
 
 using P8B.Core.CSharp.Extentions;
 using P8B.Core.CSharp.Models;
-using P8B.Core.CSharp.Models.Interfaces;
 
 using System;
 using System.IO;
@@ -23,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace P8B.UK.API.Services
 {
-   public class EmailService : IEmailService
+   public class EmailService
    {
 
       #region *** Properties ***
@@ -293,7 +292,6 @@ namespace P8B.UK.API.Services
          await sendMail().ConfigureAwait(false);
          return true;
       }
-
 
       private string HtmlToPlainText(string html)
       {

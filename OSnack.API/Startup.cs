@@ -21,9 +21,7 @@ using OSnack.API.Extras;
 
 using P8B.Core.CSharp.Extentions;
 using P8B.Core.CSharp.Models;
-using P8B.Core.CSharp.Models.Interfaces;
 using P8B.UK.API.Extras.Overrides;
-using P8B.UK.API.Services;
 
 using System;
 using System.IO;
@@ -63,11 +61,12 @@ namespace OSnack.API
             options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
          });
 
+
          /// Pass the SQL server connection to the db context
          /// receive the connection string from the settings.json
-         services.AddDbContext<OSnackDbContext>(options => options
-         .UseSqlServer(AppConst.Settings.DbConnectionString())
-         .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
+         var test = services.AddDbContext<OSnackDbContext>(options => options
+           .UseSqlServer(AppConst.Settings.DbConnectionString())
+           .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 
          /// Add .Net Core Identity to the pipe-line with the following options
          services.AddIdentityCore<User>(options =>
@@ -150,10 +149,6 @@ namespace OSnack.API
             options.SuppressModelStateInvalidFilter = true;
          });
 
-         //// Add email service as a Transient service middle-ware so that each class implementing this
-         //// middle-ware will receive a new object of oEmailService class
-         services.AddTransient<IEmailService, EmailService>();
-         services.AddTransient<ILoggingService, LoggingService>();
 
          //// Add MVC services to the pipeline
          services.AddMvc(options => options.EnableEndpointRouting = false)

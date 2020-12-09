@@ -26,10 +26,10 @@ namespace OSnack.API.Controllers
       private LoggingService _LoggingService { get; }
       private List<Error> ErrorsList = new List<Error>();
 
-      public NewsletterController(OSnackDbContext db, LoggingService loggingService)
+      public NewsletterController(OSnackDbContext db)
       {
          _DbContext = db;
-         _LoggingService = loggingService;
+         _LoggingService = new LoggingService(db);
       }
 
       /// <summary>

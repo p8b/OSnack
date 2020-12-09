@@ -19,10 +19,10 @@ namespace OSnack.API.Controllers
 
       private List<Error> ErrorsList = new List<Error>();
 
-      public AddressController(OSnackDbContext db, LoggingService loggingService)
+      public AddressController(OSnackDbContext db)
       {
          _DbContext = db;
-         _LoggingService = loggingService;
+         _LoggingService = new LoggingService(db);
       }
    }
 }

@@ -24,6 +24,7 @@ namespace OSnack.API.Controllers
       {
          _DbContext = db;
          _WebHost = webEnv;
+         _LoggingService = new LoggingService(db);
       }
    }
 }

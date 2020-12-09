@@ -57,7 +57,7 @@ namespace OSnack.API.Controllers
             if (isUserCreated)
             {
                Request.Headers.TryGetValue("Origin", out StringValues Originvalue);
-               await EmailService
+               await _EmailService
                   .NewEmployeePasswordAsync(newUser, Originvalue)
                   .ConfigureAwait(false);
             }
@@ -112,13 +112,13 @@ namespace OSnack.API.Controllers
                {
                   case RegistrationTypes.Application:
                      Request.Headers.TryGetValue("Origin", out StringValues Originvalue);
-                     await EmailService.EmailConfirmationAsync(newCustomer, Originvalue)
+                     await _EmailService.EmailConfirmationAsync(newCustomer, Originvalue)
                         .ConfigureAwait(false);
                      break;
                   case RegistrationTypes.Facebook:
                   case RegistrationTypes.Google:
 
-                     await EmailService.ExternalRegistrationWelcomeAsync(newCustomer)
+                     await _EmailService.ExternalRegistrationWelcomeAsync(newCustomer)
                         .ConfigureAwait(false);
                      break;
                }
@@ -209,7 +209,7 @@ namespace OSnack.API.Controllers
                await _UserManager.ResetAccessFailedCountAsync(user).ConfigureAwait(false);
             }
             Request.Headers.TryGetValue("Origin", out StringValues Originvalue);
-            if (!await EmailService.PasswordResetAsync(user, Originvalue).ConfigureAwait(false))
+            if (!await _EmailService.PasswordResetAsync(user, Originvalue).ConfigureAwait(false))
             {
                CoreFunc.Error(ref ErrorsList, "Unable to send email.");
                return StatusCode(417, ErrorsList);
