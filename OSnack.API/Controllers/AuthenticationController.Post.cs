@@ -80,7 +80,6 @@ namespace OSnack.API.Controllers
       {
          try
          {
-            throw new Exception("Test Logging");
             if (!TryValidateModel(externalLoginInfo))
             {
                CoreFunc.ExtractErrors(ModelState, ref ErrorsList);
