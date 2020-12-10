@@ -12,7 +12,6 @@ const BasketItem = (props: IProps) => {
    const basket = useContext(ShopContext);
 
    useEffect(() => {
-      console.log(props.orderItem);
    }, []);
    return (
       <div className="row">
