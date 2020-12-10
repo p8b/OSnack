@@ -2,7 +2,7 @@
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import Table, { TableData, TableHeaderData, TableRowData } from 'osnack-frontend-shared/src/components/Table/Table';
+//import ReactDOM from 'react-dom';
 import Container from '../../components/Container';
 import { ShopContext } from '../../_core/shopContext';
 import InputDropDown from 'osnack-frontend-shared/src/components/Inputs/InputDropDown';
@@ -17,51 +17,55 @@ import NewCustomerModal from '../Login/NewCustomerModal';
 import { Access } from '../../_core/appConstant.Variables';
 import { useDetectOutsideClick } from 'osnack-frontend-shared/src/hooks/function/useDetectOutsideClick';
 import AddressModal from '../MyAccount/AddressModal';
-import QuantityInput from 'osnack-frontend-shared/src/components/Inputs/QuantityInput';
+import BasketItem from './BasketItem';
+
 
 const Checkout = (props: IProps) => {
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
    const auth = useContext(AuthContext);
    const basket = useContext(ShopContext);
+   // // @ts-ignore
+   // const PayPalButton = paypal.Buttons.driver("react", { React, ReactDOM });
    const toggleContainerModal = React.createRef<HTMLDivElement>();
    const [outsideClickModal, setOutsideClickModal] = useDetectOutsideClick(toggleContainerModal, false);
    const [isOpenAddressModal, setIsOpenAddressModal] = useState(false);
+
    const [selectedCoupon, setSelectedCoupon] = useState(new Coupon());
-   const [addressList, setAddressList] = useState<Address[]>([]);
    const [selectedAddress, setSelectedAddress] = useState(new Address());
-   const [availableDeliveryList, setAvailableDeliveryList] = useState<DeliveryOption[]>([]);
    const [selectedDelivery, setSelectedDelivery] = useState(new DeliveryOption());
-   const [selectedDeliveryOptionList, setSelectedDeliveryOptionList] = useState<DeliveryOption[]>([]);
-   const [tableData, setTableData] = useState(new TableData());
-   const [totalDiscount, setTotalDiscount] = useState(0);
    const [totalPrice, setTotalPrice] = useState(0);
+   const [addressList, setAddressList] = useState<Address[]>([]);
+   const [selectedDeliveryOptionList, setSelectedDeliveryOptionList] = useState<DeliveryOption[]>([]);
+   const [availableDeliveryList, setAvailableDeliveryList] = useState<DeliveryOption[]>([]);
+   // @ts-ignore
+   const [totalDiscount, setTotalDiscount] = useState(0);
    //const [order, setOrder] = useState(new Order());
 
    useEffect(() => {
       setSelectedCoupon({ ...selectedCoupon, type: CouponType.DiscountPrice, discountAmount: 1 });
       errorAlert.PleaseWait(500, isUnmounted);
       useAllDeliveryOption().then(deliveryList => {
-         populateOrderItemsTable(deliveryList);
-      }).catch(alert => errorAlert.set(alert));
+         if (isUnmounted.current) return;
+         recalculateBasket(deliveryList);
+      }).catch(alert => {
+         if (isUnmounted.current) return;
+         errorAlert.set(alert);
+      });
       if (auth.state.isAuthenticated) {
          useAllAddress().then(addresslist => {
+            if (isUnmounted.current) return;
             setAddressList(addresslist);
             setSelectedAddress(addresslist.find(t => t.isDefault == true) || new Address);
-         }).catch(alert => errorAlert.set(alert));
+         }).catch(alert => {
+            if (isUnmounted.current) return;
+            errorAlert.set(alert);
+         });
       }
-
    }, []);
 
 
-   const populateOrderItemsTable = (deliveryList: DeliveryOption[], selectDelivery?: DeliveryOption) => {
-
-
-      let tData = new TableData();
-      tData.headers.push(new TableHeaderData("Product", "", true));
-      tData.headers.push(new TableHeaderData("Quantity"));
-      tData.headers.push(new TableHeaderData("Price", "", false));
-
+   const recalculateBasket = (deliveryList: DeliveryOption[], selectDelivery?: DeliveryOption) => {
       let totalPriceTemp = 0;
       let recalculateTotalPriceAtTheEnd = false;
       switch (selectedCoupon.type) {
@@ -83,21 +87,6 @@ const Checkout = (props: IProps) => {
 
       basket.state.List.map(orderItem => {
          totalPriceTemp += (orderItem.quantity * orderItem.price) as number;
-         tData.rows.push(new TableRowData([
-            orderItem.name,
-            <QuantityInput
-               key={orderItem.productId}
-               btnOnZeroTitle=""
-               btnOnZeroClassName="radius-none btn-green cart-icon"
-               btnMinusClassName="radius-none"
-               btnPlusClassName="radius-none"
-               value={orderItem.quantity}
-               onChange={(val) => { orderItem.quantity = val; basket.updateOrderItem(orderItem); populateOrderItemsTable(deliveryList); }}
-               className="col-12"
-            />,
-            orderItem.price
-         ]));
-
       });
       if (recalculateTotalPriceAtTheEnd) {
          const discountPercentage = selectedCoupon.discountAmount as number;
@@ -108,12 +97,6 @@ const Checkout = (props: IProps) => {
 
       if (totalPriceTemp < 0)
          totalPriceTemp = 0;
-
-      if (basket.state.List.length == 0) {
-         errorAlert.setSingleWarning("0", "No Result Found");
-      } else {
-         errorAlert.clear();
-      }
 
       let availableList: DeliveryOption[] = [];
       if (deliveryList.find(d => d.price == 0 && d.minimumOrderTotal > 0 && d.isPremitive) &&
@@ -147,7 +130,6 @@ const Checkout = (props: IProps) => {
       setAvailableDeliveryList(availableList);
       setSelectedDeliveryOptionList(deliveryList);
       setTotalPrice(totalPriceTemp);
-      setTableData(tData);
    };
 
    const externalLoginFailed = (user: User) => {
@@ -160,187 +142,135 @@ const Checkout = (props: IProps) => {
    return (
       <Container className="wide-container p-0 m-0">
          <PageHeader title="Basket" className="hr-section-sm" />
-         <div className="col-12 bg-white ">
+         <div className="row col-12 col-md-10 bg-white p-0 ml-auto mr-auto">
             {/* Basket info */}
-            <div className="row col-12 p-0 m-0">
-               <div className="col-12 col-md-8 m-0">
-                  <Table className="col-12 text-center table-striped mt-4"
-                     data={tableData}
-                     colGroup={
-                        <colgroup>
-                           <col style={{ width: "60rem" }} />
-                           <col style={{ width: "20rem" }} />
-                           <col style={{ width: "20rem" }} />
-                        </colgroup>
-                     }
-                     postRow={
-                        <>
-                           {/* Discount Row */
-                              (selectedCoupon.type != CouponType.FreeDelivery) &&
-                              <tr className="checkout-tbl-headers">
-                                 <td className="font-weight-bold">
-                                    Discount
-                              </td>
-                                 <td className="font-weight-bold" children={`${selectedCoupon.discountAmount} ${CouponTypeList.find(i => i.Value == selectedCoupon.type)?.Name}`} />
-                                 <td>
-                                    -£<b id="CheckoutTotalDiscount">{totalDiscount}</b>
-                                 </td>
-                              </tr>
-                           }
-                           {/* Delivery Ooption Row */}
-                           <tr className="checkout-tbl-headers">
-                              <td className="font-weight-bold">
-                                 Delivery
-                              </td>
-                              <td className="pl-0 pr-0 ml-0 mr-0 ">
-                                 <InputDropDown key="deliveryOptions"
-                                    label=""
-                                    dropdownTitle={selectedDelivery?.name || "Delivery Option"}
-                                    className="col-12 col-md-auto mt-2 pr-2 pl-md-1 mt-md-0 align-self-end dropup"
-
-                                    children={
-                                       <div className="p-0 m-0">
-                                          {availableDeliveryList.map(delivery => {
-                                             return <a className="dropdown-item p-1 text-nav" key={delivery?.name}
-                                                onClick={() => {
-
-                                                   populateOrderItemsTable(selectedDeliveryOptionList, delivery);
-                                                   setTotalPrice(totalPrice - selectedDelivery.price + delivery.price);
-                                                }}
-                                                children={<div children={`${delivery?.name} - £${delivery?.price?.toFixed(2)}`} />}
-                                             />;
-                                          })}
-                                       </div>
-                                    } />
-                              </td>
-                              <td>
-                                 £<b id="DiscountAmount">{selectedDelivery?.price?.toFixed(2)}</b>
-                              </td>
-                           </tr>
-                           {/* Total Price Row */}
-                           <tr className="checkout-tbl-headers">
-                              <td className="font-weight-bold" children="Total" />
-                              <td className="" children={
-                                 <>
-                                    <b className="font-weight-bold" children={basket.getTotalItems()} />
-                                    <b className="font-weight-bold" children=" items" />
-                                 </>
-                              } />
-                              <td className="font-weight-bold" children={`£${totalPrice.toFixed(2)}`} />
-                           </tr>
-                        </>
-                     }
+            <div className="col-12 col-md-6 m-0">
+               {basket.state.List.map(orderItem =>
+                  <BasketItem
+                     key={orderItem.productId}
+                     orderItem={orderItem}
+                     onChange={(val) => { recalculateBasket(availableDeliveryList); }}
                   />
-               </div>
-               {/* User info */}
-               <div className="row col-12 col-md-4 m-0 ">
-                  <div className="col-12 bg-white ml-md-3 pt-3  shadow">
-                     <Alert alert={errorAlert.alert}
-                        className="col-12 mb-2"
-                        onClosed={() => { errorAlert.clear(); }}
-                     />
+               )}
+               <p className="p-2">Total Items : <b id="DiscountAmount">{basket.getTotalItems()}</b></p>
+            </div>
 
-                     {auth.state.isAuthenticated &&
-                        <>
+            {/* User info */}
+            <div className="col-12 col-md-6 m-0 p-0 pt-3 shadow ">
+               <div className="col-12 m-0 pos-sticky">
+                  <Alert alert={errorAlert.alert}
+                     className="col-12 mb-2"
+                     onClosed={() => { errorAlert.clear(); }}
+                  />
+                  {auth.state.isAuthenticated &&
+                     <>
+                        <div className="row">
+                           <div className="col-12 col-md-6 checkout-address  pb-3">
+                              <InputDropDown key="deliveryOptions"
+                                 label="Delivery Option"
+                                 dropdownTitle={selectedDelivery?.name || "Delivery Option"}
+                                 className="col-12 align-self-end"
+                                 children={
+                                    <div className="p-0 m-0">
+                                       {availableDeliveryList.map(delivery => {
+                                          return <a className="dropdown-item p-1 text-nav" key={delivery?.name}
+                                             onClick={() => {
+                                                recalculateBasket(selectedDeliveryOptionList, delivery);
+                                                setTotalPrice(totalPrice - selectedDelivery.price + delivery.price);
+                                             }}
+                                             children={<div children={`${delivery?.name} - £${delivery?.price?.toFixed(2)}`} />}
+                                          />;
+                                       })}
+                                    </div>
+                                 } />
+                              <InputDropDown key="ddAddress" dropdownTitle={selectedAddress.name || "My Addresses"}
+                                 className="col-12  align-self-end"
+                                 label="Shipping Address"
+                                 children={
+                                    <div className="p-0 m-0">
+                                       {addressList.map(addr =>
+                                          <a className="dropdown-item text-nav" key={addr.id}
+                                             onClick={() => { setSelectedAddress(addr); }}
+                                             children={
+                                                <div className="row">
 
-                           <InputDropDown key="ddAddress" dropdownTitle={selectedAddress.name || "My Addresses"}
-                              className="col-12 mt-2 pr-2 pl-md-1 mt-md-0 align-self-end"
-                              label="Delivery Address"
-                              children={
-                                 <div className="p-0 m-0">
-                                    {addressList.map(addr =>
-                                       <a className="dropdown-item text-nav" key={addr.id}
-                                          onClick={() => { setSelectedAddress(addr); }}
-                                          children={
-                                             <div className="row">
-                                                <div className="col">
-                                                   <div children={`Name: ${addr.name}`} />
-                                                   <div children={` Postcode: ${addr.postcode}`} />
+                                                   <div className="col mt-2" children={`${addr.name}`} />
+
+                                                   <Button children="Edit" onClick={() => {
+                                                      setSelectedAddress(addr);
+                                                      setIsOpenAddressModal(true);
+                                                   }}
+                                                      className="btn-blue col-auto radius-none mt-auto mb-auto p-2 btn-sm text-white float-right" />
                                                 </div>
-                                                <div children="Edit" onClick={() => {
-                                                   setSelectedAddress(addr);
-                                                   setIsOpenAddressModal(true);
-                                                }}
-                                                   className="btn-blue col-auto mt-auto mb-auto p-2 btn-sm text-white float-right" />
-                                             </div>
-                                          }
-                                       />
+                                             }
+                                          />
 
-                                    )}
-                                    <a className="dropdown-item text-nav" key="newAddress"
-                                       onClick={() => {
-                                          setSelectedAddress(new Address());
-                                          setIsOpenAddressModal(true);
-                                       }}
-                                       children='New Address' />
-                                 </div>
-                              } />
-
-                           <div className="col-12 mt-2 mb-3">
-                              <h5 children={selectedAddress.firstLine} key="FirstLine_Checkout" />
-                              <h5 children={selectedAddress.secondLine} key="SecondLine_Checkout" />
-                              <h5 children={selectedAddress.city} key="City_Checkout" />
-                              <h5 children={selectedAddress.postcode} key="Postcode_Checkout" />
+                                       )}
+                                       <a className="dropdown-item text-nav" key="newAddress"
+                                          onClick={() => {
+                                             setSelectedAddress(new Address());
+                                             setIsOpenAddressModal(true);
+                                          }}
+                                          children='New Address' />
+                                    </div>
+                                 } />
                            </div>
-                           <div className="checkout-address border-bottom pb-3">
-                              <div className="row">
-                                 <div className="col-8">
-                                    <Input label="Discount Code"
-                                       value={selectedCoupon.code}
-                                       onChange={i => selectedCoupon.code = i.target.value}
-                                       className="col-12" />
-                                 </div>
-                                 <div className="col-4">
-                                    <Button className="btn btn-info border-0 col-12"
-
-                                       onClick={couponCheck}
-                                       children="Apply" />
+                           <div className="col-12 col-md-6">
+                              <div className="row col-12 m-0 p-0 pb-3 ">
+                                 <Input label="Discount Code"
+                                    value={selectedCoupon.code}
+                                    onChange={i => selectedCoupon.code = i.target.value}
+                                    className="col-8 mb-0 p-0 " />
+                                 <div className="row col-4 p-0 mt-auto">
+                                    <Button className="col-12 btn-sm btn-blue radius-none m-0"
+                                       onClick={couponCheck} children="Apply" />
                                  </div>
                               </div>
-                              <div className="font-weight-bolder mt-4">
-                                 <b >Payment:</b>
-                              </div>
-                              <div key="btnPaymentMethods" className="row">
-                                 <a onClick={submitOrder} className="btn col-12 bg-light mb-1 pb-3 pt-2 border-bottom">
-                                    <img src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_150x38.png" alt="PayPal Logo" />
-                                 </a>
-                              </div>
+                              <p> Shipping : £<b id="DiscountAmount">{selectedDelivery?.price?.toFixed(2)}</b></p>
+                              <h4> Total : <b id="DiscountAmount">£{totalPrice.toFixed(2)}</b> </h4>
                            </div>
-
-                        </>
-                     }
-                     {!auth.state.isAuthenticated &&
-                        <>
-                           <div className="row justify-content-sm-center">
-                              <div className="col-sm-10 col-md-8 col-lg-6 bg-white p-sm-5 pt-4 pb-4">
-                                 <Login externalLoginFailed={externalLoginFailed} fromPath={props.location.state?.fromPath} access={Access} />
-                                 <Button children="New Customer" className="btn-lg btn-white col-12 mt-2"
-                                    onClick={() => {
-                                       setOutsideClickModal((prev) => !prev);
-                                    }}
-                                 />
-                              </div>
+                        </div>
+                        <div className="col-12 mt-2 mb-4">
+                           <h5 children={selectedAddress.firstLine} key="FirstLine_Checkout" />
+                           <h5 children={selectedAddress.secondLine} key="SecondLine_Checkout" />
+                           <h5 children={selectedAddress.city} key="City_Checkout" />
+                           <h5 children={selectedAddress.postcode} key="Postcode_Checkout" />
+                        </div>
+                        <Button className="col-12 btn-lg btn-green mt-auto  radius-none mb-2" children="Checkout" />
+                        {/*  <PayPalButton />   */}
+                     </>
+                  }
+                  {!auth.state.isAuthenticated &&
+                     <>
+                        <div className="row justify-content-sm-center">
+                           <div className="col-sm-10 col-md-8 col-lg-6 bg-white p-sm-5 pt-4 pb-4">
+                              <Login externalLoginFailed={externalLoginFailed} fromPath={props.location.state?.fromPath} access={Access} />
+                              <Button children="New Customer" className="btn-lg btn-white col-12 mt-2"
+                                 onClick={() => {
+                                    setOutsideClickModal((prev) => !prev);
+                                 }}
+                              />
                            </div>
-                           <NewCustomerModal isOpen={outsideClickModal}
-                              modalRef={toggleContainerModal}
-                              onCancel={() => setOutsideClickModal(false)}
-                           />
-                        </>
-                     }
-                  </div>
+                        </div>
+                        <NewCustomerModal isOpen={outsideClickModal}
+                           modalRef={toggleContainerModal}
+                           onCancel={() => setOutsideClickModal(false)}
+                        />
+                     </>
+                  }
                </div>
             </div>
-            {/***** Add/ modify category modal  ****/}
-            <AddressModal isOpen={isOpenAddressModal}
-               onSuccess={(address) => {
-                  useAllAddress().then(addresses => {
-                     setAddressList(addresses);
-                  }).catch(alert => errorAlert.set(alert));
-                  setSelectedAddress(address);
-               }}
-               address={selectedAddress}
-               onClose={() => setIsOpenAddressModal(false)} />
          </div>
+         {/***** Add/ modify category modal  ****/}
+         <AddressModal isOpen={isOpenAddressModal}
+            onSuccess={(address) => {
+               useAllAddress().then(addresses => {
+                  setAddressList(addresses);
+               }).catch(alert => errorAlert.set(alert));
+               setSelectedAddress(address);
+            }}
+            address={selectedAddress}
+            onClose={() => setIsOpenAddressModal(false)} />
       </Container >
    );
 };

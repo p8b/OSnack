@@ -28,5 +28,9 @@ namespace OSnack.API.Database.ModelsDependencies
 
       [Required(ErrorMessage = "Unit Type is Required \n")]
       public ProductUnitType UnitType { get; set; }
+
+      [Display(Name = "Display Image")]
+      [StringLength(50, ErrorMessage = "Must be less than 50 Characters \n")]
+      public string ImagePath { get; set; }
    }
 }

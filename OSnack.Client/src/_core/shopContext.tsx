@@ -11,7 +11,7 @@ const initShopContext = {
    state: initState,
    //set: (state: ShopState) => { },
    set: (product: Product, quantity: number) => { },
-   updateOrderItem: (orderItem: OrderItem) => { },
+   updateOrderItem: (orderItem: OrderItem, quantity?: number) => { },
    getQuantity: function (product: Product): number | undefined { return undefined; },
    clear: () => { },
    getTotalItems: function (): number { return 0; }
@@ -57,8 +57,10 @@ const ShopContextContainer = ({ children }: Props): JSX.Element => {
       _State.List = _State.List.filter(oi => oi.quantity > 0).reverse();
       setState(_State);
    };
-   const updateOrderItem = (orderItem: OrderItem) => {
+   const updateOrderItem = (orderItem: OrderItem, quantity?: number) => {
       var _State = state;
+      if (quantity != undefined)
+         orderItem.quantity = quantity;
       for (var i = 0; i < state.List?.length; i++) {
          if (state.List[i].productId === orderItem.productId) {
 
@@ -79,6 +81,7 @@ const ShopContextContainer = ({ children }: Props): JSX.Element => {
       item.unitQuantity = product.unitQuantity;
       item.unitType = product.unitType;
       item.quantity = quantity;
+      item.imagePath = product.imagePath;
       return item;
    };
 

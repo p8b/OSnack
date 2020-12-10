@@ -23,10 +23,6 @@ namespace OSnack.API.Database.Models
       [StringLength(256, ErrorMessage = "Must be less than 256 Characters \n")]
       public string Description { get; set; }
 
-      [Display(Name = "Display Image")]
-      [StringLength(50, ErrorMessage = "Must be less than 50 Characters \n")]
-      public string ImagePath { get; set; }
-
       [Display(Name = "Original Display Image")]
       [StringLength(50, ErrorMessage = "Must be less than 50 Characters \n")]
       public string OriginalImagePath { get; set; }
