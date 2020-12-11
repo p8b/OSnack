@@ -1,4 +1,4 @@
-﻿import React, { useContext, useEffect } from 'react';
+﻿import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { Product, ProductUnitType } from 'osnack-frontend-shared/src/_core/apiModels';
@@ -10,8 +10,6 @@ import { ShopContext } from '../../_core/shopContext';
 const ShopItem = (props: IProps) => {
    const history = useHistory();
    const basket = useContext(ShopContext);
-   useEffect(() => {
-   }, []);
    return (
       <div key={props.product.id} className="col-12 col-sm-6 col-md-4 p-0 pb-2 shop-card ">
          <a className="col link-shop-card-img m-0 justify-text-center"
