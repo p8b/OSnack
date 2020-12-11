@@ -8,10 +8,10 @@ import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput
 import { Category, Product } from 'osnack-frontend-shared/src/_core/apiModels';
 import { ConstMaxNumberOfPerItemsPage, GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import { useSearchPublicProduct } from 'osnack-frontend-shared/src/hooks/PublicHooks/useProductHook';
-import { useAllCategory } from 'osnack-frontend-shared/src/hooks/PublicHooks/useCategoryHook';
 import ShopItem from './ShopItem';
 import { useHistory } from 'react-router-dom';
 import LoadMore from 'osnack-frontend-shared/src/components/Pagination/LoadMore';
+import { useAllPublicCategory } from 'osnack-frontend-shared/src/hooks/PublicHooks/useCategoryHook';
 
 const Shop = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -31,7 +31,7 @@ const Shop = (props: IProps) => {
 
    useEffect(() => {
       errorAlert.PleaseWait(500, isUnmounted);
-      useAllCategory().then(categories => {
+      useAllPublicCategory().then(categories => {
          if (isUnmounted.current) return;
          setCategoryList(categories);
          const uriPathNameArr = window.location.pathname.split('/').filter(val => val.length > 0);

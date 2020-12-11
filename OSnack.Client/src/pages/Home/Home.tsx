@@ -5,7 +5,7 @@ import { API_URL } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import { Category } from 'osnack-frontend-shared/src/_core/apiModels';
 import Carousel from '../../components/Carousel';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
-import { useAllCategory } from 'osnack-frontend-shared/src/hooks/PublicHooks/useCategoryHook';
+import { useAllPublicCategory } from 'osnack-frontend-shared/src/hooks/PublicHooks/useCategoryHook';
 import { onImageError } from 'osnack-frontend-shared/src/_core/appFunc';
 
 const Home = (props: IProps) => {
@@ -21,7 +21,7 @@ const Home = (props: IProps) => {
       img.onload = () => {
          setHeroImgLoaded(true);
       };
-      useAllCategory().then(categories => {
+      useAllPublicCategory().then(categories => {
          if (isUnmounted.current) return;
          getCarouselItems(categories);
       });
