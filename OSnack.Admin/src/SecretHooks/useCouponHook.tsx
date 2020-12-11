@@ -1,8 +1,8 @@
 import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/components/Texts/Alert";
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
-import { Coupon, ProblemDetails, MultiResultOfListOfCouponAndInteger } from "osnack-frontend-shared/src/_core/apiModels";
-export const useDeleteCoupon = async (coupon: Coupon): Promise<void> =>{
+import { Coupon, MultiResultOfListOfCouponAndInteger } from "osnack-frontend-shared/src/_core/apiModels";
+export const useDeleteCoupon = async (coupon: Coupon): Promise<string> =>{
         let url_ = API_URL + "/Coupon/Delete";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -16,7 +16,9 @@ export const useDeleteCoupon = async (coupon: Coupon): Promise<void> =>{
         switch(response?.status){
 
         case 200: 
-            return;
+            return response?.json().then((responseJson: string) => {
+                return responseJson;
+            });
 
         case 417: 
             return response?.json().then((data: ErrorDto[]) => {
@@ -83,7 +85,7 @@ export const useSearchCoupon = async (selectedPage: number, maxNumberPerItemsPag
             throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
     }
 }
-export const usePostCoupon = async (newCoupon: Coupon): Promise<void> =>{
+export const usePostCoupon = async (newCoupon: Coupon): Promise<Coupon> =>{
         let url_ = API_URL + "/Coupon/Post";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -97,11 +99,8 @@ export const usePostCoupon = async (newCoupon: Coupon): Promise<void> =>{
         switch(response?.status){
 
         case 201: 
-            return;
-
-        case 422: 
-            return response?.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response?.status);
+            return response?.json().then((responseJson: Coupon) => {
+                return responseJson;
             });
 
         case 412: 
@@ -114,12 +113,17 @@ export const usePostCoupon = async (newCoupon: Coupon): Promise<void> =>{
                 throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
+        case 422: 
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
+            });
+
         default:
             CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status}`;
             throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
     }
 }
-export const usePutCoupon = async (modifiedCoupon: Coupon): Promise<void> =>{
+export const usePutCoupon = async (modifiedCoupon: Coupon): Promise<Coupon> =>{
         let url_ = API_URL + "/Coupon/Put";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -133,7 +137,9 @@ export const usePutCoupon = async (modifiedCoupon: Coupon): Promise<void> =>{
         switch(response?.status){
 
         case 200: 
-            return;
+            return response?.json().then((responseJson: Coupon) => {
+                return responseJson;
+            });
 
         case 412: 
             return response?.json().then((data: ErrorDto[]) => {

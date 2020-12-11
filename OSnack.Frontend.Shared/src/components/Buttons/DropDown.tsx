@@ -24,7 +24,7 @@ const DropDown = (props: IProps) => {
    return (
       <div className={`dropdown ${props.className}`} ref={dropDown}>
          <div className="col p-0">
-            <button className={`col p-0 btn-no-style ${isOpen ? "show" : ""} `}
+            <button disabled={props.disabled} className={`col p-0 btn-no-style ${isOpen ? "show" : ""} `}
                onClick={() => setIsOpen((prev) => !prev)}
                ref={dropDownButton}>
                <div className={` line-limit-1 ${props?.titleClassName}`}>
@@ -46,5 +46,6 @@ declare type IProps = {
    preventCloseOnClickInsideMenu?: boolean;
    title: any;
    children: any;
+   disabled?: boolean;
 };
 export default DropDown;

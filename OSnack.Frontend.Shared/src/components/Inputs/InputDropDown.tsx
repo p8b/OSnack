@@ -9,6 +9,7 @@ const InputDropdown = (props: IProps) => {
 
          <DropDown title={props.dropdownTitle}
             className="w-100 "
+            disabled={props.disabled}
             preventCloseOnClickInsideMenu={props.preventCloseOnClickInsideMenu}
             titleClassName={`btn input-dropdown no-shadow w-100 dropdown-icon ${props.showDanger ? "danger" : ""}`}>
             {props.children}
@@ -24,5 +25,6 @@ interface IProps {
    showDanger?: boolean;
    children: any;
    preventCloseOnClickInsideMenu?: boolean;
+   disabled?: boolean;
 }
 export default InputDropdown;

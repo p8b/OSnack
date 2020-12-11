@@ -1,8 +1,41 @@
 import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/components/Texts/Alert";
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
-import { Order } from "osnack-frontend-shared/src/_core/apiModels";
-export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, filterStatus: string | null, isSortAsce: boolean, sortName: string | null): Promise<Order[]> =>{
+import { Order, TupleOfListOfOrderAndInteger } from "osnack-frontend-shared/src/_core/apiModels";
+export const useDeleteOrder = async (order: Order): Promise<string> =>{
+        let url_ = API_URL + "/Order/Delete";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = order;
+        let response = await httpCaller.DELETE(url_, content_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.DELETE(url_, content_);
+        }
+
+        switch(response?.status){
+
+        case 200: 
+            return response?.json().then((responseJson: string) => {
+                return responseJson;
+            });
+
+        case 404: 
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
+            });
+
+        case 417: 
+            return response?.json().then((data: ErrorDto[]) => {
+                throw new AlertObj(data, AlertTypes.Error, response?.status);
+            });
+
+        default:
+            CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status}`;
+            throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
+    }
+}
+export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, filterStatus: string | null, isSortAsce: boolean, sortName: string | null): Promise<TupleOfListOfOrderAndInteger> =>{
         let url_ = API_URL + "/Order/Get/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}";
         if (selectedPage === undefined || selectedPage === null)
             throw new Error("The parameter 'selectedPage' must be defined.");
@@ -33,7 +66,7 @@ export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: n
         switch(response?.status){
 
         case 200: 
-            return response?.json().then((responseJson: Order[]) => {
+            return response?.json().then((responseJson: TupleOfListOfOrderAndInteger) => {
                 return responseJson;
             });
 
@@ -96,39 +129,6 @@ export const usePutOrderStatusOrder = async (modifiedOrder: Order): Promise<Orde
         case 200: 
             return response?.json().then((responseJson: Order) => {
                 return responseJson;
-            });
-
-        case 417: 
-            return response?.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response?.status);
-            });
-
-        default:
-            CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status}`;
-            throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
-    }
-}
-export const useDeleteOrder = async (order: Order): Promise<string> =>{
-        let url_ = API_URL + "/Order/Delete";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = order;
-        let response = await httpCaller.DELETE(url_, content_);
-        if( response?.status === 400){
-            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
-            response = await httpCaller.DELETE(url_, content_);
-        }
-
-        switch(response?.status){
-
-        case 200: 
-            return response?.json().then((responseJson: string) => {
-                return responseJson;
-            });
-
-        case 404: 
-            return response?.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response?.status);
             });
 
         case 417: 

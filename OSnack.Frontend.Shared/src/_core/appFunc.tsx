@@ -1,5 +1,4 @@
-﻿import { EnumObj } from "./appClasses";
-import 'whatwg-fetch';
+﻿import 'whatwg-fetch';
 import { AntiforgeryTokenCookieName, API_URL } from "./constant.Variables";
 
 //#region *** 'Cookie Management' ***
@@ -212,3 +211,10 @@ export class onImageError {
 
    };
 }
+
+export const getNextDate = (day: number = 1) => {
+   var now = new Date();
+   var nextDay = new Date(now);
+   return new Date(nextDay.setDate(now.getDate() + day));
+};
+

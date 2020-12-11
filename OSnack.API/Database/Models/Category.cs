@@ -35,6 +35,9 @@ namespace OSnack.API.Database.Models
       [Required(ErrorMessage = "Original Image is Required \n")]
       public string OriginalImageBase64 { get; set; }
 
+      [JsonIgnore]
+      [InverseProperty("Category")]
+      public List<Product> Products { get; set; }
 
       [NotMapped]
       public int TotalProducts { get; set; } = 0;

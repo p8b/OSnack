@@ -1,6 +1,7 @@
 ﻿import React, { useEffect, useRef } from 'react';
 const Modal = (props: IProps) => {
    const modalRow = useRef<HTMLDivElement | null>(null);
+
    //if (props.isOpen)
    //   document.getElementsByTagName("footer")[0]?.classList.add("footer-behind");
    //else
@@ -14,14 +15,15 @@ const Modal = (props: IProps) => {
       };
    }, [props.isOpen]);
    const keydownHander = (ev: KeyboardEvent) => {
+      /// setting the focus to the first input of the modal when tabbing after the last element
       if (ev.keyCode == 9) {
          if (!modalRow.current?.contains(document.activeElement)) {
-            console.log(modalRow);
             setfocusToFirstElement();
          }
       }
    };
    const setfocusToFirstElement = () => {
+      /// prevent tabing outside the modal
       var focusable = modalRow.current?.querySelectorAll('button, [href], input, select, textarea');
       if (focusable != undefined && focusable.length > 0) {
          var firstFocusable = focusable[0];

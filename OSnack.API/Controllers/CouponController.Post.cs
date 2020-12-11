@@ -18,13 +18,14 @@ namespace OSnack.API.Controllers
    {
       #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(StatusCodes.Status201Created)]
-      [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-      [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(Coupon), StatusCodes.Status201Created)]
+      [ProducesResponseType(typeof(System.Collections.Generic.List<P8B.Core.CSharp.Models.Error>), StatusCodes.Status412PreconditionFailed)]
+      [ProducesResponseType(typeof(System.Collections.Generic.List<P8B.Core.CSharp.Models.Error>), StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(System.Collections.Generic.List<P8B.Core.CSharp.Models.Error>), StatusCodes.Status422UnprocessableEntity)]
       #endregion
       [HttpPost("[action]")]
-      [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
+      [Authorize(AppConst.AccessPolicies.Secret)]
+      /// Ready For Test
       public async Task<IActionResult> Post([FromBody] Coupon newCoupon)
       {
          try
@@ -41,7 +42,7 @@ namespace OSnack.API.Controllers
             }
             newCoupon.Code = newCoupon.PendigCode;
 
-            //ModelState.Clear();
+            ModelState.Clear();
 
             if (!TryValidateModel(newCoupon))
             {

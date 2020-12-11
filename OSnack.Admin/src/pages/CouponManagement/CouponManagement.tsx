@@ -2,21 +2,23 @@
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import Table, { TableData, TableHeaderData, TableRowData } from 'osnack-frontend-shared/src/components/Table/Table';
-import { Category, MultiResultOfListOfCategoryAndInteger } from 'osnack-frontend-shared/src/_core/apiModels';
-import CategoryModal from './CategoryModal';
+import { Coupon, CouponTypeList, MultiResultOfListOfCouponAndInteger } from 'osnack-frontend-shared/src/_core/apiModels';
+import CouponModel from './CouponModel';
 import Container from '../../components/Container';
 import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
-import { useSearchCategory } from '../../SecretHooks/useCategoryHook';
+import { useSearchCoupon } from '../../SecretHooks/useCouponHook';
 import { ConstMaxNumberOfPerItemsPage, GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
 
-const CategoryManagement = (props: IProps) => {
+const CouponManagement = (props: IProps) => {
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
    const [searchValue, setSearchValue] = useState("");
-   const [selectedCategory, setSelectedCategory] = useState(new Category());
-   const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false);
+   const [selectedFilterType, setSelectedfilterType] = useState(GetAllRecords);
+   const [selectedCoupon, setSelectedCoupon] = useState(new Coupon());
+   const [isOpenCouponModal, setIsOpenCouponModal] = useState(false);
 
    const [tableData, setTableData] = useState(new TableData());
    const [tblSortName, setTblsortName] = useState("Name");
@@ -34,7 +36,8 @@ const CategoryManagement = (props: IProps) => {
       isSortAsc = tblIsSortAsc,
       sortName = tblSortName,
       selectedPage = tblSelectedPage,
-      maxItemsPerPage = tblMaxItemsPerPage
+      maxItemsPerPage = tblMaxItemsPerPage,
+      filterType = selectedFilterType,
    ) => {
       let searchString = GetAllRecords;
 
@@ -49,13 +52,15 @@ const CategoryManagement = (props: IProps) => {
 
       if (selectedPage != tblSelectedPage)
          setTblSelectedPage(selectedPage);
+      if (filterType != selectedFilterType)
+         setSelectedfilterType(filterType);
 
       if (maxItemsPerPage != tblMaxItemsPerPage)
          setTblMaxItemsPerPage(maxItemsPerPage);
 
       errorAlert.PleaseWait(500, isUnmounted);
-      useSearchCategory(selectedPage, maxItemsPerPage, searchString, isSortAsc, sortName).then(
-         (result: MultiResultOfListOfCategoryAndInteger) => {
+      useSearchCoupon(selectedPage, maxItemsPerPage, searchString, filterType, isSortAsc, sortName).then(
+         (result: MultiResultOfListOfCouponAndInteger) => {
             if (isUnmounted.current) return;
             errorAlert.clear();
             setTblTotalItemCount(result.part2 || 0);
@@ -66,23 +71,30 @@ const CategoryManagement = (props: IProps) => {
          });
    };
 
-   const populateCategoryTable = (categoryList?: Category[]) => {
+   const isExpire = (date: Date) => {
+      const dt = new Date(date);
+      if (dt < new Date())
+         return "(Expired)";
+      return "";
+   };
+
+   const populateCategoryTable = (couponList?: Coupon[]) => {
       let tData = new TableData();
-      tData.headers.push(new TableHeaderData("Name", "Name", true));
-      tData.headers.push(new TableHeaderData("No. Products"));
+      tData.headers.push(new TableHeaderData("Code", "Code", true));
+      tData.headers.push(new TableHeaderData("Type"));
       tData.headers.push(new TableHeaderData("", "", false));
 
-      categoryList?.map(category =>
+      couponList?.map(coupon =>
          tData.rows.push(new TableRowData([
-            category.name,
-            category.totalProducts,
+            <div>{coupon.code} <small className="text-danger" children={isExpire(coupon.expiryDate)} /></div>,
+            CouponTypeList.find(c => c.Value == coupon.type)?.Name,
             <div className="col-auto p-0 m-0">
                <button className="btn btn-sm btn-blue col-12 m-0 mt-1 mt-xl-0 edit-icon"
-                  onClick={() => { editCategory(category); }}
+                  onClick={() => { editCoupon(coupon); }}
                   children="Edit" />
             </div>
          ])));
-      if (categoryList?.length == 0) {
+      if (couponList?.length == 0) {
          errorAlert.setSingleWarning("0", "No Result Found");
       } else {
          errorAlert.clear();
@@ -90,18 +102,19 @@ const CategoryManagement = (props: IProps) => {
       setTableData(tData);
    };
 
-   const editCategory = (category: Category) => {
-      setSelectedCategory(category);
-      setIsOpenCategoryModal(true);
+   const editCoupon = (coupon: Coupon) => {
+      console.log(coupon);
+      setSelectedCoupon(coupon);
+      setIsOpenCouponModal(true);
    };
    const resetCategoryModal = () => {
-      setIsOpenCategoryModal(false);
-      setSelectedCategory(new Category());
+      setIsOpenCouponModal(false);
+      setSelectedCoupon(new Coupon());
    };
 
    return (
       <Container className="container-fluid ">
-         <PageHeader title="Categories" className="line-header-lg" />
+         <PageHeader title="Coupons" className="line-header-lg" />
          <Container className="row col-12 col-md-11 pt-2 pb-2 bg-white ml-auto mr-auto">
             {/***** Search Input and new category button  ****/}
             <SearchInput key="searchInput"
@@ -111,15 +124,33 @@ const CategoryManagement = (props: IProps) => {
                onSearch={() => { onSearch(tblIsSortAsc, tblSortName); }}
             />
 
-            <Button children={<span className="add-icon" children="Category" />}
+            <Button children={<span className="add-icon" children="Coupon" />}
                className="col-12 col-md-3 btn-green btn"
-               onClick={() => { setIsOpenCategoryModal(true); }}
+               onClick={() => { setIsOpenCouponModal(true); }}
             />
+            <div className="row col-12 p-0 m-0 pt-3 ">
 
-            <Alert alert={errorAlert.alert}
-               className="col-12 mb-2"
-               onClosed={() => { errorAlert.clear(); }}
-            />
+               <DropDown title={`Coupon Type: ${CouponTypeList.find((c) => c.Id?.toString() == selectedFilterType)?.Name || "All"}`}
+                  className="col-12 col-sm-6 col-md-4 ml-auto m-0 p-1"
+                  titleClassName="btn btn-white filter-icon">
+                  <button className="dropdown-item"
+                     onClick={() => { onSearch(undefined, undefined, undefined, undefined, GetAllRecords); }} >
+                     All
+                  </button>
+                  {CouponTypeList.map(couponType =>
+                     <button className="dropdown-item" key={couponType.Id}
+                        onClick={() => { onSearch(undefined, undefined, undefined, undefined, couponType.Id?.toString()); }} >
+                        {couponType.Name}
+                     </button>
+                  )}
+               </DropDown>
+
+
+               <Alert alert={errorAlert.alert}
+                  className="col-12 mb-2"
+                  onClosed={() => { errorAlert.clear(); }}
+               />
+            </div>
 
             {/***** Category Table  ****/}
             <div className="row col-12 p-0 m-0">
@@ -136,9 +167,9 @@ const CategoryManagement = (props: IProps) => {
             </div>
 
             {/***** Add/ modify category modal  ****/}
-            <CategoryModal isOpen={isOpenCategoryModal}
+            <CouponModel isOpen={isOpenCouponModal}
                onSuccess={() => { resetCategoryModal(); onSearch(tblIsSortAsc, tblSortName); }}
-               category={selectedCategory}
+               coupon={selectedCoupon}
                onClose={resetCategoryModal} />
          </Container>
       </Container>
@@ -147,4 +178,4 @@ const CategoryManagement = (props: IProps) => {
 
 declare type IProps = {
 };
-export default CategoryManagement;
+export default CouponManagement;

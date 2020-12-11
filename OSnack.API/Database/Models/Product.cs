@@ -37,6 +37,9 @@ namespace OSnack.API.Database.Models
 
       public bool Status { get; set; } = false;
 
+      [Required(ErrorMessage = "Quantity is Required")]
+      public int StockQuantity { get; set; }
+
       [Required(ErrorMessage = "Category is Required \n")]
       public Category Category { get; set; }
 

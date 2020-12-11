@@ -18,10 +18,10 @@ namespace OSnack.API.Controllers
    {
       #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
-      [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(Coupon), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(System.Collections.Generic.List<P8B.Core.CSharp.Models.Error>), StatusCodes.Status412PreconditionFailed)]
+      [ProducesResponseType(typeof(System.Collections.Generic.List<P8B.Core.CSharp.Models.Error>), StatusCodes.Status422UnprocessableEntity)]
+      [ProducesResponseType(typeof(System.Collections.Generic.List<P8B.Core.CSharp.Models.Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPut("[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test         
@@ -52,7 +52,8 @@ namespace OSnack.API.Controllers
             Coupon originalCoupon = await _DbContext.Coupons.FindAsync(modifiedCoupon.Code).ConfigureAwait(false);
             originalCoupon.MaxUseQuantity = modifiedCoupon.MaxUseQuantity;
             originalCoupon.ExpiryDate = modifiedCoupon.ExpiryDate;
-            originalCoupon.PendigCode = originalCoupon.Code;
+            originalCoupon.DiscountAmount = originalCoupon.DiscountAmount;
+            originalCoupon.MinimumOrderPrice = originalCoupon.MinimumOrderPrice;
 
             _DbContext.Coupons.Update(originalCoupon);
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);

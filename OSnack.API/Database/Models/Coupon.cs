@@ -28,6 +28,7 @@ namespace OSnack.API.Database.Models
       public CouponType? Type { get; set; }
 
       public int MaxUseQuantity { get; set; }
+      public int MinimumOrderPrice { get; set; }
 
       [Column(TypeName = "decimal(7,2)")]
       public decimal DiscountAmount { get; set; }

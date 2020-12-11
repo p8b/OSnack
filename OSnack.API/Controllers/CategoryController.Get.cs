@@ -28,7 +28,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{isSortAsce}/{sortName}")]
-      [Authorize(AppConst.AccessPolicies.Public)]
+      [Authorize(AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> Search(
           int selectedPage,
           int maxNumberPerItemsPage,
@@ -70,7 +70,27 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpGet("Get/[action]")]
       [Authorize(AppConst.AccessPolicies.Public)]
-      public async Task<IActionResult> All()
+      public async Task<IActionResult> AllPublic()
+      {
+         try
+         {
+            return Ok(await _DbContext.Categories.Include(c => c.Products)
+                                                 .Where(c => c.Products.Count(p => p.Status) > 0)
+                                                 .ToListAsync().ConfigureAwait(false));
+         }
+         catch (Exception ex)
+         {
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
+            return StatusCode(417, ErrorsList);
+         }
+      }
+      #region ***  ***
+      [ProducesResponseType(typeof(List<Category>), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
+      #endregion
+      [HttpGet("Get/[action]")]
+      [Authorize(AppConst.AccessPolicies.Secret)]
+      public async Task<IActionResult> AllSecret()
       {
          try
          {
@@ -82,5 +102,7 @@ namespace OSnack.API.Controllers
             return StatusCode(417, ErrorsList);
          }
       }
+
+
    }
 }

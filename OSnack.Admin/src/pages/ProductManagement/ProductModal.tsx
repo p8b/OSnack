@@ -145,8 +145,18 @@ const ProductModal = (props: IProps) => {
             <Input label="Name*"
                value={product.name}
                onChange={i => { setProduct({ ...product, name: i.target.value }); }}
-               className="col-12 col-sm-6"
+               className="col-12"
                showDanger={errorAlert.checkExistFilterRequired("Name")}
+            />
+         </div>
+         <div className="row">
+            <Input label="Stock Quantity*"
+               type="number"
+               positiveNumbersOnly
+               value={product.stockQuantity}
+               onChange={i => { setProduct({ ...product, stockQuantity: i.target.value as unknown as number }); }}
+               className="col-12 col-sm-6"
+               showDanger={errorAlert.checkExistFilterRequired("UnitQuantity")}
             />
 
             <InputDropDown dropdownTitle={product.category?.name || "Select Option"}

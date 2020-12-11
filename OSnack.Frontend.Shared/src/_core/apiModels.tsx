@@ -94,7 +94,7 @@ export class LoginInfo {
     rememberMe?: boolean;
 
 }
-export class ExternalLoginInfo {
+export class ExternalLoginDetails {
     code!: string;
     state!: string;
     type?: RegistrationTypes;
@@ -117,20 +117,12 @@ export class MultiResultOfListOfCategoryAndInteger {
     part2?: number;
 
 }
-export class ProblemDetails {
-    type?: string | undefined;
-    title?: string | undefined;
-    status?: number | undefined;
-    detail?: string | undefined;
-    instance?: string | undefined;
-    extensions?: { [key: string]: any; } | undefined;
-
-}
 export class Coupon {
     code!: string;
     pendigCode?: string | undefined;
     type!: CouponType;
     maxUseQuantity?: number;
+    minimumOrderPrice?: number;
     discountAmount?: number;
     expiryDate!: Date;
 
@@ -176,11 +168,6 @@ export class Newsletter {
     displayName?: string | undefined;
 
 }
-export class TupleOfListOfOrderAndInteger {
-    item1?: Order[];
-    item2?: number;
-
-}
 export class Payment {
     id?: number = 0;
     paymentProvider!: string;
@@ -194,6 +181,11 @@ export abstract class OrderProductBase {
     unitQuantity!: number;
     unitType!: ProductUnitType;
     imagePath?: string | undefined;
+
+}
+export class TupleOfListOfOrderAndInteger {
+    item1?: Order[];
+    item2?: number;
 
 }
 export class NutritionalInfo {
@@ -234,6 +226,15 @@ export class MultiResultOfListOfProductAndInteger {
 export class MultiResultOfProductAndListOfProduct {
     part1?: Product | undefined;
     part2?: Product[] | undefined;
+
+}
+export class ProblemDetails {
+    type?: string | undefined;
+    title?: string | undefined;
+    status?: number | undefined;
+    detail?: string | undefined;
+    instance?: string | undefined;
+    extensions?: { [key: string]: any; } | undefined;
 
 }
 export class MultiResultOfListOfUserAndInteger {
@@ -300,6 +301,7 @@ export class Product extends OrderProductBase {
     imageBase64!: string;
     originalImageBase64!: string;
     status?: boolean;
+    stockQuantity!: number;
     category: Category = new Category();
     nutritionalInfo?: NutritionalInfo | undefined;
     comments?: Comment[] | undefined;

@@ -19,10 +19,10 @@ namespace OSnack.API.Controllers
 
       #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
-      [ProducesResponseType(StatusCodes.Status404NotFound)]
-      [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
+      [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(System.Collections.Generic.List<P8B.Core.CSharp.Models.Error>), StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(System.Collections.Generic.List<P8B.Core.CSharp.Models.Error>), StatusCodes.Status404NotFound)]
+      [ProducesResponseType(typeof(System.Collections.Generic.List<P8B.Core.CSharp.Models.Error>), StatusCodes.Status412PreconditionFailed)]
       #endregion
       [HttpDelete("[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test

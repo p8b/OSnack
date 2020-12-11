@@ -146,6 +146,7 @@
     <Folder Include="src\pages\MyAccount\" />
     <Folder Include="src\pages\EmailTemplates\" />
     <Folder Include="src\pages\CategoryManagement\" />
+    <Folder Include="src\pages\CouponManagement\" />
     <Folder Include="src\pages\UserManagement\" />
     <Folder Include="src\pages\ProductManagement\" />
     <Folder Include="src\SecretHooks\" />
@@ -182,6 +183,8 @@
     <TypeScriptCompile Include="src\index.tsx" />
     <TypeScriptCompile Include="src\pages\CategoryManagement\CategoryManagement.tsx" />
     <TypeScriptCompile Include="src\pages\CategoryManagement\CategoryModal.tsx" />
+    <TypeScriptCompile Include="src\pages\CouponManagement\CouponManagement.tsx" />
+    <TypeScriptCompile Include="src\pages\CouponManagement\CouponModel.tsx" />
     <TypeScriptCompile Include="src\pages\Dashboard\Dashboard.tsx" />
     <TypeScriptCompile Include="src\pages\EmailTemplates\EmailTemplateManagement.tsx" />
     <TypeScriptCompile Include="src\pages\EmailTemplates\EmailTemplateEditDetailsModal.tsx" />

@@ -1,7 +1,7 @@
 import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
-import { LoginInfo, User, ExternalLoginInfo } from "../../_core/apiModels";
+import { LoginInfo, User, ExternalLoginDetails } from "../../_core/apiModels";
 export const useAntiforgeryTokenAuthentication = async (): Promise<void> =>{
         let url_ = API_URL + "/Authentication/Get/AntiforgeryToken";
         url_ = url_.replace(/[?&]$/, "");
@@ -98,7 +98,7 @@ export const useLoginSecretAuthentication = async (loginInfo: LoginInfo): Promis
             throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
     }
 }
-export const useExternalLoginOfficialAuthentication = async (externalLoginInfo: ExternalLoginInfo): Promise<User> =>{
+export const useExternalLoginOfficialAuthentication = async (externalLoginInfo: ExternalLoginDetails): Promise<User> =>{
         let url_ = API_URL + "/Authentication/Post/ExternalLoginOfficial";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -146,7 +146,7 @@ export const useExternalLoginOfficialAuthentication = async (externalLoginInfo: 
             throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
     }
 }
-export const useExternalLoginSecretAuthentication = async (externalLoginInfo: ExternalLoginInfo): Promise<User> =>{
+export const useExternalLoginSecretAuthentication = async (externalLoginInfo: ExternalLoginDetails): Promise<User> =>{
         let url_ = API_URL + "/Authentication/Post/ExternalLoginSecret";
         url_ = url_.replace(/[?&]$/, "");
 

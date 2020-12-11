@@ -12,6 +12,7 @@ const Dashboard = lazy(() => import("./pages/Dashboard/Dashboard"));
 const MyAccount = lazy(() => import("./pages/MyAccount/MyAccount"));
 const LoginPage = lazy(() => import("./pages/LoginPage/LoginPage"));
 const CategoryManagement = lazy(() => import("./pages/CategoryManagement/CategoryManagement"));
+const CouponManagement = lazy(() => import("./pages/CouponManagement/CouponManagement"));
 const ProductManagement = lazy(() => import("./pages/ProductManagement/ProductManagement"));
 const UserManagement = lazy(() => import("./pages/UserManagement/UserManagement"));
 const PageNotFound = lazy(() => import("osnack-frontend-shared/src/pages/PageNotFound"));
@@ -39,6 +40,7 @@ const App = () => {
                      <CustomRoute authenticate={useSilentSecretAuthentication} exact AuthRequired path="/" Render={(props: any) => <Dashboard {...props} />} />
                      <CustomRoute authenticate={useSilentSecretAuthentication} exact AuthRequired path="/MyAccount" Render={(props: any) => <MyAccount {...props} />} />
                      <CustomRoute authenticate={useSilentSecretAuthentication} exact AuthRequired path="/Categories" Render={(props: any) => <CategoryManagement {...props} />} />
+                     <CustomRoute authenticate={useSilentSecretAuthentication} exact AuthRequired path="/Coupons" Render={(props: any) => <CouponManagement {...props} />} />
                      <CustomRoute authenticate={useSilentSecretAuthentication} exact AuthRequired path="/Products" Render={(props: any) => <ProductManagement {...props} />} />
                      <CustomRoute authenticate={useSilentSecretAuthentication} exact AuthRequired path="/EmailTemplate" Render={(props: any) => <EmailTemplateManagement {...props} />} />
                      <CustomRoute authenticate={useSilentSecretAuthentication} exact AuthRequired path="/EmailTemplate/Edit" Render={(props: any) => <EmailTemplateEdit {...props} />} />

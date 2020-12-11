@@ -11,7 +11,7 @@ import { ConstMaxNumberOfPerItemsPage, GetAllRecords } from 'osnack-frontend-sha
 import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
 import { useSearchSecretProduct } from '../../SecretHooks/useProductHook';
 import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
-import { useAllCategory } from 'osnack-frontend-shared/src/hooks/PublicHooks/useCategoryHook';
+import { useAllSecretCategory } from '../../SecretHooks/useCategoryHook';
 
 const ProductManagement = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -32,7 +32,7 @@ const ProductManagement = (props: IProps) => {
    const [tblMaxItemsPerPage, setTblMaxItemsPerPage] = useState(ConstMaxNumberOfPerItemsPage);
 
    useEffect(() => {
-      useAllCategory().then(categories => {
+      useAllSecretCategory().then(categories => {
          if (isUnmounted.current) return;
          setCategoryList(categories);
       }).catch(alert => {
@@ -101,7 +101,7 @@ const ProductManagement = (props: IProps) => {
             product.name,
             product.category.name,
             `£${product.price}`,
-            `${product.unitQuantity} ${productUnitTypeList.find(pu => pu.value == product.unitType)?.name}`,
+            `${product.unitQuantity} ${productUnitTypeList.find(pu => pu.Value == product.unitType)?.Name}`,
             product.status ? "Active" : "Disabled",
             <div className="col-auto p-0 m-0">
                <button className="btn btn-sm btn-blue col-12 m-0 mt-1 mt-xl-0 edit-icon"
