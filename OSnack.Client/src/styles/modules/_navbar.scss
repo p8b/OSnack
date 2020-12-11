@@ -98,13 +98,26 @@
 
 
 .nav-cart {
-    font-size: 2.5rem;
-    background-color: transparent;
-    outline: none !important;
-    border: 0 !important;
-    margin: auto;
-    margin-left: 1rem;
-    margin-right: .5rem;
-    color: rgb(61, 95, 8) !important;
+    position: absolute;
     z-index: 100;
+    right: 4rem;
+    top: .8rem;
+
+    & button {
+        font-size: 2.5rem;
+        background-color: transparent;
+        outline: none !important;
+        border: 0 !important;
+        color: rgb(61, 95, 8) !important;
+    }
+
+    & span {
+        position: relative !important;
+        padding: .2rem;
+        font-size: 1rem !important;
+        border-radius: 50%;
+        left: -4.3rem;
+        bottom: -.5rem;
+        background-color: white;
+    }
 }

@@ -145,6 +145,7 @@ const Pagination = (props: IProps) => {
                <select className="w-auto form-control outline-none" defaultValue={props.maxItemsPerPage}
                   onChange={(i) => { onMaxItemPerPageChange(i.target.value as unknown as number); }}
                >
+                  <option value="1" children="1" />
                   <option value="5" children="5" />
                   <option value="10" children="10" />
                   <option value="20" children="20" />

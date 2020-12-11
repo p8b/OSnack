@@ -15,7 +15,7 @@ const Home = lazy(() => import("./pages/Home/Home"));
 const Shop = lazy(() => import("./pages/Shop/Shop"));
 const About = lazy(() => import("./pages/About/About"));
 const ContactUs = lazy(() => import("./pages/ContactUs/ContactUs"));
-const Checkout = lazy(() => import("./pages/Checkout/Checkout"));
+const Basket = lazy(() => import("./pages/Checkout/Basket"));
 const MyAccount = lazy(() => import("./pages/MyAccount/MyAccount"));
 const MyAddresses = lazy(() => import("./pages/MyAccount/MyAddresses"));
 const LoginPage = lazy(() => import("./pages/Login/LoginPage"));
@@ -41,7 +41,7 @@ const App = () => {
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/ResetPassword" Render={(props: any) => <PasswordReset {...props} />} />
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/Shop/Product" Render={(props: any) => <ProductPage {...props} />} />
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/Shop" Render={(props: any) => <Shop {...props} />} />
-                        <CustomRoute authenticate={useSilentOfficialAuthentication} path="/Checkout" Render={(props: any) => <Checkout {...props} />} />
+                        <CustomRoute authenticate={useSilentOfficialAuthentication} path="/Checkout" Render={(props: any) => <Basket {...props} />} />
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/About" Render={(props: any) => <About {...props} />} />
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/Contact" Render={(props: any) => <ContactUs {...props} />} />
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/TermsAndConditions" Render={(props: any) => <TermsAndConditions {...props} />} />

@@ -41,13 +41,63 @@ const Alert = (props: IProps) => {
       </div>
    );
 };
+export default Alert;
+export const useAlert = (init: AlertObj) => {
+   const [alert, setAlert] = useState(init);
+   const isWaitCanceled = useRef(false);
+
+   const PleaseWait = (ms: number = 500, isCanceled: React.MutableRefObject<boolean> = useRef(false)) => {
+      isWaitCanceled.current = false;
+
+      sleep(ms, isCanceled).then(() => {
+         if (alert.List.length === 0 && !isWaitCanceled.current)
+            setAlert({ ...alert, List: [new ErrorDto("0", "Just a moment please...")], Type: AlertTypes.Warning });
+      });
+   };
+   const setSingleSuccess = (key: string, value: string) => {
+      isWaitCanceled.current = true;
+      setAlert({ ...alert, List: [new ErrorDto(key, value)], Type: AlertTypes.Success });
+   };
+   const setSingleWarning = (key: string, value: string) => {
+      isWaitCanceled.current = true;
+      setAlert({ ...alert, List: [new ErrorDto(key, value)], Type: AlertTypes.Warning });
+   };
+   const setSingleDefault = (key: string, value: string) => {
+      isWaitCanceled.current = true;
+      setAlert({ ...alert, List: [new ErrorDto(key, value)], Type: AlertTypes.default });
+   };
+   const set = (value: AlertObj) => {
+      isWaitCanceled.current = true;
+      setAlert({ ...alert, List: value.List, Type: value.Type });
+   };
+   const clear = () => {
+      isWaitCanceled.current = true;
+      setAlert({ ...alert, List: [], Type: AlertTypes.default });
+   };
+
+   const checkExist = (inputName: string = "") => {
+      return !!alert.List!.find(t => t.key?.toLowerCase() === inputName?.toLowerCase());
+   };
+   const checkExistFilterRequired = (inputName: string = "") => {
+
+      const includesError = !!alert.List!.find(t => t.key!.toLowerCase() === inputName.toLowerCase() && (t.value as string).includes("Required" || "required"));
+      const returnVal = !!alert.List!.find(t => t.key!.toLowerCase() === inputName.toLowerCase());
+      if (includesError) {
+         var List = alert.List.filter(t => t.key!.toLowerCase() !== inputName.toLowerCase());
+         if (!List.find(t => t.key!.includes("ErrorRemoved")))
+            List.push(new ErrorDto("ErrorRemoved", "Highlighted Fields Are Required."));
+         set(new AlertObj(List, alert.Type));
+      }
+      return returnVal;
+   };
+   return { alert, set, PleaseWait, clear, setSingleSuccess, setSingleWarning, setSingleDefault, checkExist, checkExistFilterRequired };
+};
 
 interface IProps {
    className?: string;
    alert?: AlertObj;
    onClosed?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
 }
-export default Alert;
 
 export enum AlertTypes {
    default = 0,
@@ -75,50 +125,3 @@ export class AlertObj {
       this.httpStatus = status;
    }
 }
-
-export const useAlert = (init: AlertObj) => {
-   const [alert, setAlert] = useState(init);
-   const isWaitCanceled = useRef(false);
-
-   const PleaseWait = (ms: number = 500, isCanceled: React.MutableRefObject<boolean> = useRef(false)) => {
-      isWaitCanceled.current = false;
-
-      sleep(ms, isCanceled).then(() => {
-         if (alert.List.length === 0 && !isWaitCanceled.current)
-            setAlert({ ...alert, List: [new ErrorDto("0", "Just a moment please...")], Type: AlertTypes.Warning });
-      });
-   };
-   const setSingleSuccess = (key: string, value: string) => {
-      isWaitCanceled.current = true;
-      setAlert({ ...alert, List: [new ErrorDto(key, value)], Type: AlertTypes.Success });
-   };
-   const setSingleWarning = (key: string, value: string) => {
-      isWaitCanceled.current = true;
-      setAlert({ ...alert, List: [new ErrorDto(key, value)], Type: AlertTypes.Warning });
-   };
-   const set = (value: AlertObj) => {
-      isWaitCanceled.current = true;
-      setAlert({ ...alert, List: value.List, Type: value.Type });
-   };
-   const clear = () => {
-      isWaitCanceled.current = true;
-      setAlert({ ...alert, List: [], Type: AlertTypes.default });
-   };
-
-   const checkExist = (inputName: string = "") => {
-      return !!alert.List!.find(t => t.key?.toLowerCase() === inputName?.toLowerCase());
-   };
-   const checkExistFilterRequired = (inputName: string = "") => {
-
-      const includesError = !!alert.List!.find(t => t.key!.toLowerCase() === inputName.toLowerCase() && (t.value as string).includes("Required" || "required"));
-      const returnVal = !!alert.List!.find(t => t.key!.toLowerCase() === inputName.toLowerCase());
-      if (includesError) {
-         var List = alert.List.filter(t => t.key!.toLowerCase() !== inputName.toLowerCase());
-         if (!List.find(t => t.key!.includes("ErrorRemoved")))
-            List.push(new ErrorDto("ErrorRemoved", "Highlighted Fields Are Required."));
-         set(new AlertObj(List, alert.Type));
-      }
-      return returnVal;
-   };
-   return { alert, set, PleaseWait, clear, setSingleSuccess, setSingleWarning, checkExist, checkExistFilterRequired };
-};

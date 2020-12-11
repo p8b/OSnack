@@ -104,7 +104,7 @@ const ProductManagement = (props: IProps) => {
             `${product.unitQuantity} ${productUnitTypeList.find(pu => pu.Value == product.unitType)?.Name}`,
             product.status ? "Active" : "Disabled",
             <div className="col-auto p-0 m-0">
-               <button className="btn btn-sm btn-blue col-12 m-0 mt-1 mt-xl-0 edit-icon"
+               <button className="btn btn-sm btn-blue col-12 m-0  edit-icon"
                   onClick={() => { editProduct(product); }}
                   children="Edit" />
             </div>
