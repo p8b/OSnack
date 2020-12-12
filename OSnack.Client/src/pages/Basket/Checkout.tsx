@@ -2,7 +2,7 @@
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { ShopContext } from '../../_core/shopContext';
 import InputDropDown from 'osnack-frontend-shared/src/components/Inputs/InputDropDown';
-import { Address, Coupon, CouponType, DeliveryOption, Order, User } from 'osnack-frontend-shared/src/_core/apiModels';
+import { Address, Coupon, CouponType, DeliveryOption, Order } from 'osnack-frontend-shared/src/_core/apiModels';
 import { useAllDeliveryOption } from 'osnack-frontend-shared/src/hooks/PublicHooks/useDeliveryOptionHook';
 import { useAllAddress } from 'osnack-frontend-shared/src/hooks/OfficialHooks/useAddressHook';
 import { AuthContext } from 'osnack-frontend-shared/src/_core/authenticationContext';
@@ -64,31 +64,46 @@ const Checkout = (props: IProps) => {
       }
    };
 
-   const recalculateBasket = (deliveryOptionList: DeliveryOption[], selectDeliveryOption?: DeliveryOption) => {
+   const recalculateBasket = (deliveryOptionList: DeliveryOption[],
+      selectDeliveryOption?: DeliveryOption, selectCoupon?: Coupon) => {
       let totalPriceTemp = 0;
       /// Calculate the Total item price
       basket.state.List.map(orderItem => { totalPriceTemp += (orderItem.quantity * orderItem.price); });
-
+      let removeCoupon = false;
+      if (selectCoupon == undefined) {
+         selectCoupon = order.coupon;
+      }
+      if (selectCoupon != undefined && selectCoupon.type != CouponType.FreeDelivery && totalPriceTemp < selectCoupon?.minimumOrderPrice!) {
+         removeCoupon = true;
+         setTotalDiscount(0);
+         selectCoupon = undefined;
+      }
       /// Decide the effect of the coupn on checkout
-      switch (order.coupon?.type) {
+      switch (selectCoupon?.type) {
          case CouponType.FreeDelivery:
-            selectDeliveryOption = deliveryOptionList.find(d => d.price == 0 && d.minimumOrderTotal == 0 && d.isPremitive) || new DeliveryOption();
-            setTotalDiscount(0);
+            if (selectDeliveryOption?.isPremitive) {
+               selectDeliveryOption = deliveryOptionList.find(d => d.price == 0 && d.minimumOrderTotal == 0 && d.isPremitive) || new DeliveryOption();
+            }
+            else {
+               removeCoupon = true;
+               setTotalDiscount(0);
+            }
             break;
          case CouponType.DiscountPrice:
-            setTotalDiscount(order.coupon.discountAmount || 0);
-            totalPriceTemp -= (order.coupon.discountAmount || 0);
+            setTotalDiscount(selectCoupon?.discountAmount || 0);
+            totalPriceTemp -= (selectCoupon?.discountAmount || 0);
             break;
          case CouponType.PercentageOfTotal:
-            const discountPercentage = order.coupon?.discountAmount || 0;
-            const disouctTotalTemp = (((discountPercentage * (order.totalPrice || 0)) / 100)?.toFixed(2) as unknown as number || 0);
+            const discountPercentage = selectCoupon?.discountAmount || 0;
+            const disouctTotalTemp = (((discountPercentage * (totalPriceTemp || 0)) / 100)?.toFixed(2) as unknown as number || 0);
             setTotalDiscount(disouctTotalTemp);
+
             totalPriceTemp -= disouctTotalTemp;
             break;
          default:
+            setTotalDiscount(0);
             break;
       }
-
       if (totalPriceTemp < 0) totalPriceTemp = 0;
 
       let availableDeliveryOptionList: DeliveryOption[] = [];
@@ -100,6 +115,7 @@ const Checkout = (props: IProps) => {
             selectDeliveryOption = deliveryOptionList.find(d => d.price == 0 && d.minimumOrderTotal > 0 && d.isPremitive)!;
             totalPriceTemp += selectDeliveryOption.price;
             availableDeliveryOptionList.push(selectDeliveryOption);
+
          } else {
             totalPriceTemp += selectDeliveryOption.price;
             availableDeliveryOptionList.push(deliveryOptionList.find(d => d.price == 0 && d.minimumOrderTotal > 0 && d.isPremitive)!);
@@ -107,7 +123,14 @@ const Checkout = (props: IProps) => {
       }
       else {
          if (selectDeliveryOption == undefined || selectDeliveryOption?.isPremitive) {
-            selectDeliveryOption = deliveryOptionList.find(d => d.price != 0 && d.minimumOrderTotal == 0 && d.isPremitive)!;
+
+            if (selectDeliveryOption?.price == 0 && selectDeliveryOption?.minimumOrderTotal == 0) {   //if free coupon used in order
+               setTotalDiscount(order.deliveryOption.price);
+               totalPriceTemp -= order.deliveryOption.price;
+               selectDeliveryOption.price = deliveryOptionList.find(d => d.price != 0 && d.minimumOrderTotal == 0 && d.isPremitive)!.price;
+            }
+            else
+               selectDeliveryOption = deliveryOptionList.find(d => d.price != 0 && d.minimumOrderTotal == 0 && d.isPremitive)!;
             totalPriceTemp += selectDeliveryOption.price;
             availableDeliveryOptionList.push(selectDeliveryOption);
          } else {
@@ -118,9 +141,17 @@ const Checkout = (props: IProps) => {
       deliveryOptionList.filter(d => !d.isPremitive).map(delivery => {
          availableDeliveryOptionList.push(delivery);
       });
+
+
       setAvailableDeliveryList(availableDeliveryOptionList);
       setDeliveryOptionList(deliveryOptionList);
-      setOrder(prev => { return { ...prev, totalPrice: totalPriceTemp, deliveryOption: selectDeliveryOption || order.deliveryOption }; });
+      setOrder(prev => {
+         return {
+            ...prev, totalPrice: totalPriceTemp,
+            deliveryOption: selectDeliveryOption || order.deliveryOption,
+            coupon: removeCoupon ? new Coupon() : selectCoupon
+         };
+      });
    };
 
    return (
@@ -162,8 +193,13 @@ const Checkout = (props: IProps) => {
                            } />
                      </div>
                      <div className="col-12 col-lg-6">
-                        <BasketCoupon coupon={order.coupon || new Coupon()} setCoupon={(val) => setOrder({ ...order, coupon: val })} />
-                        <div> Shipping : £<b>{order.deliveryOption?.price?.toFixed(2)}</b></div>
+                        <BasketCoupon coupon={order.coupon || new Coupon()}
+                           totalPrice={order.totalPrice! - order.deliveryOption.price}
+                           acceptFreeCoupon={(order.deliveryOption.price > 0 && order.deliveryOption.isPremitive) || false}
+                           setCoupon={(val) => { recalculateBasket(deliveryOptionList, order.deliveryOption, val); errorAlert.clear(); }}
+                           setAlert={(alert) => { errorAlert.set(alert); recalculateBasket(deliveryOptionList, order.deliveryOption, new Coupon()); }} />
+                        <div> Shipping : <b>£{order.deliveryOption?.price?.toFixed(2)}</b></div>
+                        {totalDiscount > 0 && <div> Discount : <b>-£{parseFloat(totalDiscount.toString()).toFixed(2)}</b></div>}
                         <div className="h5 mb-0 pb-0"> Total : <b >£{order.totalPrice?.toFixed(2)}</b> </div>
                         <p className="col-12 p-0 m-0 small-text text-gray" >Total Items: {basket.getTotalItems()}</p>
                      </div>

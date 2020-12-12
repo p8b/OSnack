@@ -21,31 +21,33 @@ namespace P8B.UK.API.Services
       public LoggingService(OSnackDbContext dbContext) =>
          _DbContext = dbContext;
 
-      internal AppLog Log(string message, AppLogType type, dynamic obj = null, int userId = 0)
+      internal AppLog Log(string message, AppLogType type, dynamic obj = null, ClaimsPrincipal userClaimsPrincipal = null)
       {
-         User user = null;
-         if (userId > 0)
-            user = _DbContext.Users.SingleOrDefault(u => u.Id == userId);
-         AppLog log = new AppLog(message, type, obj, user);
+         AppLog log = new AppLog(message, type, obj, GetUser(userClaimsPrincipal));
          _DbContext.AppLogs.Add(log);
          _DbContext.SaveChanges();
          return log;
       }
       internal string LogException(string message, dynamic obj = null, ClaimsPrincipal userClaimsPrincipal = null, AppLogType type = AppLogType.Exception)
       {
-         User user = null;
-         try
-         {
-
-            if (userClaimsPrincipal != null)
-               user = _DbContext.Users.SingleOrDefault(u => u.Id == AppFunc.GetUserId(userClaimsPrincipal));
-         }
-         catch (Exception) { }
-         AppLog log = new AppLog(message, type, obj, user);
+         AppLog log = new AppLog(message, type, obj, GetUser(userClaimsPrincipal));
          _DbContext.AppLogs.Add(log);
          _DbContext.SaveChanges();
          return CoreConst.CommonErrors.ServerError(log.Id);
       }
+
+      private User GetUser(ClaimsPrincipal userClaimsPrincipal = null)
+      {
+         try
+         {
+            User user = null;
+            if (userClaimsPrincipal != null)
+               user = _DbContext.Users.SingleOrDefault(u => u.Id == AppFunc.GetUserId(userClaimsPrincipal));
+            return user;
+         }
+         catch (Exception) { return null; }
+      }
+
       internal string LogEmailFailure(string message, dynamic obj = null, User user = null, AppLogType type = AppLogType.EmailFailure)
       {
          AppLog log = new AppLog(message, type, obj, user);

@@ -157,7 +157,11 @@ namespace OSnack.API
 
 
          services.AddControllers()
-             .AddNewtonsoftJson();
+             .AddNewtonsoftJson(option =>
+             {
+                option.SerializerSettings.Converters.Add(new MultiResultConverter());
+
+             });
 
          // Register the Swagger services
          foreach (var policy in AppConst.AccessPolicies.List)

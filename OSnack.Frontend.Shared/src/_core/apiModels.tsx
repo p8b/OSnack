@@ -76,6 +76,21 @@ export abstract class OrderAddressBase {
     postcode!: string;
 
 }
+export class MultiResultOfListOfCategoryAndAddress {
+    part1?: Category[] | undefined;
+    part2?: Address | undefined;
+
+}
+export class Category {
+    id?: number = 0;
+    name!: string;
+    imagePath?: string | undefined;
+    originalImagePath?: string | undefined;
+    imageBase64!: string;
+    originalImageBase64!: string;
+    totalProducts?: number;
+
+}
 export class Role {
     id?: number = 0;
     name!: string;
@@ -100,16 +115,6 @@ export class ExternalLoginDetails {
     type?: RegistrationTypes;
     rememberMe?: boolean;
     redirectUrl?: string | undefined;
-
-}
-export class Category {
-    id?: number = 0;
-    name!: string;
-    imagePath?: string | undefined;
-    originalImagePath?: string | undefined;
-    imageBase64!: string;
-    originalImageBase64!: string;
-    totalProducts?: number;
 
 }
 export class MultiResultOfListOfCategoryAndInteger {

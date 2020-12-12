@@ -68,7 +68,7 @@ namespace OSnack.API.Controllers
       /// Check Coupon code validation
       /// </summary>
       #region *** ***
-      [ProducesResponseType(StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(Coupon), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
@@ -82,17 +82,17 @@ namespace OSnack.API.Controllers
 
             if (coupon == null)
             {
-               CoreFunc.Error(ref ErrorsList, "Code not found");
+               CoreFunc.Error(ref ErrorsList, $"'{couponCode}' not found");
                return StatusCode(412, ErrorsList);
             }
 
             if (coupon.MaxUseQuantity == 0 || coupon.ExpiryDate < DateTime.UtcNow)
             {
-               CoreFunc.Error(ref ErrorsList, "Coupon has expired");
+               CoreFunc.Error(ref ErrorsList, $"'{couponCode}' has expired");
                return StatusCode(412, ErrorsList);
             }
 
-            return Ok();
+            return Ok(coupon);
          }
          catch (Exception ex)
          {

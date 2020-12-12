@@ -1,8 +1,8 @@
 import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
-
-export const useValidateCoupon = async (couponCode: string | null): Promise<void> =>{
+import { Coupon } from "../../_core/apiModels";
+export const useValidateCoupon = async (couponCode: string | null): Promise<Coupon> =>{
         let url_ = API_URL + "/Coupon/Get/Validate/{couponCode}";
         if (couponCode === undefined || couponCode === null)
             throw new Error("The parameter 'couponCode' must be defined.");
@@ -18,7 +18,9 @@ export const useValidateCoupon = async (couponCode: string | null): Promise<void
         switch(response?.status){
 
         case 200: 
-            return;
+            return response?.json().then((responseJson: Coupon) => {
+                return responseJson;
+            });
 
         case 412: 
             return response?.json().then((data: ErrorDto[]) => {
