@@ -2,10 +2,9 @@ import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/compo
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
 import { User } from "osnack-frontend-shared/src/_core/apiModels";
-export const useSilentSecretAuthentication = async (): Promise<User> =>{
+export const useSilentSecretAuthentication = async (): Promise<{ data:User, status: number | undefined}> =>{
         let url_ = API_URL + "/Authentication/Post/SilentSecret";
         url_ = url_.replace(/[?&]$/, "");
-
         let response = await httpCaller.POST(url_);
         if( response?.status === 400){
             await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
@@ -14,23 +13,23 @@ export const useSilentSecretAuthentication = async (): Promise<User> =>{
 
         switch(response?.status){
 
-        case 200: 
-            return response?.json().then((responseJson: User) => {
-                return responseJson;
-            });
+                case 200: 
+                        var data: User = await response?.json();
+                        return { data, status: response?.status };
 
-        case 401: 
-            return response?.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response?.status);
-            });
+                case 401: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
 
-        case 417: 
-            return response?.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response?.status);
-            });
+                case 417: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
 
-        default:
-            CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status}`;
-            throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
-    }
+                default:
+                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
+        }
+  
 }

@@ -2,10 +2,9 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { User } from "../../_core/apiModels";
-export const useLogoutAuthentication = async (): Promise<void> =>{
+export const useLogoutAuthentication = async (): Promise<{ data:void, status: number | undefined}> =>{
         let url_ = API_URL + "/Authentication/Get/Logout";
         url_ = url_.replace(/[?&]$/, "");
-
         let response = await httpCaller.GET(url_);
         if( response?.status === 400){
             await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
@@ -14,23 +13,23 @@ export const useLogoutAuthentication = async (): Promise<void> =>{
 
         switch(response?.status){
 
-        case 200: 
-            return;
+                case 200: 
+                        return;
 
-        case 417: 
-            return response?.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response?.status);
-            });
+                case 417: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
 
-        default:
-            CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status}`;
-            throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
-    }
+                default:
+                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
+        }
+  
 }
-export const useSilentOfficialAuthentication = async (): Promise<User> =>{
+export const useSilentOfficialAuthentication = async (): Promise<{ data:User, status: number | undefined}> =>{
         let url_ = API_URL + "/Authentication/Post/SilentOfficial";
         url_ = url_.replace(/[?&]$/, "");
-
         let response = await httpCaller.POST(url_);
         if( response?.status === 400){
             await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
@@ -39,30 +38,29 @@ export const useSilentOfficialAuthentication = async (): Promise<User> =>{
 
         switch(response?.status){
 
-        case 200: 
-            return response?.json().then((responseJson: User) => {
-                return responseJson;
-            });
+                case 200: 
+                        var data: User = await response?.json();
+                        return { data, status: response?.status };
 
-        case 401: 
-            return response?.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response?.status);
-            });
+                case 401: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
 
-        case 417: 
-            return response?.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response?.status);
-            });
+                case 417: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
 
-        default:
-            CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status}`;
-            throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
-    }
+                default:
+                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
+        }
+  
 }
-export const useConfirmCurrentUserPasswordAuthentication = async (password: string): Promise<User> =>{
+export const useConfirmCurrentUserPasswordAuthentication = async (password: string): Promise<{ data:User, status: number | undefined}> =>{
         let url_ = API_URL + "/Authentication/Post/ConfirmCurrentUserPassword";
         url_ = url_.replace(/[?&]$/, "");
-
         const content_ = password;
         let response = await httpCaller.POST(url_, content_);
         if( response?.status === 400){
@@ -72,23 +70,23 @@ export const useConfirmCurrentUserPasswordAuthentication = async (password: stri
 
         switch(response?.status){
 
-        case 200: 
-            return response?.json().then((responseJson: User) => {
-                return responseJson;
-            });
+                case 200: 
+                        var data: User = await response?.json();
+                        return { data, status: response?.status };
 
-        case 401: 
-            return response?.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response?.status);
-            });
+                case 401: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
 
-        case 417: 
-            return response?.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response?.status);
-            });
+                case 417: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
 
-        default:
-            CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status}`;
-            throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
-    }
+                default:
+                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
+        }
+  
 }

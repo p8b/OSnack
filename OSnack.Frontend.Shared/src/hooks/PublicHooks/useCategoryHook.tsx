@@ -2,10 +2,9 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { Category } from "../../_core/apiModels";
-export const useAllPublicCategory = async (): Promise<Category[]> =>{
+export const useAllPublicCategory = async (): Promise<{ data:Category[], status: number | undefined}> =>{
         let url_ = API_URL + "/Category/Get/AllPublic";
         url_ = url_.replace(/[?&]$/, "");
-
         let response = await httpCaller.GET(url_);
         if( response?.status === 400){
             await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
@@ -14,18 +13,18 @@ export const useAllPublicCategory = async (): Promise<Category[]> =>{
 
         switch(response?.status){
 
-        case 200: 
-            return response?.json().then((responseJson: Category[]) => {
-                return responseJson;
-            });
+                case 200: 
+                        var data: Category[] = await response?.json();
+                        return { data, status: response?.status };
 
-        case 417: 
-            return response?.json().then((data: ErrorDto[]) => {
-                throw new AlertObj(data, AlertTypes.Error, response?.status);
-            });
+                case 417: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
 
-        default:
-            CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status}`;
-            throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
-    }
+                default:
+                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
+        }
+  
 }

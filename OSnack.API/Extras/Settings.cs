@@ -1,7 +1,7 @@
-﻿using System;
-using System.Data.SqlClient;
-
+﻿
 using Newtonsoft.Json;
+
+using OSnack.API.Extras.Paypal;
 
 using P8B.Core.CSharp.Models;
 
@@ -27,6 +27,12 @@ namespace OSnack.API.Extras
       public string[] ExcludedRoutesFromCORS { get; set; }
 
       /// <summary>
+      /// Brand Name
+      /// </summary>
+      [JsonProperty(PropertyName = "BrandName")]
+      public string BrandName { get; set; }
+
+      /// <summary>
       /// Use for setting the domain of antiforgery token cookie
       /// </summary>
       [JsonProperty(PropertyName = "AntiforgeryCookieDomain")]
@@ -34,10 +40,16 @@ namespace OSnack.API.Extras
 
 
       /// <summary>
-      /// Email settings used in MmJ Email Services
+      /// Email settings 
       /// </summary>
       [JsonProperty(PropertyName = "EmailSettings")]
       public EmailSettings EmailSettings { get; set; }
+
+      /// <summary>
+      /// PayPal Settings
+      /// </summary>
+      [JsonProperty(PropertyName = "PayPal")]
+      public PayPalSettings PayPal { get; set; }
 
       /// <summary>
       /// The array of allowed CORs (Cross-Origin Request) URL

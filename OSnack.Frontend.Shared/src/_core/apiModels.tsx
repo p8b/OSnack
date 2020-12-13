@@ -76,21 +76,6 @@ export abstract class OrderAddressBase {
     postcode!: string;
 
 }
-export class MultiResultOfListOfCategoryAndAddress {
-    part1?: Category[] | undefined;
-    part2?: Address | undefined;
-
-}
-export class Category {
-    id?: number = 0;
-    name!: string;
-    imagePath?: string | undefined;
-    originalImagePath?: string | undefined;
-    imageBase64!: string;
-    originalImageBase64!: string;
-    totalProducts?: number;
-
-}
 export class Role {
     id?: number = 0;
     name!: string;
@@ -117,9 +102,19 @@ export class ExternalLoginDetails {
     redirectUrl?: string | undefined;
 
 }
-export class MultiResultOfListOfCategoryAndInteger {
-    part1?: Category[] | undefined;
-    part2?: number;
+export class Category {
+    id?: number = 0;
+    name!: string;
+    imagePath?: string | undefined;
+    originalImagePath?: string | undefined;
+    imageBase64!: string;
+    originalImageBase64!: string;
+    totalProducts?: number;
+
+}
+export class CategoryListAndTotalNumber {
+    categoryList?: Category[] | undefined;
+    totalNumber?: number;
 
 }
 export class Coupon {
@@ -132,9 +127,9 @@ export class Coupon {
     expiryDate!: Date;
 
 }
-export class MultiResultOfListOfCouponAndInteger {
-    part1?: Coupon[] | undefined;
-    part2?: number;
+export class CouponListAndTotalNumber {
+    couponList?: Coupon[] | undefined;
+    totalNumber?: number;
 
 }
 export class DeliveryOption {
@@ -163,9 +158,9 @@ export class ServerVariables {
     replacementValue!: string;
 
 }
-export class MultiResultOfEmailTemplateAndEmailTemplate {
-    part1?: EmailTemplate | undefined;
-    part2?: EmailTemplate | undefined;
+export class EmailtemplateAndEmailtemplate1 {
+    emailtemplate?: EmailTemplate | undefined;
+    emailtemplate1?: EmailTemplate | undefined;
 
 }
 export class Newsletter {
@@ -223,14 +218,14 @@ export class Score {
     product?: Product | undefined;
 
 }
-export class MultiResultOfListOfProductAndInteger {
-    part1?: Product[] | undefined;
-    part2?: number;
+export class ProductListAndTotalNumber {
+    productList?: Product[] | undefined;
+    totalNumber?: number;
 
 }
-export class MultiResultOfProductAndListOfProduct {
-    part1?: Product | undefined;
-    part2?: Product[] | undefined;
+export class ProductAndProductList {
+    product?: Product | undefined;
+    productList?: Product[] | undefined;
 
 }
 export class ProblemDetails {
@@ -242,9 +237,9 @@ export class ProblemDetails {
     extensions?: { [key: string]: any; } | undefined;
 
 }
-export class MultiResultOfListOfUserAndInteger {
-    part1?: User[] | undefined;
-    part2?: number;
+export class UserListAndTotalNumber {
+    userList?: User[] | undefined;
+    totalNumber?: number;
 
 }
 export class UpdateCurrentUserData {
@@ -284,12 +279,15 @@ export class Order extends OrderAddressBase {
     date?: Date;
     status!: OrderStatusType;
     deliveryOption: DeliveryOption = new DeliveryOption();
-    totalPrice?: number;
     deliveryPrice?: number;
     address: Address = new Address();
     payment: Payment = new Payment();
     coupon?: Coupon | undefined;
     orderItems?: OrderItem[] | undefined;
+    totalPrice!: number;
+    totalItemPrice!: number;
+    shippingPrice!: number;
+    totalDiscount!: number;
 
 }
 export class OrderItem extends OrderProductBase {

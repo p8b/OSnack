@@ -11,13 +11,14 @@ import QuantityInput from 'osnack-frontend-shared/src/components/Inputs/Quantity
 import Tabs from './Tabs';
 import ShopItem from '../Shop/ShopItem';
 import { ShopContext } from '../../_core/shopContext';
+import Carousel from '../../components/Carousel';
 
 const ProductPage = (props: IProps) => {
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
    const [product, setProduct] = useState(new Product());
-   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
    const [redirectToShop, setRedirectToShop] = useState<boolean>(false);
+   const [carouselItems, setCarouselItems] = useState<any[]>([]);
    const history = useHistory();
    const basket = useContext(ShopContext);
 
@@ -31,7 +32,7 @@ const ProductPage = (props: IProps) => {
             if (isUnmounted.current) return;
             setProduct(result.part1!);
             window.scrollTo(0, 0);
-            setRelatedProducts(result.part2!);
+            getCarouselItems(result.part2!);
             errorAlert.clear();
          }).catch(alert => {
             if (isUnmounted.current) return;
@@ -41,7 +42,13 @@ const ProductPage = (props: IProps) => {
          setRedirectToShop(true);
       }
    }, [window.location.pathname]);
-
+   const getCarouselItems = (productList: Product[]) => {
+      let arr: any[] = [];
+      productList.map((product => {
+         arr.push(<ShopItem key={product.id} product={product} />);
+      }));
+      setCarouselItems(arr);
+   };
    if (redirectToShop)
       return <Redirect to="/Shop" />;
 
@@ -84,9 +91,7 @@ const ProductPage = (props: IProps) => {
                   </div>
                   <div className="row justify-content-center">
                      <PageHeader title="Related Products" className="line-header-lg col-12" />
-                     <div className="row w-100 p-3 justify-content-center">
-                        {relatedProducts.map((product) => <ShopItem product={product} />)}
-                     </div>
+                     <Carousel items={carouselItems} />
                   </div>
                </div>
             }

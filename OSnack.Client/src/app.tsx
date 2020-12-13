@@ -11,11 +11,12 @@ import Container from "./components/Container";
 import NavMenu from "./components/NavMenu/NavMenu";
 import Footer from "./components/Footer";
 import { useSilentOfficialAuthentication } from "osnack-frontend-shared/src/hooks/OfficialHooks/useAuthenticationHook";
+import { useScript } from "osnack-frontend-shared/src/_core/appFunc";
 const Home = lazy(() => import("./pages/Home/Home"));
 const Shop = lazy(() => import("./pages/Shop/Shop"));
 const About = lazy(() => import("./pages/About/About"));
 const ContactUs = lazy(() => import("./pages/ContactUs/ContactUs"));
-const Basket = lazy(() => import("./pages/Checkout/Basket"));
+const Basket = lazy(() => import("./pages/Basket/Basket"));
 const MyAccount = lazy(() => import("./pages/MyAccount/MyAccount"));
 const MyAddresses = lazy(() => import("./pages/MyAccount/MyAddresses"));
 const LoginPage = lazy(() => import("./pages/Login/LoginPage"));
@@ -26,6 +27,12 @@ const PasswordReset = lazy(() => import("osnack-frontend-shared/src/pages/Passwo
 const TermsAndConditions = lazy(() => import("./pages/TermsAndConditions/TermsAndConditions"));
 
 const App = () => {
+   const clientID = "AUc_fJXtMhI3ugArGsxZur6ej0GP4Pb_usigBXwK9qvtUKByaJWEf7HNrUBSMHaYSiBq6Cg5nOf4_Tq_";
+   const currency = "GBP";
+   const intent = "capture";
+   const commit = "false";
+
+   useScript(`https://www.paypal.com/sdk/js?client-id=${clientID}&currency=${currency}&intent=${intent}&commit=${commit}`);
    return (
       <BrowserRouter>
          <AuthenticationContext>

@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 
@@ -27,11 +26,11 @@ namespace OSnack.API.Extras
 
       public static void MakeClientZipFile(OpenApiDocument document, string webHostRoot, bool zipIt = false)
       {
+         /// Force ignoreing Identity user sensetive information
          foreach (var classObject in document.Definitions)
          {
             if (classObject.Key == "IdentityUserOfInteger")
             {
-
                foreach (var prop in typeof(User).GetProperties())
                {
                   if (prop.CustomAttributes.Any(i => i.AttributeType.FullName == "Newtonsoft.Json.JsonIgnoreAttribute"))
@@ -43,6 +42,7 @@ namespace OSnack.API.Extras
                break;
             }
          }
+
          TypeScriptClientGenerator tg = new TypeScriptClientGenerator(document, new TypeScriptClientGeneratorSettings()
          {
             ClassName = "{controller}",
@@ -55,11 +55,11 @@ namespace OSnack.API.Extras
                         TemplateDirectory=Path.Combine(@$"{webHostRoot}\StaticFiles\liquid")
                      }
          });
+
          string zipFilePath = Path.Combine(@$"{webHostRoot}\StaticFiles\tsApiFiles\{document.Info.Title}.zip");
          string zipFolder = Path.Combine(@$"{webHostRoot}\StaticFiles\tsApiFiles\{document.Info.Title}Hooks");
          if (document.Tags.Any(t => t.Name.Equals("IsModelOnly")))
             zipFolder = Path.Combine(@$"{webHostRoot}\StaticFiles\tsApiFiles");
-
          try { File.Delete(zipFilePath); } catch (Exception) { }
          if (!Directory.Exists(zipFolder))
          {
@@ -135,5 +135,7 @@ namespace OSnack.API.Extras
             CoreFunc.DeleteDirectory(zipFolder);
          }
       }
+
+
    }
 }

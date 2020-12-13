@@ -75,8 +75,8 @@ const UserManagement = (props: IProps) => {
       useGetUser(selectedPage, maxItemsPerPage, searchString, roleFilter, isSortAsc, sortName).then(
          result => {
             if (isUnmounted.current) return;
-            setTblTotalItemCount(result.part2 || 0);
-            populateUserTable(result.part1!);
+            setTblTotalItemCount(result.data.totalNumber || 0);
+            populateUserTable(result.data.userList!);
             errorAlert.clear();
          }
       ).catch(alert => {
