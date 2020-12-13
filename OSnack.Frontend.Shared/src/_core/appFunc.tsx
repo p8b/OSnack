@@ -219,12 +219,14 @@ export const getNextDate = (day: number = 1) => {
    return new Date(nextDay.setDate(now.getDate() + day));
 };
 
-export const useScript = (url: string) => {
+export const useScript = (url: string, callBack: () => void) => {
    useEffect(() => {
       const script = document.createElement('script');
-
+      console.log(url);
       script.src = url;
       script.async = true;
+      script.onload = () => { callBack(); };
+
 
       document.body.appendChild(script);
 

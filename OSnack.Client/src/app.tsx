@@ -27,12 +27,9 @@ const PasswordReset = lazy(() => import("osnack-frontend-shared/src/pages/Passwo
 const TermsAndConditions = lazy(() => import("./pages/TermsAndConditions/TermsAndConditions"));
 
 const App = () => {
-   const clientID = "AUc_fJXtMhI3ugArGsxZur6ej0GP4Pb_usigBXwK9qvtUKByaJWEf7HNrUBSMHaYSiBq6Cg5nOf4_Tq_";
-   const currency = "GBP";
-   const intent = "capture";
-   const commit = "false";
 
-   useScript(`https://www.paypal.com/sdk/js?client-id=${clientID}&currency=${currency}&intent=${intent}&commit=${commit}`);
+
+
    return (
       <BrowserRouter>
          <AuthenticationContext>

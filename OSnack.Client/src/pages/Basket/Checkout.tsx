@@ -14,9 +14,14 @@ import { useDetectOutsideClick } from 'osnack-frontend-shared/src/hooks/function
 import AddressModal from '../MyAccount/AddressModal';
 import BasketCoupon from './BasketCoupon';
 import PaymentModal from './PaymentModal';
-import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
+import { useScript } from 'osnack-frontend-shared/src/_core/appFunc';
 
 const Checkout = (props: IProps) => {
+   const clientID = "AUc_fJXtMhI3ugArGsxZur6ej0GP4Pb_usigBXwK9qvtUKByaJWEf7HNrUBSMHaYSiBq6Cg5nOf4_Tq_";
+   const currency = "GBP";
+   const intent = "capture";
+   const commit = "false";
+   const [paypalLoad, setpaypalLoad] = useState(false);
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
    const auth = useContext(AuthContext);
@@ -24,8 +29,6 @@ const Checkout = (props: IProps) => {
    const toggleContainerModal = React.createRef<HTMLDivElement>();
    const [outsideClickModal, setOutsideClickModal] = useDetectOutsideClick(toggleContainerModal, false);
    const [isOpenAddressModal, setIsOpenAddressModal] = useState(false);
-   // @ts-ignore
-   const PayPalButton = paypal.Buttons.driver("react", { React, ReactDOM });
 
    const paymentModalRef = React.createRef<HTMLDivElement>();
    const [isOpenPayementModal, setIsOpenPayementModal] = useDetectOutsideClick(paymentModalRef, false);
@@ -37,8 +40,10 @@ const Checkout = (props: IProps) => {
    const [totalDiscount, setTotalDiscount] = useState(0);
    const [order, setOrder] = useState(new Order());
 
+   useScript(`https://www.paypal.com/sdk/js?client-id=${clientID}&currency=${currency}&intent=${intent}&commit=${commit}`, () => { setpaypalLoad(true); });
    useEffect(() => { getDeliveryOptionAndAddresses(); }, [auth.state.isAuthenticated]);
    useEffect(() => {
+
       getDeliveryOptionAndAddresses();
       return () => {
          isUnmounted.current = true;
@@ -50,6 +55,8 @@ const Checkout = (props: IProps) => {
          props.setRefresh(false);
       }
    }, [props.refresh]);
+
+
    const getDeliveryOptionAndAddresses = () => {
       if (auth.state.isAuthenticated) {
          useAllAddress().then(result => {
@@ -233,20 +240,19 @@ const Checkout = (props: IProps) => {
             <>
                <AddressModal isOpen={isOpenAddressModal}
                   onSuccess={(address) => {
-                     useAllAddress().then(addresses => {
-                        setAddressList(addresses);
+                     useAllAddress().then(result => {
+                        setAddressList(result.data);
                      }).catch(alert => errorAlert.set(alert));
                      setOrder({ ...order, address: address });
                   }}
                   address={order.address}
                   onClose={() => setIsOpenAddressModal(false)} />
 
-               <Modal isOpen={isOpenPayementModal}
-                  bodyRef={paymentModalRef}
-                  className="col-4">
-                  <Button className="col-12 btn-white radius-none mb-3" children="Back" onClick={() => { setIsOpenPayementModal(false); }} />
-                  <PayPalButton />
-               </Modal>
+               {paypalLoad &&
+                  <PaymentModal isOpen={isOpenPayementModal}
+                     setIsOpen={setIsOpenPayementModal}
+                     ref={paymentModalRef} />
+               }
             </>
          }
          {!auth.state.isAuthenticated &&
