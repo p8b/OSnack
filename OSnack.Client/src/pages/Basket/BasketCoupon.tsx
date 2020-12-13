@@ -15,22 +15,22 @@ const BasketCoupon = (props: IProps) => {
             AlertTypes.Error));
          return;
       }
-      useValidateCoupon(code).then(coupon => {
-         if (coupon.type == CouponType.FreeDelivery && !props.acceptFreeCoupon) {
+      useValidateCoupon(code).then(result => {
+         if (result.data.type == CouponType.FreeDelivery && !props.acceptFreeCoupon) {
             props.setAlert(new AlertObj(
                [new ErrorDto("Access Denied", "Only apply to \"standard\" delivery.")],
                AlertTypes.Error));
             setCode("");
             return;
          }
-         if (props.totalPrice < coupon.minimumOrderPrice!) {
+         if (props.totalPrice < result.data.minimumOrderPrice!) {
             props.setAlert(new AlertObj(
                [new ErrorDto("Access Denied", `Minimum total price must be higher than £${coupon.minimumOrderPrice!}`)],
                AlertTypes.Error));
             setCode("");
             return;
          }
-         props.setCoupon(coupon);
+         props.setCoupon(result.data);
 
       })
          .catch(alert => props.setAlert(alert));

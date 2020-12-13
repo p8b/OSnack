@@ -31,12 +31,12 @@ const Shop = (props: IProps) => {
 
    useEffect(() => {
       errorAlert.PleaseWait(500, isUnmounted);
-      useAllPublicCategory().then(categories => {
+      useAllPublicCategory().then(result => {
          if (isUnmounted.current) return;
-         setCategoryList(categories);
+         setCategoryList(result.data);
          const uriPathNameArr = window.location.pathname.split('/').filter(val => val.length > 0);
          if (uriPathNameArr.length === 3 && uriPathNameArr[1] == "Category") {
-            const uriSelectedCategory = categories.filter(val => val.name?.toLowerCase().trim() == decodeURIComponent(uriPathNameArr[2]).toLowerCase());
+            const uriSelectedCategory = result.data.filter(val => val.name?.toLowerCase().trim() == decodeURIComponent(uriPathNameArr[2]).toLowerCase());
             if (uriSelectedCategory.length > 0)
                onSearch(undefined, undefined, undefined, undefined, uriSelectedCategory[0].id?.toString());
          } else {
@@ -88,25 +88,26 @@ const Shop = (props: IProps) => {
       }
 
       errorAlert.PleaseWait(500, isUnmounted);
-      useSearchPublicProduct(selectedPage, maxItemsPerPage, categoryFilter, searchString, isSortAsc, sortName).then(result => {
-         if (isUnmounted.current) return;
+      useSearchPublicProduct(selectedPage, maxItemsPerPage, categoryFilter, searchString, isSortAsc, sortName)
+         .then(result => {
+            if (isUnmounted.current) return;
 
-         setTblTotalItemCount(result.part2 || 0);
-         let list: Product[] = productList;
-         if (selectedPage == 1)
-            list = [] as Product[];
-         if (result.part1 != undefined)
-            list.push(...result.part1);
-         setProductList(list);
-         if (result.part2 === 0)
-            errorAlert.setSingleDefault("", "No Result Found");
-         else
-            errorAlert.clear();
-      }
-      ).catch(alert => {
-         if (isUnmounted.current) return;
-         errorAlert.set(alert);
-      });
+            setTblTotalItemCount(result.data.totalNumber || 0);
+            let list: Product[] = productList;
+            if (selectedPage == 1)
+               list = [] as Product[];
+            if (result.data.productList != undefined)
+               list.push(...result.data.productList);
+            setProductList(list);
+            if (result.data.totalNumber === 0)
+               errorAlert.setSingleDefault("", "No Result Found");
+            else
+               errorAlert.clear();
+         }
+         ).catch(alert => {
+            if (isUnmounted.current) return;
+            errorAlert.set(alert);
+         });
    };
 
    const handelSort = async (sortName: string) => {

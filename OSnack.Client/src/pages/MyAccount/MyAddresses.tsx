@@ -26,10 +26,10 @@ const MyAddresses = (props: IProps) => {
    };
    const reloadAddressList = () => {
       errorAlert.PleaseWait(500, isUnmounted);
-      useAllAddress().then(addresses => {
+      useAllAddress().then(result => {
          if (isUnmounted.current) return;
 
-         setAddressList(addresses);
+         setAddressList(result.data);
          errorAlert.clear();
       }).catch(alert => {
          if (isUnmounted.current) return;

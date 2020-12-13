@@ -45,7 +45,7 @@ const NewCustomerModal = (props: IProps) => {
       else {
 
          errorAlert.PleaseWait(500, isUnmounted);
-         useCreateCustomerUser(user).then(user => {
+         useCreateCustomerUser(user).then(result => {
             if (isUnmounted.current) return;
             setRedirectToMain(true);
             errorAlert.clear();

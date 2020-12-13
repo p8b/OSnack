@@ -21,9 +21,9 @@ const Home = (props: IProps) => {
       img.onload = () => {
          setHeroImgLoaded(true);
       };
-      useAllPublicCategory().then(categories => {
+      useAllPublicCategory().then(data => {
          if (isUnmounted.current) return;
-         getCarouselItems(categories);
+         getCarouselItems(data.data);
       });
       return () => { isUnmounted.current = true; };
    }, []);

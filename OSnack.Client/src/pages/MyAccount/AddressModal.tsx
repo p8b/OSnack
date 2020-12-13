@@ -41,12 +41,12 @@ const AddressModal = (props: IProps) => {
       }
       errorAlert.PleaseWait(500, isUnmounted);
       address.userId = Auth.state.user.id;
-      usePostAddress(address).then(address => {
+      usePostAddress(address).then(result => {
          if (isUnmounted.current) return;
          errorAlert.clear();
-         setAddress(address);
+         setAddress(result.data);
          props.onClose();
-         props.onSuccess(address);
+         props.onSuccess(result.data);
       }).catch(alert => {
          if (isUnmounted.current) return;
          errorAlert.set(alert);
@@ -72,11 +72,11 @@ const AddressModal = (props: IProps) => {
 
       errorAlert.PleaseWait(500, isUnmounted);
       address.userId = Auth.state.user.id;
-      usePutAddress(address).then(address => {
+      usePutAddress(address).then(result => {
          if (isUnmounted.current) return;
          errorAlert.clear();
          props.onClose();
-         props.onSuccess(address);
+         props.onSuccess(result.data);
       }).catch(alert => {
          if (isUnmounted.current) return;
          errorAlert.set(alert);
@@ -85,10 +85,10 @@ const AddressModal = (props: IProps) => {
    };
    const deleteAddress = async () => {
       errorAlert.PleaseWait(500, isUnmounted);
-      useDeleteAddress(address).then(message => {
+      useDeleteAddress(address).then(result => {
          if (isUnmounted.current) return;
          errorAlert.clear();
-         errorAlert.setSingleSuccess("Deleted", message);
+         errorAlert.setSingleSuccess("Deleted", result.data);
          props.onClose();
          props.onSuccess(address);
       }).catch(alert => {

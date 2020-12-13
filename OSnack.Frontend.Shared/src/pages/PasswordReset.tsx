@@ -54,7 +54,7 @@ const ConfrimEmail = (props: IProps) => {
             email: email,
             password: password,
             justCheckToken: false
-         }).then((user) => {
+         }).then((result) => {
             if (isUnmounted.current) return;
             errorAlert.setSingleSuccess("", "Password Updated");
             setIsDone(true);

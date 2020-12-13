@@ -72,15 +72,16 @@ const UserAccount = (props: IProps) => {
       setSelectedAction("");
 
       errorAlertPasswordInfo.PleaseWait(500, isUnmounted);
-      useUpdateCurrentUserPasswordUser({ user: user, currentPassword: currentPass }).then((user) => {
-         if (isUnmounted.current) return;
-         setIsOpenConfirmPassword(true);
-         setSelectedAction("Password");
-         setCurrentPassword("");
-      }).catch((alert) => {
-         if (isUnmounted.current) return;
-         errorAlertPasswordInfo.set(alert);
-      });
+      useUpdateCurrentUserPasswordUser({ user: user, currentPassword: currentPass })
+         .then(result => {
+            if (isUnmounted.current) return;
+            setIsOpenConfirmPassword(true);
+            setSelectedAction("Password");
+            setCurrentPassword("");
+         }).catch((alert) => {
+            if (isUnmounted.current) return;
+            errorAlertPasswordInfo.set(alert);
+         });
    };
 
    const getRegistrationType = () => {

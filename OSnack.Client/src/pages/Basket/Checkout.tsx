@@ -52,14 +52,14 @@ const Checkout = (props: IProps) => {
    }, [props.refresh]);
    const getDeliveryOptionAndAddresses = () => {
       if (auth.state.isAuthenticated) {
-         useAllAddress().then(addresses => {
+         useAllAddress().then(result => {
             if (isUnmounted.current) return;
-            setAddressList(addresses);
-            setOrder(prev => { return { ...prev, address: addresses.find(t => t.isDefault == true) || new Address() }; });
+            setAddressList(result.data);
+            setOrder(prev => { return { ...prev, address: result.data.find(t => t.isDefault == true) || new Address() }; });
          }).catch();
-         useAllDeliveryOption().then(deliveryList => {
+         useAllDeliveryOption().then(result => {
             if (isUnmounted.current) return;
-            recalculateBasket(deliveryList);
+            recalculateBasket(result.data);
          }).catch();
       }
    };
