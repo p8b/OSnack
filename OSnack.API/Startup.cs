@@ -156,12 +156,7 @@ namespace OSnack.API
             .WithRazorPagesRoot("/Extras/RootPage");
 
 
-         services.AddControllers()
-             .AddNewtonsoftJson(option =>
-             {
-                option.SerializerSettings.Converters.Add(new MultiResultConverter());
-
-             });
+         services.AddControllers().AddNewtonsoftJson();
 
          // Register the Swagger services
          foreach (var policy in AppConst.AccessPolicies.List)
