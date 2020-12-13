@@ -2,7 +2,7 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { User } from "../../_core/apiModels";
-export const useCreateCustomerUser = async (newCustomer: User): Promise<{ data:User, status: number | undefined}> =>{
+export const useCreateCustomerUser = async (newCustomer: User): Promise<{ data:User , status: number | undefined}> =>{
         let url_ = API_URL + "/User/Post/CreateCustomer";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = newCustomer;
@@ -15,8 +15,8 @@ export const useCreateCustomerUser = async (newCustomer: User): Promise<{ data:U
         switch(response?.status){
 
                 case 201: 
-                        var data: User = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: User = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 422: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -39,7 +39,7 @@ export const useCreateCustomerUser = async (newCustomer: User): Promise<{ data:U
         }
   
 }
-export const useRequestPasswordResetUser = async (email: string): Promise<{ data:string, status: number | undefined}> =>{
+export const useRequestPasswordResetUser = async (email: string): Promise<{ data:string , status: number | undefined}> =>{
         let url_ = API_URL + "/User/Post/RequestPasswordReset";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = email;
@@ -52,8 +52,8 @@ export const useRequestPasswordResetUser = async (email: string): Promise<{ data
         switch(response?.status){
 
                 case 200: 
-                        var data: string = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: string = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 412: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -76,7 +76,7 @@ export const useRequestPasswordResetUser = async (email: string): Promise<{ data
         }
   
 }
-export const useConfirmEmailUser = async (pathName: string): Promise<{ data:void, status: number | undefined}> =>{
+export const useConfirmEmailUser = async (pathName: string): Promise<{ data: null , status: number | undefined}> =>{
         let url_ = API_URL + "/User/Put/ConfirmEmail";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = pathName;
@@ -89,7 +89,7 @@ export const useConfirmEmailUser = async (pathName: string): Promise<{ data:void
         switch(response?.status){
 
                 case 200: 
-                        return;
+                        return { data: null, status: 200 };
 
                 case 412: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -107,7 +107,7 @@ export const useConfirmEmailUser = async (pathName: string): Promise<{ data:void
         }
   
 }
-export const useUpdatePasswordWithTokenUser = async (data: any): Promise<{ data:User, status: number | undefined}> =>{
+export const useUpdatePasswordWithTokenUser = async (data: any): Promise<{ data:User , status: number | undefined}> =>{
         let url_ = API_URL + "/User/Put/UpdatePasswordWithToken";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = data;
@@ -120,8 +120,8 @@ export const useUpdatePasswordWithTokenUser = async (data: any): Promise<{ data:
         switch(response?.status){
 
                 case 200: 
-                        var data: User = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: User = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 412: 
                         return response?.json().then((data: ErrorDto[]) => {

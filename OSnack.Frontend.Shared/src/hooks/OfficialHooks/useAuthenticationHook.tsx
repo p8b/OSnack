@@ -2,7 +2,7 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { User } from "../../_core/apiModels";
-export const useLogoutAuthentication = async (): Promise<{ data:void, status: number | undefined}> =>{
+export const useLogoutAuthentication = async (): Promise<{ data: null , status: number | undefined}> =>{
         let url_ = API_URL + "/Authentication/Get/Logout";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);
@@ -14,7 +14,7 @@ export const useLogoutAuthentication = async (): Promise<{ data:void, status: nu
         switch(response?.status){
 
                 case 200: 
-                        return;
+                        return { data: null, status: 200 };
 
                 case 417: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -27,7 +27,7 @@ export const useLogoutAuthentication = async (): Promise<{ data:void, status: nu
         }
   
 }
-export const useSilentOfficialAuthentication = async (): Promise<{ data:User, status: number | undefined}> =>{
+export const useSilentOfficialAuthentication = async (): Promise<{ data:User , status: number | undefined}> =>{
         let url_ = API_URL + "/Authentication/Post/SilentOfficial";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.POST(url_);
@@ -39,8 +39,8 @@ export const useSilentOfficialAuthentication = async (): Promise<{ data:User, st
         switch(response?.status){
 
                 case 200: 
-                        var data: User = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: User = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 401: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -58,7 +58,7 @@ export const useSilentOfficialAuthentication = async (): Promise<{ data:User, st
         }
   
 }
-export const useConfirmCurrentUserPasswordAuthentication = async (password: string): Promise<{ data:User, status: number | undefined}> =>{
+export const useConfirmCurrentUserPasswordAuthentication = async (password: string): Promise<{ data:User , status: number | undefined}> =>{
         let url_ = API_URL + "/Authentication/Post/ConfirmCurrentUserPassword";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = password;
@@ -71,8 +71,8 @@ export const useConfirmCurrentUserPasswordAuthentication = async (password: stri
         switch(response?.status){
 
                 case 200: 
-                        var data: User = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: User = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 401: 
                         return response?.json().then((data: ErrorDto[]) => {

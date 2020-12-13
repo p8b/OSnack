@@ -58,7 +58,7 @@ const CategoryModal = (props: IProps) => {
          return;
       }
       errorAlert.PleaseWait(500, isUnmounted);
-      usePostCategory(category).then((category) => {
+      usePostCategory(category).then(() => {
          if (isUnmounted.current) return;
          errorAlert.clear();
          resetImageUpload();
@@ -89,7 +89,7 @@ const CategoryModal = (props: IProps) => {
       } if (isUnmounted.current) return;
 
       errorAlert.PleaseWait(500, isUnmounted);
-      usePutCategory(cat).then((category) => {
+      usePutCategory(cat).then(() => {
          if (isUnmounted.current) return;
          errorAlert.clear();
          resetImageUpload();
@@ -101,7 +101,7 @@ const CategoryModal = (props: IProps) => {
    };
    const deleteCategory = async () => {
       errorAlert.PleaseWait(500, isUnmounted);
-      useDeleteCategory(category).then((category) => {
+      useDeleteCategory(category).then(() => {
          if (isUnmounted.current) return;
          errorAlert.clear();
          resetImageUpload();

@@ -2,7 +2,7 @@ import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/compo
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
 import { EmailTemplate, EmailtemplateAndEmailtemplate1, ServerVariables } from "osnack-frontend-shared/src/_core/apiModels";
-export const useDeleteEmailTemplate = async (emailTemplate: EmailTemplate): Promise<{ data:string, status: number | undefined}> =>{
+export const useDeleteEmailTemplate = async (emailTemplate: EmailTemplate): Promise<{ data:string , status: number | undefined}> =>{
         let url_ = API_URL + "/EmailTemplate/Delete";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = emailTemplate;
@@ -15,8 +15,8 @@ export const useDeleteEmailTemplate = async (emailTemplate: EmailTemplate): Prom
         switch(response?.status){
 
                 case 200: 
-                        var data: string = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: string = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 422: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -34,7 +34,7 @@ export const useDeleteEmailTemplate = async (emailTemplate: EmailTemplate): Prom
         }
   
 }
-export const useAllEmailTemplate = async (): Promise<{ data:EmailTemplate[], status: number | undefined}> =>{
+export const useAllEmailTemplate = async (): Promise<{ data:EmailTemplate[] , status: number | undefined}> =>{
         let url_ = API_URL + "/EmailTemplate/Get/All";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);
@@ -46,8 +46,8 @@ export const useAllEmailTemplate = async (): Promise<{ data:EmailTemplate[], sta
         switch(response?.status){
 
                 case 200: 
-                        var data: EmailTemplate[] = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: EmailTemplate[] = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 417: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -60,7 +60,7 @@ export const useAllEmailTemplate = async (): Promise<{ data:EmailTemplate[], sta
         }
   
 }
-export const useGetEmailTemplate = async (templateId: number): Promise<{ data:EmailtemplateAndEmailtemplate1, status: number | undefined}> =>{
+export const useGetEmailTemplate = async (templateId: number): Promise<{ data:EmailtemplateAndEmailtemplate1 , status: number | undefined}> =>{
         let url_ = API_URL + "/EmailTemplate/Get/{templateId}";
         if (templateId !== null && templateId !== undefined)
         url_ = url_.replace("{templateId}", encodeURIComponent("" + templateId));
@@ -74,8 +74,8 @@ export const useGetEmailTemplate = async (templateId: number): Promise<{ data:Em
         switch(response?.status){
 
                 case 200: 
-                        var data: EmailtemplateAndEmailtemplate1 = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: EmailtemplateAndEmailtemplate1 = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 417: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -88,7 +88,7 @@ export const useGetEmailTemplate = async (templateId: number): Promise<{ data:Em
         }
   
 }
-export const useGetServerVariablesEmailTemplate = async (): Promise<{ data:ServerVariables[], status: number | undefined}> =>{
+export const useGetServerVariablesEmailTemplate = async (): Promise<{ data:ServerVariables[] , status: number | undefined}> =>{
         let url_ = API_URL + "/EmailTemplate/GetServerVariables";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);
@@ -100,8 +100,8 @@ export const useGetServerVariablesEmailTemplate = async (): Promise<{ data:Serve
         switch(response?.status){
 
                 case 200: 
-                        var data: ServerVariables[] = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: ServerVariables[] = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 417: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -114,7 +114,7 @@ export const useGetServerVariablesEmailTemplate = async (): Promise<{ data:Serve
         }
   
 }
-export const usePostEmailTemplate = async (emailTemplate: EmailTemplate): Promise<{ data:EmailTemplate, status: number | undefined}> =>{
+export const usePostEmailTemplate = async (emailTemplate: EmailTemplate): Promise<{ data:EmailTemplate , status: number | undefined}> =>{
         let url_ = API_URL + "/EmailTemplate/Post";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = emailTemplate;
@@ -127,8 +127,8 @@ export const usePostEmailTemplate = async (emailTemplate: EmailTemplate): Promis
         switch(response?.status){
 
                 case 201: 
-                        var data: EmailTemplate = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: EmailTemplate = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 422: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -146,7 +146,7 @@ export const usePostEmailTemplate = async (emailTemplate: EmailTemplate): Promis
         }
   
 }
-export const usePutEmailTemplate = async (emailTemplate: EmailTemplate): Promise<{ data:EmailTemplate, status: number | undefined}> =>{
+export const usePutEmailTemplate = async (emailTemplate: EmailTemplate): Promise<{ data:EmailTemplate , status: number | undefined}> =>{
         let url_ = API_URL + "/EmailTemplate/Put";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = emailTemplate;
@@ -159,8 +159,8 @@ export const usePutEmailTemplate = async (emailTemplate: EmailTemplate): Promise
         switch(response?.status){
 
                 case 200: 
-                        var data: EmailTemplate = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: EmailTemplate = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 422: 
                         return response?.json().then((data: ErrorDto[]) => {

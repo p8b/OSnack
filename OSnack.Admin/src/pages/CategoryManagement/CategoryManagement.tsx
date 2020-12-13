@@ -2,7 +2,7 @@
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import Table, { TableData, TableHeaderData, TableRowData } from 'osnack-frontend-shared/src/components/Table/Table';
-import { Category, MultiResultOfListOfCategoryAndInteger } from 'osnack-frontend-shared/src/_core/apiModels';
+import { Category } from 'osnack-frontend-shared/src/_core/apiModels';
 import CategoryModal from './CategoryModal';
 import Container from '../../components/Container';
 import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
@@ -55,11 +55,11 @@ const CategoryManagement = (props: IProps) => {
 
       errorAlert.PleaseWait(500, isUnmounted);
       useSearchCategory(selectedPage, maxItemsPerPage, searchString, isSortAsc, sortName).then(
-         (result: MultiResultOfListOfCategoryAndInteger) => {
+         result => {
             if (isUnmounted.current) return;
             errorAlert.clear();
-            setTblTotalItemCount(result.part2 || 0);
-            populateCategoryTable(result.part1);
+            setTblTotalItemCount(result.data.totalNumber || 0);
+            populateCategoryTable(result.data.categoryList);
          }).catch((alert) => {
             if (isUnmounted.current) return;
             errorAlert.set(alert);

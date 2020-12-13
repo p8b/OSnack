@@ -2,7 +2,7 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { Newsletter } from "../../_core/apiModels";
-export const usePostNewsletter = async (newsletter: Newsletter): Promise<{ data:Newsletter, status: number | undefined}> =>{
+export const usePostNewsletter = async (newsletter: Newsletter): Promise<{ data:Newsletter , status: number | undefined}> =>{
         let url_ = API_URL + "/Newsletter/Post";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = newsletter;
@@ -15,8 +15,8 @@ export const usePostNewsletter = async (newsletter: Newsletter): Promise<{ data:
         switch(response?.status){
 
                 case 201: 
-                        var data: Newsletter = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: Newsletter = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 417: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -34,7 +34,7 @@ export const usePostNewsletter = async (newsletter: Newsletter): Promise<{ data:
         }
   
 }
-export const useDeleteNewsletter = async (email: string | null): Promise<{ data:string, status: number | undefined}> =>{
+export const useDeleteNewsletter = async (email: string | null): Promise<{ data:string , status: number | undefined}> =>{
         let url_ = API_URL + "/Newsletter/Delete/{email}";
         if (email !== null && email !== undefined)
         url_ = url_.replace("{email}", encodeURIComponent("" + email));
@@ -48,8 +48,8 @@ export const useDeleteNewsletter = async (email: string | null): Promise<{ data:
         switch(response?.status){
 
                 case 200: 
-                        var data: string = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: string = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 417: 
                         return response?.json().then((data: ErrorDto[]) => {

@@ -2,7 +2,7 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { Address } from "../../_core/apiModels";
-export const useDeleteAddress = async (address: Address): Promise<{ data:string, status: number | undefined}> =>{
+export const useDeleteAddress = async (address: Address): Promise<{ data:string , status: number | undefined}> =>{
         let url_ = API_URL + "/Address/Delete";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = address;
@@ -15,8 +15,8 @@ export const useDeleteAddress = async (address: Address): Promise<{ data:string,
         switch(response?.status){
 
                 case 200: 
-                        var data: string = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: string = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 417: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -39,7 +39,7 @@ export const useDeleteAddress = async (address: Address): Promise<{ data:string,
         }
   
 }
-export const useAllAddress = async (): Promise<{ data:Address[], status: number | undefined}> =>{
+export const useAllAddress = async (): Promise<{ data:Address[] , status: number | undefined}> =>{
         let url_ = API_URL + "/Address/Get/All";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);
@@ -51,8 +51,8 @@ export const useAllAddress = async (): Promise<{ data:Address[], status: number 
         switch(response?.status){
 
                 case 200: 
-                        var data: Address[] = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: Address[] = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 417: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -65,7 +65,7 @@ export const useAllAddress = async (): Promise<{ data:Address[], status: number 
         }
   
 }
-export const usePostAddress = async (newAddress: Address): Promise<{ data:Address, status: number | undefined}> =>{
+export const usePostAddress = async (newAddress: Address): Promise<{ data:Address , status: number | undefined}> =>{
         let url_ = API_URL + "/Address/Post";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = newAddress;
@@ -78,8 +78,8 @@ export const usePostAddress = async (newAddress: Address): Promise<{ data:Addres
         switch(response?.status){
 
                 case 201: 
-                        var data: Address = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: Address = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 422: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -97,7 +97,7 @@ export const usePostAddress = async (newAddress: Address): Promise<{ data:Addres
         }
   
 }
-export const usePutAddress = async (modifiedAddress: Address): Promise<{ data:Address, status: number | undefined}> =>{
+export const usePutAddress = async (modifiedAddress: Address): Promise<{ data:Address , status: number | undefined}> =>{
         let url_ = API_URL + "/Address/Put";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = modifiedAddress;
@@ -110,8 +110,8 @@ export const usePutAddress = async (modifiedAddress: Address): Promise<{ data:Ad
         switch(response?.status){
 
                 case 200: 
-                        var data: Address = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: Address = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 422: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -129,7 +129,7 @@ export const usePutAddress = async (modifiedAddress: Address): Promise<{ data:Ad
         }
   
 }
-export const useSetDefaultAddress = async (addressId: number): Promise<{ data:void, status: number | undefined}> =>{
+export const useSetDefaultAddress = async (addressId: number): Promise<{ data: null , status: number | undefined}> =>{
         let url_ = API_URL + "/Address/Put/SetDefault";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = addressId;
@@ -142,7 +142,7 @@ export const useSetDefaultAddress = async (addressId: number): Promise<{ data:vo
         switch(response?.status){
 
                 case 204: 
-                        return;
+                        return { data: null, status: 204 };
 
                 case 417: 
                         return response?.json().then((data: ErrorDto[]) => {

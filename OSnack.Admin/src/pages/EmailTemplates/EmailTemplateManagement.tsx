@@ -25,11 +25,11 @@ const EmailTemplatePanel = (props: IProps) => {
    };
    const reloadTemplateList = () => {
       errorAlert.PleaseWait(500, isUnmounted);
-      useAllEmailTemplate().then((emailTemplateList) => {
+      useAllEmailTemplate().then((result) => {
          if (isUnmounted.current) return;
 
-         setTempList(emailTemplateList);
-         setDefaultEmailTemplate(emailTemplateList.find(tl => tl.isDefaultTemplate) || new EmailTemplate());
+         setTempList(result.data);
+         setDefaultEmailTemplate(result.data.find(tl => tl.isDefaultTemplate) || new EmailTemplate());
          errorAlert.clear();
       }).catch((alert) => {
          if (isUnmounted.current) return;

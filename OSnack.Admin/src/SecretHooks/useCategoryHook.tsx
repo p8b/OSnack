@@ -2,7 +2,7 @@ import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/compo
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
 import { Category, CategoryListAndTotalNumber } from "osnack-frontend-shared/src/_core/apiModels";
-export const useDeleteCategory = async (category: Category): Promise<{ data:string, status: number | undefined}> =>{
+export const useDeleteCategory = async (category: Category): Promise<{ data:string , status: number | undefined}> =>{
         let url_ = API_URL + "/Category/Delete";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = category;
@@ -15,8 +15,8 @@ export const useDeleteCategory = async (category: Category): Promise<{ data:stri
         switch(response?.status){
 
                 case 200: 
-                        var data: string = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: string = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 417: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -39,7 +39,7 @@ export const useDeleteCategory = async (category: Category): Promise<{ data:stri
         }
   
 }
-export const useSearchCategory = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:CategoryListAndTotalNumber, status: number | undefined}> =>{
+export const useSearchCategory = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:CategoryListAndTotalNumber , status: number | undefined}> =>{
         let url_ = API_URL + "/Category/Get/Search/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{isSortAsce}/{sortName}";
         if (selectedPage !== null && selectedPage !== undefined)
         url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
@@ -61,8 +61,8 @@ export const useSearchCategory = async (selectedPage: number, maxNumberPerItemsP
         switch(response?.status){
 
                 case 200: 
-                        var data: CategoryListAndTotalNumber = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: CategoryListAndTotalNumber = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 417: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -75,7 +75,7 @@ export const useSearchCategory = async (selectedPage: number, maxNumberPerItemsP
         }
   
 }
-export const useAllSecretCategory = async (): Promise<{ data:Category[], status: number | undefined}> =>{
+export const useAllSecretCategory = async (): Promise<{ data:Category[] , status: number | undefined}> =>{
         let url_ = API_URL + "/Category/Get/AllSecret";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);
@@ -87,8 +87,8 @@ export const useAllSecretCategory = async (): Promise<{ data:Category[], status:
         switch(response?.status){
 
                 case 200: 
-                        var data: Category[] = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: Category[] = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 417: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -101,7 +101,7 @@ export const useAllSecretCategory = async (): Promise<{ data:Category[], status:
         }
   
 }
-export const usePostCategory = async (newCategory: Category): Promise<{ data:Category, status: number | undefined}> =>{
+export const usePostCategory = async (newCategory: Category): Promise<{ data:Category , status: number | undefined}> =>{
         let url_ = API_URL + "/Category/Post";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = newCategory;
@@ -114,8 +114,8 @@ export const usePostCategory = async (newCategory: Category): Promise<{ data:Cat
         switch(response?.status){
 
                 case 201: 
-                        var data: Category = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: Category = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 422: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -138,7 +138,7 @@ export const usePostCategory = async (newCategory: Category): Promise<{ data:Cat
         }
   
 }
-export const usePutCategory = async (modifiedCategory: Category): Promise<{ data:Category, status: number | undefined}> =>{
+export const usePutCategory = async (modifiedCategory: Category): Promise<{ data:Category , status: number | undefined}> =>{
         let url_ = API_URL + "/Category/Put";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = modifiedCategory;
@@ -151,8 +151,8 @@ export const usePutCategory = async (modifiedCategory: Category): Promise<{ data
         switch(response?.status){
 
                 case 200: 
-                        var data: Category = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: Category = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 404: 
                         return response?.json().then((data: ErrorDto[]) => {

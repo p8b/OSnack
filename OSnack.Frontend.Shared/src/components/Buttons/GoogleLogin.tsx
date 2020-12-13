@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 import { uuidv4 } from '../../_core/appFunc';
-import { ExternalLoginInfo, RegistrationTypes } from '../../_core/apiModels';
+import { ExternalLoginDetails, RegistrationTypes } from '../../_core/apiModels';
 
 const GoogleLogin = (props: IProps) => {
    let callBackWasCalled = false;
@@ -50,7 +50,7 @@ declare type IProps = {
    children: any,
    redirectURI: string,
    className?: string,
-   onSuccess: (info: ExternalLoginInfo) => void,
+   onSuccess: (info: ExternalLoginDetails) => void,
    onFailure: (msg: string) => void,
    onClick?: () => void,
    onClosedWithoutAction?: () => void,

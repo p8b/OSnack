@@ -2,7 +2,7 @@ import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/compo
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
 import { Score } from "osnack-frontend-shared/src/_core/apiModels";
-export const usePostScore = async (newScore: Score): Promise<{ data:Score, status: number | undefined}> =>{
+export const usePostScore = async (newScore: Score): Promise<{ data:Score , status: number | undefined}> =>{
         let url_ = API_URL + "/Score/Post";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = newScore;
@@ -15,8 +15,8 @@ export const usePostScore = async (newScore: Score): Promise<{ data:Score, statu
         switch(response?.status){
 
                 case 201: 
-                        var data: Score = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: Score = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 417: 
                         return response?.json().then((data: ErrorDto[]) => {

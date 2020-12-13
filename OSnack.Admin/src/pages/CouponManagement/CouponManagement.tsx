@@ -2,7 +2,7 @@
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import Table, { TableData, TableHeaderData, TableRowData } from 'osnack-frontend-shared/src/components/Table/Table';
-import { Coupon, CouponTypeList, MultiResultOfListOfCouponAndInteger } from 'osnack-frontend-shared/src/_core/apiModels';
+import { Coupon, CouponTypeList } from 'osnack-frontend-shared/src/_core/apiModels';
 import CouponModel from './CouponModel';
 import Container from '../../components/Container';
 import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
@@ -60,11 +60,11 @@ const CouponManagement = (props: IProps) => {
 
       errorAlert.PleaseWait(500, isUnmounted);
       useSearchCoupon(selectedPage, maxItemsPerPage, searchString, filterType, isSortAsc, sortName).then(
-         (result: MultiResultOfListOfCouponAndInteger) => {
+         result => {
             if (isUnmounted.current) return;
             errorAlert.clear();
-            setTblTotalItemCount(result.part2 || 0);
-            populateCategoryTable(result.part1);
+            setTblTotalItemCount(result.data.totalNumber || 0);
+            populateCategoryTable(result.data.couponList!);
          }).catch((alert) => {
             if (isUnmounted.current) return;
             errorAlert.set(alert);

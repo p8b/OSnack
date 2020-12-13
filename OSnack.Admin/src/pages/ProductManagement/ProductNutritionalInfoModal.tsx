@@ -4,7 +4,6 @@ import { Input } from 'osnack-frontend-shared/src/components/Inputs/Input';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
 import { NutritionalInfo } from 'osnack-frontend-shared/src/_core/apiModels';
-import { AlertObj } from 'osnack-frontend-shared/src/components/Texts/Alert';
 const ProductNutritionalInfoModal = (props: IProps) => {
    const [nutritionalInfo, setNutritionalInfo] = useState(props.nutritionalInfo || new NutritionalInfo());
 

@@ -8,7 +8,7 @@ import { CheckBox } from "../../components/Inputs/CheckBox";
 import { Button } from "../../components/Buttons/Button";
 import GoogleLogin from "../../components/Buttons/GoogleLogin";
 import { AuthContext } from "../../_core/authenticationContext";
-import { ExternalLoginInfo, LoginInfo, User } from "../../_core/apiModels";
+import { ExternalLoginDetails, LoginInfo, User } from "../../_core/apiModels";
 import ForgotPasswordModal from "../Modals/ForgotPasswordModal";
 import Alert, { AlertObj, AlertTypes, ErrorDto, useAlert } from "../Texts/Alert";
 import { useAntiforgeryTokenAuthentication, useExternalLoginOfficialAuthentication, useExternalLoginSecretAuthentication, useLoginOfficialAuthentication, useLoginSecretAuthentication } from "../../hooks/PublicHooks/useAuthenticationHook";
@@ -25,10 +25,10 @@ const Login = (props: IProps) => {
       document.getElementById("email")?.focus();
    }, []);
 
-   const loginSuccess = (user: User) => {
+   const loginSuccess = (result: { data: User, status?: number; }) => {
       if (isUnmounted.current) return;
       useAntiforgeryTokenAuthentication().then(() => {
-         auth.setState({ isAuthenticated: true, user: user });
+         auth.setState({ isAuthenticated: true, user: result.data });
          errorAlert.clear();
       }).catch();
    };
@@ -37,13 +37,13 @@ const Login = (props: IProps) => {
       errorAlert.set(errors);
 
    };
-   const externalLoginSuccess = (user: User) => {
+   const externalLoginSuccess = (result: { data: User, status?: number; }) => {
       if (isUnmounted.current) return;
-      if (user.id && user.id <= 0) {
-         props.externalLoginFailed(user);
+      if (result.data.id && result.data.id <= 0) {
+         props.externalLoginFailed(result.data);
          errorAlert.clear();
       } else {
-         loginSuccess(user);
+         loginSuccess(result);
       }
    };
    const login = async () => {
@@ -59,7 +59,7 @@ const Login = (props: IProps) => {
             break;
       }
    };
-   const externalLogin = async (info: ExternalLoginInfo) => {
+   const externalLogin = async (info: ExternalLoginDetails) => {
 
       info.rememberMe = loginInfo.rememberMe;
       info.redirectUrl = window.location.href;
@@ -140,8 +140,8 @@ const Login = (props: IProps) => {
                /> ****/}
                <GoogleLogin clientId="78803002607-eqki0ohr9viovu2e5q0arpg8on9p8huq.apps.googleusercontent.com"
                   children="Sign in with Google"
-               className="btn-lg btn-g col-12 mt-2 "
-               redirectURI={window.location.href}
+                  className="btn-lg btn-g col-12 mt-2 "
+                  redirectURI={window.location.href}
                   onSuccess={externalLogin}
                   onFailure={externalLoginFailed}
                   onClick={externalLoginWait}

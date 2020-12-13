@@ -2,7 +2,7 @@ import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/compo
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
 import { Coupon, CouponListAndTotalNumber } from "osnack-frontend-shared/src/_core/apiModels";
-export const useDeleteCoupon = async (coupon: Coupon): Promise<{ data:string, status: number | undefined}> =>{
+export const useDeleteCoupon = async (coupon: Coupon): Promise<{ data:string , status: number | undefined}> =>{
         let url_ = API_URL + "/Coupon/Delete";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = coupon;
@@ -15,8 +15,8 @@ export const useDeleteCoupon = async (coupon: Coupon): Promise<{ data:string, st
         switch(response?.status){
 
                 case 200: 
-                        var data: string = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: string = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 417: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -39,7 +39,7 @@ export const useDeleteCoupon = async (coupon: Coupon): Promise<{ data:string, st
         }
   
 }
-export const useSearchCoupon = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, filterType: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:CouponListAndTotalNumber, status: number | undefined}> =>{
+export const useSearchCoupon = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, filterType: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:CouponListAndTotalNumber , status: number | undefined}> =>{
         let url_ = API_URL + "/Coupon/Get/Search/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{filterType}/{isSortAsce}/{sortName}";
         if (selectedPage !== null && selectedPage !== undefined)
         url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
@@ -63,8 +63,8 @@ export const useSearchCoupon = async (selectedPage: number, maxNumberPerItemsPag
         switch(response?.status){
 
                 case 200: 
-                        var data: CouponListAndTotalNumber = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: CouponListAndTotalNumber = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 417: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -77,7 +77,7 @@ export const useSearchCoupon = async (selectedPage: number, maxNumberPerItemsPag
         }
   
 }
-export const usePostCoupon = async (newCoupon: Coupon): Promise<{ data:Coupon, status: number | undefined}> =>{
+export const usePostCoupon = async (newCoupon: Coupon): Promise<{ data:Coupon , status: number | undefined}> =>{
         let url_ = API_URL + "/Coupon/Post";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = newCoupon;
@@ -90,8 +90,8 @@ export const usePostCoupon = async (newCoupon: Coupon): Promise<{ data:Coupon, s
         switch(response?.status){
 
                 case 201: 
-                        var data: Coupon = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: Coupon = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 412: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -114,7 +114,7 @@ export const usePostCoupon = async (newCoupon: Coupon): Promise<{ data:Coupon, s
         }
   
 }
-export const usePutCoupon = async (modifiedCoupon: Coupon): Promise<{ data:Coupon, status: number | undefined}> =>{
+export const usePutCoupon = async (modifiedCoupon: Coupon): Promise<{ data:Coupon , status: number | undefined}> =>{
         let url_ = API_URL + "/Coupon/Put";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = modifiedCoupon;
@@ -127,8 +127,8 @@ export const usePutCoupon = async (modifiedCoupon: Coupon): Promise<{ data:Coupo
         switch(response?.status){
 
                 case 200: 
-                        var data: Coupon = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: Coupon = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 412: 
                         return response?.json().then((data: ErrorDto[]) => {

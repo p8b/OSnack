@@ -23,10 +23,10 @@ const UserModal = (props: IProps) => {
 
    const createUser = async () => {
       errorAlert.PleaseWait(500, isUnmounted);
-      useCreateUserUser(user).then(user => {
+      useCreateUserUser(user).then(result => {
          if (isUnmounted.current) return;
          errorAlert.clear();
-         setUser(user);
+         setUser(result.data);
          props.onSuccess();
       }).catch(alert => {
          if (isUnmounted.current) return;
@@ -36,10 +36,10 @@ const UserModal = (props: IProps) => {
    const updateUser = async () => {
       errorAlert.PleaseWait(500, isUnmounted);
       console.log(user);
-      useUpdateUserUser(user).then(user => {
+      useUpdateUserUser(user).then(result => {
          if (isUnmounted.current) return;
          errorAlert.clear();
-         setUser(user);
+         setUser(result.data);
          props.onSuccess();
       }).catch(alert => {
          if (isUnmounted.current) return;
@@ -48,7 +48,7 @@ const UserModal = (props: IProps) => {
    };
    const deleteUser = async () => {
       errorAlert.PleaseWait(500, isUnmounted);
-      useDeleteUser(user).then(message => {
+      useDeleteUser(user).then(() => {
          if (isUnmounted.current) return;
          errorAlert.setSingleSuccess("", "confirm");
          setUser(user);
@@ -107,7 +107,7 @@ const UserModal = (props: IProps) => {
                onChange={i => { setUser({ ...user, email: i.target.value }); }}
                className="col-12 col-sm-6" />
             <Input label={`Registration Method`}
-               value={registrationMethodList.find((rm) => rm.Value === user.registrationMethod)?.Name}
+               value={registrationMethodList.find((rm) => rm.Value === user.registrationMethod.type)?.Name}
                onChange={i => { }}
                disabled
                className="col-12 col-sm-6" />

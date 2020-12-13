@@ -2,7 +2,7 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { Score } from "../../_core/apiModels";
-export const useScoreProduct = async (newScore: Score): Promise<{ data:Score, status: number | undefined}> =>{
+export const useScoreProduct = async (newScore: Score): Promise<{ data:Score , status: number | undefined}> =>{
         let url_ = API_URL + "/Product/Post/Score/Score";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = newScore;
@@ -15,8 +15,8 @@ export const useScoreProduct = async (newScore: Score): Promise<{ data:Score, st
         switch(response?.status){
 
                 case 201: 
-                        var data: Score = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: Score = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 417: 
                         return response?.json().then((data: ErrorDto[]) => {

@@ -2,7 +2,7 @@ import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/compo
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
 import { User, UserListAndTotalNumber } from "osnack-frontend-shared/src/_core/apiModels";
-export const useDeleteUser = async (thisUser: User): Promise<{ data:string, status: number | undefined}> =>{
+export const useDeleteUser = async (thisUser: User): Promise<{ data:string , status: number | undefined}> =>{
         let url_ = API_URL + "/User/Delete";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = thisUser;
@@ -15,8 +15,8 @@ export const useDeleteUser = async (thisUser: User): Promise<{ data:string, stat
         switch(response?.status){
 
                 case 200: 
-                        var data: string = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: string = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 412: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -34,7 +34,7 @@ export const useDeleteUser = async (thisUser: User): Promise<{ data:string, stat
         }
   
 }
-export const useGetUser = async (selectedPage: number, maxItemsPerPage: number, searchValue: string | null, filterRole: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:UserListAndTotalNumber, status: number | undefined}> =>{
+export const useGetUser = async (selectedPage: number, maxItemsPerPage: number, searchValue: string | null, filterRole: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:UserListAndTotalNumber , status: number | undefined}> =>{
         let url_ = API_URL + "/User/Get/{selectedPage}/{maxItemsPerPage}/{searchValue}/{filterRole}/{isSortAsce}/{sortName}";
         if (selectedPage !== null && selectedPage !== undefined)
         url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
@@ -58,8 +58,8 @@ export const useGetUser = async (selectedPage: number, maxItemsPerPage: number, 
         switch(response?.status){
 
                 case 200: 
-                        var data: UserListAndTotalNumber = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: UserListAndTotalNumber = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 417: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -72,7 +72,7 @@ export const useGetUser = async (selectedPage: number, maxItemsPerPage: number, 
         }
   
 }
-export const useCreateUserUser = async (newUser: User): Promise<{ data:User, status: number | undefined}> =>{
+export const useCreateUserUser = async (newUser: User): Promise<{ data:User , status: number | undefined}> =>{
         let url_ = API_URL + "/User/Post/CreateUser";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = newUser;
@@ -85,8 +85,8 @@ export const useCreateUserUser = async (newUser: User): Promise<{ data:User, sta
         switch(response?.status){
 
                 case 201: 
-                        var data: User = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: User = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 422: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -109,7 +109,7 @@ export const useCreateUserUser = async (newUser: User): Promise<{ data:User, sta
         }
   
 }
-export const useUpdateUserUser = async (modifiedUser: User): Promise<{ data:User, status: number | undefined}> =>{
+export const useUpdateUserUser = async (modifiedUser: User): Promise<{ data:User , status: number | undefined}> =>{
         let url_ = API_URL + "/User/Put/UpdateUser";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = modifiedUser;
@@ -122,8 +122,8 @@ export const useUpdateUserUser = async (modifiedUser: User): Promise<{ data:User
         switch(response?.status){
 
                 case 200: 
-                        var data: User = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: User = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 422: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -146,7 +146,7 @@ export const useUpdateUserUser = async (modifiedUser: User): Promise<{ data:User
         }
   
 }
-export const useUserLockoutUser = async (userId: number, lockoutEnabled: boolean): Promise<{ data:User, status: number | undefined}> =>{
+export const useUserLockoutUser = async (userId: number, lockoutEnabled: boolean): Promise<{ data:User , status: number | undefined}> =>{
         let url_ = API_URL + "/User/Put/UserLockout/{userId}/{lockoutEnabled}";
         if (userId !== null && userId !== undefined)
         url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
@@ -162,8 +162,8 @@ export const useUserLockoutUser = async (userId: number, lockoutEnabled: boolean
         switch(response?.status){
 
                 case 200: 
-                        var data: User = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: User = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 412: 
                         return response?.json().then((data: ErrorDto[]) => {

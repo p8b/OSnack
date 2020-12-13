@@ -26,25 +26,23 @@ const CouponModel = (props: IProps) => {
    }, [props.coupon]);
 
    const createProduct = async () => {
-      console.log(coupon);
       errorAlert.PleaseWait(500, isUnmounted);
-      usePostCoupon(coupon).then(coupoItem => {
+      usePostCoupon(coupon).then(result => {
          if (isUnmounted.current) return;
-         setCoupon(coupoItem);
+         setCoupon(result.data);
          props.onSuccess();
          errorAlert.clear();
       }).catch(alert => {
          if (isUnmounted.current) return;
-         console.log(alert);
          errorAlert.set(alert);
       });
    };
    const updateProduct = async () => {
 
       errorAlert.PleaseWait(500, isUnmounted);
-      usePutCoupon(coupon).then(coupon => {
+      usePutCoupon(coupon).then(result => {
          if (isUnmounted.current) return;
-         setCoupon(coupon);
+         setCoupon(result.data);
          props.onSuccess();
          errorAlert.clear();
       }).catch(alert => {
@@ -56,7 +54,7 @@ const CouponModel = (props: IProps) => {
 
    const deleteProduct = async () => {
       errorAlert.PleaseWait(500, isUnmounted);
-      useDeleteCoupon(coupon).then(message => {
+      useDeleteCoupon(coupon).then(() => {
          if (isUnmounted.current) return;
          errorAlert.clear();
          props.onSuccess();

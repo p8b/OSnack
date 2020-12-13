@@ -3,7 +3,7 @@ import EmailEditor from 'react-email-editor';
 import ButtonPopupConfirm from 'osnack-frontend-shared/src/components/Buttons/ButtonPopupConfirm';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
-import { EmailTemplate, MultiResultOfEmailTemplateAndEmailTemplate, ServerVariables } from 'osnack-frontend-shared/src/_core/apiModels';
+import { EmailTemplate, ServerVariables } from 'osnack-frontend-shared/src/_core/apiModels';
 import { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';;
 import CopyText from 'osnack-frontend-shared/src/components/Texts/CopyText';
 import { sleep } from 'osnack-frontend-shared/src/_core/appFunc';
@@ -39,14 +39,14 @@ const EmailTemplatesEdit = (props: IProps) => {
 
       if (props.location.state.emailTemplate.id && props.location.state.emailTemplate.id > 0)
          useGetEmailTemplate(props.location.state.emailTemplate.id).then(
-            (result: MultiResultOfEmailTemplateAndEmailTemplate) => {
-               setTemplate(result.part1 ? result.part1 : new EmailTemplate());
-               setInitialLockedStatus(result.part1?.locked);
-               setDefaultTemplate(result.part2 ? result.part2 : new EmailTemplate());
+            result => {
+               setTemplate(result.data.emailtemplate ? result.data.emailtemplate : new EmailTemplate());
+               setInitialLockedStatus(result.data.emailtemplate?.locked);
+               setDefaultTemplate(result.data.emailtemplate1 ? result.data.emailtemplate1 : new EmailTemplate());
             });
 
       useGetServerVariablesEmailTemplate().then(result => {
-         setServerVariables(result);
+         setServerVariables(result.data);
       });
 
 
@@ -71,41 +71,37 @@ const EmailTemplatesEdit = (props: IProps) => {
          let emailTemp = template;
          emailTemp.html = data.html;
          emailTemp.design = data.design;
-         var result: { alert: AlertObj; template: EmailTemplate; }
-            = { alert: new AlertObj(), template: new EmailTemplate() };
+         var resultTemplate: EmailTemplate | undefined;
          if (template.id == 0)
-            await usePostEmailTemplate(template).then((emailTemplate) => {
-               result.template = emailTemplate;
+            await usePostEmailTemplate(template).then((result) => {
+               resultTemplate = result.data;
             }).catch((alert) => {
-               result.alert = alert;
+               errorAlert.set(alert);
+               setIsOpenDetailsModal(true);
             });
-         //   result = await usePostEmailTemplate(template);
          else if (template.id != null)
-            await usePutEmailTemplate(template).then((emailTemplate) => {
-               result.template = emailTemplate;
+            await usePutEmailTemplate(template).then((result) => {
+               resultTemplate = result.data;
             }).catch((alert) => {
-               result.alert = alert;
+               errorAlert.set(alert);
+               setIsOpenDetailsModal(true);
             });
 
-         if (result.alert.List.length > 0) {
-            errorAlert.set(result.alert);
-            setIsOpenDetailsModal(true);
-         }
-         else {
+         if (resultTemplate != undefined) {
             setIsOpenDetailsModal(false);
             errorAlert.clear();
             setIsSaved(true);
-            setTemplate(result.template);
-            setInitialLockedStatus(result.template.locked);
+            setTemplate(resultTemplate);
+            setInitialLockedStatus(resultTemplate?.locked);
             sleep(3000, isUnmounted).then(() => { setIsSaved(false); });
          }
       });
    };
    const onDelete = async () => {
       errorAlert.PleaseWait(500, isUnmounted);
-      useDeleteEmailTemplate(template).then((message) => {
+      useDeleteEmailTemplate(template).then(result => {
          if (isUnmounted.current) return;
-         errorAlert.setSingleSuccess("Deleted", message);
+         errorAlert.setSingleSuccess("Deleted", result.data);
          sleep(3000, isUnmounted).then(() => { setIsTemplateRecognised(false); });
       }).catch((alert) => {
          if (isUnmounted.current) return;

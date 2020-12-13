@@ -5,7 +5,7 @@ import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { @@Models@@ } from "../../_core/apiModels";
 {% for operation in Operations -%}
     {% template Client.Method.Documentation %}
-export const use{{ operation.ActualOperationNameUpper }}{{ Class }} = async ({% for parameter in operation.Parameters %}{{ parameter.VariableName }}{% if GenerateOptionalParameters and parameter.IsOptional %}?{% endif %}: {{ parameter.Type }}{{ parameter.TypePostfix }}{% if parameter.IsLast == false %}, {% endif %}{% endfor %}{% if UseAbortSignal %}{% if operation.Parameters.size > 0 %}, {% endif %}signal?: AbortSignal | undefined{% endif %}): Promise<{ data:{{   operation.ResultType  }}, status: number | undefined}> =>{
+export const use{{ operation.ActualOperationNameUpper }}{{ Class }} = async ({% for parameter in operation.Parameters %}{{ parameter.VariableName }}{% if GenerateOptionalParameters and parameter.IsOptional %}?{% endif %}: {{ parameter.Type }}{{ parameter.TypePostfix }}{% if parameter.IsLast == false %}, {% endif %}{% endfor %}{% if UseAbortSignal %}{% if operation.Parameters.size > 0 %}, {% endif %}signal?: AbortSignal | undefined{% endif %}): Promise<{ data:{% if operation.ResultType =="void" %} null {% else %}{{  operation.ResultType  }} {% endif %}, status: number | undefined}> =>{
         {% template Client.RequestUrl %}
 {%     if operation.HasBody -%}
         {% template Client.RequestBody %}
@@ -27,15 +27,15 @@ export const use{{ operation.ActualOperationNameUpper }}{{ Class }} = async ({% 
                 case {{ response.StatusCode }}: 
 {%  if response.HasType -%}
 {%     if response.IsSuccess -%}
-                        var data: {{ operation.ResultType }} = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: {{ operation.ResultType }} = await response?.json();
+                        return { data: responseData, status: response?.status };
 {%      else -%}
                         return response?.json().then((data: ErrorDto[]) => {
                                 throw new AlertObj(data, AlertTypes.Error, response?.status);
                         });
 {%      endif -%}
 {%  elseif response.IsSuccess -%}
-                        return{% if operation.HasResultType %}{ data: null, status: {{ response.StatusCode }} } {% endif %};
+                        return { data: null, status: {{ response.StatusCode }} };
 {%  else -%}
                         return response?.json().then((data: ErrorDto[]) => {
                                 throw new AlertObj([CommonErrors.BadServerResponse], AlertTypes.Error, response?.status);

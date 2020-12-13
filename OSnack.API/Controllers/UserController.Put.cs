@@ -124,7 +124,7 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpPut("Put/UpdateCurrent")]
       [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test  
-      public async Task<IActionResult> UpdateCurrentUser([FromBody] UpdateCurrentUserData data)
+      public async Task<IActionResult> UpdateCurrentUser([FromBody] UpdateCurrentUserData currentUserData)
       {
          try
          {
@@ -136,7 +136,7 @@ namespace OSnack.API.Controllers
                .ConfigureAwait(false);
 
             /// If the user is not the currently signed in user
-            if (user == null || data.User.Id != user.Id)
+            if (user == null || currentUserData.User.Id != user.Id)
             {
                CoreFunc.Error(ref ErrorsList, "Information access is denied.");
                return UnprocessableEntity(ErrorsList);
@@ -144,7 +144,7 @@ namespace OSnack.API.Controllers
 
             ModelState.Clear();
             /// Try to validate the model
-            TryValidateModel(data.User);
+            TryValidateModel(currentUserData.User);
             /// remove the passwordHash since
             /// the password update gets handled by another method in this class
             ModelState.Remove("PasswordHash");
@@ -155,21 +155,21 @@ namespace OSnack.API.Controllers
                return UnprocessableEntity(ErrorsList);
             }
 
-            if (user.RegistrationMethod.Type == RegistrationTypes.Application && !await _UserManager.CheckPasswordAsync(user, data.CurrentPassword).ConfigureAwait(false))
+            if (user.RegistrationMethod.Type == RegistrationTypes.Application && !await _UserManager.CheckPasswordAsync(user, currentUserData.CurrentPassword).ConfigureAwait(false))
             {
                CoreFunc.Error(ref ErrorsList, "Current Password is incorrect.");
                return StatusCode(412, ErrorsList);
             }
 
             /// update the user details with the new details
-            user.FirstName = data.User.FirstName;
-            user.Surname = data.User.Surname;
+            user.FirstName = currentUserData.User.FirstName;
+            user.Surname = currentUserData.User.Surname;
             if (user.RegistrationMethod.Type == RegistrationTypes.Application)
             {
-               user.Email = data.User.Email;
-               user.NormalizedEmail = data.User.Email.ToUpper();
+               user.Email = currentUserData.User.Email;
+               user.NormalizedEmail = currentUserData.User.Email.ToUpper();
             }
-            user.PhoneNumber = data.User.PhoneNumber;
+            user.PhoneNumber = currentUserData.User.PhoneNumber;
             /// thus update user in the context
             _DbContext.Users.Update(user);
             /// save the changes to the database

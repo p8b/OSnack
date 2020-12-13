@@ -2,7 +2,7 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { TupleOfListOfOrderAndInteger } from "../../_core/apiModels";
-export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: number, filterStatus: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:TupleOfListOfOrderAndInteger, status: number | undefined}> =>{
+export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: number, filterStatus: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:TupleOfListOfOrderAndInteger , status: number | undefined}> =>{
         let url_ = API_URL + "/Order/Get/MyOrder/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}/{isSortAsce}/{sortName}";
         if (selectedPage !== null && selectedPage !== undefined)
         url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
@@ -24,8 +24,8 @@ export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: n
         switch(response?.status){
 
                 case 200: 
-                        var data: TupleOfListOfOrderAndInteger = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: TupleOfListOfOrderAndInteger = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 417: 
                         return response?.json().then((data: ErrorDto[]) => {

@@ -32,9 +32,9 @@ const ProductManagement = (props: IProps) => {
    const [tblMaxItemsPerPage, setTblMaxItemsPerPage] = useState(ConstMaxNumberOfPerItemsPage);
 
    useEffect(() => {
-      useAllSecretCategory().then(categories => {
+      useAllSecretCategory().then(result => {
          if (isUnmounted.current) return;
-         setCategoryList(categories);
+         setCategoryList(result.data);
       }).catch(alert => {
          if (isUnmounted.current) return;
          errorAlert.set(alert);
@@ -76,10 +76,10 @@ const ProductManagement = (props: IProps) => {
 
       errorAlert.PleaseWait(500, isUnmounted);
       useSearchSecretProduct(selectedPage, maxItemsPerPage, categoryFilter, searchString, statusFilter, isSortAsc, sortName)
-         .then(products => {
+         .then(result => {
             if (isUnmounted.current) return;
-            setTblTotalItemCount(products.part2 || 0);
-            populateProductTable(products.part1 ? products.part1 : []);
+            setTblTotalItemCount(result.data.totalNumber || 0);
+            populateProductTable(result.data.productList!);
             errorAlert.clear();
          }).catch(alert => {
             if (isUnmounted.current) return;

@@ -2,7 +2,7 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { LoginInfo, User, ExternalLoginDetails } from "../../_core/apiModels";
-export const useAntiforgeryTokenAuthentication = async (): Promise<{ data:void, status: number | undefined}> =>{
+export const useAntiforgeryTokenAuthentication = async (): Promise<{ data: null , status: number | undefined}> =>{
         let url_ = API_URL + "/Authentication/Get/AntiforgeryToken";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);
@@ -14,7 +14,7 @@ export const useAntiforgeryTokenAuthentication = async (): Promise<{ data:void, 
         switch(response?.status){
 
                 case 200: 
-                        return;
+                        return { data: null, status: 200 };
 
                 default:
                         CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
@@ -22,7 +22,7 @@ export const useAntiforgeryTokenAuthentication = async (): Promise<{ data:void, 
         }
   
 }
-export const useLoginOfficialAuthentication = async (loginInfo: LoginInfo): Promise<{ data:User, status: number | undefined}> =>{
+export const useLoginOfficialAuthentication = async (loginInfo: LoginInfo): Promise<{ data:User , status: number | undefined}> =>{
         let url_ = API_URL + "/Authentication/Post/LoginOfficial";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = loginInfo;
@@ -35,8 +35,8 @@ export const useLoginOfficialAuthentication = async (loginInfo: LoginInfo): Prom
         switch(response?.status){
 
                 case 200: 
-                        var data: User = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: User = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 401: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -59,7 +59,7 @@ export const useLoginOfficialAuthentication = async (loginInfo: LoginInfo): Prom
         }
   
 }
-export const useLoginSecretAuthentication = async (loginInfo: LoginInfo): Promise<{ data:User, status: number | undefined}> =>{
+export const useLoginSecretAuthentication = async (loginInfo: LoginInfo): Promise<{ data:User , status: number | undefined}> =>{
         let url_ = API_URL + "/Authentication/Post/LoginSecret";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = loginInfo;
@@ -72,8 +72,8 @@ export const useLoginSecretAuthentication = async (loginInfo: LoginInfo): Promis
         switch(response?.status){
 
                 case 200: 
-                        var data: User = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: User = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 401: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -96,7 +96,7 @@ export const useLoginSecretAuthentication = async (loginInfo: LoginInfo): Promis
         }
   
 }
-export const useExternalLoginOfficialAuthentication = async (externalLoginInfo: ExternalLoginDetails): Promise<{ data:User, status: number | undefined}> =>{
+export const useExternalLoginOfficialAuthentication = async (externalLoginInfo: ExternalLoginDetails): Promise<{ data:User , status: number | undefined}> =>{
         let url_ = API_URL + "/Authentication/Post/ExternalLoginOfficial";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = externalLoginInfo;
@@ -109,12 +109,12 @@ export const useExternalLoginOfficialAuthentication = async (externalLoginInfo: 
         switch(response?.status){
 
                 case 200: 
-                        var data: User = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: User = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 206: 
-                        var data: User = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: User = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 403: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -142,7 +142,7 @@ export const useExternalLoginOfficialAuthentication = async (externalLoginInfo: 
         }
   
 }
-export const useExternalLoginSecretAuthentication = async (externalLoginInfo: ExternalLoginDetails): Promise<{ data:User, status: number | undefined}> =>{
+export const useExternalLoginSecretAuthentication = async (externalLoginInfo: ExternalLoginDetails): Promise<{ data:User , status: number | undefined}> =>{
         let url_ = API_URL + "/Authentication/Post/ExternalLoginSecret";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = externalLoginInfo;
@@ -155,12 +155,12 @@ export const useExternalLoginSecretAuthentication = async (externalLoginInfo: Ex
         switch(response?.status){
 
                 case 200: 
-                        var data: User = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: User = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 206: 
-                        var data: User = await response?.json();
-                        return { data, status: response?.status };
+                        var responseData: User = await response?.json();
+                        return { data: responseData, status: response?.status };
 
                 case 403: 
                         return response?.json().then((data: ErrorDto[]) => {
