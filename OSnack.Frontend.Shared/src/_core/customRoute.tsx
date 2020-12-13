@@ -22,15 +22,15 @@ const CustomRoute = (props: IProps) => {
          setAuthChecking(false);
       };
 
-      props.authenticate().then(user => {
-         successResult(user);
+      props.authenticate().then(result => {
+         successResult(result.data);
       }
       ).catch((error) => {
          if (error.httpStatus === 404) {
             useAntiforgeryTokenAuthentication().then(() => { });
          }
-         props.authenticate().then(user => {
-            successResult(user);
+         props.authenticate().then(result => {
+            successResult(result.data);
          }
          ).catch((error) => {
             catchResult(error);
@@ -51,7 +51,7 @@ declare type IProps = {
    path: string,
    Render: any,
    exact?: boolean;
-   authenticate: () => Promise<User>,
+   authenticate: () => Promise<{ data: User, status: number | undefined; }>,
    AuthRequired?: boolean;
 };
 export default CustomRoute;

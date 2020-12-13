@@ -31,9 +31,9 @@ const UserManagement = (props: IProps) => {
 
    useEffect(() => {
       errorAlert.PleaseWait(500, isUnmounted);
-      useGetRole().then(roles => {
+      useGetRole().then(result => {
          if (isUnmounted.current) return;
-         setRoleList(roles);
+         setRoleList(result.data);
          errorAlert.clear();
       }).catch(alert => {
          if (isUnmounted.current) return;

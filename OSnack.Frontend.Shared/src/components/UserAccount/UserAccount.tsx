@@ -33,7 +33,6 @@ const UserAccount = (props: IProps) => {
       setIsOpenConfirmPassword(false);
       useUpdateCurrentUserUser({ user: user, currentPassword: currentPass }).then((user) => {
          if (isUnmounted.current) return;
-         // setIsOpenConfirmPassword(true);
          setSelectedAction("Details");
          setCurrentPassword("");
          errorAlertAccountInfo.setSingleSuccess("Update", "Updated.");
