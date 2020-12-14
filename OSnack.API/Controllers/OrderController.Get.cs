@@ -31,7 +31,6 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpGet("[action]/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}")]
       [Authorize(AppConst.AccessPolicies.Secret)]
-      /// Done  
       public async Task<IActionResult> Get(
           int selectedPage,
           int maxNumberPerItemsPage,
@@ -54,18 +53,14 @@ namespace OSnack.API.Controllers
                 .Skip((selectedPage - 1) * maxNumberPerItemsPage)
                 .Take(maxNumberPerItemsPage)
                 .Include(o => o.OrderItems)
-                //.ThenInclude(i => i.StoreProduct)
                 .ThenInclude(sp => sp.Product)
                 .ThenInclude(p => p.Category)
                 .Include(o => o.OrderItems)
-                //.ThenInclude(i => i.StoreProduct)
-                //  .ThenInclude(sp => sp.Store)
-                .Include(o => o.Address)
+                .Include(o => o.User)
                 .Include(o => o.Coupon)
                 .Include(o => o.Payment)
                 .ToListAsync()
                 .ConfigureAwait(false);
-            /// return the list of Categories
             return Ok(new Tuple<List<Order>, int>(list, totalCount));
          }
          catch (Exception ex)
@@ -85,7 +80,6 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpGet("[action]/MyOrder/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}/{isSortAsce}/{sortName}")]
       [Authorize(AppConst.AccessPolicies.Official)]
-      /// Done
       public async Task<IActionResult> Get(
           int selectedPage,
           int maxNumberPerItemsPage,
@@ -98,32 +92,28 @@ namespace OSnack.API.Controllers
             int.TryParse(User.Claims.FirstOrDefault(c => c.Type == "UserId").Value, out int userId);
 
             int totalCount = await _DbContext.Orders
-               .Include(o => o.Address)
-               .Where(o => o.Address.UserId == userId)
+               .Include(o => o.User)
+               .Where(o => o.User.Id == userId)
                 .CountAsync(r => filterStatus.Equals(CoreConst.GetAllRecords) ? true : r.Status.Equals((OrderStatusType)Enum.Parse(typeof(OrderStatusType), filterStatus, true)))
                 //.CountAsync(c => searchValue.Equals(CoreConst.GetAllRecords) ? true : c. .Contains(searchValue))
                 .ConfigureAwait(false);
 
             List<Order> list = await _DbContext.Orders
-               .Include(o => o.Address)
-               .Where(o => o.Address.UserId == userId)
+               .Include(o => o.User)
+               .Where(o => o.User.Id == userId)
                 .Where(r => filterStatus.Equals(CoreConst.GetAllRecords) ? true : r.Status.Equals((OrderStatusType)Enum.Parse(typeof(OrderStatusType), filterStatus, true)))
                 .OrderByDynamic(sortName, isSortAsce)
                 // .Where(c => searchValue.Equals(CoreConst.GetAllRecords) ? true : c.Code.Contains(searchValue))
                 .Skip((selectedPage - 1) * maxNumberPerItemsPage)
                 .Take(maxNumberPerItemsPage)
                 .Include(o => o.OrderItems)
-                //.ThenInclude(i => i.StoreProduct)
                 .ThenInclude(sp => sp.Product)
                 .ThenInclude(p => p.Category)
                 .Include(o => o.OrderItems)
-                //.ThenInclude(i => i.StoreProduct)
-                //   .ThenInclude(sp => sp.Store)
                 .Include(o => o.Coupon)
                 .Include(o => o.Payment)
                 .ToListAsync()
                 .ConfigureAwait(false);
-            /// return the list of Categories
             return Ok(new Tuple<List<Order>, int>(list, totalCount));
          }
          catch (Exception ex)

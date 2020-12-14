@@ -1,7 +1,10 @@
-﻿using OSnack.API.Database.ModelsDependencies;
+﻿using Newtonsoft.Json;
+
+using OSnack.API.Database.ModelsDependencies;
 using OSnack.API.Extras;
 using OSnack.API.Extras.CustomTypes;
 using OSnack.API.Extras.Paypal;
+
 using PayPalCheckoutSdk.Orders;
 
 using System;
@@ -35,9 +38,22 @@ namespace OSnack.API.Database.Models
       [Column(TypeName = "decimal(7,2)")]
       public decimal DeliveryPrice { get; set; }
 
-      [Required(ErrorMessage = "Address is required \n")]
-      [ForeignKey("AddressId")]
-      public Address Address { get; set; }
+      /// <summary>
+      /// <b>Not Mapped</b> Only used to pass address id from client side to server
+      /// </summary>
+      [Required(ErrorMessage = "Address Id is required \n")]
+      [NotMapped]
+      public int AddressId { get; set; }
+
+      /// <summary>
+      /// <b>Json Ignore</b>
+      /// </summary>
+      [ForeignKey("UserId")]
+      [JsonIgnore]
+      public User User { get; set; }
+
+      [Column(Order = 0)]
+      public int? UserId { get; set; }
 
       [Required(ErrorMessage = "Payment is required \n")]
       [ForeignKey("PaymentId")]
@@ -100,6 +116,7 @@ namespace OSnack.API.Database.Models
       }
       internal async Task<List<PurchaseUnit>> ConvertToPayPalOrder(List<Item> orderItems)
       {
+
          OrderRequest orderRequest = new OrderRequest();
 
          orderRequest.CheckoutPaymentIntent = "CAPTURE";
@@ -146,25 +163,33 @@ namespace OSnack.API.Database.Models
                ShippingDetail=new ShippingDetail()
                {
                   Name=new Name(){
-                  FullName=$"{Address.User.FirstName} {Address.User.Surname}"
+                  FullName=$"{User.FirstName} {User.Surname}"
                   },
                   AddressPortable =new AddressPortable(){
-                     AddressLine1=Address.FirstLine,
-                     AddressLine2=Address.SecondLine,
-                     PostalCode=Address.Postcode,
+                     AddressLine1=FirstLine,
+                     AddressLine2=SecondLine,
+                     PostalCode=Postcode,
                      CountryCode="GB",
-                     AdminArea2=Address.City
+                     AdminArea2=City
                   }
                }
             }
          };
-         var request = new OrdersCreateRequest();
+         OrdersCreateRequest request = new OrdersCreateRequest();
 
          request.Prefer("return=representation");
 
          request.RequestBody(orderRequest);
-         var response = await PayPalClient.client().Execute(request);
-         return response.Result<PayPalCheckoutSdk.Orders.Order>().PurchaseUnits;
+         var response = await PayPalClient.client().Execute(request).ConfigureAwait(false);
+
+         PayPalCheckoutSdk.Orders.Order paypalOrder = response.Result<PayPalCheckoutSdk.Orders.Order>();
+         Payment = new Payment()
+         {
+            PaymentProvider = "PayPal",
+            Reference = paypalOrder.Id
+
+         };
+         return paypalOrder.PurchaseUnits;
       }
    }
 }

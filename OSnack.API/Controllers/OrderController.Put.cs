@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
+using OSnack.API.Extras.CustomTypes;
+using OSnack.API.Extras.Paypal;
 
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Models;
@@ -20,7 +23,7 @@ namespace OSnack.API.Controllers
       /// <summary>
       ///     Update a modified Order
       /// </summary>
-      #region *** 200 OK, 304 NotModified,412 PreconditionFailed ,422 UnprocessableEntity, 417 ExpectationFailed***
+      #region *** ***
       [HttpPut("[action]")]
       [Consumes(MediaTypeNames.Application.Json)]
       [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
@@ -90,6 +93,71 @@ namespace OSnack.API.Controllers
          }
          catch (Exception ex)
          {
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
+            return StatusCode(417, ErrorsList);
+         }
+      }
+
+      #region *** ***
+      [HttpPut("[action]")]
+      [Consumes(MediaTypeNames.Application.Json)]
+      [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status503ServiceUnavailable)]
+      #endregion
+      [Authorize(AppConst.AccessPolicies.Secret)]
+      public async Task<IActionResult> VarifyOrderPayment([FromBody] string payPalOrderID)
+      {
+         try
+         {
+            if (string.IsNullOrEmpty(payPalOrderID))
+            {
+               CoreFunc.Error(ref ErrorsList, "Cannot find your order.");
+               return UnprocessableEntity(ErrorsList);
+            }
+
+            Order order = await _DbContext.Orders.AsTracking()
+               .Include(o => o.Payment)
+               .SingleOrDefaultAsync(o => o.Payment.Reference.Equals(payPalOrderID))
+               .ConfigureAwait(false);
+
+            if (order == null)
+            {
+               CoreFunc.Error(ref ErrorsList, "Order number is invalid.");
+               return UnprocessableEntity(ErrorsList);
+            }
+
+            var request = new PayPalCheckoutSdk.Orders.OrdersCaptureRequest(order.Payment.Reference);
+            request.Prefer("return=representation");
+            request.RequestBody(new PayPalCheckoutSdk.Orders.OrderActionRequest());
+            var response = await PayPalClient.client().Execute(request);
+
+            var paypalOrder = response.Result<PayPalCheckoutSdk.Orders.Order>();
+            if (!paypalOrder.Status.Equals("COMPLETE"))
+            {
+               CoreFunc.Error(ref ErrorsList, "Payment cannot be varified.");
+               return UnprocessableEntity(ErrorsList);
+            }
+
+            order.Status = OrderStatusType.Hold;
+            order.Payment.DateTime = DateTime.Parse(paypalOrder.UpdateTime);
+
+            try
+            {
+               await _DbContext.SaveChangesAsync().ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+               AppLog log = _LoggingService.Log(Request.Path, AppLogType.PaymentException, order, User);
+               CoreFunc.Error(ref ErrorsList, $"There was a issue with your payment. Please get in touch with us referencing {log.Id} Id.");
+               return StatusCode(503, ErrorsList);
+            }
+            return Ok();
+         }
+         catch (Exception ex)
+         {
+
             CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }

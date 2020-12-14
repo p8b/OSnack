@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
+
 using OSnack.API.Database.ModelsDependencies;
-using System.Collections.Generic;
+
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -24,10 +25,6 @@ namespace OSnack.API.Database.Models
       [JsonIgnore]
       [ForeignKey("UserId")]
       public User User { get; set; }
-
-      [InverseProperty("Address")]
-      [JsonIgnore]
-      public ICollection<Order> Orders { get; set; }
 
       [NotMapped]
       public int UserId { get; set; }

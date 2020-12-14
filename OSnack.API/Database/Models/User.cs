@@ -2,8 +2,6 @@
 
 using Newtonsoft.Json;
 
-using NJsonSchema.Annotations;
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -62,6 +60,10 @@ namespace OSnack.API.Database.Models
 
       [InverseProperty("User")]
       public ICollection<Address> Addresses { get; set; }
+
+      [InverseProperty("User")]
+      [JsonIgnore]
+      public ICollection<Order> Orders { get; set; }
 
       [NotMapped]
       public string Password { get; set; }

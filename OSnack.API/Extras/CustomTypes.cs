@@ -51,6 +51,7 @@
       Information = 1,
       FileModification = 2,
       EmailFailure = 3,
-      OrderException = 4
+      OrderException = 4,
+      PaymentException = 5
    }
 }
