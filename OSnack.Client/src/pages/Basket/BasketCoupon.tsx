@@ -25,7 +25,7 @@ const BasketCoupon = (props: IProps) => {
          }
          if (props.totalPrice < result.data.minimumOrderPrice!) {
             props.setAlert(new AlertObj(
-               [new ErrorDto("Access Denied", `Minimum total price must be higher than £${coupon.minimumOrderPrice!}`)],
+               [new ErrorDto("Access Denied", `Minimum total price must be higher than £${result.data.minimumOrderPrice!}`)],
                AlertTypes.Error));
             setCode("");
             return;

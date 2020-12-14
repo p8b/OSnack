@@ -2,9 +2,10 @@
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { ShopContext } from '../../_core/shopContext';
 import InputDropDown from 'osnack-frontend-shared/src/components/Inputs/InputDropDown';
-import { Address, Coupon, CouponType, DeliveryOption, Order } from 'osnack-frontend-shared/src/_core/apiModels';
+import { Address, Coupon, CouponType, DeliveryOption, Order, PurchaseUnit } from 'osnack-frontend-shared/src/_core/apiModels';
 import { useAllDeliveryOption } from 'osnack-frontend-shared/src/hooks/PublicHooks/useDeliveryOptionHook';
 import { useAllAddress } from 'osnack-frontend-shared/src/hooks/OfficialHooks/useAddressHook';
+import { usePostOrder } from 'osnack-frontend-shared/src/hooks/OfficialHooks/useOrderHook';
 import { AuthContext } from 'osnack-frontend-shared/src/_core/authenticationContext';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import Login from 'osnack-frontend-shared/src/components/Login/Login';
@@ -18,7 +19,7 @@ import useScript from 'osnack-frontend-shared/src/hooks/function/useScript';
 
 const Checkout = (props: IProps) => {
    const clientID = "AUc_fJXtMhI3ugArGsxZur6ej0GP4Pb_usigBXwK9qvtUKByaJWEf7HNrUBSMHaYSiBq6Cg5nOf4_Tq_";
-   const isPayPalLoaded = useScript(`https://www.paypal.com/sdk/js?client-id=${clientID}&currency=GBP&intent=capture&commit=false`);
+   const paypalScriptLoad = useScript(`https://www.paypal.com/sdk/js?client-id=${clientID}&currency=GBP&intent=capture&commit=false`);
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
    const auth = useContext(AuthContext);
@@ -36,6 +37,8 @@ const Checkout = (props: IProps) => {
 
    const [totalDiscount, setTotalDiscount] = useState(0);
    const [order, setOrder] = useState(new Order());
+
+   const [purchaseUnits, setPurchaseUnits] = useState<PurchaseUnit[]>([]);
 
    useEffect(() => { getDeliveryOptionAndAddresses(); }, [auth.state.isAuthenticated]);
    useEffect(() => {
@@ -151,9 +154,22 @@ const Checkout = (props: IProps) => {
          return {
             ...prev, totalPrice: totalPriceTemp,
             deliveryOption: selectDeliveryOption || order.deliveryOption,
-            coupon: removeCoupon ? new Coupon() : selectCoupon
+            coupon: removeCoupon ? new Coupon() : selectCoupon,
+            orderItems: basket.state.List
          };
       });
+   };
+
+   const checkout = () => {
+      usePostOrder(order).then(result => {
+         if (isUnmounted.current) return;
+         console.log(result.data);
+         setPurchaseUnits(result.data);
+         setIsOpenPayementModal(true);
+      }).catch(alert => {
+         if (isUnmounted.current) return;
+         errorAlert.set(alert);
+      });;
    };
 
    return (
@@ -218,7 +234,7 @@ const Checkout = (props: IProps) => {
                            onClick={() => { setIsOpenAddressModal(true); }} />
                      }
                   </div>
-                  <Button className="col-12 btn-lg btn-green mt-auto radius-none " children="Checkout" onClick={() => setIsOpenPayementModal(true)} />
+                  <Button className="col-12 btn-lg btn-green mt-auto radius-none " children="Checkout" onClick={checkout} />
                </>
             }
             {!auth.state.isAuthenticated &&
@@ -243,10 +259,10 @@ const Checkout = (props: IProps) => {
                   address={order.address}
                   onClose={() => setIsOpenAddressModal(false)} />
 
-               {isPayPalLoaded &&
+               {paypalScriptLoad &&
                   <PaymentModal isOpen={isOpenPayementModal}
                      setIsOpen={setIsOpenPayementModal}
-                     ref={paymentModalRef} />
+                     ref={paymentModalRef} purchase_units={purchaseUnits} />
                }
             </>
          }

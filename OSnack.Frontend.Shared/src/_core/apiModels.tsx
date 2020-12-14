@@ -188,6 +188,214 @@ export class TupleOfListOfOrderAndInteger {
     item2?: number;
 
 }
+export class PurchaseUnit {
+    amount?: AmountWithBreakdown | undefined;
+    custom_id?: string | undefined;
+    description?: string | undefined;
+    id?: string | undefined;
+    invoice_id?: string | undefined;
+    items?: Item[] | undefined;
+    payee?: Payee | undefined;
+    payment_instruction?: PaymentInstruction | undefined;
+    payments?: PaymentCollection | undefined;
+    reference_id?: string | undefined;
+    shipping?: ShippingDetail | undefined;
+    soft_descriptor?: string | undefined;
+
+}
+export class AmountWithBreakdown {
+    breakdown?: AmountBreakdown | undefined;
+    currency_code?: string | undefined;
+    value?: string | undefined;
+
+}
+export class AmountBreakdown {
+    discount?: Money | undefined;
+    handling?: Money | undefined;
+    insurance?: Money | undefined;
+    item_total?: Money | undefined;
+    shipping?: Money | undefined;
+    shipping_discount?: Money | undefined;
+    tax_total?: Money | undefined;
+
+}
+export class Money {
+    currency_code?: string | undefined;
+    value?: string | undefined;
+
+}
+export class Item {
+    category?: string | undefined;
+    description?: string | undefined;
+    name?: string | undefined;
+    quantity?: string | undefined;
+    sku?: string | undefined;
+    tax?: Money | undefined;
+    unit_amount?: Money | undefined;
+
+}
+export class Payee {
+    client_id?: string | undefined;
+    email_address?: string | undefined;
+    merchant_id?: string | undefined;
+    display_data?: PayeeDisplayable | undefined;
+
+}
+export class PayeeDisplayable {
+    brand_name?: string | undefined;
+    business_phone?: Phone | undefined;
+    business_email?: string | undefined;
+
+}
+export class Phone {
+    country_code?: string | undefined;
+    extension_number?: string | undefined;
+    national_number?: string | undefined;
+
+}
+export class PaymentInstruction {
+    disbursement_mode?: string | undefined;
+
+}
+export class PaymentCollection {
+    authorizations?: Authorization[] | undefined;
+    captures?: Capture[] | undefined;
+    refunds?: Refund[] | undefined;
+
+}
+export class Authorization {
+    amount?: Money | undefined;
+    status_details?: AuthorizationStatusDetails | undefined;
+    create_time?: string | undefined;
+    expiration_time?: string | undefined;
+    id?: string | undefined;
+    invoice_id?: string | undefined;
+    links?: LinkDescription[] | undefined;
+    seller_protection?: SellerProtection | undefined;
+    status?: string | undefined;
+    update_time?: string | undefined;
+
+}
+export class AuthorizationStatusDetails {
+    reason?: string | undefined;
+
+}
+export class LinkDescription {
+    encType?: string | undefined;
+    href?: string | undefined;
+    mediaType?: string | undefined;
+    method?: string | undefined;
+    rel?: string | undefined;
+    title?: string | undefined;
+
+}
+export class SellerProtection {
+    dispute_categories?: string[] | undefined;
+    status?: string | undefined;
+
+}
+export class Capture {
+    amount?: Money | undefined;
+    status_details?: CaptureStatusDetails | undefined;
+    create_time?: string | undefined;
+    disbursement_mode?: string | undefined;
+    final_capture?: boolean | undefined;
+    id?: string | undefined;
+    invoice_id?: string | undefined;
+    links?: LinkDescription[] | undefined;
+    seller_protection?: SellerProtection | undefined;
+    seller_receivable_breakdown?: MerchantReceivableBreakdown | undefined;
+    status?: string | undefined;
+    update_time?: string | undefined;
+
+}
+export class CaptureStatusDetails {
+    reason?: string | undefined;
+
+}
+export class MerchantReceivableBreakdown {
+    gross_amount?: Money | undefined;
+    net_amount?: Money | undefined;
+    paypal_fee?: Money | undefined;
+    receivable_amount?: Money | undefined;
+
+}
+export class Refund {
+    amount?: Money | undefined;
+    create_time?: string | undefined;
+    id?: string | undefined;
+    invoice_id?: string | undefined;
+    links?: LinkDescription[] | undefined;
+    note_to_payer?: string | undefined;
+    status_details?: RefundStatusDetails | undefined;
+    seller_payable_breakdown?: MerchantPayableBreakdown | undefined;
+    status?: string | undefined;
+    update_time?: string | undefined;
+
+}
+export class RefundStatusDetails {
+    reason?: string | undefined;
+
+}
+export class MerchantPayableBreakdown {
+    gross_amount?: Money | undefined;
+    net_amount?: Money | undefined;
+    net_amount_breakdown?: NetAmountBreakdownItem[] | undefined;
+    paypal_fee?: Money | undefined;
+    total_refunded_amount?: Money | undefined;
+
+}
+export class NetAmountBreakdownItem {
+    converted_amount?: Money | undefined;
+    payable_amount?: Money | undefined;
+
+}
+export class ShippingDetail {
+    address?: AddressPortable | undefined;
+    name?: Name | undefined;
+    options?: ShippingOption[] | undefined;
+
+}
+export class AddressPortable {
+    address_details?: AddressDetails | undefined;
+    address_line_1?: string | undefined;
+    address_line_2?: string | undefined;
+    address_line_3?: string | undefined;
+    admin_area_1?: string | undefined;
+    admin_area_2?: string | undefined;
+    admin_area_3?: string | undefined;
+    admin_area_4?: string | undefined;
+    country_code?: string | undefined;
+    postal_code?: string | undefined;
+
+}
+export class AddressDetails {
+    building_name?: string | undefined;
+    delivery_service?: string | undefined;
+    street_name?: string | undefined;
+    street_number?: string | undefined;
+    street_type?: string | undefined;
+    sub_building?: string | undefined;
+
+}
+export class Name {
+    alternate_full_name?: string | undefined;
+    full_name?: string | undefined;
+    given_name?: string | undefined;
+    middle_name?: string | undefined;
+    prefix?: string | undefined;
+    suffix?: string | undefined;
+    surname?: string | undefined;
+
+}
+export class ShippingOption {
+    amount?: Money | undefined;
+    id?: string | undefined;
+    label?: string | undefined;
+    selected?: boolean | undefined;
+    type?: string | undefined;
+
+}
 export class NutritionalInfo {
     id?: number = 0;
     perGram?: number;

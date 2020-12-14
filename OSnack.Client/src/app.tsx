@@ -11,7 +11,6 @@ import Container from "./components/Container";
 import NavMenu from "./components/NavMenu/NavMenu";
 import Footer from "./components/Footer";
 import { useSilentOfficialAuthentication } from "osnack-frontend-shared/src/hooks/OfficialHooks/useAuthenticationHook";
-import { useScript } from "osnack-frontend-shared/src/_core/appFunc";
 const Home = lazy(() => import("./pages/Home/Home"));
 const Shop = lazy(() => import("./pages/Shop/Shop"));
 const About = lazy(() => import("./pages/About/About"));
@@ -27,9 +26,6 @@ const PasswordReset = lazy(() => import("osnack-frontend-shared/src/pages/Passwo
 const TermsAndConditions = lazy(() => import("./pages/TermsAndConditions/TermsAndConditions"));
 
 const App = () => {
-
-
-
    return (
       <BrowserRouter>
          <AuthenticationContext>

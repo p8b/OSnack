@@ -5,16 +5,21 @@ const useScript = (url: string) => {
    useEffect(() => {
       const script = document.createElement('script');
       console.log(url);
-      script.src = url;
-      script.async = true;
-      script.onload = () => { setIsLoaded(true); };
+      if (url != "") {
+
+         //script.setAttribute("data-order-id", orderId);
+         //script.setAttribute("data-page-type", "cart");
+         script.src = url;
+         script.async = true;
+         script.onload = () => { setIsLoaded(true); };
 
 
-      document.body.appendChild(script);
+         document.body.appendChild(script);
+      }
 
-      return () => {
-         document.body.removeChild(script);
-      };
+      //return () => {
+      //   document.body.removeChild(script);
+      //};
    }, [url]);
    return isLoaded;
 };
