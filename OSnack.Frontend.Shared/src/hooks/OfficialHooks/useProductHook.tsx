@@ -2,7 +2,7 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { Score } from "../../_core/apiModels";
-export const useScoreProduct = async (newScore: Score): Promise<{ data:Score , status: number | undefined}> =>{
+export const useScoreProduct = async (newScore: Score): Promise<{ data:Score , status?: number}> =>{
         let url_ = API_URL + "/Product/Post/Score/Score";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = newScore;
@@ -29,7 +29,7 @@ export const useScoreProduct = async (newScore: Score): Promise<{ data:Score , s
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   

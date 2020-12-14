@@ -2,7 +2,7 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { ProductListAndTotalNumber, ProductAndProductList } from "../../_core/apiModels";
-export const useSearchPublicProduct = async (selectedPage: number, maxItemsPerPage: number, filterCategory: string | null, searchValue: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:ProductListAndTotalNumber , status: number | undefined}> =>{
+export const useSearchPublicProduct = async (selectedPage: number, maxItemsPerPage: number, filterCategory: string | null, searchValue: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:ProductListAndTotalNumber , status?: number}> =>{
         let url_ = API_URL + "/Product/GET/SearchPublic/{selectedPage}/{maxItemsPerPage}/{filterCategory}/{searchValue}/{isSortAsce}/{sortName}";
         if (selectedPage !== null && selectedPage !== undefined)
         url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
@@ -35,12 +35,12 @@ export const useSearchPublicProduct = async (selectedPage: number, maxItemsPerPa
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   
 }
-export const useProductAndRelateProduct = async (categoryName: string | null, productName: string | null): Promise<{ data:ProductAndProductList , status: number | undefined}> =>{
+export const useProductAndRelateProduct = async (categoryName: string | null, productName: string | null): Promise<{ data:ProductAndProductList , status?: number}> =>{
         let url_ = API_URL + "/Product/GET/ProductAndRelate/{categoryName}/{productName}";
         if (categoryName !== null && categoryName !== undefined)
         url_ = url_.replace("{categoryName}", encodeURIComponent("" + categoryName));
@@ -70,7 +70,7 @@ export const useProductAndRelateProduct = async (categoryName: string | null, pr
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   

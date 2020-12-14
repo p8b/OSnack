@@ -2,7 +2,7 @@ import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/compo
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
 import { Order, TupleOfListOfOrderAndInteger } from "osnack-frontend-shared/src/_core/apiModels";
-export const useDeleteOrder = async (order: Order): Promise<{ data:string , status: number | undefined}> =>{
+export const useDeleteOrder = async (order: Order): Promise<{ data:string , status?: number}> =>{
         let url_ = API_URL + "/Order/Delete";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = order;
@@ -29,12 +29,12 @@ export const useDeleteOrder = async (order: Order): Promise<{ data:string , stat
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   
 }
-export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, filterStatus: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:TupleOfListOfOrderAndInteger , status: number | undefined}> =>{
+export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, filterStatus: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:TupleOfListOfOrderAndInteger , status?: number}> =>{
         let url_ = API_URL + "/Order/Get/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}";
         if (selectedPage !== null && selectedPage !== undefined)
         url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
@@ -67,12 +67,12 @@ export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: n
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   
 }
-export const usePutOrder = async (modifiedOrder: Order): Promise<{ data:Order , status: number | undefined}> =>{
+export const usePutOrder = async (modifiedOrder: Order): Promise<{ data:Order , status?: number}> =>{
         let url_ = API_URL + "/Order/Put";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = modifiedOrder;
@@ -99,12 +99,12 @@ export const usePutOrder = async (modifiedOrder: Order): Promise<{ data:Order , 
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   
 }
-export const usePutOrderStatusOrder = async (modifiedOrder: Order): Promise<{ data:Order , status: number | undefined}> =>{
+export const usePutOrderStatusOrder = async (modifiedOrder: Order): Promise<{ data:Order , status?: number}> =>{
         let url_ = API_URL + "/Order/PutOrderStatus";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = modifiedOrder;
@@ -126,7 +126,7 @@ export const usePutOrderStatusOrder = async (modifiedOrder: Order): Promise<{ da
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   

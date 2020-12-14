@@ -2,7 +2,7 @@ import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/compo
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
 import { Role } from "osnack-frontend-shared/src/_core/apiModels";
-export const useGetRole = async (): Promise<{ data:Role[] , status: number | undefined}> =>{
+export const useGetRole = async (): Promise<{ data:Role[] , status?: number}> =>{
         let url_ = API_URL + "/Role/Get";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);
@@ -23,7 +23,7 @@ export const useGetRole = async (): Promise<{ data:Role[] , status: number | und
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   

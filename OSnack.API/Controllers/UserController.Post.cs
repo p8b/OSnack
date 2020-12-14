@@ -10,7 +10,6 @@ using OSnack.API.Extras;
 
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Models;
-using P8B.UK.API.Services;
 
 using System;
 using System.Collections.Generic;
@@ -149,12 +148,11 @@ namespace OSnack.API.Controllers
       ///     Create a Password reset token which is emailed to the intended user
       /// </summary>
       #region *** ***
-      [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+      [ProducesResponseType(StatusCodes.Status201Created)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPost("Post/[action]")]
-      [ProducesResponseType(StatusCodes.Status201Created)]
       [Authorize(AppConst.AccessPolicies.Public)]
       public async Task<IActionResult> RequestPasswordReset([FromBody] string email)
       {

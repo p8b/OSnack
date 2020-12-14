@@ -2,7 +2,7 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { Coupon } from "../../_core/apiModels";
-export const useValidateCoupon = async (couponCode: string | null): Promise<{ data:Coupon , status: number | undefined}> =>{
+export const useValidateCoupon = async (couponCode: string | null): Promise<{ data:Coupon , status?: number}> =>{
         let url_ = API_URL + "/Coupon/Get/Validate/{couponCode}";
         if (couponCode !== null && couponCode !== undefined)
         url_ = url_.replace("{couponCode}", encodeURIComponent("" + couponCode));
@@ -30,7 +30,7 @@ export const useValidateCoupon = async (couponCode: string | null): Promise<{ da
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   

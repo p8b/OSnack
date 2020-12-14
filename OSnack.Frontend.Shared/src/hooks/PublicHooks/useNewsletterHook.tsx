@@ -2,7 +2,7 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { Newsletter } from "../../_core/apiModels";
-export const usePostNewsletter = async (newsletter: Newsletter): Promise<{ data:Newsletter , status: number | undefined}> =>{
+export const usePostNewsletter = async (newsletter: Newsletter): Promise<{ data:Newsletter , status?: number}> =>{
         let url_ = API_URL + "/Newsletter/Post";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = newsletter;
@@ -29,12 +29,12 @@ export const usePostNewsletter = async (newsletter: Newsletter): Promise<{ data:
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   
 }
-export const useDeleteNewsletter = async (email: string | null): Promise<{ data:string , status: number | undefined}> =>{
+export const useDeleteNewsletter = async (email: string | null): Promise<{ data:string , status?: number}> =>{
         let url_ = API_URL + "/Newsletter/Delete/{email}";
         if (email !== null && email !== undefined)
         url_ = url_.replace("{email}", encodeURIComponent("" + email));
@@ -57,7 +57,7 @@ export const useDeleteNewsletter = async (email: string | null): Promise<{ data:
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   

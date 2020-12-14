@@ -1,5 +1,5 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
-import { RegistrationTypesList, Role, User } from 'osnack-frontend-shared/src/_core/apiModels';
+import { RegistrationTypes, RegistrationTypesList, Role, User } from 'osnack-frontend-shared/src/_core/apiModels';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Input } from 'osnack-frontend-shared/src/components/Inputs/Input';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
@@ -13,7 +13,6 @@ const UserModal = (props: IProps) => {
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
    const [user, setUser] = useState(new User());
-   const [registrationMethodList] = useState(RegistrationTypesList);
 
    useEffect(() => () => { isUnmounted.current = true; }, []);
 
@@ -107,7 +106,7 @@ const UserModal = (props: IProps) => {
                onChange={i => { setUser({ ...user, email: i.target.value }); }}
                className="col-12 col-sm-6" />
             <Input label={`Registration Method`}
-               value={registrationMethodList.find((rm) => rm.Value === user.registrationMethod.type)?.Name}
+               value={RegistrationTypesList.find((rm) => rm.Value === user.registrationMethod.type || rm.Value === RegistrationTypes.Application)?.Name}
                onChange={i => { }}
                disabled
                className="col-12 col-sm-6" />

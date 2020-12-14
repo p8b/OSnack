@@ -2,7 +2,7 @@ import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/compo
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
 import { User } from "osnack-frontend-shared/src/_core/apiModels";
-export const useSilentSecretAuthentication = async (): Promise<{ data:User , status: number | undefined}> =>{
+export const useSilentSecretAuthentication = async (): Promise<{ data:User , status?: number}> =>{
         let url_ = API_URL + "/Authentication/Post/SilentSecret";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.POST(url_);
@@ -28,7 +28,7 @@ export const useSilentSecretAuthentication = async (): Promise<{ data:User , sta
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   

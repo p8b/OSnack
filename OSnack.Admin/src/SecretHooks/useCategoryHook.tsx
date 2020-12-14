@@ -2,7 +2,7 @@ import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/compo
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
 import { Category, CategoryListAndTotalNumber } from "osnack-frontend-shared/src/_core/apiModels";
-export const useDeleteCategory = async (category: Category): Promise<{ data:string , status: number | undefined}> =>{
+export const useDeleteCategory = async (category: Category): Promise<{ data:string , status?: number}> =>{
         let url_ = API_URL + "/Category/Delete";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = category;
@@ -34,12 +34,12 @@ export const useDeleteCategory = async (category: Category): Promise<{ data:stri
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   
 }
-export const useSearchCategory = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:CategoryListAndTotalNumber , status: number | undefined}> =>{
+export const useSearchCategory = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:CategoryListAndTotalNumber , status?: number}> =>{
         let url_ = API_URL + "/Category/Get/Search/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{isSortAsce}/{sortName}";
         if (selectedPage !== null && selectedPage !== undefined)
         url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
@@ -70,12 +70,12 @@ export const useSearchCategory = async (selectedPage: number, maxNumberPerItemsP
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   
 }
-export const useAllSecretCategory = async (): Promise<{ data:Category[] , status: number | undefined}> =>{
+export const useAllSecretCategory = async (): Promise<{ data:Category[] , status?: number}> =>{
         let url_ = API_URL + "/Category/Get/AllSecret";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);
@@ -96,12 +96,12 @@ export const useAllSecretCategory = async (): Promise<{ data:Category[] , status
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   
 }
-export const usePostCategory = async (newCategory: Category): Promise<{ data:Category , status: number | undefined}> =>{
+export const usePostCategory = async (newCategory: Category): Promise<{ data:Category , status?: number}> =>{
         let url_ = API_URL + "/Category/Post";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = newCategory;
@@ -133,12 +133,12 @@ export const usePostCategory = async (newCategory: Category): Promise<{ data:Cat
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   
 }
-export const usePutCategory = async (modifiedCategory: Category): Promise<{ data:Category , status: number | undefined}> =>{
+export const usePutCategory = async (modifiedCategory: Category): Promise<{ data:Category , status?: number}> =>{
         let url_ = API_URL + "/Category/Put";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = modifiedCategory;
@@ -175,7 +175,7 @@ export const usePutCategory = async (modifiedCategory: Category): Promise<{ data
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   

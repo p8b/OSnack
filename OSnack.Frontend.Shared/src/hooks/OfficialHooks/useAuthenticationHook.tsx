@@ -2,7 +2,7 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { User } from "../../_core/apiModels";
-export const useLogoutAuthentication = async (): Promise<{ data: null , status: number | undefined}> =>{
+export const useLogoutAuthentication = async (): Promise<{ data: null , status?: number}> =>{
         let url_ = API_URL + "/Authentication/Get/Logout";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);
@@ -22,12 +22,12 @@ export const useLogoutAuthentication = async (): Promise<{ data: null , status: 
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   
 }
-export const useSilentOfficialAuthentication = async (): Promise<{ data:User , status: number | undefined}> =>{
+export const useSilentOfficialAuthentication = async (): Promise<{ data:User , status?: number}> =>{
         let url_ = API_URL + "/Authentication/Post/SilentOfficial";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.POST(url_);
@@ -53,12 +53,12 @@ export const useSilentOfficialAuthentication = async (): Promise<{ data:User , s
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   
 }
-export const useConfirmCurrentUserPasswordAuthentication = async (password: string): Promise<{ data:User , status: number | undefined}> =>{
+export const useConfirmCurrentUserPasswordAuthentication = async (password: string): Promise<{ data:User , status?: number}> =>{
         let url_ = API_URL + "/Authentication/Post/ConfirmCurrentUserPassword";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = password;
@@ -85,7 +85,7 @@ export const useConfirmCurrentUserPasswordAuthentication = async (password: stri
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   

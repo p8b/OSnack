@@ -2,7 +2,7 @@ import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/compo
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
 import { User, UserListAndTotalNumber } from "osnack-frontend-shared/src/_core/apiModels";
-export const useDeleteUser = async (thisUser: User): Promise<{ data:string , status: number | undefined}> =>{
+export const useDeleteUser = async (thisUser: User): Promise<{ data:string , status?: number}> =>{
         let url_ = API_URL + "/User/Delete";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = thisUser;
@@ -29,12 +29,12 @@ export const useDeleteUser = async (thisUser: User): Promise<{ data:string , sta
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   
 }
-export const useGetUser = async (selectedPage: number, maxItemsPerPage: number, searchValue: string | null, filterRole: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:UserListAndTotalNumber , status: number | undefined}> =>{
+export const useGetUser = async (selectedPage: number, maxItemsPerPage: number, searchValue: string | null, filterRole: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:UserListAndTotalNumber , status?: number}> =>{
         let url_ = API_URL + "/User/Get/{selectedPage}/{maxItemsPerPage}/{searchValue}/{filterRole}/{isSortAsce}/{sortName}";
         if (selectedPage !== null && selectedPage !== undefined)
         url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
@@ -67,12 +67,12 @@ export const useGetUser = async (selectedPage: number, maxItemsPerPage: number, 
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   
 }
-export const useCreateUserUser = async (newUser: User): Promise<{ data:User , status: number | undefined}> =>{
+export const useCreateUserUser = async (newUser: User): Promise<{ data:User , status?: number}> =>{
         let url_ = API_URL + "/User/Post/CreateUser";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = newUser;
@@ -104,12 +104,12 @@ export const useCreateUserUser = async (newUser: User): Promise<{ data:User , st
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   
 }
-export const useUpdateUserUser = async (modifiedUser: User): Promise<{ data:User , status: number | undefined}> =>{
+export const useUpdateUserUser = async (modifiedUser: User): Promise<{ data:User , status?: number}> =>{
         let url_ = API_URL + "/User/Put/UpdateUser";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = modifiedUser;
@@ -141,12 +141,12 @@ export const useUpdateUserUser = async (modifiedUser: User): Promise<{ data:User
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   
 }
-export const useUserLockoutUser = async (userId: number, lockoutEnabled: boolean): Promise<{ data:User , status: number | undefined}> =>{
+export const useUserLockoutUser = async (userId: number, lockoutEnabled: boolean): Promise<{ data:User , status?: number}> =>{
         let url_ = API_URL + "/User/Put/UserLockout/{userId}/{lockoutEnabled}";
         if (userId !== null && userId !== undefined)
         url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
@@ -176,7 +176,7 @@ export const useUserLockoutUser = async (userId: number, lockoutEnabled: boolean
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   

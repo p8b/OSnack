@@ -2,7 +2,7 @@ import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/compo
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
 import { EmailTemplate, EmailtemplateAndEmailtemplate1, ServerVariables } from "osnack-frontend-shared/src/_core/apiModels";
-export const useDeleteEmailTemplate = async (emailTemplate: EmailTemplate): Promise<{ data:string , status: number | undefined}> =>{
+export const useDeleteEmailTemplate = async (emailTemplate: EmailTemplate): Promise<{ data:string , status?: number}> =>{
         let url_ = API_URL + "/EmailTemplate/Delete";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = emailTemplate;
@@ -29,12 +29,12 @@ export const useDeleteEmailTemplate = async (emailTemplate: EmailTemplate): Prom
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   
 }
-export const useAllEmailTemplate = async (): Promise<{ data:EmailTemplate[] , status: number | undefined}> =>{
+export const useAllEmailTemplate = async (): Promise<{ data:EmailTemplate[] , status?: number}> =>{
         let url_ = API_URL + "/EmailTemplate/Get/All";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);
@@ -55,12 +55,12 @@ export const useAllEmailTemplate = async (): Promise<{ data:EmailTemplate[] , st
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   
 }
-export const useGetEmailTemplate = async (templateId: number): Promise<{ data:EmailtemplateAndEmailtemplate1 , status: number | undefined}> =>{
+export const useGetEmailTemplate = async (templateId: number): Promise<{ data:EmailtemplateAndEmailtemplate1 , status?: number}> =>{
         let url_ = API_URL + "/EmailTemplate/Get/{templateId}";
         if (templateId !== null && templateId !== undefined)
         url_ = url_.replace("{templateId}", encodeURIComponent("" + templateId));
@@ -83,12 +83,12 @@ export const useGetEmailTemplate = async (templateId: number): Promise<{ data:Em
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   
 }
-export const useGetServerVariablesEmailTemplate = async (): Promise<{ data:ServerVariables[] , status: number | undefined}> =>{
+export const useGetServerVariablesEmailTemplate = async (): Promise<{ data:ServerVariables[] , status?: number}> =>{
         let url_ = API_URL + "/EmailTemplate/GetServerVariables";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);
@@ -109,12 +109,12 @@ export const useGetServerVariablesEmailTemplate = async (): Promise<{ data:Serve
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   
 }
-export const usePostEmailTemplate = async (emailTemplate: EmailTemplate): Promise<{ data:EmailTemplate , status: number | undefined}> =>{
+export const usePostEmailTemplate = async (emailTemplate: EmailTemplate): Promise<{ data:EmailTemplate , status?: number}> =>{
         let url_ = API_URL + "/EmailTemplate/Post";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = emailTemplate;
@@ -141,12 +141,12 @@ export const usePostEmailTemplate = async (emailTemplate: EmailTemplate): Promis
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   
 }
-export const usePutEmailTemplate = async (emailTemplate: EmailTemplate): Promise<{ data:EmailTemplate , status: number | undefined}> =>{
+export const usePutEmailTemplate = async (emailTemplate: EmailTemplate): Promise<{ data:EmailTemplate , status?: number}> =>{
         let url_ = API_URL + "/EmailTemplate/Put";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = emailTemplate;
@@ -173,7 +173,7 @@ export const usePutEmailTemplate = async (emailTemplate: EmailTemplate): Promise
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   

@@ -2,7 +2,7 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { Address } from "../../_core/apiModels";
-export const useDeleteAddress = async (address: Address): Promise<{ data:string , status: number | undefined}> =>{
+export const useDeleteAddress = async (address: Address): Promise<{ data:string , status?: number}> =>{
         let url_ = API_URL + "/Address/Delete";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = address;
@@ -34,12 +34,12 @@ export const useDeleteAddress = async (address: Address): Promise<{ data:string 
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   
 }
-export const useAllAddress = async (): Promise<{ data:Address[] , status: number | undefined}> =>{
+export const useAllAddress = async (): Promise<{ data:Address[] , status?: number}> =>{
         let url_ = API_URL + "/Address/Get/All";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);
@@ -60,12 +60,12 @@ export const useAllAddress = async (): Promise<{ data:Address[] , status: number
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   
 }
-export const usePostAddress = async (newAddress: Address): Promise<{ data:Address , status: number | undefined}> =>{
+export const usePostAddress = async (newAddress: Address): Promise<{ data:Address , status?: number}> =>{
         let url_ = API_URL + "/Address/Post";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = newAddress;
@@ -92,12 +92,12 @@ export const usePostAddress = async (newAddress: Address): Promise<{ data:Addres
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   
 }
-export const usePutAddress = async (modifiedAddress: Address): Promise<{ data:Address , status: number | undefined}> =>{
+export const usePutAddress = async (modifiedAddress: Address): Promise<{ data:Address , status?: number}> =>{
         let url_ = API_URL + "/Address/Put";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = modifiedAddress;
@@ -124,12 +124,12 @@ export const usePutAddress = async (modifiedAddress: Address): Promise<{ data:Ad
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   
 }
-export const useSetDefaultAddress = async (addressId: number): Promise<{ data: null , status: number | undefined}> =>{
+export const useSetDefaultAddress = async (addressId: number): Promise<{ data: null , status?: number}> =>{
         let url_ = API_URL + "/Address/Put/SetDefault";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = addressId;
@@ -150,7 +150,7 @@ export const useSetDefaultAddress = async (addressId: number): Promise<{ data: n
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   

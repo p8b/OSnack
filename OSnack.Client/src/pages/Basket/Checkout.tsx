@@ -14,14 +14,11 @@ import { useDetectOutsideClick } from 'osnack-frontend-shared/src/hooks/function
 import AddressModal from '../MyAccount/AddressModal';
 import BasketCoupon from './BasketCoupon';
 import PaymentModal from './PaymentModal';
-import { useScript } from 'osnack-frontend-shared/src/_core/appFunc';
+import useScript from 'osnack-frontend-shared/src/hooks/function/useScript';
 
 const Checkout = (props: IProps) => {
    const clientID = "AUc_fJXtMhI3ugArGsxZur6ej0GP4Pb_usigBXwK9qvtUKByaJWEf7HNrUBSMHaYSiBq6Cg5nOf4_Tq_";
-   const currency = "GBP";
-   const intent = "capture";
-   const commit = "false";
-   const [paypalLoad, setpaypalLoad] = useState(false);
+   const isPayPalLoaded = useScript(`https://www.paypal.com/sdk/js?client-id=${clientID}&currency=GBP&intent=capture&commit=false`);
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
    const auth = useContext(AuthContext);
@@ -40,10 +37,8 @@ const Checkout = (props: IProps) => {
    const [totalDiscount, setTotalDiscount] = useState(0);
    const [order, setOrder] = useState(new Order());
 
-   useScript(`https://www.paypal.com/sdk/js?client-id=${clientID}&currency=${currency}&intent=${intent}&commit=${commit}`, () => { setpaypalLoad(true); });
    useEffect(() => { getDeliveryOptionAndAddresses(); }, [auth.state.isAuthenticated]);
    useEffect(() => {
-
       getDeliveryOptionAndAddresses();
       return () => {
          isUnmounted.current = true;
@@ -248,7 +243,7 @@ const Checkout = (props: IProps) => {
                   address={order.address}
                   onClose={() => setIsOpenAddressModal(false)} />
 
-               {paypalLoad &&
+               {isPayPalLoaded &&
                   <PaymentModal isOpen={isOpenPayementModal}
                      setIsOpen={setIsOpenPayementModal}
                      ref={paymentModalRef} />

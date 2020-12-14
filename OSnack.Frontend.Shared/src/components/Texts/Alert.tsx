@@ -33,7 +33,7 @@ const Alert = (props: IProps) => {
    return (
       <div style={style} className={`row col-12 m-0 mt-2 mb-2 ${props?.className ?? ""} ${(props.alert!.List.length === 0) ? "d-none" : ""}`}>
          <div className="col-11"
-            children={props.alert!.List.map((error: ErrorDto) => <div key={error.key} children={error.value} />)}
+            children={props.alert!.List.map((error: ErrorDto) => <div key={error.key || Math.random()} children={error.value} />)}
          />
          <div className="col-1 p-0 pr-2 text-right"
             children={<a onClick={props.onClosed} children="✘" />}

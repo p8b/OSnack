@@ -2,7 +2,7 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { User } from "../../_core/apiModels";
-export const useCreateCustomerUser = async (newCustomer: User): Promise<{ data:User , status: number | undefined}> =>{
+export const useCreateCustomerUser = async (newCustomer: User): Promise<{ data:User , status?: number}> =>{
         let url_ = API_URL + "/User/Post/CreateCustomer";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = newCustomer;
@@ -34,12 +34,12 @@ export const useCreateCustomerUser = async (newCustomer: User): Promise<{ data:U
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   
 }
-export const useRequestPasswordResetUser = async (email: string): Promise<{ data:string , status: number | undefined}> =>{
+export const useRequestPasswordResetUser = async (email: string): Promise<{ data: null , status?: number}> =>{
         let url_ = API_URL + "/User/Post/RequestPasswordReset";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = email;
@@ -51,9 +51,8 @@ export const useRequestPasswordResetUser = async (email: string): Promise<{ data
 
         switch(response?.status){
 
-                case 200: 
-                        var responseData: string = await response?.json();
-                        return { data: responseData, status: response?.status };
+                case 201: 
+                        return { data: null, status: 201 };
 
                 case 412: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -65,18 +64,13 @@ export const useRequestPasswordResetUser = async (email: string): Promise<{ data
                                 throw new AlertObj(data, AlertTypes.Error, response?.status);
                         });
 
-                case 201: 
-                        return response?.json().then((data: ErrorDto[]) => {
-                                throw new AlertObj([CommonErrors.BadServerResponse], AlertTypes.Error, response?.status);
-                        });
-
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   
 }
-export const useConfirmEmailUser = async (pathName: string): Promise<{ data: null , status: number | undefined}> =>{
+export const useConfirmEmailUser = async (pathName: string): Promise<{ data: null , status?: number}> =>{
         let url_ = API_URL + "/User/Put/ConfirmEmail";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = pathName;
@@ -102,12 +96,12 @@ export const useConfirmEmailUser = async (pathName: string): Promise<{ data: nul
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   
 }
-export const useUpdatePasswordWithTokenUser = async (data: any): Promise<{ data:User , status: number | undefined}> =>{
+export const useUpdatePasswordWithTokenUser = async (data: any): Promise<{ data:User , status?: number}> =>{
         let url_ = API_URL + "/User/Put/UpdatePasswordWithToken";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = data;
@@ -134,7 +128,7 @@ export const useUpdatePasswordWithTokenUser = async (data: any): Promise<{ data:
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   

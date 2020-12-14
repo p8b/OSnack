@@ -2,7 +2,7 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { DeliveryOption } from "../../_core/apiModels";
-export const useAllDeliveryOption = async (): Promise<{ data:DeliveryOption[] , status: number | undefined}> =>{
+export const useAllDeliveryOption = async (): Promise<{ data:DeliveryOption[] , status?: number}> =>{
         let url_ = API_URL + "/DeliveryOption/Get/All";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);
@@ -23,7 +23,7 @@ export const useAllDeliveryOption = async (): Promise<{ data:DeliveryOption[] , 
                         });
 
                 default:
-                        CommonErrors.BadServerResponseCode.value = `Server Error Code: ${response?.status || "N/A"}`;
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
   

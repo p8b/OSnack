@@ -1,5 +1,4 @@
-﻿import { useEffect } from 'react';
-import 'whatwg-fetch';
+﻿import 'whatwg-fetch';
 import { AntiforgeryTokenCookieName, API_URL } from "./constant.Variables";
 
 //#region *** 'Cookie Management' ***
@@ -217,21 +216,4 @@ export const getNextDate = (day: number = 1) => {
    var now = new Date();
    var nextDay = new Date(now);
    return new Date(nextDay.setDate(now.getDate() + day));
-};
-
-export const useScript = (url: string, callBack: () => void) => {
-   useEffect(() => {
-      const script = document.createElement('script');
-      console.log(url);
-      script.src = url;
-      script.async = true;
-      script.onload = () => { callBack(); };
-
-
-      document.body.appendChild(script);
-
-      return () => {
-         document.body.removeChild(script);
-      };
-   }, [url]);
 };
