@@ -1,11 +1,11 @@
 import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/components/Texts/Alert";
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
-import { Order, OrderListAndTotalNumber } from "osnack-frontend-shared/src/_core/apiModels";
-export const useDeleteOrder = async (order: Order): Promise<{ data:string , status?: number}> =>{
-        let url_ = API_URL + "/Order/Delete";
+import { Coupon, CouponListAndTotalNumber } from "osnack-frontend-shared/src/_core/apiModels";
+export const useDeleteCoupon = async (coupon: Coupon): Promise<{ data:string , status?: number}> =>{
+        let url_ = API_URL + "/Coupon/Delete";
         url_ = url_.replace(/[?&]$/, "");
-        const content_ = order;
+        const content_ = coupon;
         let response = await httpCaller.DELETE(url_, content_);
         if( response?.status === 400){
             await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
@@ -18,12 +18,17 @@ export const useDeleteOrder = async (order: Order): Promise<{ data:string , stat
                         var responseData: string = await response?.json();
                         return { data: responseData, status: response?.status };
 
+                case 417: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
+
                 case 404: 
                         return response?.json().then((data: ErrorDto[]) => {
                                 throw new AlertObj(data, AlertTypes.Error, response?.status);
                         });
 
-                case 417: 
+                case 412: 
                         return response?.json().then((data: ErrorDto[]) => {
                                 throw new AlertObj(data, AlertTypes.Error, response?.status);
                         });
@@ -34,16 +39,16 @@ export const useDeleteOrder = async (order: Order): Promise<{ data:string , stat
         }
   
 }
-export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, filterStatus: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:OrderListAndTotalNumber , status?: number}> =>{
-        let url_ = API_URL + "/Order/Get/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}";
+export const useSearchCoupon = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, filterType: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:CouponListAndTotalNumber , status?: number}> =>{
+        let url_ = API_URL + "/Coupon/Get/Search/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{filterType}/{isSortAsce}/{sortName}";
         if (selectedPage !== null && selectedPage !== undefined)
         url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
         if (maxNumberPerItemsPage !== null && maxNumberPerItemsPage !== undefined)
         url_ = url_.replace("{maxNumberPerItemsPage}", encodeURIComponent("" + maxNumberPerItemsPage));
         if (searchValue !== null && searchValue !== undefined)
         url_ = url_.replace("{searchValue}", encodeURIComponent("" + searchValue));
-        if (filterStatus !== null && filterStatus !== undefined)
-        url_ = url_.replace("{filterStatus}", encodeURIComponent("" + filterStatus));
+        if (filterType !== null && filterType !== undefined)
+        url_ = url_.replace("{filterType}", encodeURIComponent("" + filterType));
         if (isSortAsce !== null && isSortAsce !== undefined)
         url_ = url_.replace("{isSortAsce}", encodeURIComponent("" + isSortAsce));
         if (sortName !== null && sortName !== undefined)
@@ -58,7 +63,7 @@ export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: n
         switch(response?.status){
 
                 case 200: 
-                        var responseData: OrderListAndTotalNumber = await response?.json();
+                        var responseData: CouponListAndTotalNumber = await response?.json();
                         return { data: responseData, status: response?.status };
 
                 case 417: 
@@ -72,21 +77,26 @@ export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: n
         }
   
 }
-export const usePutOrder = async (modifiedOrder: Order): Promise<{ data:Order , status?: number}> =>{
-        let url_ = API_URL + "/Order/Put";
+export const usePostCoupon = async (newCoupon: Coupon): Promise<{ data:Coupon , status?: number}> =>{
+        let url_ = API_URL + "/Coupon/Post";
         url_ = url_.replace(/[?&]$/, "");
-        const content_ = modifiedOrder;
-        let response = await httpCaller.PUT(url_, content_);
+        const content_ = newCoupon;
+        let response = await httpCaller.POST(url_, content_);
         if( response?.status === 400){
             await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
-            response = await httpCaller.PUT(url_, content_);
+            response = await httpCaller.POST(url_, content_);
         }
 
         switch(response?.status){
 
-                case 200: 
-                        var responseData: Order = await response?.json();
+                case 201: 
+                        var responseData: Coupon = await response?.json();
                         return { data: responseData, status: response?.status };
+
+                case 412: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
 
                 case 417: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -104,10 +114,10 @@ export const usePutOrder = async (modifiedOrder: Order): Promise<{ data:Order , 
         }
   
 }
-export const usePutOrderStatusOrder = async (modifiedOrder: Order): Promise<{ data:Order , status?: number}> =>{
-        let url_ = API_URL + "/Order/PutOrderStatus";
+export const usePutCoupon = async (modifiedCoupon: Coupon): Promise<{ data:Coupon , status?: number}> =>{
+        let url_ = API_URL + "/Coupon/Put";
         url_ = url_.replace(/[?&]$/, "");
-        const content_ = modifiedOrder;
+        const content_ = modifiedCoupon;
         let response = await httpCaller.PUT(url_, content_);
         if( response?.status === 400){
             await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
@@ -117,8 +127,18 @@ export const usePutOrderStatusOrder = async (modifiedOrder: Order): Promise<{ da
         switch(response?.status){
 
                 case 200: 
-                        var responseData: Order = await response?.json();
+                        var responseData: Coupon = await response?.json();
                         return { data: responseData, status: response?.status };
+
+                case 412: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
+
+                case 422: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
 
                 case 417: 
                         return response?.json().then((data: ErrorDto[]) => {

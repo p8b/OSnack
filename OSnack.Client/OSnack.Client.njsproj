@@ -156,6 +156,7 @@
     <Folder Include="src\pages\ProductPage\" />
     <Folder Include="src\pages\TermsAndConditions\" />
     <Folder Include="src\pages\Shop\" />
+    <Folder Include="src\SecretHooks\" />
     <Folder Include="src\styles\" />
     <Folder Include="src\styles\animation\" />
     <Folder Include="src\styles\animation\animations\" />
@@ -205,6 +206,15 @@
     <TypeScriptCompile Include="src\pages\Shop\Shop.tsx" />
     <TypeScriptCompile Include="src\pages\Shop\ShopItem.tsx" />
     <TypeScriptCompile Include="src\pages\TermsAndConditions\TermsAndConditions.tsx" />
+    <TypeScriptCompile Include="src\SecretHooks\useAuthenticationHook.tsx" />
+    <TypeScriptCompile Include="src\SecretHooks\useCategoryHook.tsx" />
+    <TypeScriptCompile Include="src\SecretHooks\useCouponHook.tsx" />
+    <TypeScriptCompile Include="src\SecretHooks\useEmailTemplateHook.tsx" />
+    <TypeScriptCompile Include="src\SecretHooks\useOrderHook.tsx" />
+    <TypeScriptCompile Include="src\SecretHooks\useProductHook.tsx" />
+    <TypeScriptCompile Include="src\SecretHooks\useRoleHook.tsx" />
+    <TypeScriptCompile Include="src\SecretHooks\useScoreHook.tsx" />
+    <TypeScriptCompile Include="src\SecretHooks\useUserHook.tsx" />
     <TypeScriptCompile Include="src\_core\appConstant.Variables.tsx" />
     <TypeScriptCompile Include="src\_core\shopContext.tsx" />
   </ItemGroup>

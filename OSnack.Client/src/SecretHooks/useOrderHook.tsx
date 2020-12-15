@@ -131,3 +131,40 @@ export const usePutOrderStatusOrder = async (modifiedOrder: Order): Promise<{ da
         }
   
 }
+export const useVarifyOrderPaymentOrder = async (payPalOrderID: string): Promise<{ data:Order , status?: number}> =>{
+        let url_ = API_URL + "/Order/VarifyOrderPayment";
+        url_ = url_.replace(/[?&]$/, "");
+        const content_ = payPalOrderID;
+        let response = await httpCaller.PUT(url_, content_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.PUT(url_, content_);
+        }
+
+        switch(response?.status){
+
+                case 200: 
+                        var responseData: Order = await response?.json();
+                        return { data: responseData, status: response?.status };
+
+                case 417: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
+
+                case 422: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
+
+                case 503: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
+
+                default:
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
+                        throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
+        }
+  
+}

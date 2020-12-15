@@ -69,7 +69,7 @@ namespace OSnack.API.Database
          builder.Entity<User>().Ignore(u => u.TwoFactorEnabled);
          builder.Entity<User>().HasOne(t => t.RegistrationMethod).WithOne(r => r.User).OnDelete(DeleteBehavior.Cascade);
          builder.Entity<Product>().HasOne(t => t.NutritionalInfo).WithOne(r => r.Product).OnDelete(DeleteBehavior.Cascade);
-         builder.Entity<OrderItem>().HasOne(o => o.Product).WithOne().OnDelete(DeleteBehavior.SetNull);
+         builder.Entity<OrderItem>().HasOne(o => o.Product).WithMany().OnDelete(DeleteBehavior.SetNull);
          builder.Entity<AppLog>().HasOne(l => l.User).WithOne().OnDelete(DeleteBehavior.Cascade);
          builder.Entity<ServerVariables>().HasKey(s => s.Id);
          builder.Entity<EmailTemplate>().HasMany(e => e.ServerVariables).WithOne(e => e.EmailTemplate).OnDelete(DeleteBehavior.Cascade);

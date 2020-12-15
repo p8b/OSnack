@@ -2,25 +2,22 @@
 
 const useScript = (url: string) => {
    const [isLoaded, setIsLoaded] = useState(false);
+   const [orderId, setOrderId] = useState("");
    useEffect(() => {
       const script = document.createElement('script');
-      console.log(url);
-      if (url != "") {
-
-         //script.setAttribute("data-order-id", orderId);
+      //  console.log(orderId);
+      if (orderId != undefined && orderId != "") {
+       //  script.setAttribute("data-order-id", orderId);
          //script.setAttribute("data-page-type", "cart");
          script.src = url;
          script.async = true;
-         script.onload = () => { setIsLoaded(true); };
-
-
+         script.onload = () => { setIsLoaded(true); console.log(`script is loaded: \n ${url}`); };
          document.body.appendChild(script);
       }
-
       //return () => {
       //   document.body.removeChild(script);
       //};
-   }, [url]);
-   return isLoaded;
+   }, [orderId]);
+   return { isLoaded, setOrderId };
 };
 export default useScript;

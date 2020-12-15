@@ -183,9 +183,88 @@ export abstract class OrderProductBase {
     imagePath?: string | undefined;
 
 }
-export class TupleOfListOfOrderAndInteger {
-    item1?: Order[];
-    item2?: number;
+export class OrderListAndTotalNumber {
+    orderList?: Order[] | undefined;
+    totalNumber?: number;
+
+}
+export class Order2 {
+    intent?: string | undefined;
+    create_time?: string | undefined;
+    expiration_time?: string | undefined;
+    id?: string | undefined;
+    links?: LinkDescription[] | undefined;
+    payer?: Payer | undefined;
+    purchase_units?: PurchaseUnit[] | undefined;
+    status?: string | undefined;
+    update_time?: string | undefined;
+
+}
+export class LinkDescription {
+    encType?: string | undefined;
+    href?: string | undefined;
+    mediaType?: string | undefined;
+    method?: string | undefined;
+    rel?: string | undefined;
+    title?: string | undefined;
+
+}
+export class Payer {
+    address?: AddressPortable | undefined;
+    birth_date?: string | undefined;
+    email_address?: string | undefined;
+    name?: Name | undefined;
+    payer_id?: string | undefined;
+    phone?: PhoneWithType | undefined;
+    tax_info?: TaxInfo | undefined;
+
+}
+export class AddressPortable {
+    address_details?: AddressDetails | undefined;
+    address_line_1?: string | undefined;
+    address_line_2?: string | undefined;
+    address_line_3?: string | undefined;
+    admin_area_1?: string | undefined;
+    admin_area_2?: string | undefined;
+    admin_area_3?: string | undefined;
+    admin_area_4?: string | undefined;
+    country_code?: string | undefined;
+    postal_code?: string | undefined;
+
+}
+export class AddressDetails {
+    building_name?: string | undefined;
+    delivery_service?: string | undefined;
+    street_name?: string | undefined;
+    street_number?: string | undefined;
+    street_type?: string | undefined;
+    sub_building?: string | undefined;
+
+}
+export class Name {
+    alternate_full_name?: string | undefined;
+    full_name?: string | undefined;
+    given_name?: string | undefined;
+    middle_name?: string | undefined;
+    prefix?: string | undefined;
+    suffix?: string | undefined;
+    surname?: string | undefined;
+
+}
+export class PhoneWithType {
+    phone_number?: Phone | undefined;
+    phone_type?: string | undefined;
+
+}
+export class Phone {
+    country_code?: string | undefined;
+    extension_number?: string | undefined;
+    national_number?: string | undefined;
+
+}
+export class TaxInfo {
+    tax_id?: string | undefined;
+    tax_id_type?: string | undefined;
 
 }
 export class PurchaseUnit {
@@ -247,12 +326,6 @@ export class PayeeDisplayable {
     business_email?: string | undefined;
 
 }
-export class Phone {
-    country_code?: string | undefined;
-    extension_number?: string | undefined;
-    national_number?: string | undefined;
-
-}
 export class PaymentInstruction {
     disbursement_mode?: string | undefined;
 
@@ -278,15 +351,6 @@ export class Authorization {
 }
 export class AuthorizationStatusDetails {
     reason?: string | undefined;
-
-}
-export class LinkDescription {
-    encType?: string | undefined;
-    href?: string | undefined;
-    mediaType?: string | undefined;
-    method?: string | undefined;
-    rel?: string | undefined;
-    title?: string | undefined;
 
 }
 export class SellerProtection {
@@ -356,38 +420,6 @@ export class ShippingDetail {
     options?: ShippingOption[] | undefined;
 
 }
-export class AddressPortable {
-    address_details?: AddressDetails | undefined;
-    address_line_1?: string | undefined;
-    address_line_2?: string | undefined;
-    address_line_3?: string | undefined;
-    admin_area_1?: string | undefined;
-    admin_area_2?: string | undefined;
-    admin_area_3?: string | undefined;
-    admin_area_4?: string | undefined;
-    country_code?: string | undefined;
-    postal_code?: string | undefined;
-
-}
-export class AddressDetails {
-    building_name?: string | undefined;
-    delivery_service?: string | undefined;
-    street_name?: string | undefined;
-    street_number?: string | undefined;
-    street_type?: string | undefined;
-    sub_building?: string | undefined;
-
-}
-export class Name {
-    alternate_full_name?: string | undefined;
-    full_name?: string | undefined;
-    given_name?: string | undefined;
-    middle_name?: string | undefined;
-    prefix?: string | undefined;
-    suffix?: string | undefined;
-    surname?: string | undefined;
-
-}
 export class ShippingOption {
     amount?: Money | undefined;
     id?: string | undefined;
@@ -436,15 +468,6 @@ export class ProductAndProductList {
     productList?: Product[] | undefined;
 
 }
-export class ProblemDetails {
-    type?: string | undefined;
-    title?: string | undefined;
-    status?: number | undefined;
-    detail?: string | undefined;
-    instance?: string | undefined;
-    extensions?: { [key: string]: any; } | undefined;
-
-}
 export class UserListAndTotalNumber {
     userList?: User[] | undefined;
     totalNumber?: number;
@@ -488,7 +511,8 @@ export class Order extends OrderAddressBase {
     status!: OrderStatusType;
     deliveryOption: DeliveryOption = new DeliveryOption();
     deliveryPrice?: number;
-    address: Address = new Address();
+    addressId!: number;
+    userId?: number | undefined;
     payment: Payment = new Payment();
     coupon?: Coupon | undefined;
     orderItems?: OrderItem[] | undefined;

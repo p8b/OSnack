@@ -1,38 +1,55 @@
 ﻿
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
-import { PurchaseUnit } from 'osnack-frontend-shared/src/_core/apiModels';
+import { Order2 } from 'osnack-frontend-shared/src/_core/apiModels';
+import { useVerifyOrderPaymentOrder } from 'osnack-frontend-shared/src/hooks/OfficialHooks/useOrderHook';
 import React, { RefObject, useEffect, useState } from 'react';
+import { AlertObj } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import { Loading } from 'osnack-frontend-shared/src/components/Loading/Loading';
 
 
 
 const PaymentModal = (props: IProps) => {
-   // @ts-ignore
-   console.log(paypal);
+
    // @ts-ignore
    const PayPalButton = paypal.Buttons.driver("react", { React, ReactDOM });
+
+   const [isLoading, setIsLoading] = useState(false);
+   const [successMessage, setSuccessMessage] = useState("");
 
    useEffect(() => {
    }, []);
 
    const createOrder = (data: any, action: any) => {
-      return action.order.create({
-         purchase_units: props.purchase_units,
-      });
+
+      return action.order.create(props.paypalOrder);
 
    };
    const onApprove = (data: any, action: any) => {
-      return action.order.capture();
+      props.onCompelete(data.orderID, () => { setIsLoading(false); setSuccessMessage("Thank you for your order."); });
+      setIsLoading(true);
    };
+
    return (
       <Modal isOpen={props.isOpen}
          bodyRef={props.ref}
          className="col-4">
-         <Button className="col-12 btn-white radius-none mb-3" children="Back" onClick={() => { props.setIsOpen(false); }} />
-         <PayPalButton amount="10.00"
-            createOrder={(data: any, actions: any) => createOrder(data, actions)}
-            onApprove={(data: any, actions: any) => onApprove(data, actions)}
-         />
+         { !isLoading && successMessage == "" &&
+            <>
+               <Button className="col-12 btn-white radius-none mb-3" children="Back" onClick={() => { props.setIsOpen(false); }} />
+               <PayPalButton amount="10.00"
+                  createOrder={(data: any, actions: any) => createOrder(data, actions)}
+                  onApprove={(data: any, actions: any) => onApprove(data, actions)}
+               />
+            </>
+         }
+         {isLoading && successMessage == "" && <Loading />}
+         {!isLoading && successMessage != "" &&
+           <
+            <div children={successMessage} />
+             <Button className="col-12 btn-white radius-none mb-3" children="Back" onClick={() => { props.setIsOpen(false); }} />
+         }
+
       </Modal>
    );
 };
@@ -41,6 +58,8 @@ declare type IProps = {
    isOpen: boolean;
    setIsOpen: (isOpen: boolean) => void;
    ref: RefObject<HTMLDivElement>;
-   purchase_units: PurchaseUnit[];
+   paypalOrder: Order2;
+   onCompelete: (paypalOrderId: string, callBack: () => void) => void;
+   onError: (alert: AlertObj) => void;
 };
 export default PaymentModal;

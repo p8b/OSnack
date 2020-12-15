@@ -94,7 +94,7 @@ namespace OSnack.API.Database.Models
       internal void CalculateDiscount()
       {
          if (Coupon == null) return;
-         if (string.IsNullOrEmpty(Coupon.Code))
+         if (!string.IsNullOrEmpty(Coupon.Code))
          {
             Coupon.MaxUseQuantity = Coupon.MaxUseQuantity - 1;
 
@@ -114,7 +114,7 @@ namespace OSnack.API.Database.Models
             }
          }
       }
-      internal async Task<List<PurchaseUnit>> ConvertToPayPalOrder(List<Item> orderItems)
+      internal async Task<PayPalCheckoutSdk.Orders.Order> ConvertToPayPalOrder()
       {
 
          OrderRequest orderRequest = new OrderRequest();
@@ -138,28 +138,28 @@ namespace OSnack.API.Database.Models
                AmountWithBreakdown = new AmountWithBreakdown()
                {
                   CurrencyCode = AppConst.Settings.PayPal.CurrencyCode,
-                  Value = TotalPrice.ToString(),
+                  Value = TotalPrice.ToString("0.00"),
                   AmountBreakdown = new AmountBreakdown()
                   {
                        ItemTotal = new Money()
                        {
                            CurrencyCode = AppConst.Settings.PayPal.CurrencyCode,
-                           Value = TotalItemPrice.ToString()
+                           Value = TotalItemPrice.ToString("0.00")
                        },
                        Shipping = new Money()
                        {
                            CurrencyCode = AppConst.Settings.PayPal.CurrencyCode,
-                           Value = ShippingPrice.ToString()
+                           Value = ShippingPrice.ToString("0.00")
 
                        },
                        Discount = new Money()
                        {
                            CurrencyCode = AppConst.Settings.PayPal.CurrencyCode,
-                           Value = TotalDiscount.ToString()
+                           Value = TotalDiscount.ToString("0.00")
                        }
                   }
                } ,
-               Items = orderItems,
+               Items = await ConvertItem().ConfigureAwait(false),
                ShippingDetail=new ShippingDetail()
                {
                   Name=new Name(){
@@ -183,13 +183,27 @@ namespace OSnack.API.Database.Models
          var response = await PayPalClient.client().Execute(request).ConfigureAwait(false);
 
          PayPalCheckoutSdk.Orders.Order paypalOrder = response.Result<PayPalCheckoutSdk.Orders.Order>();
-         Payment = new Payment()
-         {
-            PaymentProvider = "PayPal",
-            Reference = paypalOrder.Id
 
-         };
-         return paypalOrder.PurchaseUnits;
+         return paypalOrder;
+      }
+
+      internal async Task<List<Item>> ConvertItem()
+      {
+         List<Item> orderItems = new List<Item>();
+         foreach (var orderItem in OrderItems)
+         {
+            orderItems.Add(new PayPalCheckoutSdk.Orders.Item()
+            {
+               Name = orderItem.Name,
+               Quantity = orderItem.Quantity.ToString(),
+               UnitAmount = new PayPalCheckoutSdk.Orders.Money()
+               {
+                  CurrencyCode = AppConst.Settings.PayPal.CurrencyCode,
+                  Value = orderItem.Price?.ToString("0.00")
+               }
+            });
+         }
+         return orderItems;
       }
    }
 }

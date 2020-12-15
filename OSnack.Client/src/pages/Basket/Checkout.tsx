@@ -2,10 +2,10 @@
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { ShopContext } from '../../_core/shopContext';
 import InputDropDown from 'osnack-frontend-shared/src/components/Inputs/InputDropDown';
-import { Address, Coupon, CouponType, DeliveryOption, Order, PurchaseUnit } from 'osnack-frontend-shared/src/_core/apiModels';
+import { Address, Coupon, CouponType, DeliveryOption, Order, Order2 } from 'osnack-frontend-shared/src/_core/apiModels';
 import { useAllDeliveryOption } from 'osnack-frontend-shared/src/hooks/PublicHooks/useDeliveryOptionHook';
 import { useAllAddress } from 'osnack-frontend-shared/src/hooks/OfficialHooks/useAddressHook';
-import { usePostOrder } from 'osnack-frontend-shared/src/hooks/OfficialHooks/useOrderHook';
+import { usePostOrder, useVerifyOrderOrder } from 'osnack-frontend-shared/src/hooks/OfficialHooks/useOrderHook';
 import { AuthContext } from 'osnack-frontend-shared/src/_core/authenticationContext';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import Login from 'osnack-frontend-shared/src/components/Login/Login';
@@ -19,7 +19,8 @@ import useScript from 'osnack-frontend-shared/src/hooks/function/useScript';
 
 const Checkout = (props: IProps) => {
    const clientID = "AUc_fJXtMhI3ugArGsxZur6ej0GP4Pb_usigBXwK9qvtUKByaJWEf7HNrUBSMHaYSiBq6Cg5nOf4_Tq_";
-   const paypalScriptLoad = useScript(`https://www.paypal.com/sdk/js?client-id=${clientID}&currency=GBP&intent=capture&commit=false`);
+   const paypalScript = useScript(`https://www.paypal.com/sdk/js?client-id=${clientID}&currency=GBP&intent=capture&commit=false`);
+
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
    const auth = useContext(AuthContext);
@@ -32,21 +33,22 @@ const Checkout = (props: IProps) => {
    const [isOpenPayementModal, setIsOpenPayementModal] = useDetectOutsideClick(paymentModalRef, false);
 
    const [addressList, setAddressList] = useState<Address[]>([]);
+   const [selectAddress, setSelectAddress] = useState(new Address());
    const [deliveryOptionList, setDeliveryOptionList] = useState<DeliveryOption[]>([]);
    const [availableDeliveryList, setAvailableDeliveryList] = useState<DeliveryOption[]>([]);
 
    const [totalDiscount, setTotalDiscount] = useState(0);
    const [order, setOrder] = useState(new Order());
 
-   const [purchaseUnits, setPurchaseUnits] = useState<PurchaseUnit[]>([]);
+   const [paypalOrder, setPaypalOrder] = useState(new Order2());
 
-   useEffect(() => { getDeliveryOptionAndAddresses(); }, [auth.state.isAuthenticated]);
    useEffect(() => {
       getDeliveryOptionAndAddresses();
       return () => {
          isUnmounted.current = true;
       };
    }, []);
+   useEffect(() => { getDeliveryOptionAndAddresses(); }, [auth.state.isAuthenticated]);
    useEffect(() => {
       if (props.refresh) {
          recalculateBasket(deliveryOptionList, order.deliveryOption);
@@ -54,13 +56,12 @@ const Checkout = (props: IProps) => {
       }
    }, [props.refresh]);
 
-
    const getDeliveryOptionAndAddresses = () => {
       if (auth.state.isAuthenticated) {
          useAllAddress().then(result => {
             if (isUnmounted.current) return;
             setAddressList(result.data);
-            setOrder(prev => { return { ...prev, address: result.data.find(t => t.isDefault == true) || new Address() }; });
+            setSelectAddress(result.data.find(t => t.isDefault == true) || new Address());
          }).catch();
          useAllDeliveryOption().then(result => {
             if (isUnmounted.current) return;
@@ -68,7 +69,9 @@ const Checkout = (props: IProps) => {
          }).catch();
       }
    };
-
+   useEffect(() => {
+      setOrder(prev => { return { ...prev, addressId: selectAddress.id || 0 }; });
+   }, [selectAddress]);
    const recalculateBasket = (deliveryOptionList: DeliveryOption[],
       selectDeliveryOption?: DeliveryOption, selectCoupon?: Coupon) => {
       let totalPriceTemp = 0;
@@ -87,7 +90,8 @@ const Checkout = (props: IProps) => {
       switch (selectCoupon?.type) {
          case CouponType.FreeDelivery:
             if (selectDeliveryOption?.isPremitive) {
-               selectDeliveryOption = deliveryOptionList.find(d => d.price == 0 && d.minimumOrderTotal == 0 && d.isPremitive) || new DeliveryOption();
+               selectDeliveryOption = deliveryOptionList.find(d => d.price > 0 && d.minimumOrderTotal == 0 && d.isPremitive) || new DeliveryOption();
+               setTotalDiscount(selectDeliveryOption.price);
             }
             else {
                removeCoupon = true;
@@ -130,7 +134,7 @@ const Checkout = (props: IProps) => {
          if (selectDeliveryOption == undefined || selectDeliveryOption?.isPremitive) {
 
             if (selectDeliveryOption?.price == 0 && selectDeliveryOption?.minimumOrderTotal == 0) {   //if free coupon used in order
-               setTotalDiscount(order.deliveryOption.price);
+
                totalPriceTemp -= order.deliveryOption.price;
                selectDeliveryOption.price = deliveryOptionList.find(d => d.price != 0 && d.minimumOrderTotal == 0 && d.isPremitive)!.price;
             }
@@ -161,17 +165,32 @@ const Checkout = (props: IProps) => {
    };
 
    const checkout = () => {
-      usePostOrder(order).then(result => {
+      errorAlert.clear();
+      errorAlert.PleaseWait(500, isUnmounted);
+      useVerifyOrderOrder(order).then(result => {
          if (isUnmounted.current) return;
          console.log(result.data);
-         setPurchaseUnits(result.data);
+         setPaypalOrder(result.data);
+         paypalScript.setOrderId("as");
          setIsOpenPayementModal(true);
+         errorAlert.clear();
       }).catch(alert => {
          if (isUnmounted.current) return;
          errorAlert.set(alert);
-      });;
+      });
    };
 
+   const onComplete = (paypalOrderId: string, callBack: () => void) => {
+
+      usePostOrder(paypalOrderId, order).then(orderId => {
+         console.log(orderId);
+         callBack();
+      }).catch(alert => {
+         if (isUnmounted.current) return;
+         errorAlert.set(alert);
+         setIsOpenPayementModal(false);
+      });
+   };
    return (
       <div className="col-12 col-md-5 col-lg-6 m-0 p-0 pt-3 pb-4 shadow ">
          <div className="col-12 m-0 pos-sticky">
@@ -191,20 +210,20 @@ const Checkout = (props: IProps) => {
                                  children={<div children={`${delivery?.name} - £${delivery?.price?.toFixed(2)}`} />}
                               />)
                            } />
-                        <InputDropDown dropdownTitle={order.address.name || "My Addresses"}
+                        <InputDropDown dropdownTitle={selectAddress.name || "My Addresses"}
                            className="col-12  align-self-end"
                            label="Shipping Address"
                            children={
                               <div className="p-0 m-0">
                                  {addressList.map(addr =>
                                     <a className="dropdown-item text-nav" key={addr.id}
-                                       onClick={() => { setOrder({ ...order, address: addr }); }}
+                                       onClick={() => { setSelectAddress(addr); }}
                                        children={<div className="col" children={`${addr.name}`} />} />)
                                  }
                                  <a className="dropdown-item text-nav" key="newAddress"
                                     children='New Address'
                                     onClick={() => {
-                                       setOrder({ ...order, address: new Address() });
+                                       setSelectAddress(new Address());
                                        setIsOpenAddressModal(true);
                                     }} />
                               </div>
@@ -224,12 +243,12 @@ const Checkout = (props: IProps) => {
                   </div>
                   <div className="row col-12 m-0 p-0 mt-2 mb-4">
                      <div className="col-10 m-0 p-0">
-                        <div className="col-12 " children={order.address.firstLine} key="FirstLine_Checkout" />
-                        <div className="col-12 " children={order.address.secondLine} key="SecondLine_Checkout" />
-                        <div className="col-12 " children={order.address.city} key="City_Checkout" />
-                        <div className="col-12 " children={order.address.postcode} key="Postcode_Checkout" />
+                        <div className="col-12 " children={selectAddress.firstLine} key="FirstLine_Checkout" />
+                        <div className="col-12 " children={selectAddress.secondLine} key="SecondLine_Checkout" />
+                        <div className="col-12 " children={selectAddress.city} key="City_Checkout" />
+                        <div className="col-12 " children={selectAddress.postcode} key="Postcode_Checkout" />
                      </div>
-                     {(order.address.id || 0) > 0 &&
+                     {(selectAddress.id || 0) > 0 &&
                         <Button className="col-2 col-md-1 btn-sm edit-icon radius-none mb-auto ml-auto"
                            onClick={() => { setIsOpenAddressModal(true); }} />
                      }
@@ -254,15 +273,17 @@ const Checkout = (props: IProps) => {
                      useAllAddress().then(result => {
                         setAddressList(result.data);
                      }).catch(alert => errorAlert.set(alert));
-                     setOrder({ ...order, address: address });
+                     setSelectAddress(address);
                   }}
-                  address={order.address}
+                  address={selectAddress}
                   onClose={() => setIsOpenAddressModal(false)} />
 
-               {paypalScriptLoad &&
+               {paypalScript.isLoaded &&
                   <PaymentModal isOpen={isOpenPayementModal}
                      setIsOpen={setIsOpenPayementModal}
-                     ref={paymentModalRef} purchase_units={purchaseUnits} />
+                     ref={paymentModalRef} paypalOrder={paypalOrder}
+                     onCompelete={onComplete}
+                     onError={errorAlert.set} />
                }
             </>
          }

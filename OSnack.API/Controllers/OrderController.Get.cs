@@ -26,7 +26,7 @@ namespace OSnack.API.Controllers
       /// </summary>
       #region *** 200 OK, 417 ExpectationFailed ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(typeof(Tuple<List<Order>, int>), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(MultiResult<List<Order>, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("[action]/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}")]
@@ -61,7 +61,7 @@ namespace OSnack.API.Controllers
                 .Include(o => o.Payment)
                 .ToListAsync()
                 .ConfigureAwait(false);
-            return Ok(new Tuple<List<Order>, int>(list, totalCount));
+            return Ok(new MultiResult<List<Order>, int>(list, totalCount));
          }
          catch (Exception ex)
          {
@@ -75,7 +75,7 @@ namespace OSnack.API.Controllers
       /// </summary>
       #region *** 200 OK, 417 ExpectationFailed ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(typeof(Tuple<List<Order>, int>), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(MultiResult<List<Order>, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("[action]/MyOrder/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}/{isSortAsce}/{sortName}")]
@@ -114,7 +114,7 @@ namespace OSnack.API.Controllers
                 .Include(o => o.Payment)
                 .ToListAsync()
                 .ConfigureAwait(false);
-            return Ok(new Tuple<List<Order>, int>(list, totalCount));
+            return Ok(new MultiResult<List<Order>, int>(list, totalCount));
          }
          catch (Exception ex)
          {

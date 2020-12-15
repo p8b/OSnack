@@ -1,8 +1,8 @@
 import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
-import { TupleOfListOfOrderAndInteger, Order, PurchaseUnit } from "../../_core/apiModels";
-export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: number, filterStatus: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:TupleOfListOfOrderAndInteger , status?: number}> =>{
+import { OrderListAndTotalNumber, Order, Order2 } from "../../_core/apiModels";
+export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: number, filterStatus: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:OrderListAndTotalNumber , status?: number}> =>{
         let url_ = API_URL + "/Order/Get/MyOrder/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}/{isSortAsce}/{sortName}";
         if (selectedPage !== null && selectedPage !== undefined)
         url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
@@ -24,7 +24,7 @@ export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: n
         switch(response?.status){
 
                 case 200: 
-                        var responseData: TupleOfListOfOrderAndInteger = await response?.json();
+                        var responseData: OrderListAndTotalNumber = await response?.json();
                         return { data: responseData, status: response?.status };
 
                 case 417: 
@@ -38,8 +38,8 @@ export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: n
         }
   
 }
-export const usePostOrder = async (newOrder: Order): Promise<{ data:PurchaseUnit[] , status?: number}> =>{
-        let url_ = API_URL + "/Order/Post";
+export const useVerifyOrderOrder = async (newOrder: Order): Promise<{ data:Order2 , status?: number}> =>{
+        let url_ = API_URL + "/Order/VerifyOrder";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = newOrder;
         let response = await httpCaller.POST(url_, content_);
@@ -50,8 +50,8 @@ export const usePostOrder = async (newOrder: Order): Promise<{ data:PurchaseUnit
 
         switch(response?.status){
 
-                case 201: 
-                        var responseData: PurchaseUnit[] = await response?.json();
+                case 200: 
+                        var responseData: Order2 = await response?.json();
                         return { data: responseData, status: response?.status };
 
                 case 417: 
@@ -60,6 +60,45 @@ export const usePostOrder = async (newOrder: Order): Promise<{ data:PurchaseUnit
                         });
 
                 case 422: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
+
+                default:
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
+                        throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
+        }
+  
+}
+export const usePostOrder = async (paypalId: string | null, orderData: Order): Promise<{ data:Order , status?: number}> =>{
+        let url_ = API_URL + "/Order/Post/{paypalId}";
+        if (paypalId !== null && paypalId !== undefined)
+        url_ = url_.replace("{paypalId}", encodeURIComponent("" + paypalId));
+        url_ = url_.replace(/[?&]$/, "");
+        const content_ = orderData;
+        let response = await httpCaller.POST(url_, content_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.POST(url_, content_);
+        }
+
+        switch(response?.status){
+
+                case 201: 
+                        var responseData: Order = await response?.json();
+                        return { data: responseData, status: response?.status };
+
+                case 417: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
+
+                case 422: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
+
+                case 503: 
                         return response?.json().then((data: ErrorDto[]) => {
                                 throw new AlertObj(data, AlertTypes.Error, response?.status);
                         });

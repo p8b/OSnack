@@ -1,11 +1,11 @@
 import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/components/Texts/Alert";
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
-import { Order, OrderListAndTotalNumber } from "osnack-frontend-shared/src/_core/apiModels";
-export const useDeleteOrder = async (order: Order): Promise<{ data:string , status?: number}> =>{
-        let url_ = API_URL + "/Order/Delete";
+import { Product, ProductListAndTotalNumber } from "osnack-frontend-shared/src/_core/apiModels";
+export const useDeleteProduct = async (product: Product): Promise<{ data:string , status?: number}> =>{
+        let url_ = API_URL + "/Product/Delete";
         url_ = url_.replace(/[?&]$/, "");
-        const content_ = order;
+        const content_ = product;
         let response = await httpCaller.DELETE(url_, content_);
         if( response?.status === 400){
             await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
@@ -34,12 +34,14 @@ export const useDeleteOrder = async (order: Order): Promise<{ data:string , stat
         }
   
 }
-export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, filterStatus: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:OrderListAndTotalNumber , status?: number}> =>{
-        let url_ = API_URL + "/Order/Get/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}";
+export const useSearchSecretProduct = async (selectedPage: number, maxItemsPerPage: number, filterCategory: string | null, searchValue: string | null, filterStatus: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:ProductListAndTotalNumber , status?: number}> =>{
+        let url_ = API_URL + "/Product/GET/SearchSecret/{selectedPage}/{maxItemsPerPage}/{filterCategory}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}";
         if (selectedPage !== null && selectedPage !== undefined)
         url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
-        if (maxNumberPerItemsPage !== null && maxNumberPerItemsPage !== undefined)
-        url_ = url_.replace("{maxNumberPerItemsPage}", encodeURIComponent("" + maxNumberPerItemsPage));
+        if (maxItemsPerPage !== null && maxItemsPerPage !== undefined)
+        url_ = url_.replace("{maxItemsPerPage}", encodeURIComponent("" + maxItemsPerPage));
+        if (filterCategory !== null && filterCategory !== undefined)
+        url_ = url_.replace("{filterCategory}", encodeURIComponent("" + filterCategory));
         if (searchValue !== null && searchValue !== undefined)
         url_ = url_.replace("{searchValue}", encodeURIComponent("" + searchValue));
         if (filterStatus !== null && filterStatus !== undefined)
@@ -58,7 +60,7 @@ export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: n
         switch(response?.status){
 
                 case 200: 
-                        var responseData: OrderListAndTotalNumber = await response?.json();
+                        var responseData: ProductListAndTotalNumber = await response?.json();
                         return { data: responseData, status: response?.status };
 
                 case 417: 
@@ -72,21 +74,26 @@ export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: n
         }
   
 }
-export const usePutOrder = async (modifiedOrder: Order): Promise<{ data:Order , status?: number}> =>{
-        let url_ = API_URL + "/Order/Put";
+export const usePostProduct = async (newProduct: Product): Promise<{ data:Product , status?: number}> =>{
+        let url_ = API_URL + "/Product/Post";
         url_ = url_.replace(/[?&]$/, "");
-        const content_ = modifiedOrder;
-        let response = await httpCaller.PUT(url_, content_);
+        const content_ = newProduct;
+        let response = await httpCaller.POST(url_, content_);
         if( response?.status === 400){
             await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
-            response = await httpCaller.PUT(url_, content_);
+            response = await httpCaller.POST(url_, content_);
         }
 
         switch(response?.status){
 
-                case 200: 
-                        var responseData: Order = await response?.json();
+                case 201: 
+                        var responseData: Product = await response?.json();
                         return { data: responseData, status: response?.status };
+
+                case 412: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
 
                 case 417: 
                         return response?.json().then((data: ErrorDto[]) => {
@@ -104,10 +111,10 @@ export const usePutOrder = async (modifiedOrder: Order): Promise<{ data:Order , 
         }
   
 }
-export const usePutOrderStatusOrder = async (modifiedOrder: Order): Promise<{ data:Order , status?: number}> =>{
-        let url_ = API_URL + "/Order/PutOrderStatus";
+export const usePutProduct = async (modifiedProduct: Product): Promise<{ data:Product , status?: number}> =>{
+        let url_ = API_URL + "/Product/Put";
         url_ = url_.replace(/[?&]$/, "");
-        const content_ = modifiedOrder;
+        const content_ = modifiedProduct;
         let response = await httpCaller.PUT(url_, content_);
         if( response?.status === 400){
             await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
@@ -117,8 +124,18 @@ export const usePutOrderStatusOrder = async (modifiedOrder: Order): Promise<{ da
         switch(response?.status){
 
                 case 200: 
-                        var responseData: Order = await response?.json();
+                        var responseData: Product = await response?.json();
                         return { data: responseData, status: response?.status };
+
+                case 412: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
+
+                case 422: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
 
                 case 417: 
                         return response?.json().then((data: ErrorDto[]) => {
