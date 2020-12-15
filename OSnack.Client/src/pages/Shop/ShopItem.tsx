@@ -21,15 +21,19 @@ const ShopItem = (props: IProps) => {
                alt={props.product.name} />
             <span>Details</span>
          </a>
-         <QuantityInput
-            btnOnZeroTitle=""
-            btnOnZeroClassName="radius-none btn-green cart-icon"
-            btnMinusClassName="radius-none"
-            btnPlusClassName="radius-none"
-            value={basket.getQuantity(props.product)}
-            onChange={(val) => { basket.set(props.product, val); }}
-            className="col-12"
-         />
+         {  !props.isQuantityDisabled &&
+            <QuantityInput
+               btnOnZeroTitle=""
+               btnOnZeroClassName="radius-none btn-green cart-icon"
+               btnMinusClassName="radius-none"
+               btnPlusClassName="radius-none"
+               value={basket.getQuantity(props.product)}
+               onChange={(val) => { basket.set(props.product, val); }}
+               className="col-12"
+               disabledMessage="out of stock"
+               isDisabled={props.product.stockQuantity <= 0}
+            />
+         }
          <div className="pt-3">
             <b>£{props.product.price}</b><span> - {props.product.unitQuantity} {ProductUnitType[props.product.unitType]}</span>
          </div>
@@ -40,5 +44,6 @@ const ShopItem = (props: IProps) => {
 
 declare type IProps = {
    product: Product;
+   isQuantityDisabled?: boolean;
 };
 export default ShopItem;

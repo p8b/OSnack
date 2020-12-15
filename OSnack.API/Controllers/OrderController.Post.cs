@@ -7,8 +7,10 @@ using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 using OSnack.API.Extras.CustomTypes;
 using OSnack.API.Extras.Paypal;
+
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Models;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -94,7 +96,7 @@ namespace OSnack.API.Controllers
             }
             catch (Exception ex)
             {
-               AppLog log = _LoggingService.Log(Request.Path, AppLogType.PaymentException, orderData, User);
+               AppLog log = _LoggingService.Log(Request.Path, AppLogType.PaymentException, new { orderData, exception = ex }, User);
                CoreFunc.Error(ref ErrorsList, $"There was a issue with your payment. Please get in touch with us referencing {log.Id} Id.");
                return StatusCode(503, ErrorsList);
             }

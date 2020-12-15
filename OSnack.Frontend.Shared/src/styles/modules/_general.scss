@@ -6,6 +6,7 @@
     margin-bottom: 0 !important;
 }
 
+
 .cursor-pointer {
     cursor: pointer;
 }
@@ -18,4 +19,12 @@
 .pos-sticky {
     position: sticky;
     top: 8rem;
+}
+
+
+
+/*Vendor overrides*/
+.alice-carousel__stage-item {
+    height: inherit;
+    line-height: unset;
 }

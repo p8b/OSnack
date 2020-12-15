@@ -20,11 +20,11 @@ const QuantityInput = (props: IProps) => {
    return (
       <div className={props.className}>
          <div className="row">
-            {props.btnOnZeroTitle != undefined && (props.value == 0 || props.value == undefined) && document.activeElement?.id !== id &&
+            {!props.isDisabled && props.btnOnZeroTitle != undefined && (props.value == 0 || props.value == undefined) && document.activeElement?.id !== id &&
                <Button className={`col-12 btn-sm m-0 ${props.btnOnZeroClassName}`}
                   onClick={PlusOne} children={props.btnOnZeroTitle} />
             }
-            {(props.value && props.value > 0 || document.activeElement?.id === id) &&
+            {!props.isDisabled && (props.value && props.value > 0 || document.activeElement?.id === id) &&
                <>
                   {!props.disabled &&
                      <Button className={`col-3 btn-sm btn-danger minus-icon radius-none-r  ${props.btnMinusClassName}`}
@@ -43,6 +43,12 @@ const QuantityInput = (props: IProps) => {
                   }
                </>
             }
+            {props.isDisabled &&
+               <Input className="col-12 m-0 p-0 mb-0"
+                  inputClassName="text-center "
+                  onChange={() => { }}
+                  disabled
+                  value={props.disabledMessage} />}
          </div>
       </div>
    );
@@ -58,6 +64,8 @@ declare type IProps = {
    value?: number,
    disabled?: boolean,
    onChange: (value: number) => void;
+   isDisabled?: boolean;
+   disabledMessage?: string;
 
 };
 export default QuantityInput;

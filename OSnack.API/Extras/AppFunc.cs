@@ -145,8 +145,7 @@ namespace OSnack.API.Extras
          }
          catch (Exception ex)
          {
-
-            throw;
+            throw ex;
          }
       }
 

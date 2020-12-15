@@ -51,7 +51,7 @@ declare type IProps = {
    path: string,
    Render: any,
    exact?: boolean;
-   authenticate: () => Promise<{ data: User, status: number | undefined; }>,
+   authenticate: () => Promise<{ data: User, status?: number; }>,
    AuthRequired?: boolean;
 };
 export default CustomRoute;

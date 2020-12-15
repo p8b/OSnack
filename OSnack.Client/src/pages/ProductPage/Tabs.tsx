@@ -5,16 +5,19 @@ import Container from '../../components/Container';
 const Tabs = (props: IProps) => {
    const [selectedNav, setSelectedNav] = useState(productTabs.NutritionalInfo);
    useEffect(() => {
+      console.log(props.product.nutritionalInfo);
    }, []);
    return (
       <>
          <ul className="nav nav-tabs">
-            <li className="nav-item">
-               <a onClick={() => { setSelectedNav(productTabs.NutritionalInfo); }}
-                  className={`nav-link ${selectedNav === productTabs.NutritionalInfo ? "active" : ""} `}>
-                  Nutritional Information
+            {props.product.nutritionalInfo != undefined &&
+               <li className="nav-item">
+                  <a onClick={() => { setSelectedNav(productTabs.NutritionalInfo); }}
+                     className={`nav-link ${selectedNav === productTabs.NutritionalInfo ? "active" : ""} `}>
+                     Nutritional Information
                </a>
-            </li>
+               </li>
+            }
             <li className="nav-item">
                <a onClick={() => { setSelectedNav(productTabs.Comments); }}
                   className={`nav-link ${selectedNav === productTabs.Comments ? "active" : ""} `}>
@@ -27,14 +30,14 @@ const Tabs = (props: IProps) => {
                {selectedNav === productTabs.NutritionalInfo &&
                   <>
                      <p>Per 100g</p>
-                  <div>Energy: {props.product.nutritionalInfo?.energyKJ}KJ / {props.product.nutritionalInfo?.energyKcal}Kcal</div>
-                  <div>Fat: {props.product.nutritionalInfo?.fat}g</div>
-                  <div className="pl-5">of which saturates, {props.product.nutritionalInfo?.saturateFat}g</div>
-                  <div>Carbohydrate: {props.product.nutritionalInfo?.carbohydrate}g</div>
-                  <div className="pl-5">of which Sugar, {props.product.nutritionalInfo?.carbohydrateSugar}g</div>
-                  <div>Fiber: {props.product.nutritionalInfo?.fibre}g</div>
-                  <div>Protein: {props.product.nutritionalInfo?.protein}g</div>
-                  <div>Salt: {props.product.nutritionalInfo?.salt}g</div>
+                     <div>Energy: {props.product.nutritionalInfo?.energyKJ}KJ / {props.product.nutritionalInfo?.energyKcal}Kcal</div>
+                     <div>Fat: {props.product.nutritionalInfo?.fat}g</div>
+                     <div className="pl-5">of which saturates, {props.product.nutritionalInfo?.saturateFat}g</div>
+                     <div>Carbohydrate: {props.product.nutritionalInfo?.carbohydrate}g</div>
+                     <div className="pl-5">of which Sugar, {props.product.nutritionalInfo?.carbohydrateSugar}g</div>
+                     <div>Fiber: {props.product.nutritionalInfo?.fibre}g</div>
+                     <div>Protein: {props.product.nutritionalInfo?.protein}g</div>
+                     <div>Salt: {props.product.nutritionalInfo?.salt}g</div>
                   </>
                }
                {selectedNav === productTabs.Comments &&

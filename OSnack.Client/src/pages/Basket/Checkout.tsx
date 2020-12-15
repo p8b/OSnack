@@ -180,11 +180,10 @@ const Checkout = (props: IProps) => {
       });
    };
 
-   const onComplete = (paypalOrderId: string, callBack: () => void) => {
+   const onComplete = (paypalOrderId: string) => {
 
       usePostOrder(paypalOrderId, order).then(orderId => {
          console.log(orderId);
-         callBack();
       }).catch(alert => {
          if (isUnmounted.current) return;
          errorAlert.set(alert);

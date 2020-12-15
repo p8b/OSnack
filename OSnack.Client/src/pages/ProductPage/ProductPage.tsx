@@ -71,7 +71,7 @@ const ProductPage = (props: IProps) => {
                      <div className="col-12 col-sm-4 pb-4 p-sm-4 justify-text-center">
                         <img className="shop-card-img" src={`${API_URL}/${product.imagePath}`} alt={name} />
                      </div>
-                     <div className="col-12 col-sm-8 p-sm-4 ">
+                     <div className="col-12 col-sm-8 p-sm-4 pl-md-5">
                         <h1>{product.name}</h1>
                         <p>Category: {product.category.name}</p>
                         <p className="pt-4 pb-4">{product.description}</p>
@@ -84,6 +84,8 @@ const ProductPage = (props: IProps) => {
                            value={basket.getQuantity(product)}
                            onChange={(val) => { basket.set(product, val); }}
                            className="w-50 pt-3 pb-3"
+                           isDisabled={product.stockQuantity <= 0}
+                           disabledMessage="out of stock"
                         />
                      </div>
                   </div>

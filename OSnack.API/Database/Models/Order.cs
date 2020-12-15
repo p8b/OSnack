@@ -159,7 +159,7 @@ namespace OSnack.API.Database.Models
                        }
                   }
                } ,
-               Items = await ConvertItem().ConfigureAwait(false),
+               Items = ConvertItem(),
                ShippingDetail=new ShippingDetail()
                {
                   Name=new Name(){
@@ -187,7 +187,7 @@ namespace OSnack.API.Database.Models
          return paypalOrder;
       }
 
-      internal async Task<List<Item>> ConvertItem()
+      internal List<Item> ConvertItem()
       {
          List<Item> orderItems = new List<Item>();
          foreach (var orderItem in OrderItems)
