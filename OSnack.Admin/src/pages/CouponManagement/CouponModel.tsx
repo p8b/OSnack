@@ -124,7 +124,7 @@ const CouponModel = (props: IProps) => {
             />
             <DatePicker label="Expire Date*" className="col-12 col-sm-6" selectDate={coupon.expiryDate}
                minimumDate={getNextDate(1)}
-               onChange={date => { console.log("as"); coupon.expiryDate = date || getNextDate(31); }} />
+               onChange={date => { coupon.expiryDate = date || getNextDate(31); }} />
          </div>
          <Alert alert={errorAlert.alert}
             className="col-12 mb-2"

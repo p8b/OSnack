@@ -18,6 +18,7 @@ const ContactUs = lazy(() => import("./pages/ContactUs/ContactUs"));
 const Basket = lazy(() => import("./pages/Basket/Basket"));
 const MyAccount = lazy(() => import("./pages/MyAccount/MyAccount"));
 const MyAddresses = lazy(() => import("./pages/MyAccount/MyAddresses"));
+const MyOrders = lazy(() => import("./pages/Order/MyOrders"));
 const LoginPage = lazy(() => import("./pages/Login/LoginPage"));
 const ProductPage = lazy(() => import("./pages/ProductPage/ProductPage"));
 const PageNotFound = lazy(() => import("osnack-frontend-shared/src/pages/PageNotFound"));
@@ -42,6 +43,7 @@ const App = () => {
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/Shop/Product" Render={(props: any) => <ProductPage {...props} />} />
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/Shop" Render={(props: any) => <Shop {...props} />} />
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/Checkout" Render={(props: any) => <Basket {...props} />} />
+                        <CustomRoute authenticate={useSilentOfficialAuthentication} path="/MyOrders" Render={(props: any) => <MyOrders {...props} />} />
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/About" Render={(props: any) => <About {...props} />} />
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/Contact" Render={(props: any) => <ContactUs {...props} />} />
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/TermsAndConditions" Render={(props: any) => <TermsAndConditions {...props} />} />

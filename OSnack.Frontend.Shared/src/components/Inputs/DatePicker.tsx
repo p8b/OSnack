@@ -15,7 +15,6 @@ export const DatePicker = (props: IProps) => {
    useEffect(() => {
       setValue(props.selectDate || new Date());
    }, [props.selectDate]);
-   { console.log(value); }
    return (
       <div className={`${props.className}`}>
          <div className="row m-0 p-0">

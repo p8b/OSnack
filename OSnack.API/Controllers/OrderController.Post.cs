@@ -190,7 +190,7 @@ namespace OSnack.API.Controllers
                orderData.Coupon = currentCoupon;
          }
 
-         List<Product> productList = await _DbContext.Products
+         List<Product> productList = await _DbContext.Products.AsTracking()
            .Include(p => p.Category)
            .Where(p => orderData.OrderItems.Select(t => t.ProductId).ToList().Contains(p.Id))
            .ToListAsync()
@@ -220,6 +220,7 @@ namespace OSnack.API.Controllers
                return null;
             }
             orderData.TotalItemPrice += (orderItem.Quantity * originalProduct.Price ?? 0);
+            originalProduct.StockQuantity -= orderItem.Quantity;
             CheckedOrderItems.Add(new OrderItem(originalProduct, orderItem.Quantity));
 
 

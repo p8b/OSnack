@@ -29,9 +29,9 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(MultiResult<List<Order>, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
-      [HttpGet("[action]/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}")]
+      [HttpGet("Get/[action]/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}")]
       [Authorize(AppConst.AccessPolicies.Secret)]
-      public async Task<IActionResult> Get(
+      public async Task<IActionResult> All(
           int selectedPage,
           int maxNumberPerItemsPage,
           string searchValue = "",
@@ -75,46 +75,57 @@ namespace OSnack.API.Controllers
       /// </summary>
       #region *** 200 OK, 417 ExpectationFailed ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(typeof(MultiResult<List<Order>, int>), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Order>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
-      [HttpGet("[action]/MyOrder/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}/{isSortAsce}/{sortName}")]
+      [HttpGet("Get/[action]")]
       [Authorize(AppConst.AccessPolicies.Official)]
-      public async Task<IActionResult> Get(
-          int selectedPage,
-          int maxNumberPerItemsPage,
-          string filterStatus = CoreConst.GetAllRecords,
-          bool isSortAsce = true,
-          string sortName = "Code")
+      public async Task<IActionResult> All()
       {
          try
          {
-            int.TryParse(User.Claims.FirstOrDefault(c => c.Type == "UserId").Value, out int userId);
-
-            int totalCount = await _DbContext.Orders
-               .Include(o => o.User)
-               .Where(o => o.User.Id == userId)
-                .CountAsync(r => filterStatus.Equals(CoreConst.GetAllRecords) ? true : r.Status.Equals((OrderStatusType)Enum.Parse(typeof(OrderStatusType), filterStatus, true)))
-                //.CountAsync(c => searchValue.Equals(CoreConst.GetAllRecords) ? true : c. .Contains(searchValue))
-                .ConfigureAwait(false);
-
             List<Order> list = await _DbContext.Orders
                .Include(o => o.User)
-               .Where(o => o.User.Id == userId)
-                .Where(r => filterStatus.Equals(CoreConst.GetAllRecords) ? true : r.Status.Equals((OrderStatusType)Enum.Parse(typeof(OrderStatusType), filterStatus, true)))
-                .OrderByDynamic(sortName, isSortAsce)
-                // .Where(c => searchValue.Equals(CoreConst.GetAllRecords) ? true : c.Code.Contains(searchValue))
-                .Skip((selectedPage - 1) * maxNumberPerItemsPage)
-                .Take(maxNumberPerItemsPage)
+               .Where(o => o.User.Id == AppFunc.GetUserId(User))
                 .Include(o => o.OrderItems)
-                .ThenInclude(sp => sp.Product)
-                .ThenInclude(p => p.Category)
-                .Include(o => o.OrderItems)
-                .Include(o => o.Coupon)
                 .Include(o => o.Payment)
                 .ToListAsync()
                 .ConfigureAwait(false);
-            return Ok(new MultiResult<List<Order>, int>(list, totalCount));
+            return Ok(list);
+         }
+         catch (Exception ex)
+         {
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
+            return StatusCode(417, ErrorsList);
+         }
+      }
+
+      #region *** 200 OK, 417 ExpectationFailed ***
+      [Consumes(MediaTypeNames.Application.Json)]
+      [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
+      #endregion
+      [HttpGet("[action]/{orderId}")]
+      [Authorize(AppConst.AccessPolicies.Official)]
+      public async Task<IActionResult> Get(int orderId)
+      {
+         try
+         {
+            Order order = await _DbContext.Orders
+                .Include(o => o.User)
+                .Where(o => o.User.Id == AppFunc.GetUserId(User))
+                .Include(o => o.OrderItems)
+                .Include(o => o.Payment)
+                .SingleOrDefaultAsync(o => o.Id == orderId)
+                .ConfigureAwait(false);
+            if (order == null)
+            {
+               CoreFunc.Error(ref ErrorsList, "Cannot find your order.");
+               return UnprocessableEntity(ErrorsList);
+            }
+
+            return Ok(order);
          }
          catch (Exception ex)
          {

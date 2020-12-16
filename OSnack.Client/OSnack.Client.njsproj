@@ -153,6 +153,7 @@
     <Folder Include="src\pages\About\" />
     <Folder Include="src\pages\ContactUs\" />
     <Folder Include="src\pages\Basket\" />
+    <Folder Include="src\pages\Order\" />
     <Folder Include="src\pages\ProductPage\" />
     <Folder Include="src\pages\TermsAndConditions\" />
     <Folder Include="src\pages\Shop\" />
@@ -201,6 +202,8 @@
     <TypeScriptCompile Include="src\pages\MyAccount\AddressModal.tsx" />
     <TypeScriptCompile Include="src\pages\MyAccount\MyAccount.tsx" />
     <TypeScriptCompile Include="src\pages\MyAccount\MyAddresses.tsx" />
+    <TypeScriptCompile Include="src\pages\Order\MyOrders.tsx" />
+    <TypeScriptCompile Include="src\pages\Order\OrderModal.tsx" />
     <TypeScriptCompile Include="src\pages\ProductPage\ProductPage.tsx" />
     <TypeScriptCompile Include="src\pages\ProductPage\Tabs.tsx" />
     <TypeScriptCompile Include="src\pages\Shop\Shop.tsx" />

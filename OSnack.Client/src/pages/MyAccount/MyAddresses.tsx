@@ -108,7 +108,6 @@ const MyAddresses = (props: IProps) => {
                })
             }
          </div>
-         {/***** Add/ modify category modal  ****/}
          <AddressModal isOpen={isOpenAddressModal}
             onSuccess={() => { reloadAddressList(); }}
             address={selectAddress}
