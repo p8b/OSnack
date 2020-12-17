@@ -18,7 +18,7 @@ const Basket = (props: IProps) => {
       return <Redirect to="/Shop" />;
 
    return (
-      <Container className="wide-container p-0 m-0">
+      <Container className="wide-container pm-0">
          <PageHeader title="Basket" className="hr-section-sm" />
          <Container className="bg-white">
             <div className="row">

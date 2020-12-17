@@ -171,7 +171,7 @@ const EmailTemplatesEdit = (props: IProps) => {
             <Button onClick={saveTemplate} children={`Save${isSaved ? "d" : ""}`} className={`btn-lg btn-green ${isSaved ? "tick-icon" : "save-icon"}`} />
          </div>
          <div className="row col-12 ml-2">
-            <div className="col-12 m-0 p-0">Name: {template.name}</div>
+            <div className="col-12 pm-0">Name: {template.name}</div>
             {template.serverVariables && template.serverVariables?.length > 0 &&
                <>
                   <div>Required Server Variables:</div>

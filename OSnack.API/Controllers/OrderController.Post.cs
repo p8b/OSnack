@@ -174,7 +174,7 @@ namespace OSnack.API.Controllers
          }
 
          //Check coupon
-         if (orderData.Coupon != null && !orderData.Coupon.Code.Equals(""))
+         if (orderData.Coupon != null && !string.IsNullOrEmpty(orderData.Coupon.Code))
          {
             Coupon currentCoupon = await _DbContext.Coupons.AsTracking()
                            .SingleOrDefaultAsync(c => c.Code == orderData.Coupon.Code)

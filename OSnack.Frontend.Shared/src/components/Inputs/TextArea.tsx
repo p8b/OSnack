@@ -19,7 +19,7 @@ export const TextArea = (props: IProps) => {
    return (
       <div className={props.className}>
          <label htmlFor={id}
-            className={`col-form-label  p-0 m-0 `}
+            className={`col-form-label  pm-0 `}
             children={props.label} />
          <textarea value={props.value} id={id}
             onChange={i => {

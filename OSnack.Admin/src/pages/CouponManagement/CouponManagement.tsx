@@ -88,7 +88,7 @@ const CouponManagement = (props: IProps) => {
          tData.rows.push(new TableRowData([
             <div>{coupon.code} <small className="text-danger" children={isExpire(coupon.expiryDate)} /></div>,
             CouponTypeList.find(c => c.Value == coupon.type)?.Name,
-            <div className="col-auto p-0 m-0">
+            <div className="col-auto pm-0">
                <button className="btn btn-sm btn-blue col-12 m-0 mt-1 mt-xl-0 edit-icon"
                   onClick={() => { editCoupon(coupon); }}
                   children="Edit" />
@@ -128,7 +128,7 @@ const CouponManagement = (props: IProps) => {
                className="col-12 col-md-3 btn-green btn"
                onClick={() => { setIsOpenCouponModal(true); }}
             />
-            <div className="row col-12 p-0 m-0 pt-3 ">
+            <div className="row col-12 pm-0 pt-3 ">
 
                <DropDown title={`Coupon Type: ${CouponTypeList.find((c) => c.Id?.toString() == selectedFilterType)?.Name || "All"}`}
                   className="col-12 col-sm-6 col-md-4 ml-auto m-0 p-1"
@@ -153,7 +153,7 @@ const CouponManagement = (props: IProps) => {
             </div>
 
             {/***** Category Table  ****/}
-            <div className="row col-12 p-0 m-0">
+            <div className="row col-12 pm-0">
                <Table className="col-12 text-center table-striped mt-4"
                   defaultSortName={tblSortName}
                   data={tableData}

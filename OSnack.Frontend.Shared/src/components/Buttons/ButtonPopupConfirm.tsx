@@ -19,7 +19,7 @@ const ButtonPopupConfirm = (props: IProps) => {
                   <div className="col-12 text-wrap "
                      children={props.popupMessage}
                   />
-                  <div className="dropdown-item p-0 m-0 mt-2">
+                  <div className="dropdown-item pm-0 mt-2">
                      <button type="button" className={"btn btn-sm btn-green col-6 radius-none-l"}
                         onClick={() => {
                            props.onConfirmClick!();

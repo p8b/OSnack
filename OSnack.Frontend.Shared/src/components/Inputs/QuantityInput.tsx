@@ -44,7 +44,7 @@ const QuantityInput = (props: IProps) => {
                </>
             }
             {props.isDisabled &&
-               <Input className="col-12 m-0 p-0 mb-0"
+               <Input className="col-12 pm-0 mb-0"
                   inputClassName="text-center "
                   onChange={() => { }}
                   disabled

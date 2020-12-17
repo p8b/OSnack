@@ -191,7 +191,7 @@ const Checkout = (props: IProps) => {
       });
    };
    return (
-      <div className="col-12 col-md-5 col-lg-6 m-0 p-0 pt-3 pb-4 shadow ">
+      <div className="col-12 col-md-5 col-lg-6 pm-0 pt-3 pb-4 shadow ">
          <div className="col-12 m-0 pos-sticky">
             <Alert className="col-12 mb-2"
                alert={errorAlert.alert}
@@ -240,12 +240,12 @@ const Checkout = (props: IProps) => {
                         <p className="col-12 p-0 m-0 small-text text-gray" >Total Items: {basket.getTotalItems()}</p>
                      </div>
                   </div>
-                  <div className="row col-12 m-0 p-0 mt-2 mb-4">
-                     <div className="col-10 m-0 p-0">
-                        <div className="col-12 " children={selectAddress.firstLine} key="FirstLine_Checkout" />
-                        <div className="col-12 " children={selectAddress.secondLine} key="SecondLine_Checkout" />
-                        <div className="col-12 " children={selectAddress.city} key="City_Checkout" />
-                        <div className="col-12 " children={selectAddress.postcode} key="Postcode_Checkout" />
+                  <div className="row col-12 pm-0 mt-2 mb-4">
+                     <div className="col-10 pm-0">
+                        <div className="col-12 line-limit-2" children={selectAddress.firstLine} key="FirstLine_Checkout" />
+                        <div className="col-12 line-limit-2" children={selectAddress.secondLine} key="SecondLine_Checkout" />
+                        <div className="col-12 line-limit-1" children={selectAddress.city} key="City_Checkout" />
+                        <div className="col-12 line-limit-1" children={selectAddress.postcode} key="Postcode_Checkout" />
                      </div>
                      {(selectAddress.id || 0) > 0 &&
                         <Button className="col-2 col-md-1 btn-sm edit-icon  mb-auto ml-auto"

@@ -256,6 +256,7 @@
     <Folder Include="src\components\Inputs\" />
     <Folder Include="src\components\Loading\" />
     <Folder Include="src\components\Modals\" />
+    <Folder Include="src\components\OrderDetails\" />
     <Folder Include="src\components\Pagination\" />
     <Folder Include="src\components\Table\" />
     <Folder Include="src\components\UserAccount\" />
@@ -311,6 +312,7 @@
     <TypeScriptCompile Include="src\components\Inputs\TextArea.tsx" />
     <TypeScriptCompile Include="src\components\Inputs\Toggler.tsx" />
     <TypeScriptCompile Include="src\components\Loading\Loading.tsx" />
+    <TypeScriptCompile Include="src\components\OrderDetails\OrderDetails.tsx" />
     <TypeScriptCompile Include="src\components\Pagination\Pagination.tsx" />
     <TypeScriptCompile Include="src\components\Table\Table.tsx" />
     <TypeScriptCompile Include="src\components\Texts\CopyText.tsx" />

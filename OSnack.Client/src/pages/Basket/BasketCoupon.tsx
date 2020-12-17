@@ -13,6 +13,7 @@ const BasketCoupon = (props: IProps) => {
          props.setAlert(new AlertObj(
             [new ErrorDto("Access Denied", "Coupon code required.")],
             AlertTypes.Error));
+         setCode("");
          return;
       }
       useValidateCoupon(code).then(result => {
@@ -36,13 +37,13 @@ const BasketCoupon = (props: IProps) => {
          .catch(alert => props.setAlert(alert));
    };
    return (
-      <div className="row col-12 m-0 p-0 pb-3 ">
+      <div className="row col-12 pm-0 pb-3 ">
          <Input label="Discount Code"
             value={code}
             onChange={i => setCode(i.target.value)}
             className="col-8 mb-0 p-0 " />
-         <div className="row col-4 m-0 p-0 mt-auto">
-            <Button className="col-12 btn-sm btn-blue  m-0"
+         <div className="row col-4 pm-0 mt-auto">
+            <Button className="col-12 btn-sm btn-blue radius-none m-0"
                onClick={couponCheck} children="Apply" />
          </div>
       </div>

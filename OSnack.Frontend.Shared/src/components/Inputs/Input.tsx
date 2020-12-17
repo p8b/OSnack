@@ -31,7 +31,7 @@ export const Input = (props: IProps) => {
       <div className={`mb-3 ${props.className}`}>
          {  props.label != undefined &&
             <label children={props.label} htmlFor={id} onClick={() => { document.getElementById(id)?.focus(); }}
-               className={`col-form-label p-0 m-0 ${lblPos}`} />
+               className={`col-form-label pm-0 ${lblPos}`} />
          }
          <input id={id} ref={props.ref} type={props?.type || "text"}
             className={`line-limit-1 ${props.showDanger ? "danger" : ""} ${props.showValid ? "valid" : ""} ${props.inputClassName || ""}`}

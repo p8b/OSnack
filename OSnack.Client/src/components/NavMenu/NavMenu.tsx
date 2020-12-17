@@ -35,7 +35,7 @@ const NavMenu = (props: IProps) => {
 
    return (
       <header >
-         <nav id="navbar" className="navbar p-0" >
+         <nav id="navbar" className="navbar p-0">
             <div className="row col-12 p-0 m-0 ">
                {/** Logo & toggler icon */}
                <Link to="/" className="logo-container ml-md-auto mr-auto pt-1 pl-2 pl-md-0">

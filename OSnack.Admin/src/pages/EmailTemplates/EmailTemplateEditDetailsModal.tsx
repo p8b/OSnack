@@ -72,7 +72,7 @@ const EmailTemplateEditDetailsModal = (props: IProps) => {
             <button className={`col-2 btn ${template.locked ? "lock-icon" : "unlock-icon"}`}
                children={`${template.locked ? "lock" : "unlock"}`}
                onClick={() => setTemplate((prev) => ({ ...prev, locked: !prev.locked }))} />
-            <div className="col-12 col-sm-6 p-0 m-0">
+            <div className="col-12 col-sm-6 pm-0">
                <Input label="Subject *" className="col-12"
                   value={template.subject}
                   showDanger={errorAlert.checkExist("Subject")}
@@ -85,7 +85,7 @@ const EmailTemplateEditDetailsModal = (props: IProps) => {
                   onChange={i => setTemplate({ ...template, tokenUrlPath: i.target?.value })}
                />
             </div>
-            <div className="col-12 col-sm-6 p-0 m-0">
+            <div className="col-12 col-sm-6 pm-0">
                <InputDropdown dropdownTitle={"Select Option"}
                   label="Server Variables Required"
                   className="col-12">

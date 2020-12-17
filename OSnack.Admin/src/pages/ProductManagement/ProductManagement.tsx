@@ -103,7 +103,7 @@ const ProductManagement = (props: IProps) => {
             `£${product.price}`,
             `${product.unitQuantity} ${productUnitTypeList.find(pu => pu.Value == product.unitType)?.Name}`,
             product.status ? "Active" : "Disabled",
-            <div className="col-auto p-0 m-0">
+            <div className="col-auto pm-0">
                <button className="btn btn-sm btn-blue col-12 m-0  edit-icon"
                   onClick={() => { editProduct(product); }}
                   children="Edit" />
@@ -140,7 +140,7 @@ const ProductManagement = (props: IProps) => {
          <PageHeader title="Products" className="line-header-lg" />
          <div className="row col-12 col-md-11 pt-2 pb-2 bg-white ml-auto mr-auto">
             {/***** Search Input and new product button  ****/}
-            <div className="row col-12 m-0 p-0">
+            <div className="row col-12 pm-0">
 
                <SearchInput key="searchInput"
                   value={searchValue}
@@ -154,7 +154,7 @@ const ProductManagement = (props: IProps) => {
                   onClick={() => { setIsOpenProductModal(true); }}
                />
             </div>
-            <div className="row col-12 p-0 m-0 pt-3 ">
+            <div className="row col-12 pm-0 pt-3 ">
 
                <DropDown title={`Category: ${categoryList.find((c) => c.id?.toString() == selectedCategoryFilter)?.name || "All"}`}
                   className="col-12 col-sm-6 col-md-4 ml-auto m-0 p-1"
@@ -194,7 +194,7 @@ const ProductManagement = (props: IProps) => {
             </div>
 
             {/***** Category Table  ****/}
-            <div className="row col-12 p-0 m-0">
+            <div className="row col-12 pm-0">
                <Table className="col-12 text-center table-striped mt-4"
                   defaultSortName={tblSortName}
                   data={tableData}

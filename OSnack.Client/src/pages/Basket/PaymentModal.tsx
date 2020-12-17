@@ -31,7 +31,7 @@ const PaymentModal = (props: IProps) => {
    return (
       <Modal isOpen={props.isOpen}
          bodyRef={props.ref}
-         className="col-4">
+         className="col-12 col-md-4">
          {!isLoading &&
             <>
                <Button className="col-12 btn-white  mb-3" children="Back" onClick={() => { props.setIsOpen(false); }} />

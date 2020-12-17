@@ -132,13 +132,13 @@ const CouponModel = (props: IProps) => {
          />
 
          {/***** buttons ****/}
-         <div className="row col-12 p-0 m-0 ">
+         <div className="row col-12 pm-0 ">
             {coupon.code == undefined ?
                <Button children="Create"
                   className="col-12 mt-2 btn-green col-sm-6 btn-lg"
                   onClick={createProduct} />
                :
-               <div className="row col-12 col-sm-8 p-0 m-0">
+               <div className="row col-12 col-sm-8 pm-0">
                   <ButtonPopupConfirm title="Update"
                      popupMessage="Are you sure?"
                      className="col-12 mt-2 col-sm-6"

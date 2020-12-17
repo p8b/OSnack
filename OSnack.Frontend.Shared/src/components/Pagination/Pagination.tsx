@@ -115,11 +115,11 @@ const Pagination = (props: IProps) => {
       <>
          { arrayOfPageNumbers.length == 0 && <></>}
          { arrayOfPageNumbers.length > 0 &&
-            <div className="row col-12 p-0 m-0">
+            <div className="row col-12 pm-0">
                <button
                   type="button"
                   className={btnClassName}
-                  children={<i className="pagination-left-arrow m-0 p-0" />}
+                  children={<i className="pagination-left-arrow pm-0" />}
                   onClick={() => { onPageAddOrMinus(-1); }}
                />
                {arrayOfPageNumbers.map(i => {
@@ -139,7 +139,7 @@ const Pagination = (props: IProps) => {
                <button
                   type="button"
                   className={btnClassName}
-                  children={<i className="pagination-right-arrow m-0 p-0" />}
+                  children={<i className="pagination-right-arrow pm-0" />}
                   onClick={() => onPageAddOrMinus(1)}
                />
                <select className="w-auto form-control outline-none" defaultValue={props.maxItemsPerPage}

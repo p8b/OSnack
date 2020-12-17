@@ -76,7 +76,7 @@ const CategoryManagement = (props: IProps) => {
          tData.rows.push(new TableRowData([
             category.name,
             category.totalProducts,
-            <div className="col-auto p-0 m-0">
+            <div className="col-auto pm-0">
                <button className="btn btn-sm btn-blue col-12 m-0 mt-1 mt-xl-0 edit-icon"
                   onClick={() => { editCategory(category); }}
                   children="Edit" />
@@ -122,7 +122,7 @@ const CategoryManagement = (props: IProps) => {
             />
 
             {/***** Category Table  ****/}
-            <div className="row col-12 p-0 m-0">
+            <div className="row col-12 pm-0">
                <Table className="col-12 text-center table-striped mt-4"
                   defaultSortName={tblSortName}
                   data={tableData}

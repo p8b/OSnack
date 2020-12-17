@@ -36,7 +36,9 @@
       Hold = 1,
       Confirmed = 2,
       Delivered = 3,
-      Canceled = 4
+      Refund_Request = 4,
+      Refund_Refused = 5,
+      Refunded = 6
    }
 
    public enum ProductUnitType

@@ -89,6 +89,8 @@ namespace OSnack.API.Controllers
                .Where(o => o.User.Id == AppFunc.GetUserId(User))
                 .Include(o => o.OrderItems)
                 .Include(o => o.Payment)
+                .Include(o => o.DeliveryOption)
+                .OrderByDescending(o => o.Date)
                 .ToListAsync()
                 .ConfigureAwait(false);
             return Ok(list);

@@ -127,7 +127,7 @@ const Shop = (props: IProps) => {
    };
 
    return (
-      <Container className="wide-container p-0 m-0">
+      <Container className="wide-container pm-0">
          <PageHeader title="Shop" className="hr-section-sm" />
          <Container className="bg-white ">
             <div className="row p-3 ">
@@ -138,7 +138,7 @@ const Shop = (props: IProps) => {
                   onSearch={() => { onSearch(undefined, tblIsSortAsc, tblSortName); }}
                />
                <DropDown title={`Category: ${categoryList.find((c) => c.id?.toString() == selectedCategoryFilter)?.name || "All"}`}
-                  className="col-12 col-sm-4 col-md-3 ml-auto m-0 p-0 pt-2"
+                  className="col-12 col-sm-4 col-md-3 ml-auto pm-0 pt-2"
                   titleClassName="btn btn btn-white filter-icon"
                >
                   <button className="dropdown-item"
@@ -159,7 +159,7 @@ const Shop = (props: IProps) => {
                   )}
                </DropDown>
                <DropDown title={`Sort By: ${tblSortName}`}
-                  className="col-12 col-sm-4 col-md-3 ml-auto m-0 p-0 pt-2"
+                  className="col-12 col-sm-4 col-md-3 ml-auto pm-0 pt-2"
                   titleClassName={`btn btn btn-white ${!tblIsSortAsc ? "sort-numeric-down-icon" : "sort-numeric-up-icon"}`}>
                   {sortOptions.map(val =>
                      <button className={`dropdown-item ${getSortedColCss(val)}`} onClick={() => { handelSort(val); }}>
@@ -167,7 +167,7 @@ const Shop = (props: IProps) => {
                      </button>
                   )}
                </DropDown>
-               <p className="col-12 p-0 m-0 small-text text-gray" >Total Items Found: {tblTotalItemCount}</p>
+               <p className="col-12 pm-0 small-text text-gray" >Total Items Found: {tblTotalItemCount}</p>
                <Alert alert={errorAlert.alert}
                   className="col-12 mb-2"
                   onClosed={() => { errorAlert.clear(); }}

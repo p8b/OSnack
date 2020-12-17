@@ -5,7 +5,7 @@ const InputDropdown = (props: IProps) => {
    return (
       <div className={`pb-3 m-0 ${props.className}`}>
          <label children={props.label}
-            className={`col-form-label p-0 m-0 `} />
+            className={`col-form-label pm-0 `} />
 
          <DropDown title={props.dropdownTitle}
             className="w-100 "

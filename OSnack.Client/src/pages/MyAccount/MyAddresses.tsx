@@ -55,12 +55,12 @@ const MyAddresses = (props: IProps) => {
    return (
       <>
          <PageHeader title="My Addresses" className="line-header-lg" />
-         <div id="test" className="row justify-content-center m-0 p-0">
+         <div className="row justify-content-center pm-0">
             <Alert alert={errorAlert.alert}
                className="col-12 mb-2"
                onClosed={() => { errorAlert.clear(); }}
             />
-            <ButtonCard cardClassName="card-lg col-12 row p-0 m-0 "
+            <ButtonCard cardClassName="card-lg col-12 row pm-0 "
                onClick={newAddress}>
                <div className="col mt-auto mb-auto">
                   <div className="col-12 fas add-icon " />
@@ -70,28 +70,31 @@ const MyAddresses = (props: IProps) => {
             {addressList.length > 0 &&
                addressList.map(addr => {
                   return (
-                     <ButtonCard key={addr.id} cardClassName="card-lg col-12 row p-0 m-0"
+                     <ButtonCard key={addr.id} cardClassName="card-lg col-12 row pm-0"
                         onClick={() => {
                            setSelectAddress(addr);
                            setIsOpenAddressModal(true);
                         }}>
 
-                        <p className={` tick-icon mb-auto ml-auto ${addr.isDefault ? '' : 'hide'}`} />
+                        <div className={` tick-icon mb-auto ml-auto ${addr.isDefault ? '' : 'hide'}`} />
 
                         <div className="col-12 ">
-                           <b className="row text-left  mt-auto m-0 p-0 line-limit-1">{addr.name}</b>
-                           <p className="row  text-left  m-0 p-0 line-limit-2"
+                           <b className="row text-left  mt-auto pm-0 line-limit-1">{addr.name}</b>
+                           <div className="row h6  text-left  pm-0 line-limit-2"
                               children={addr.firstLine} />
 
-                           <p className="row text-left  m-0 p-0 line-limit-2">
+                           <div className="row h6 text-left  pm-0 line-limit-2">
                               {addr.secondLine}
-                           </p>
-                           <p className="row text-left   mb-auto m-0 p-0 line-limit-2">
-                              {addr.city}, {addr.postcode}
-                           </p>
+                           </div>
+                           <div className="row h6 text-left   mb-auto pm-0 line-limit-2">
+                              {addr.city}
+                           </div>
+                           <div className="row h6 text-left   mb-auto pm-0 line-limit-2">
+                              {addr.postcode}
+                           </div>
                         </div>
-                        <div className="row col-12 p-0 m-0  mt-auto">
-                           <Button className="btn-sm  col m-0 "
+                        <div className="row col-12 pm-0  mt-auto">
+                           <Button className="btn-sm  col m-0 radius-none"
                               children="Edit" />
                            {!addr.isDefault &&
                               <Button className="btn-sm  col-6 m-0 "

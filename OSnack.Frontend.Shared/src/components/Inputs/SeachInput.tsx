@@ -7,7 +7,7 @@ export const SearchInput = (props: IProps) => {
             <input type="text"
                placeholder="Search"
                value={props.value}
-               className="col m-0 p-0"
+               className="col pm-0"
                onChange={props.onChange}
                disabled={props.disabled || false}
                onKeyDown={e => { if (e.key === 'Enter') props.onSearch(); }}

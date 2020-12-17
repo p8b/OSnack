@@ -100,7 +100,7 @@ const UserManagement = (props: IProps) => {
             user.surname,
             user.email,
             user.role?.name,
-            <div className="col-auto p-0 m-0">
+            <div className="col-auto pm-0">
                <button className="btn btn-sm btn-blue col-12 m-0 mt-1 mt-xl-0 edit-icon"
                   onClick={() => { editUser(user); }}
                   children="Edit" />
@@ -128,7 +128,7 @@ const UserManagement = (props: IProps) => {
          <PageHeader title="Users" className="line-header-lg" />
          <div className="row col-12 col-md-11 pt-2 pb-2 bg-white ml-auto mr-auto">
             {/***** Search Input and new category button  ****/}
-            <div className="row col-12 m-0 p-0">
+            <div className="row col-12 pm-0">
 
                <SearchInput key="searchInput"
                   value={searchValue}
@@ -142,7 +142,7 @@ const UserManagement = (props: IProps) => {
                   onClick={() => { setIsOpenUserModal(true); }}
                />
             </div>
-            <div className="row col-12 p-0 m-0 pt-3 ">
+            <div className="row col-12 pm-0 pt-3 ">
 
                <DropDown title={`Role: ${roleList.find((r) => r.id?.toString() == selectedRoleFilter)?.name || "All"}`}
                   className="col-12 col-sm-6 col-md-4 ml-auto m-0 p-1"
@@ -166,7 +166,7 @@ const UserManagement = (props: IProps) => {
             </div>
 
             {/***** Category Table  ****/}
-            <div className="row col-12 p-0 m-0">
+            <div className="row col-12 pm-0">
                <Table className="col-12 text-center table-striped mt-4"
                   defaultSortName={tblSortName}
                   data={tableData}

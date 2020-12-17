@@ -36,17 +36,17 @@ const NavMenu = (props: IProps) => {
    return (
       <header>
          {!auth.state.isAuthenticated &&
-            <div className="row col-12 p-0 m-0 ">
+            <div className="row col-12 pm-0 ">
                {/** Logo & toggler icon */}
                <div className="m-auto">
-                  <img id="logo" alt="Logo" className="Logo p-0 m-0" src={`/public/images/logo.png`} />
+                  <img id="logo" alt="Logo" className="Logo pm-0" src={`/public/images/logo.png`} />
                   <p className="text-center">Management</p>
                </div>
             </div>
          }
          {auth.state.isAuthenticated &&
             <>
-               <div className={`bg-white top-navbar row p-0 m-0 pb-1  ${isOpenSideBar ? "show" : "hide"}`}>
+               <div className={`bg-white top-navbar row pm-0 pb-1  ${isOpenSideBar ? "show" : "hide"}`}>
                   <button type="button"
                      className={`fas toggler-icon `}
                      onClick={() => { setIsOpenSideBar((prevVal) => !prevVal); }} />
