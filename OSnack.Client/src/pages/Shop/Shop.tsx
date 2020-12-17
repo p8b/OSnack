@@ -38,7 +38,7 @@ const Shop = (props: IProps) => {
          if (uriPathNameArr.length === 3 && uriPathNameArr[1] == "Category") {
             const uriSelectedCategory = result.data.filter(val => val.name?.toLowerCase().trim() == decodeURIComponent(uriPathNameArr[2]).toLowerCase());
             if (uriSelectedCategory.length > 0)
-               onSearch(undefined, undefined, undefined, undefined, uriSelectedCategory[0].id?.toString());
+               onSearch(undefined, undefined, undefined, undefined, undefined, uriSelectedCategory[0].id?.toString());
          } else {
             onSearch();
          }
@@ -51,6 +51,7 @@ const Shop = (props: IProps) => {
    }, []);
 
    const onSearch = async (
+      searchVal = searchValue,
       isSortAsc = tblIsSortAsc,
       sortName = tblSortName,
       selectedPage = tblSelectedPage,
@@ -58,12 +59,14 @@ const Shop = (props: IProps) => {
       categoryFilter = selectedCategoryFilter
    ) => {
       let searchString = GetAllRecords;
-
-      if (searchValue != null && searchValue != "") {
-         searchString = searchValue;
+      setSearchValue(searchVal);
+      if (searchVal != searchValue) {
          selectedPage = 1;
       }
+      if (searchVal != "")
+         searchString = searchVal;
 
+      console.log(encodeURIComponent("" + searchVal));
       if (isSortAsc != tblIsSortAsc) {
          setTblIsSortAsc(isSortAsc);
          selectedPage = 1;
@@ -86,8 +89,7 @@ const Shop = (props: IProps) => {
          setSelectedCategoryFilter(categoryFilter);
          selectedPage = 1;
       }
-
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.PleaseWait(1000, isUnmounted);
       useSearchPublicProduct(selectedPage, maxItemsPerPage, categoryFilter, searchString, isSortAsc, sortName)
          .then(result => {
             if (isUnmounted.current) return;
@@ -115,7 +117,7 @@ const Shop = (props: IProps) => {
       if (tblSortName === sortName)
          isSortAsc = !isSortAsc;
 
-      onSearch(isSortAsc, sortName);
+      onSearch(searchValue, isSortAsc, sortName);
 
    };
    const getSortedColCss = (sortName: string) => {
@@ -131,9 +133,9 @@ const Shop = (props: IProps) => {
             <div className="row p-3 ">
                <SearchInput key="searchInput"
                   value={searchValue}
-                  onChange={i => setSearchValue(i.target.value)}
+                  onChange={i => setSearchValue(i.target.value || "")}
                   className="col-12 col-sm-4 col-md-6 pt-2"
-                  onSearch={() => { onSearch(tblIsSortAsc, tblSortName); }}
+                  onSearch={() => { onSearch(undefined, tblIsSortAsc, tblSortName); }}
                />
                <DropDown title={`Category: ${categoryList.find((c) => c.id?.toString() == selectedCategoryFilter)?.name || "All"}`}
                   className="col-12 col-sm-4 col-md-3 ml-auto m-0 p-0 pt-2"
@@ -142,7 +144,7 @@ const Shop = (props: IProps) => {
                   <button className="dropdown-item"
                      onClick={() => {
                         history.push("/Shop");
-                        onSearch(undefined, undefined, undefined, undefined, GetAllRecords);
+                        onSearch(undefined, undefined, undefined, undefined, undefined, GetAllRecords);
                      }} >
                      All
                         </button>
@@ -150,7 +152,7 @@ const Shop = (props: IProps) => {
                      <button className="dropdown-item" key={category.id}
                         onClick={() => {
                            history.push(`/Shop/Category/${encodeURIComponent(category.name || "")}`);
-                           onSearch(undefined, undefined, undefined, undefined, category.id?.toString());
+                           onSearch(undefined, undefined, undefined, undefined, undefined, category.id?.toString());
                         }}>
                         {category.name}
                      </button>
@@ -172,13 +174,13 @@ const Shop = (props: IProps) => {
                />
             </div>
             <div className="row p-3 justify-content-center">
-               {productList.map((product) => <ShopItem product={product} />)}
+               {productList.map((product) => <ShopItem className="col-12 col-sm-6 col-md-4 p-0 pb-2" product={product} />)}
                <div className="col-12 col-sm-6 col-md-4 mr-auto" />
             </div>
             <LoadMore
                maxItemsPerPage={tblMaxItemsPerPage}
                selectedPage={tblSelectedPage}
-               onChange={(selectedPage, maxItemsPerPage) => { onSearch(tblIsSortAsc, tblSortName, selectedPage, maxItemsPerPage); }}
+               onChange={(selectedPage, maxItemsPerPage) => { onSearch(undefined, tblIsSortAsc, tblSortName, selectedPage, maxItemsPerPage); }}
                listCount={tblTotalItemCount} />
          </Container>
       </Container >

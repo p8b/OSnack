@@ -1,11 +1,11 @@
 ﻿
-import React, { useEffect, useState } from 'react';
+import React, { RefObject, useEffect, useState } from 'react';
 import { useDetectOutsideClick } from '../../hooks/function/useDetectOutsideClick';
 const DropDown = (props: IProps) => {
    const [dropDown] = useState(React.createRef<HTMLDivElement>());
    const [dropDownButton] = useState(React.createRef<HTMLButtonElement>());
-   const [outsideClickDropDownButton, setOutsideClickDropDownButton] = useDetectOutsideClick(dropDownButton, false);
-   const [outsideClickDropDown, setOutsideClickDropDown] = useDetectOutsideClick(dropDown, false);
+   const [outsideClickDropDownButton, setOutsideClickDropDownButton] = useDetectOutsideClick([props.buttonRef || dropDownButton], false);
+   const [outsideClickDropDown, setOutsideClickDropDown] = useDetectOutsideClick([dropDown], false);
    const [isOpen, setIsOpen] = useState(false);
 
    useEffect(() => {
@@ -21,18 +21,22 @@ const DropDown = (props: IProps) => {
       setOutsideClickDropDown(isOpen);
    }, [isOpen]);
 
+   useEffect(() => {
+      if (props.forceOpen)
+         setIsOpen(true);
+   }, [props.forceOpen]);
+
    return (
       <div className={`dropdown ${props.className}`} ref={dropDown}>
          <div className="col p-0">
             <button disabled={props.disabled} className={`col p-0 btn-no-style ${isOpen ? "show" : ""} `}
                onClick={() => setIsOpen((prev) => !prev)}
-               ref={dropDownButton}>
+               ref={(props.buttonRef || dropDownButton)}>
                <div className={` line-limit-1 ${props?.titleClassName}`}>
                   {props.title}
                </div>
             </button>
-            <span className={`col dropdown-menu text-center dropdown-menu-right bg-white 
-                                    ${isOpen ? " show" : ""}`}>
+            <span className={`col dropdown-menu text-center dropdown-menu-right bg-white ${isOpen ? " show" : ""}`}>
                {props.children}
             </span>
          </div>
@@ -47,5 +51,7 @@ declare type IProps = {
    title: any;
    children: any;
    disabled?: boolean;
+   buttonRef?: RefObject<HTMLButtonElement>;
+   forceOpen?: boolean;
 };
 export default DropDown;

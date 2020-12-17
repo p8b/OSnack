@@ -42,7 +42,7 @@ const BasketCoupon = (props: IProps) => {
             onChange={i => setCode(i.target.value)}
             className="col-8 mb-0 p-0 " />
          <div className="row col-4 m-0 p-0 mt-auto">
-            <Button className="col-12 btn-sm btn-blue radius-none m-0"
+            <Button className="col-12 btn-sm btn-blue  m-0"
                onClick={couponCheck} children="Apply" />
          </div>
       </div>

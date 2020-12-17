@@ -30,7 +30,7 @@ export const Input = (props: IProps) => {
    return (
       <div className={`mb-3 ${props.className}`}>
          {  props.label != undefined &&
-            <label children={props.label} htmlFor={id}
+            <label children={props.label} htmlFor={id} onClick={() => { document.getElementById(id)?.focus(); }}
                className={`col-form-label p-0 m-0 ${lblPos}`} />
          }
          <input id={id} ref={props.ref} type={props?.type || "text"}

@@ -15,7 +15,7 @@ const Carousel = (props: IProps) =>
       }}
       animationType="slide"
       animationDuration={2000}
-      autoPlayInterval={3000}
+      autoPlayInterval={3500}
       autoPlay={true}
       mouseTracking={false}
       infinite

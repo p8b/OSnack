@@ -33,7 +33,7 @@ const Home = (props: IProps) => {
       for (var i = 0; i < categoryList.length; i++) {
          let category = categoryList[i];
          arr.push(
-            <div className="shop-card-category">
+            <div className="shop-card-category ml-auto mr-auto">
                <a className="col link-shop-card-img m-0 justify-text-center"
                   onClick={() => {
                      history.push(`/Shop/Category/${encodeURIComponent(category.name || "")}`);

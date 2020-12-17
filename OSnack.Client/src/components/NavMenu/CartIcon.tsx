@@ -12,7 +12,6 @@ const CartIcon = (props: IProps) => {
          {
             basket.state.List.length > 0 &&
             <div className="nav-cart ">
-
                <button type="button" name="toggler"
                   className={`cart-icon btn-no-style`}
                   onClick={() => { history.push("/Checkout"); }}

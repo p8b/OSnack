@@ -12,9 +12,10 @@ import { useLogoutAuthentication } from "osnack-frontend-shared/src/hooks/Offici
 
 // Navigation menu component
 const NavMenu = (props: IProps) => {
-   const [NavContainer] = useState(React.createRef<HTMLDivElement>());
+   const [navDropdownRef] = useState(React.createRef<HTMLDivElement>());
+   const [accountDropdownButtonRef] = useState(React.createRef<HTMLButtonElement>());
    const auth = useContext(AuthContext);
-   const [outsideClickSmallNav, setOutsideClickSmallNav] = useDetectOutsideClick(NavContainer, false);
+   const [outsideClickSmallNav, setOutsideClickSmallNav] = useDetectOutsideClick([navDropdownRef, accountDropdownButtonRef], false);
    const [currentNavItems, setCurrentNavItems] = useState(DefaultNav);
    const [selectedNav] = useState(window.location.pathname);
 
@@ -34,19 +35,21 @@ const NavMenu = (props: IProps) => {
 
    return (
       <header >
-         <nav id="navbar" className="navbar p-0" ref={NavContainer}>
+         <nav id="navbar" className="navbar p-0" >
             <div className="row col-12 p-0 m-0 ">
                {/** Logo & toggler icon */}
                <Link to="/" className="logo-container ml-md-auto mr-auto pt-1 pl-2 pl-md-0">
                   <img id="logo" alt="Logo" className="Logo" src="/public/images/logo.png" />
                </Link>
                <CartIcon />
-               <button type="button" name="toggler"
-                  className={`fas toggler-icon ${outsideClickSmallNav ? "show" : "hide"}`}
-                  onClick={() => { setOutsideClickSmallNav((prevVal) => !prevVal); }} />
+               <span ref={navDropdownRef}>
+                  <button type="button" name="toggler"
+                     className={`fas toggler-icon ${outsideClickSmallNav ? "show" : "hide"}`}
+                     onClick={() => { setOutsideClickSmallNav((prevVal) => !prevVal); }} />
+               </span>
             </div>
             <div className={`d-md-inline-flex flex-md-row w-100 collapse align-items-center
-                           ${outsideClickSmallNav ? "show" : 'hide'}`}>
+                           ${outsideClickSmallNav ? "show" : 'hide'}`} >
                <div className="ml-auto" />
                {/** user links */}
                {currentNavItems.map(link =>
@@ -54,7 +57,9 @@ const NavMenu = (props: IProps) => {
                      className="col-12 col-md-auto" />
                )}
                {auth.state.isAuthenticated &&
-                  <DropDown titleClassName={`btn-no-style ${selectedNav === "/MyAccount" ? "visited" : ""}`}
+                  <DropDown buttonRef={accountDropdownButtonRef}
+                     titleClassName={`btn-no-style ${selectedNav === "/MyAccount" ? "visited" : ""}`}
+                     forceOpen={outsideClickSmallNav}
                      title={<div className="user-circle-icon" />}>
                      <NavLink className="dropdown-item"
                         path={"/MyAccount"}

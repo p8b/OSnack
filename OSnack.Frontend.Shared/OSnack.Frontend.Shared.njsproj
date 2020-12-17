@@ -226,7 +226,7 @@
     <Content Include="src\styles\main.shared.scss" />
     <Content Include="src\styles\modules\_a.scss" />
     <Content Include="src\styles\modules\_badge.scss" />
-    <Content Include="src\styles\modules\_bottons.scss" />
+    <Content Include="src\styles\modules\_buttons.scss" />
     <Content Include="src\styles\modules\_breadcrumb.scss" />
     <Content Include="src\styles\modules\_checkbox.scss" />
     <Content Include="src\styles\modules\_dropdown.scss" />

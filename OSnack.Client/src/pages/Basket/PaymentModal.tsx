@@ -34,7 +34,7 @@ const PaymentModal = (props: IProps) => {
          className="col-4">
          {!isLoading &&
             <>
-               <Button className="col-12 btn-white radius-none mb-3" children="Back" onClick={() => { props.setIsOpen(false); }} />
+               <Button className="col-12 btn-white  mb-3" children="Back" onClick={() => { props.setIsOpen(false); }} />
                <PayPalButton amount="10.00"
                   createOrder={(data: any, actions: any) => createOrder(data, actions)}
                   onApprove={(data: any, actions: any) => onApprove(data, actions)}

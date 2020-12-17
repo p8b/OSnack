@@ -91,10 +91,10 @@ const MyAddresses = (props: IProps) => {
                            </p>
                         </div>
                         <div className="row col-12 p-0 m-0  mt-auto">
-                           <Button className="btn-sm  col m-0 radius-none"
+                           <Button className="btn-sm  col m-0 "
                               children="Edit" />
                            {!addr.isDefault &&
-                              <Button className="btn-sm  col-6 m-0 radius-none"
+                              <Button className="btn-sm  col-6 m-0 "
                                  onClick={(e) => {
                                     e.stopPropagation();
                                     setDefault(addr.id || 0);

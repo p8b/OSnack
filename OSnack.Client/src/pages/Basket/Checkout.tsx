@@ -26,11 +26,11 @@ const Checkout = (props: IProps) => {
    const auth = useContext(AuthContext);
    const basket = useContext(ShopContext);
    const toggleContainerModal = React.createRef<HTMLDivElement>();
-   const [outsideClickModal, setOutsideClickModal] = useDetectOutsideClick(toggleContainerModal, false);
+   const [outsideClickModal, setOutsideClickModal] = useDetectOutsideClick([toggleContainerModal], false);
    const [isOpenAddressModal, setIsOpenAddressModal] = useState(false);
 
    const paymentModalRef = React.createRef<HTMLDivElement>();
-   const [isOpenPayementModal, setIsOpenPayementModal] = useDetectOutsideClick(paymentModalRef, false);
+   const [isOpenPayementModal, setIsOpenPayementModal] = useDetectOutsideClick([paymentModalRef], false);
 
    const [addressList, setAddressList] = useState<Address[]>([]);
    const [selectAddress, setSelectAddress] = useState(new Address());
@@ -248,11 +248,11 @@ const Checkout = (props: IProps) => {
                         <div className="col-12 " children={selectAddress.postcode} key="Postcode_Checkout" />
                      </div>
                      {(selectAddress.id || 0) > 0 &&
-                        <Button className="col-2 col-md-1 btn-sm edit-icon radius-none mb-auto ml-auto"
+                        <Button className="col-2 col-md-1 btn-sm edit-icon  mb-auto ml-auto"
                            onClick={() => { setIsOpenAddressModal(true); }} />
                      }
                   </div>
-                  <Button className="col-12 btn-lg btn-green mt-auto radius-none " children="Checkout" onClick={checkout} />
+                  <Button className="col-12 btn-lg btn-green mt-auto  " children="Checkout" onClick={checkout} />
                </>
             }
             {!auth.state.isAuthenticated &&

@@ -18,8 +18,8 @@ const BasketItem = (props: IProps) => {
             <div className="col-12 p-0 "><span className="h5">{props.orderItem.name}</span> ({props.orderItem.productCategoryName})</div>
             <div className="col-12 p-0 h6 mb-1">£{props.orderItem.price} ({props.orderItem.unitQuantity} {ProductUnitType[props.orderItem.unitType]}) :  <b>£{(props.orderItem.price * props.orderItem.quantity).toFixed(2)}</b></div>
             <QuantityInput
-               btnMinusClassName="radius-none"
-               btnPlusClassName="radius-none"
+               btnMinusClassName=""
+               btnPlusClassName=""
                value={props.orderItem.quantity}
                onChange={(val) => { basket.updateOrderItem(props.orderItem, val); props.onChange(val); }}
                className="col-12 mt-3 mt-sm-auto"

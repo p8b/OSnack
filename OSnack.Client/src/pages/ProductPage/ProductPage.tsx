@@ -18,7 +18,7 @@ const ProductPage = (props: IProps) => {
    const errorAlert = useAlert(new AlertObj());
    const [product, setProduct] = useState(new Product());
    const [redirectToShop, setRedirectToShop] = useState<boolean>(false);
-   const [carouselItems, setCarouselItems] = useState<any[]>([]);
+   const [carousel, setCarousel] = useState<any>();
    const history = useHistory();
    const basket = useContext(ShopContext);
 
@@ -33,7 +33,7 @@ const ProductPage = (props: IProps) => {
                if (isUnmounted.current) return;
                setProduct(result.data.product!);
                window.scrollTo(0, 0);
-               getCarouselItems(result.data.productList!);
+               setCarousel(<Carousel items={getCarouselItems(result.data.productList!)} />);
                errorAlert.clear();
             }).catch(alert => {
                if (isUnmounted.current) return;
@@ -46,9 +46,9 @@ const ProductPage = (props: IProps) => {
    const getCarouselItems = (productList: Product[]) => {
       let arr: any[] = [];
       productList.map((product => {
-         arr.push(<ShopItem key={product.id} product={product} />);
+         arr.push(<ShopItem className="col-12 no-border" key={product.id} product={product} />);
       }));
-      setCarouselItems(arr);
+      return arr;
    };
    if (redirectToShop)
       return <Redirect to="/Shop" />;
@@ -78,9 +78,9 @@ const ProductPage = (props: IProps) => {
                         <b className="mb-5">£{product.price} ({product.unitQuantity} {ProductUnitType[product.unitType]})</b>
                         <QuantityInput
                            btnOnZeroTitle="Add"
-                           btnOnZeroClassName="radius-none btn-green cart-icon"
-                           btnMinusClassName="radius-none"
-                           btnPlusClassName="radius-none"
+                           btnOnZeroClassName=" btn-green cart-icon"
+                           btnMinusClassName=""
+                           btnPlusClassName=""
                            value={basket.getQuantity(product)}
                            onChange={(val) => { basket.set(product, val); }}
                            className="w-50 pt-3 pb-3"
@@ -94,7 +94,7 @@ const ProductPage = (props: IProps) => {
                   </div>
                   <div className="row justify-content-center">
                      <PageHeader title="Related Products" className="line-header-lg col-12" />
-                     <Carousel items={carouselItems} />
+                     {carousel}
                   </div>
                </div>
             }

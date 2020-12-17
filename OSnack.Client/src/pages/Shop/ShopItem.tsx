@@ -11,7 +11,7 @@ const ShopItem = (props: IProps) => {
    const history = useHistory();
    const basket = useContext(ShopContext);
    return (
-      <div key={props.product.id} className="col-12 col-sm-6 col-md-4 p-0 pb-2 shop-card ">
+      <div key={props.product.id} className={`${props.className || ""} shop-card`}>
          <a className="col link-shop-card-img m-0 justify-text-center"
             onClick={() => {
                history.push(`/Shop/Product/${encodeURIComponent(props.product.category.name || "")}/${encodeURIComponent(props.product.name || "")}`);
@@ -24,9 +24,9 @@ const ShopItem = (props: IProps) => {
          {  !props.isQuantityDisabled &&
             <QuantityInput
                btnOnZeroTitle=""
-               btnOnZeroClassName="radius-none btn-green cart-icon"
-               btnMinusClassName="radius-none"
-               btnPlusClassName="radius-none"
+               btnOnZeroClassName=" btn-green cart-icon"
+               btnMinusClassName=""
+               btnPlusClassName=""
                value={basket.getQuantity(props.product)}
                onChange={(val) => { basket.set(props.product, val); }}
                className="col-12"
@@ -45,5 +45,6 @@ const ShopItem = (props: IProps) => {
 declare type IProps = {
    product: Product;
    isQuantityDisabled?: boolean;
+   className?: string;
 };
 export default ShopItem;

@@ -53,7 +53,7 @@ const MyOrders = (props: IProps) => {
 
                      </div>
                      <div className="row col-12 p-0 m-0  mt-auto">
-                        <Button className="btn-sm  col m-0 radius-none"
+                        <Button className="btn-sm  col m-0 "
                            children="Show Detail" onClick={() => {
                               setSelectOrder(order);
                               setIsOpenOrderModal(true);

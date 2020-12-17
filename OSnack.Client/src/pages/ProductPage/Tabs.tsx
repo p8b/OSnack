@@ -4,13 +4,31 @@ import React, { useEffect, useState } from 'react';
 import Container from '../../components/Container';
 const Tabs = (props: IProps) => {
    const [selectedNav, setSelectedNav] = useState(productTabs.NutritionalInfo);
+   const [showNutritionalInfo, setShowNutritionalInfo] = useState(false);
    useEffect(() => {
-      console.log(props.product.nutritionalInfo);
-   }, []);
+      // if no nutritional information is avilable
+      if (props.product.nutritionalInfo != null) {
+         if ((props.product.nutritionalInfo.energyKcal != null && props.product.nutritionalInfo.energyKJ != null)
+            || (props.product.nutritionalInfo.fat != null && props.product.nutritionalInfo.saturateFat != null)
+            || (props.product.nutritionalInfo.carbohydrate != null && props.product.nutritionalInfo.carbohydrateSugar != null)
+            || props.product.nutritionalInfo.fibre != null
+            || props.product.nutritionalInfo.protein != null
+            || props.product.nutritionalInfo.salt != null
+         ) {
+            setSelectedNav(productTabs.NutritionalInfo);
+            setShowNutritionalInfo(true);
+         }
+         else {
+            setShowNutritionalInfo(false);
+            setSelectedNav(productTabs.Comments);
+         }
+      }
+
+   }, [props.product.nutritionalInfo]);
    return (
       <>
          <ul className="nav nav-tabs">
-            {props.product.nutritionalInfo != undefined &&
+            {showNutritionalInfo &&
                <li className="nav-item">
                   <a onClick={() => { setSelectedNav(productTabs.NutritionalInfo); }}
                      className={`nav-link ${selectedNav === productTabs.NutritionalInfo ? "active" : ""} `}>
@@ -27,17 +45,33 @@ const Tabs = (props: IProps) => {
          </ul>
          <div className="col-12">
             <Container className="container-fluid p-3 pt-5 pb-5">
-               {selectedNav === productTabs.NutritionalInfo &&
+               {showNutritionalInfo && selectedNav === productTabs.NutritionalInfo &&
                   <>
                      <p>Per 100g</p>
-                     <div>Energy: {props.product.nutritionalInfo?.energyKJ}KJ / {props.product.nutritionalInfo?.energyKcal}Kcal</div>
-                     <div>Fat: {props.product.nutritionalInfo?.fat}g</div>
-                     <div className="pl-5">of which saturates, {props.product.nutritionalInfo?.saturateFat}g</div>
-                     <div>Carbohydrate: {props.product.nutritionalInfo?.carbohydrate}g</div>
-                     <div className="pl-5">of which Sugar, {props.product.nutritionalInfo?.carbohydrateSugar}g</div>
-                     <div>Fiber: {props.product.nutritionalInfo?.fibre}g</div>
-                     <div>Protein: {props.product.nutritionalInfo?.protein}g</div>
-                     <div>Salt: {props.product.nutritionalInfo?.salt}g</div>
+                     {props.product.nutritionalInfo?.energyKcal != null && props.product.nutritionalInfo?.energyKJ != null &&
+                        <div>Energy: {props.product.nutritionalInfo?.energyKJ}KJ / {props.product.nutritionalInfo?.energyKcal}Kcal</div>
+                     }
+                     {props.product.nutritionalInfo?.fat != null && props.product.nutritionalInfo?.saturateFat != null &&
+                        <>
+                           <div>Fat: {props.product.nutritionalInfo?.fat}g</div>
+                           <div className="pl-5">of which saturates, {props.product.nutritionalInfo?.saturateFat}g</div>
+                        </>
+                     }
+                     {props.product.nutritionalInfo?.carbohydrate != null && props.product.nutritionalInfo?.carbohydrateSugar != null &&
+                        <>
+                           <div>Carbohydrate: {props.product.nutritionalInfo?.carbohydrate}g</div>
+                           <div className="pl-5">of which Sugar, {props.product.nutritionalInfo?.carbohydrateSugar}g</div>
+                        </>
+                     }
+                     {props.product.nutritionalInfo?.fibre != null &&
+                        <div>Fiber: {props.product.nutritionalInfo?.fibre}g</div>
+                     }
+                     {props.product.nutritionalInfo?.protein != null &&
+                        <div>Protein: {props.product.nutritionalInfo?.protein}g</div>
+                     }
+                     {props.product.nutritionalInfo?.salt != null &&
+                        <div>Salt: {props.product.nutritionalInfo?.salt}g</div>
+                     }
                   </>
                }
                {selectedNav === productTabs.Comments &&

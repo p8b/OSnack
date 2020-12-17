@@ -11,7 +11,7 @@ export const DatePicker = (props: IProps) => {
    const id: string = props.id === undefined ? Math.random().toString() : props.id!;
    const [value, setValue] = useState(new Date());
    const [DateModal] = useState(React.createRef<HTMLDivElement>());
-   const [isOpenDateModal, setIsOpenDateModal] = useDetectOutsideClick(DateModal, false);
+   const [isOpenDateModal, setIsOpenDateModal] = useDetectOutsideClick([DateModal], false);
    useEffect(() => {
       setValue(props.selectDate || new Date());
    }, [props.selectDate]);

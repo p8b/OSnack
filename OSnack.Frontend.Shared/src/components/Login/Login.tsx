@@ -94,7 +94,7 @@ const Login = (props: IProps) => {
 
    return (
       <>
-         <PageHeader title="Login" className="pt-0 line-header-no-line" />
+         <PageHeader title="Login" className="row pt-0 " />
 
          <Input label="Email"
             type="email"
@@ -104,14 +104,15 @@ const Login = (props: IProps) => {
             showDanger={errorAlert.checkExist("email")}
             onChange={i => setLoginInfo({ ...loginInfo, email: i.target.value })}
          />
-
-         <Input label="Password"
-            type="password"
-            onPressedEnter={login}
-            value={loginInfo.password}
-            showDanger={errorAlert.checkExist("password")}
-            onChange={i => setLoginInfo({ ...loginInfo, password: i.target.value })}
-         />
+         {loginInfo.email != "" && loginInfo.email != undefined &&
+            <Input label="Password"
+               type="password"
+               onPressedEnter={login}
+               value={loginInfo.password}
+               showDanger={errorAlert.checkExist("password")}
+               onChange={i => setLoginInfo({ ...loginInfo, password: i.target.value })}
+            />
+         }
 
          <div className="mt-3 mb-3 d-inline">
             <CheckBox label="Remember Me" className="col-6 color-style-checked"

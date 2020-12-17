@@ -4,7 +4,7 @@ import { useDetectOutsideClick } from '../../hooks/function/useDetectOutsideClic
 const ButtonPopupConfirm = (props: IProps) => {
    const [id] = useState(Math.random());
    const [toggleDropdown] = useState(React.createRef<HTMLDivElement>());
-   const [isOpenDropdown, setIsOpenDropdown] = useDetectOutsideClick(toggleDropdown, false);
+   const [isOpenDropdown, setIsOpenDropdown] = useDetectOutsideClick([toggleDropdown], false);
 
    return (
       <div className={`btn-group form dropup p-0 ${props.className}`} ref={toggleDropdown}>

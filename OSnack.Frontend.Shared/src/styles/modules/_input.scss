@@ -10,7 +10,7 @@
     margin: 0 !important;
     border-bottom: 0.15rem solid rgb(128, 128, 128);
     font-size: 1.2rem !important;
-    z-index: 2;
+    z-index: 1 !important;
     @extend .radius-none;
 
     &.danger {
