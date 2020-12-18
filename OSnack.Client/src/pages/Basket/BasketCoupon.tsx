@@ -21,7 +21,6 @@ const BasketCoupon = (props: IProps) => {
             props.setAlert(new AlertObj(
                [new ErrorDto("Access Denied", "Only apply to \"standard\" delivery.")],
                AlertTypes.Error));
-            setCode("");
             return;
          }
          if (props.totalPrice < result.data.minimumOrderPrice!) {
@@ -37,8 +36,8 @@ const BasketCoupon = (props: IProps) => {
          .catch(alert => props.setAlert(alert));
    };
    return (
-      <div className="row col-12 pm-0 pb-3 ">
-         <Input label="Discount Code"
+      <div className="row col-12 pm-0 pb-2">
+         <Input placeholder="Discount Code"
             value={code}
             onChange={i => setCode(i.target.value)}
             className="col-8 mb-0 p-0 " />

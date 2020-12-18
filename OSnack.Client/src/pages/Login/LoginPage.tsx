@@ -12,7 +12,7 @@ const LoginPage = (props: IProps) => {
    const [newUser, setNewUser] = useState(new User());
    const toggleContainerModal = React.createRef<HTMLDivElement>();
    const [outsideClickModal, setOutsideClickModal] = useDetectOutsideClick([toggleContainerModal], false);
-
+   console.log(props.location.state?.fromPath);
    const externalLoginFailed = (user: User) => {
       setOutsideClickModal(true);
       setNewUser(user);

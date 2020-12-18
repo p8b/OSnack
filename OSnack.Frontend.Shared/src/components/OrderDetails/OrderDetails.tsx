@@ -28,13 +28,23 @@ const OrderDetails = (props: IProps) => {
                   <div className="col-12 p-0 line-limit-1">{props.order.city}</div>
                   <div className="col-12 p-0">{props.order.postcode}</div>
                </div>
+
                <div className="row col-12 pm-0 mt-3">
                   <div className="col-8 pm-0 small-text text-gray" >Status:</div>
                   <div className="col-4 p-0 font-weight-bold">{OrderStatusTypeList.find(o => o.Value == props.order.status)?.Name}</div>
                </div>
+               <div className="row col-12 pm-0 ">
+                  <div className="col-8 pm-0 small-text text-gray" >Order Id :</div>
+                  <div className="col-4 p-0 small-text">{props.order.id}</div>
+               </div>
+               <div className="row col-12 pm-0">
+                  <div className="col-8 pm-0 small-text text-gray" >{props.order.payment.paymentProvider} Reference :</div>
+                  <div className="col-4 p-0 small-text">{props.order.payment.reference}</div>
+               </div>
+
                <div className="row col-12  pm-0">
                   <div className="col-8 pm-0 small-text text-gray">Payment date :</div>
-                  <div className="col-4 p-0">{new Date(props.order.date!).ToShortDate()}</div>
+                  <div className="col-4 p-0 small-text">{new Date(props.order.date!).ToShortDate()}</div>
                </div>
 
                <div className="row col-12 pm-0 ">
@@ -44,7 +54,7 @@ const OrderDetails = (props: IProps) => {
 
                <div className="row col-12 pm-0 ">
                   <div className="col-8 pm-0  small-text text-gray">Shippment Price:</div>
-                  <div className="col-4 small-text p-0">£{props.order.deliveryOption?.price}</div>
+                  <div className="col-4 small-text p-0">{props.order.deliveryOption?.price === 0 ? "Free" : `£${props.order.deliveryOption?.price}`}</div>
                </div>
                {props.order.totalDiscount > 0 &&
                   <div className="row col-12 pm-0">
@@ -56,8 +66,6 @@ const OrderDetails = (props: IProps) => {
                   <div className="col-8 p-0 pm-0 font-weight-bold ">Total Price:</div>
                   <div className="col-4 p-0 font-weight-bold">£{props.order.totalPrice}</div>
                </div>
-               <span className=" col-12 pm-0 small-text text-light-gray mt-3">{props.order.payment.paymentProvider} Reference :{props.order.payment.reference}</span>
-
 
 
             </div>
@@ -75,7 +83,8 @@ const OrderDetails = (props: IProps) => {
                            src={`${API_URL}/${orderItem.imagePath}`} alt={name} />
                      </div>
                      <div className="row col-10 mb-3 ">
-                        <div className="col-12 "><span className="h5">{orderItem.name}</span> ({orderItem.productCategoryName}) - {orderItem.unitQuantity} {ProductUnitType[orderItem.unitType]}</div>
+                        <div className="col-12 "><span className="h5">{orderItem.name}</span> ({orderItem.productCategoryName})</div>
+                        <div className="col-12 small-text">{orderItem.unitQuantity} {ProductUnitType[orderItem.unitType]}</div>
                         <div className="col-12 h6 mb-1">£{orderItem.price} x {orderItem.quantity} :  <b>£{(orderItem.price * orderItem.quantity).toFixed(2)}</b></div>
                      </div>
                   </>

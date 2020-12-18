@@ -5,17 +5,17 @@ import InputDropDown from 'osnack-frontend-shared/src/components/Inputs/InputDro
 import { Address, Coupon, CouponType, DeliveryOption, Order, Order2 } from 'osnack-frontend-shared/src/_core/apiModels';
 import { useAllDeliveryOption } from 'osnack-frontend-shared/src/hooks/PublicHooks/useDeliveryOptionHook';
 import { useAllAddress } from 'osnack-frontend-shared/src/hooks/OfficialHooks/useAddressHook';
-import { usePostOrder, useVerifyOrderOrder } from 'osnack-frontend-shared/src/hooks/OfficialHooks/useOrderHook';
+import { usePostOrder, useVerifyOrderOrder } from 'osnack-frontend-shared/src/hooks/PublicHooks/useOrderHook';
 import { AuthContext } from 'osnack-frontend-shared/src/_core/authenticationContext';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
-import Login from 'osnack-frontend-shared/src/components/Login/Login';
-import NewCustomerModal from '../Login/NewCustomerModal';
-import { Access } from '../../_core/appConstant.Variables';
 import { useDetectOutsideClick } from 'osnack-frontend-shared/src/hooks/function/useDetectOutsideClick';
 import AddressModal from '../MyAccount/AddressModal';
 import BasketCoupon from './BasketCoupon';
 import PaymentModal from './PaymentModal';
 import useScript from 'osnack-frontend-shared/src/hooks/function/useScript';
+import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
+import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
+import { Link, Redirect } from 'react-router-dom';
 
 const Checkout = (props: IProps) => {
    const clientID = "AUc_fJXtMhI3ugArGsxZur6ej0GP4Pb_usigBXwK9qvtUKByaJWEf7HNrUBSMHaYSiBq6Cg5nOf4_Tq_";
@@ -25,10 +25,8 @@ const Checkout = (props: IProps) => {
    const errorAlert = useAlert(new AlertObj());
    const auth = useContext(AuthContext);
    const basket = useContext(ShopContext);
-   const toggleContainerModal = React.createRef<HTMLDivElement>();
-   const [outsideClickModal, setOutsideClickModal] = useDetectOutsideClick([toggleContainerModal], false);
    const [isOpenAddressModal, setIsOpenAddressModal] = useState(false);
-
+   const [isOrderCompleted, setIsOrderCompleted] = useState(false);
    const paymentModalRef = React.createRef<HTMLDivElement>();
    const [isOpenPayementModal, setIsOpenPayementModal] = useDetectOutsideClick([paymentModalRef], false);
 
@@ -55,6 +53,9 @@ const Checkout = (props: IProps) => {
          props.setRefresh(false);
       }
    }, [props.refresh]);
+   useEffect(() => {
+      setOrder(prev => { return { ...prev, addressId: selectAddress.id || 0 }; });
+   }, [selectAddress]);
 
    const getDeliveryOptionAndAddresses = () => {
       if (auth.state.isAuthenticated) {
@@ -63,20 +64,21 @@ const Checkout = (props: IProps) => {
             setAddressList(result.data);
             setSelectAddress(result.data.find(t => t.isDefault == true) || new Address());
          }).catch();
-         useAllDeliveryOption().then(result => {
-            if (isUnmounted.current) return;
-            recalculateBasket(result.data);
-         }).catch();
       }
+      useAllDeliveryOption().then(result => {
+         if (isUnmounted.current) return;
+         recalculateBasket(result.data);
+      }).catch();
    };
-   useEffect(() => {
-      setOrder(prev => { return { ...prev, addressId: selectAddress.id || 0 }; });
-   }, [selectAddress]);
    const recalculateBasket = (deliveryOptionList: DeliveryOption[],
       selectDeliveryOption?: DeliveryOption, selectCoupon?: Coupon) => {
       let totalPriceTemp = 0;
+      let totalItemPriceTemp = 0;
       /// Calculate the Total item price
-      basket.state.List.map(orderItem => { totalPriceTemp += (orderItem.quantity * orderItem.price); });
+      basket.state.List.map(orderItem => {
+         totalPriceTemp += (orderItem.quantity * orderItem.price);
+      });
+      totalItemPriceTemp = totalPriceTemp;
       let removeCoupon = false;
       if (selectCoupon == undefined) {
          selectCoupon = order.coupon;
@@ -135,7 +137,7 @@ const Checkout = (props: IProps) => {
 
             if (selectDeliveryOption?.price == 0 && selectDeliveryOption?.minimumOrderTotal == 0) {   //if free coupon used in order
 
-               totalPriceTemp -= order.deliveryOption.price;
+               totalPriceTemp -= order.deliveryOption?.price || 0;
                selectDeliveryOption.price = deliveryOptionList.find(d => d.price != 0 && d.minimumOrderTotal == 0 && d.isPremitive)!.price;
             }
             else
@@ -159,7 +161,8 @@ const Checkout = (props: IProps) => {
             ...prev, totalPrice: totalPriceTemp,
             deliveryOption: selectDeliveryOption || order.deliveryOption,
             coupon: removeCoupon ? new Coupon() : selectCoupon,
-            orderItems: basket.state.List
+            orderItems: basket.state.List,
+            totalItemPrice: totalItemPriceTemp
          };
       });
    };
@@ -171,7 +174,6 @@ const Checkout = (props: IProps) => {
          if (isUnmounted.current) return;
          console.log(result.data);
          setPaypalOrder(result.data);
-         paypalScript.setOrderId("as");
          setIsOpenPayementModal(true);
          errorAlert.clear();
       }).catch(alert => {
@@ -182,65 +184,70 @@ const Checkout = (props: IProps) => {
 
    const onComplete = (paypalOrderId: string) => {
 
-      usePostOrder(paypalOrderId, order).then(orderId => {
-         console.log(orderId);
+      usePostOrder(paypalOrderId, order).then(result => {
+         setOrder(result.data);
+         setIsOrderCompleted(true);
       }).catch(alert => {
          if (isUnmounted.current) return;
          errorAlert.set(alert);
          setIsOpenPayementModal(false);
       });
    };
+   if (isOrderCompleted)
+      return <Redirect to={{ pathname: "/OrderSuccessful", state: { order } }} />;
    return (
-      <div className="col-12 col-md-5 col-lg-6 pm-0 pt-3 pb-4 shadow ">
+      <div className={props.className}>
          <div className="col-12 m-0 pos-sticky">
             <Alert className="col-12 mb-2"
                alert={errorAlert.alert}
                onClosed={() => { errorAlert.clear(); }} />
+            <div className="col-12">
+               {totalDiscount <= 0 &&
+                  <BasketCoupon coupon={order.coupon || new Coupon()}
+                     totalPrice={order.totalItemPrice}
+                     acceptFreeCoupon={(order.deliveryOption?.price! > 0 && order.deliveryOption?.isPremitive) || false}
+                     setCoupon={(val) => { recalculateBasket(deliveryOptionList, order.deliveryOption, val); errorAlert.clear(); }}
+                     setAlert={(alert) => { errorAlert.set(alert); recalculateBasket(deliveryOptionList, order.deliveryOption, new Coupon()); }} />
+               }
+
+               <div className="col-12 pm-0 small-text"> Subtotal : <b>£{order.totalItemPrice?.toFixed(2)}</b></div>
+               {totalDiscount > 0 &&
+                  <div className="col-12 pm-0 pb-2 small-text"> Discount : <b>-£{parseFloat(totalDiscount.toString()).toFixed(2)}</b>
+                     <span className="float-right edit-icon" onClick={() => { setOrder(prev => { return { ...prev, coupon: new Coupon() }; }); setTotalDiscount(0); }} /></div>
+               }
+               <DropDown title={<><span>Shipping: <b>{order.deliveryOption?.name} £{order.deliveryOption?.price?.toFixed(2)}</b></span> <span className="float-right edit-icon" /></>}
+                  titleClassName="text-left small-text"
+                  className="col-12 pm-0"
+                  children={availableDeliveryList.map(delivery =>
+                     <a className="dropdown-item p-1 text-nav" key={delivery?.name}
+                        onClick={() => { recalculateBasket(deliveryOptionList, delivery); }}
+                        children={<div children={`${delivery?.name} - £${delivery?.price?.toFixed(2)}`} />}
+                     />)
+                  } />
+               <div className="h5 mb-0 pb-0"> Total : <b >£{order.totalPrice?.toFixed(2)}</b> </div>
+               <p className="col-12 p-0 m-0 small-text text-gray" >Total Items: {basket.getTotalItems()}</p>
+            </div>
             {auth.state.isAuthenticated &&
                <>
-                  <div className="row">
-                     <div className="col-12 col-lg-6 checkout-address p-0">
-                        <InputDropDown label="Delivery Option"
-                           dropdownTitle={order.deliveryOption?.name || "Delivery Option"}
-                           className="col-12 align-self-end"
-                           children={availableDeliveryList.map(delivery =>
-                              <a className="dropdown-item p-1 text-nav" key={delivery?.name}
-                                 onClick={() => { recalculateBasket(deliveryOptionList, delivery); }}
-                                 children={<div children={`${delivery?.name} - £${delivery?.price?.toFixed(2)}`} />}
-                              />)
-                           } />
-                        <InputDropDown dropdownTitle={selectAddress.name || "My Addresses"}
-                           className="col-12  align-self-end"
-                           label="Shipping Address"
-                           children={
-                              <div className="p-0 m-0">
-                                 {addressList.map(addr =>
-                                    <a className="dropdown-item text-nav" key={addr.id}
-                                       onClick={() => { setSelectAddress(addr); }}
-                                       children={<div className="col" children={`${addr.name}`} />} />)
-                                 }
-                                 <a className="dropdown-item text-nav" key="newAddress"
-                                    children='New Address'
-                                    onClick={() => {
-                                       setSelectAddress(new Address());
-                                       setIsOpenAddressModal(true);
-                                    }} />
-                              </div>
-                           } />
-                     </div>
-                     <div className="col-12 col-lg-6">
-                        <BasketCoupon coupon={order.coupon || new Coupon()}
-                           totalPrice={order.totalPrice! - order.deliveryOption.price}
-                           acceptFreeCoupon={(order.deliveryOption.price > 0 && order.deliveryOption.isPremitive) || false}
-                           setCoupon={(val) => { recalculateBasket(deliveryOptionList, order.deliveryOption, val); errorAlert.clear(); }}
-                           setAlert={(alert) => { errorAlert.set(alert); recalculateBasket(deliveryOptionList, order.deliveryOption, new Coupon()); }} />
-                        <div> Shipping : <b>£{order.deliveryOption?.price?.toFixed(2)}</b></div>
-                        {totalDiscount > 0 && <div> Discount : <b>-£{parseFloat(totalDiscount.toString()).toFixed(2)}</b></div>}
-                        <div className="h5 mb-0 pb-0"> Total : <b >£{order.totalPrice?.toFixed(2)}</b> </div>
-                        <p className="col-12 p-0 m-0 small-text text-gray" >Total Items: {basket.getTotalItems()}</p>
-                     </div>
-                  </div>
-                  <div className="row col-12 pm-0 mt-2 mb-4">
+                  <div className="row col-12 pm-0 mt-5">
+                     <InputDropDown dropdownTitle={selectAddress.name || "My Addresses"}
+                        className="col-12  align-self-end "
+                        label="Shipping Address"
+                        children={
+                           <div className="p-0 m-0">
+                              {addressList.map(addr =>
+                                 <a className="dropdown-item text-nav" key={addr.id}
+                                    onClick={() => { setSelectAddress(addr); }}
+                                    children={<div className="col" children={`${addr.name}`} />} />)
+                              }
+                              <a className="dropdown-item text-nav" key="newAddress"
+                                 children='New Address'
+                                 onClick={() => {
+                                    setSelectAddress(new Address());
+                                    setIsOpenAddressModal(true);
+                                 }} />
+                           </div>
+                        } />
                      <div className="col-10 pm-0">
                         <div className="col-12 line-limit-2" children={selectAddress.firstLine} key="FirstLine_Checkout" />
                         <div className="col-12 line-limit-2" children={selectAddress.secondLine} key="SecondLine_Checkout" />
@@ -251,46 +258,37 @@ const Checkout = (props: IProps) => {
                         <Button className="col-2 col-md-1 btn-sm edit-icon  mb-auto ml-auto"
                            onClick={() => { setIsOpenAddressModal(true); }} />
                      }
+                     <Button className="col-12 btn-lg btn-green mb-4 mt-4" children="Checkout" onClick={checkout} />
                   </div>
-                  <Button className="col-12 btn-lg btn-green mt-auto  " children="Checkout" onClick={checkout} />
                </>
             }
             {!auth.state.isAuthenticated &&
                <>
-                  <Login externalLoginFailed={() => { }} fromPath={"/Checkout"} access={Access} />
-                  <Button children="New Customer" className="btn-lg btn-white col-12 mt-2"
-                     onClick={() => setOutsideClickModal((prev) => !prev)}
-                  />
+                  <Link className="col-12 btn btn-lg btn-green mb-4 mt-4" children="Login" to={{ pathname: "/Login", state: { fromPath: "/Checkout" } }} />
+                  <PageHeader title="OR" />
+
+                  <Button className="col-12 btn-lg btn-green mb-4 mt-4" children="Guest Checkout" onClick={checkout} />
                </>
             }
          </div>
          {/***** Add/ modify category modal  ****/}
          {auth.state.isAuthenticated &&
-            <>
-               <AddressModal isOpen={isOpenAddressModal}
-                  onSuccess={(address) => {
-                     useAllAddress().then(result => {
-                        setAddressList(result.data);
-                     }).catch(alert => errorAlert.set(alert));
-                     setSelectAddress(address);
-                  }}
-                  address={selectAddress}
-                  onClose={() => setIsOpenAddressModal(false)} />
-
-               {paypalScript.isLoaded &&
-                  <PaymentModal isOpen={isOpenPayementModal}
-                     setIsOpen={setIsOpenPayementModal}
-                     ref={paymentModalRef} paypalOrder={paypalOrder}
-                     onCompelete={onComplete}
-                     onError={errorAlert.set} />
-               }
-            </>
+            <AddressModal isOpen={isOpenAddressModal}
+               onSuccess={(address) => {
+                  useAllAddress().then(result => {
+                     setAddressList(result.data);
+                  }).catch(alert => errorAlert.set(alert));
+                  setSelectAddress(address);
+               }}
+               address={selectAddress}
+               onClose={() => setIsOpenAddressModal(false)} />
          }
-         {!auth.state.isAuthenticated &&
-            <NewCustomerModal isOpen={outsideClickModal}
-               modalRef={toggleContainerModal}
-               onCancel={() => setOutsideClickModal(false)}
-            />
+         {paypalScript.isLoaded &&
+            <PaymentModal isOpen={isOpenPayementModal}
+               setIsOpen={setIsOpenPayementModal}
+               ref={paymentModalRef} paypalOrder={paypalOrder}
+               onCompelete={onComplete}
+               onError={errorAlert.set} />
          }
       </div>
    );
@@ -299,5 +297,6 @@ const Checkout = (props: IProps) => {
 declare type IProps = {
    refresh: boolean;
    setRefresh: (refresh: boolean) => void;
+   className: string;
 };
 export default Checkout;

@@ -11,7 +11,14 @@ import { Loading } from 'osnack-frontend-shared/src/components/Loading/Loading';
 const PaymentModal = (props: IProps) => {
 
    // @ts-ignore
-   const PayPalButton = paypal.Buttons.driver("react", { React, ReactDOM });
+   const PayPalButton = paypal.Buttons.driver("react", {
+      // @ts-ignore
+      React, ReactDOM,
+      style: {
+         layout: 'horizontal',
+         fundingicons: 'true',
+      },
+   });
 
    const [isLoading, setIsLoading] = useState(false);
 
@@ -19,7 +26,6 @@ const PaymentModal = (props: IProps) => {
    }, []);
 
    const createOrder = (data: any, action: any) => {
-
       return action.order.create(props.paypalOrder);
 
    };
@@ -32,15 +38,15 @@ const PaymentModal = (props: IProps) => {
    return (
       <Modal isOpen={props.isOpen}
          bodyRef={props.ref}
-         className="col-12 col-md-4">
+         className="col-12 col-sm-10 col-md-7 col-lg-4 pm-0">
          {!isLoading &&
-            <>
+            <div className="col-12 m-0 p-3">
                <Button className="col-12 btn-white  mb-3" children="Back" onClick={() => { props.setIsOpen(false); }} />
                <PayPalButton amount="10.00"
                   createOrder={(data: any, actions: any) => createOrder(data, actions)}
                   onApprove={(data: any, actions: any) => onApprove(data, actions)}
                />
-            </>
+            </div>
          }
          {isLoading && <Loading />}
       </Modal>

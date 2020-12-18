@@ -42,23 +42,39 @@ export const EmailTemplateServerVariablesList=[
 ]
 export enum OrderStatusType {
 
-    Placed = 0,
-    In_Progress = 1,
-    Confirmed = 2,
+    In_Progress = 0,
+    Confirmed = 1,
+    Canceled = 2,
     Delivered = 3,
     Refund_Request = 4,
     Refund_Refused = 5,
-    Refunded = 6,
+    Partialy_Refunded = 6,
+    Fully_Refunded = 7,
 }
 
 export const OrderStatusTypeList=[
-{Id:0,Name:"Placed".replace(/_/g, ' '),Value:OrderStatusType.Placed},
-{Id:1,Name:"In_Progress".replace(/_/g, ' '),Value:OrderStatusType.In_Progress},
-{Id:2,Name:"Confirmed".replace(/_/g, ' '),Value:OrderStatusType.Confirmed},
+{Id:0,Name:"In_Progress".replace(/_/g, ' '),Value:OrderStatusType.In_Progress},
+{Id:1,Name:"Confirmed".replace(/_/g, ' '),Value:OrderStatusType.Confirmed},
+{Id:2,Name:"Canceled".replace(/_/g, ' '),Value:OrderStatusType.Canceled},
 {Id:3,Name:"Delivered".replace(/_/g, ' '),Value:OrderStatusType.Delivered},
 {Id:4,Name:"Refund_Request".replace(/_/g, ' '),Value:OrderStatusType.Refund_Request},
 {Id:5,Name:"Refund_Refused".replace(/_/g, ' '),Value:OrderStatusType.Refund_Refused},
-{Id:6,Name:"Refunded".replace(/_/g, ' '),Value:OrderStatusType.Refunded},
+{Id:6,Name:"Partialy_Refunded".replace(/_/g, ' '),Value:OrderStatusType.Partialy_Refunded},
+{Id:7,Name:"Fully_Refunded".replace(/_/g, ' '),Value:OrderStatusType.Fully_Refunded},
+]
+export enum PaymentType {
+
+    Pendig = 0,
+    Complete = 1,
+    Partialy_Refunded = 2,
+    Fully_Refunded = 3,
+}
+
+export const PaymentTypeList=[
+{Id:0,Name:"Pendig".replace(/_/g, ' '),Value:PaymentType.Pendig},
+{Id:1,Name:"Complete".replace(/_/g, ' '),Value:PaymentType.Complete},
+{Id:2,Name:"Partialy_Refunded".replace(/_/g, ' '),Value:PaymentType.Partialy_Refunded},
+{Id:3,Name:"Fully_Refunded".replace(/_/g, ' '),Value:PaymentType.Fully_Refunded},
 ]
 export enum ProductUnitType {
 
@@ -176,6 +192,8 @@ export class Payment {
     id?: number = 0;
     paymentProvider!: string;
     reference!: string;
+    type!: PaymentType;
+    email?: string | undefined;
     dateTime!: Date;
 
 }
@@ -484,9 +502,9 @@ export class UpdateCurrentUserData {
 }
 export class UserBase {
     id?: number;
-    phoneNumber?: string | undefined;
     email?: string | undefined;
     emailConfirmed?: boolean;
+    phoneNumber?: string | undefined;
 
 }
 export class Address extends OrderAddressBase {
@@ -511,13 +529,14 @@ export class User extends UserBase {
 
 }
 export class Order extends OrderAddressBase {
-    id?: number = 0;
+    id?: string | undefined;
     date?: Date;
     status!: OrderStatusType;
-    deliveryOption: DeliveryOption = new DeliveryOption();
+    deliveryOption?: DeliveryOption | undefined;
     deliveryPrice?: number;
     addressId!: number;
     userId?: number | undefined;
+    email?: string | undefined;
     payment: Payment = new Payment();
     coupon?: Coupon | undefined;
     orderItems?: OrderItem[] | undefined;

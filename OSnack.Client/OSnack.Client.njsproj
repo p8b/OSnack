@@ -192,6 +192,7 @@
     <TypeScriptCompile Include="src\pages\Basket\BasketItem.tsx" />
     <TypeScriptCompile Include="src\pages\Basket\Checkout.tsx" />
     <TypeScriptCompile Include="src\pages\Basket\Basket.tsx" />
+    <TypeScriptCompile Include="src\pages\Basket\OrderSuccess.tsx" />
     <TypeScriptCompile Include="src\pages\Basket\PaymentModal.tsx" />
     <TypeScriptCompile Include="src\pages\ContactUs\ContactUs.tsx" />
     <TypeScriptCompile Include="src\pages\Login\NewCustomerModal.tsx" />

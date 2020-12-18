@@ -9,9 +9,9 @@ using PayPalCheckoutSdk.Orders;
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace OSnack.API.Database.Models
@@ -127,9 +127,10 @@ namespace OSnack.API.Database.Models
          orderRequest.ApplicationContext = new ApplicationContext()
          {
             BrandName = AppConst.Settings.BrandName,
-            LandingPage = "BILLING",
             UserAction = "CONTINUE",
-            ShippingPreference = "SET_PROVIDED_ADDRESS"
+            ShippingPreference = "SET_PROVIDED_ADDRESS",
+
+
          };
 
          orderRequest.PurchaseUnits = new List<PurchaseUnitRequest>()
@@ -164,21 +165,53 @@ namespace OSnack.API.Database.Models
                   }
                } ,
                Items = ConvertItem(),
-               ShippingDetail=new ShippingDetail()
-               {
-                  Name=new Name(){
-                  FullName=$"{User.FirstName} {User.Surname}"
-                  },
-                  AddressPortable =new AddressPortable(){
-                     AddressLine1=FirstLine,
-                     AddressLine2=SecondLine,
-                     PostalCode=Postcode,
-                     CountryCode="GB",
-                     AdminArea2=City
-                  }
-               }
+
+
             }
          };
+         if (User != null)
+         {
+
+            orderRequest.PurchaseUnits.FirstOrDefault().ShippingDetail = new ShippingDetail()
+            {
+               Name = new Name()
+               {
+                  FullName = $"{User.FirstName} {User.Surname}"
+               },
+               AddressPortable = new AddressPortable()
+               {
+
+                  AddressLine1 = FirstLine,
+                  AddressLine2 = SecondLine,
+                  PostalCode = Postcode,
+                  CountryCode = "GB",
+                  AdminArea1 = "UK",
+                  AdminArea2 = City
+               },
+
+            };
+            orderRequest.Payer = new Payer()
+            {
+               Email = User.Email,
+               Name = new Name()
+               {
+                  GivenName = User.FirstName,
+                  Surname = User.Surname
+               },
+               AddressPortable = new AddressPortable()
+               {
+                  AddressLine1 = FirstLine,
+                  AddressLine2 = SecondLine,
+                  PostalCode = Postcode,
+                  CountryCode = "GB",
+                  AdminArea2 = City
+               }
+            };
+         }
+         else
+         {
+            orderRequest.ApplicationContext.ShippingPreference = "GET_FROM_FILE";
+         }
          OrdersCreateRequest request = new OrdersCreateRequest();
 
          request.Prefer("return=representation");

@@ -73,7 +73,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]/{couponCode?}")]
-      [Authorize(AppConst.AccessPolicies.Official)]      /// Ready for test
+      [Authorize(AppConst.AccessPolicies.Public)]
       public async Task<IActionResult> Validate(string couponCode)
       {
          try

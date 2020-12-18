@@ -10,19 +10,21 @@ const BasketItem = (props: IProps) => {
    const basket = useContext(ShopContext);
    return (
       <div className="row mt-4 mb-4">
-         <div className="col-4 col-sm-5">
+         <div className="col-3 col-sm-4">
             <img className="shop-card-img" onError={onImageError.Product}
                src={`${API_URL}/${props.orderItem.imagePath}`} alt={name} />
          </div>
-         <div className="row col-8 col-sm-7">
+         <div className="row col-9 col-sm-8 pl-5">
             <div className="col-12 p-0 "><span className="h5">{props.orderItem.name}</span> ({props.orderItem.productCategoryName})</div>
-            <div className="col-12 p-0 h6 mb-1">£{props.orderItem.price} ({props.orderItem.unitQuantity} {ProductUnitType[props.orderItem.unitType]}) :  <b>£{(props.orderItem.price * props.orderItem.quantity).toFixed(2)}</b></div>
+            <div className="col-12 p-0 h6 mb-1">{props.orderItem.unitQuantity} {ProductUnitType[props.orderItem.unitType]}</div>
+            <div className="col-12 p-0 h6 mb-1">£{props.orderItem.price} :  <b>£{(props.orderItem.price * props.orderItem.quantity).toFixed(2)}</b></div>
             <QuantityInput
-               btnMinusClassName=""
-               btnPlusClassName=""
+               btnMinusClassName="btn-sm"
+               btnPlusClassName="btn-sn"
+               inputClassName="form-control-sm"
                value={props.orderItem.quantity}
                onChange={(val) => { basket.updateOrderItem(props.orderItem, val); props.onChange(val); }}
-               className="col-12 mt-3 mt-sm-auto"
+               className="col-12 col-sm-10 col-lg-8 mt-3 mt-sm-auto"
             />
          </div>
 

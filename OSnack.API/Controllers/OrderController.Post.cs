@@ -21,38 +21,6 @@ namespace OSnack.API.Controllers
 {
    public partial class OrderController
    {
-      /// <summary>
-      ///     Create a new Order
-      /// </summary>
-      #region *** 201 Created, 400 BadRequest, 422 UnprocessableEntity, 412 PreconditionFailed, 417 ExpectationFailed ***
-      [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(typeof(PayPalCheckoutSdk.Orders.Order), StatusCodes.Status200OK)]
-      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
-      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
-      #endregion
-      [HttpPost("[action]")]
-      [Authorize(AppConst.AccessPolicies.Official)]
-      /// Ready For Test
-      public async Task<IActionResult> VerifyOrder([FromBody] Order newOrder)
-      {
-         try
-         {
-            newOrder = await CheckOrderDetail(newOrder).ConfigureAwait(false);
-            if (newOrder == null)
-            {
-               return UnprocessableEntity(ErrorsList);
-            }
-            var paypalOrder = await newOrder.ConvertToPayPalOrder().ConfigureAwait(false);
-            return Ok(paypalOrder);
-         }
-         catch (Exception ex)
-         {
-            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
-            return StatusCode(417, ErrorsList);
-         }
-      }
-
-
       #region *** ***
       [HttpPost("[action]/{paypalId}")]
       [Consumes(MediaTypeNames.Application.Json)]
@@ -61,7 +29,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status503ServiceUnavailable)]
       #endregion
-      [Authorize(AppConst.AccessPolicies.Official)]
+      [Authorize(AppConst.AccessPolicies.Public)]
       public async Task<IActionResult> Post(string paypalId, [FromBody] Order orderData)
       {
          try
@@ -86,30 +54,66 @@ namespace OSnack.API.Controllers
                Type = PaymentType.Pendig
             };
 
-            orderData = await TryToSave(orderData);
-            //var request = new PayPalCheckoutSdk.Orders.OrdersCaptureRequest(paypalId);
+            var request = new PayPalCheckoutSdk.Orders.OrdersGetRequest(paypalId);
             //request.Prefer("return=representation");
             //request.RequestBody(new PayPalCheckoutSdk.Orders.OrderActionRequest());
-            //var response = await PayPalClient.client().Execute(request);
-            //var paypalOrder = response.Result<PayPalCheckoutSdk.Orders.Order>();
-            //if (!paypalOrder.Status.Equals("COMPLETED"))
-            //{
-            //   _DbContext.Orders.Remove(orderData);
-            //   await _DbContext.SaveChangesAsync().ConfigureAwait(false);
-            //   CoreFunc.Error(ref ErrorsList, "Payment cannot be varified.");
-            //   return UnprocessableEntity(ErrorsList);
-            //}
-            //orderData.Status = OrderStatusType.In_Progress;
-            //orderData.Payment.Reference = paypalId;
-            //orderData.Payment.DateTime = DateTime.Parse(paypalOrder.UpdateTime);
+            var response = await PayPalClient.client().Execute(request);
+            var paypalOrder = response.Result<PayPalCheckoutSdk.Orders.Order>();
+            if (!paypalOrder.Status.Equals("APPROVED"))
+            {
+               CoreFunc.Error(ref ErrorsList, "Payment cannot be varified.");
+               return UnprocessableEntity(ErrorsList);
+            }
 
-            //await _DbContext.SaveChangesAsync().ConfigureAwait(false);
+            var purchaseUnit = paypalOrder.PurchaseUnits.FirstOrDefault();
+            orderData.Name = purchaseUnit.ShippingDetail.Name.FullName;
+            orderData.Email = purchaseUnit.Payee.Email;
+            orderData.Payment.Email = purchaseUnit.Payee.Email;
+            orderData.FirstLine = purchaseUnit.ShippingDetail.AddressPortable.AddressLine1;
+            orderData.SecondLine = purchaseUnit.ShippingDetail.AddressPortable.AddressLine2;
+            if (purchaseUnit.ShippingDetail.AddressPortable.AdminArea1 != null)
+               orderData.City = purchaseUnit.ShippingDetail.AddressPortable.AdminArea1;
+            if (purchaseUnit.ShippingDetail.AddressPortable.AdminArea2 != null)
+               orderData.City = purchaseUnit.ShippingDetail.AddressPortable.AdminArea2;
+            orderData.Postcode = purchaseUnit.ShippingDetail.AddressPortable.PostalCode;
+            orderData.Status = OrderStatusType.In_Progress;
+            orderData.Payment.Reference = paypalId;
+            orderData.Payment.DateTime = DateTime.Parse(paypalOrder.CreateTime);
 
-            return Created("Success", orderData.Id);
+            orderData = await TryToSave(orderData);
+
+            return Created("Success", orderData);
          }
          catch (Exception ex)
          {
 
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
+            return StatusCode(417, ErrorsList);
+         }
+      }
+
+      #region ***  ***
+      [Consumes(MediaTypeNames.Application.Json)]
+      [ProducesResponseType(typeof(PayPalCheckoutSdk.Orders.Order), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
+      #endregion
+      [HttpPost("[action]")]
+      [Authorize(AppConst.AccessPolicies.Public)]
+      public async Task<IActionResult> VerifyOrder([FromBody] Order newOrder)
+      {
+         try
+         {
+            newOrder = await CheckOrderDetail(newOrder).ConfigureAwait(false);
+            if (newOrder == null)
+            {
+               return UnprocessableEntity(ErrorsList);
+            }
+            var paypalOrder = await newOrder.ConvertToPayPalOrder().ConfigureAwait(false);
+            return Ok(paypalOrder);
+         }
+         catch (Exception ex)
+         {
             CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
@@ -122,11 +126,14 @@ namespace OSnack.API.Controllers
          {
             orderData.Id = $"{CoreFunc.StringGenerator(3, 4, 0, 4, 0)}-{CoreFunc.StringGenerator(3, 4, 0, 4, 0)}";
             await _DbContext.Orders.AddAsync(orderData).ConfigureAwait(false);
-            foreach (Address address in orderData.User.Addresses)
+            if (orderData.User != null)
             {
-               _DbContext.Entry(address).State = EntityState.Unchanged;
+               foreach (Address address in orderData.User.Addresses)
+               {
+                  _DbContext.Entry(address).State = EntityState.Unchanged;
+               }
+               _DbContext.Entry(orderData.User).State = EntityState.Unchanged;
             }
-            _DbContext.Entry(orderData.User).State = EntityState.Unchanged;
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
             return orderData;
          }
@@ -140,14 +147,7 @@ namespace OSnack.API.Controllers
 
       private async Task<Order> CheckOrderDetail(Order orderData)
       {
-         Address currentAddress = await _DbContext.Addresses.Include(a => a.User)
-          .SingleOrDefaultAsync(a => a.Id == orderData.AddressId && a.User.Id == AppFunc.GetUserId(User));
 
-         if (currentAddress == null)
-         {
-            CoreFunc.Error(ref ErrorsList, "Address Required");
-            return null;
-         }
 
          if (orderData.DeliveryOption.Price == 0
             && orderData.DeliveryOption.MinimumOrderTotal > orderData.TotalPrice
@@ -157,13 +157,17 @@ namespace OSnack.API.Controllers
             return null;
          }
 
-
-         orderData.Name = currentAddress.Name;
-         orderData.FirstLine = currentAddress.FirstLine;
-         orderData.SecondLine = currentAddress.SecondLine;
-         orderData.City = currentAddress.City;
-         orderData.Postcode = currentAddress.Postcode;
-         orderData.User = currentAddress.User;
+         Address currentAddress = await _DbContext.Addresses.Include(a => a.User)
+          .SingleOrDefaultAsync(a => a.Id == orderData.AddressId && a.User.Id == AppFunc.GetUserId(User));
+         if (currentAddress != null)
+         {
+            orderData.Name = currentAddress.Name;
+            orderData.FirstLine = currentAddress.FirstLine;
+            orderData.SecondLine = currentAddress.SecondLine;
+            orderData.City = currentAddress.City;
+            orderData.Postcode = currentAddress.Postcode;
+            orderData.User = currentAddress.User;
+         }
          orderData.DeliveryOption = await _DbContext.DeliveryOptions.AsTracking()
             .SingleOrDefaultAsync(a => a.Id == orderData.DeliveryOption.Id)
             .ConfigureAwait(false);
@@ -172,7 +176,11 @@ namespace OSnack.API.Controllers
          TryValidateModel(orderData);
          foreach (var key in ModelState.Keys)
          {
-            if (key.StartsWith("Payment") || key.StartsWith("Coupon") || key.StartsWith("OrderItems") || key.StartsWith("User"))
+            if (
+                  (key.StartsWith("Payment") || key.StartsWith("Coupon") || key.StartsWith("OrderItems") || key.StartsWith("User"))
+                  ||
+                  (AppFunc.GetUserId(User) == 0 && currentAddress == null && (key.StartsWith("Name") || key.StartsWith("City") || key.StartsWith("Postcode") || key.StartsWith("FirstLine")))
+               )
                ModelState.Remove(key);
          }
          if (!ModelState.IsValid)
@@ -205,6 +213,7 @@ namespace OSnack.API.Controllers
            .ConfigureAwait(false);
          Product originalProduct;
          List<OrderItem> CheckedOrderItems = new List<OrderItem>();
+         orderData.TotalItemPrice = 0;
          foreach (var orderItem in orderData.OrderItems)
          {
             originalProduct = productList.SingleOrDefault(t => t.Id == orderItem.ProductId);
@@ -236,7 +245,5 @@ namespace OSnack.API.Controllers
          orderData.CalculateTotalPrice();
          return orderData;
       }
-
-
    }
 }

@@ -29,7 +29,6 @@ const ViewOrders = (props: IProps) => {
       maxItemsPerPage = tblMaxItemsPerPage,
       filterType = selectType,
    ) => {
-
       if (selectedPage != tblSelectedPage)
          setTblSelectedPage(selectedPage);
       if (filterType != selectType)
@@ -41,30 +40,15 @@ const ViewOrders = (props: IProps) => {
       errorAlert.PleaseWait(500, isUnmounted);
       switch (props.access) {
          case ClientAppAccess.Official:
-            useAllOrder(selectedPage, maxItemsPerPage, filterType).then(
-               result => {
-                  if (isUnmounted.current) return;
-                  errorAlert.clear();
-                  setTblTotalItemCount(result.data.totalNumber || 0);
-                  setOrderList(result.data.orderList!);
-               }).catch((alert) => {
-                  if (isUnmounted.current) return;
-                  errorAlert.set(alert);
-               });
+            useAllOrder(selectedPage, maxItemsPerPage, filterType)
+               .then(onGetUserOrderSuccess)
+               .catch(onGetUserOrderFailed);
             break;
          case ClientAppAccess.Secret:
-            console.log(props.location.state?.userId);
             if (props.useAllUserOrderSecret != undefined)
-               props.useAllUserOrderSecret(props.location.state?.userId || 0, selectedPage, maxItemsPerPage, filterType).then(
-                  result => {
-                     if (isUnmounted.current) return;
-                     errorAlert.clear();
-                     setTblTotalItemCount(result.data.totalNumber || 0);
-                     setOrderList(result.data.orderList!);
-                  }).catch((alert) => {
-                     if (isUnmounted.current) return;
-                     errorAlert.set(alert);
-                  });
+               props.useAllUserOrderSecret(props.location.state?.userId || 0, selectedPage, maxItemsPerPage, filterType)
+                  .then(onGetUserOrderSuccess)
+                  .catch(onGetUserOrderFailed);
             break;
          default:
             break;
@@ -72,10 +56,22 @@ const ViewOrders = (props: IProps) => {
 
 
    };
-
+   const onGetUserOrderSuccess = (result: any) => {
+      if (isUnmounted.current) return;
+      errorAlert.clear();
+      setTblTotalItemCount(result.data.totalNumber || 0);
+      let list = orderList;
+      if (result.data.orderList != undefined)
+         list = list.concat(result.data.orderList);
+      setOrderList(list);
+   };
+   const onGetUserOrderFailed = (alert: any) => {
+      if (isUnmounted.current) return;
+      errorAlert.set(alert);
+   };
 
    return (
-      <div className="container">
+      <div className="container pb-4 ">
          <PageHeader title="My Orders" className="hr-section-sm" />
          <Alert alert={errorAlert.alert}
             className="col-12 mb-2"

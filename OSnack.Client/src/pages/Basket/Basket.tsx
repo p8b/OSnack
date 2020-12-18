@@ -11,8 +11,6 @@ import Checkout from './Checkout';
 const Basket = (props: IProps) => {
    const basket = useContext(ShopContext);
    const [refreshBasket, setRefreshBasket] = useState(false);
-   // // @ts-ignore
-   // const PayPalButton = paypal.Buttons.driver("react", { React, ReactDOM });
 
    if (basket.state.List.length <= 0)
       return <Redirect to="/Shop" />;
@@ -23,7 +21,7 @@ const Basket = (props: IProps) => {
          <Container className="bg-white">
             <div className="row">
                {/* Basket info */}
-               <div className="col-12 col-md-7 col-lg-6 m-0">
+               <div className="col-12 col-md-7 m-0 pb-4">
                   {basket.state.List.map(orderItem =>
                      <BasketItem
                         key={orderItem.productId}
@@ -34,7 +32,8 @@ const Basket = (props: IProps) => {
                </div>
 
                {/* User info */}
-               <Checkout refresh={refreshBasket} setRefresh={setRefreshBasket} />
+               <Checkout className="col-12 col-md-5 pm-0 pt-3 pb-4 shadow"
+                  refresh={refreshBasket} setRefresh={setRefreshBasket} />
             </div>
          </Container>
       </Container >

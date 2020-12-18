@@ -18,10 +18,7 @@ namespace OSnack.API.Controllers
 {
    public partial class OrderController
    {
-      /// <summary>
-      /// Delete Order
-      /// </summary>
-      #region *** 200 OK,417 ExpectationFailed, 400 BadRequest,404 NotFound,412 PreconditionFailed ***
+      #region *** ***
       [HttpDelete("[action]")]
       [Consumes(MediaTypeNames.Application.Json)]
       [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
@@ -29,23 +26,18 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [Authorize(AppConst.AccessPolicies.Secret)]
-      /// Ready For Test 
       public async Task<IActionResult> Delete([FromBody] Order order)
       {
          try
          {
-            /// if the Order record with the same id is not found
-            //if (!await _DbContext.Categories.AnyAsync(d => d.Id == order.Id).ConfigureAwait(false))
-            //{
-            //   CoreFunc.Error(ref ErrorsList, "Order not found");
-            //   return NotFound(ErrorsList);
-            //}
+            if (!await _DbContext.Orders.AnyAsync(d => d.Id == order.Id).ConfigureAwait(false))
+            {
+               CoreFunc.Error(ref ErrorsList, "Order not found");
+               return NotFound(ErrorsList);
+            }
 
-            /// now delete the Order record
-            // _DbContext.Orders.Remove(order);
-            /// save the changes to the database
-            /// await _DbContext.SaveChangesAsync().ConfigureAwait(false);
-            /// return 200 OK status
+            _DbContext.Orders.Remove(order);
+            await _DbContext.SaveChangesAsync().ConfigureAwait(false);
             return Ok($"Order '{order.Id}' was deleted");
          }
          catch (Exception ex)

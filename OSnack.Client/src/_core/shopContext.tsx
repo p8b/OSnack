@@ -1,5 +1,5 @@
 ﻿import { OrderItem, Product } from "osnack-frontend-shared/src/_core/apiModels";
-import React, { createContext, useReducer, useEffect } from "react";
+import React, { createContext, useReducer, useEffect, useRef } from "react";
 
 class ShopState {
    List: OrderItem[] = [];
@@ -39,7 +39,7 @@ export const ShopContext = createContext(initShopContext);
 
 const ShopContextContainer = ({ children }: Props): JSX.Element => {
    const [state, setState] = useReducer(reducerShop, localShopState());
-
+   const isCleared = useRef(false);
 
    const set = (product: Product, quantity: number) => {
       var _State = state;
@@ -56,6 +56,7 @@ const ShopContextContainer = ({ children }: Props): JSX.Element => {
          _State.List.push(convertProductToOrderItem(product, quantity));
       _State.List = _State.List.filter(oi => oi.quantity > 0).reverse();
       setState(_State);
+      isCleared.current = false;
    };
    const updateOrderItem = (orderItem: OrderItem, quantity?: number) => {
       var _State = state;
@@ -70,6 +71,7 @@ const ShopContextContainer = ({ children }: Props): JSX.Element => {
       }
       _State.List = _State.List.filter(oi => oi.quantity > 0);
       setState(_State);
+      isCleared.current = false;
    };
 
    const convertProductToOrderItem = (product: Product, quantity: number) => {
@@ -92,7 +94,12 @@ const ShopContextContainer = ({ children }: Props): JSX.Element => {
          return item.quantity;
       return undefined;
    };
-   const clear = () => { setState(initState); };
+   const clear = () => {
+      if (!isCleared.current) {
+         setState(initState);
+         isCleared.current = true;
+      }
+   };
 
    const getTotalItems = () => {
       let totalItem = 0;

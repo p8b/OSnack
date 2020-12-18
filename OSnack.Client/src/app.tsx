@@ -13,6 +13,7 @@ import NavMenu from "./components/NavMenu/NavMenu";
 import Footer from "./components/Footer";
 import { useSilentOfficialAuthentication } from "osnack-frontend-shared/src/hooks/OfficialHooks/useAuthenticationHook";
 const Home = lazy(() => import("./pages/Home/Home"));
+const OrderSuccess = lazy(() => import("./pages/Basket/OrderSuccess"));
 const Shop = lazy(() => import("./pages/Shop/Shop"));
 const About = lazy(() => import("./pages/About/About"));
 const ContactUs = lazy(() => import("./pages/ContactUs/ContactUs"));
@@ -46,6 +47,7 @@ const App = () => {
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/Checkout" Render={(props: any) => <Basket {...props} />} />
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/About" Render={(props: any) => <About {...props} />} />
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/Contact" Render={(props: any) => <ContactUs {...props} />} />
+                        <CustomRoute authenticate={useSilentOfficialAuthentication} path="/OrderSuccessful" Render={(props: any) => <OrderSuccess {...props} />} />
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/TermsAndConditions" Render={(props: any) => <TermsAndConditions {...props} />} />
 
                         {/***** Protected Routes  ****/}
