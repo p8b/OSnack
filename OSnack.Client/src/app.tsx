@@ -6,6 +6,7 @@ import { Loading } from "osnack-frontend-shared/src/components/Loading/Loading";
 import AuthenticationContext from "osnack-frontend-shared/src/_core/authenticationContext";
 import ShopContextContainer from "./_core/shopContext";
 import Container from "./components/Container";
+import { Access } from "./_core/appConstant.Variables";
 
 // Main Components such as pages, navbar, footer
 import NavMenu from "./components/NavMenu/NavMenu";
@@ -18,7 +19,7 @@ const ContactUs = lazy(() => import("./pages/ContactUs/ContactUs"));
 const Basket = lazy(() => import("./pages/Basket/Basket"));
 const MyAccount = lazy(() => import("./pages/MyAccount/MyAccount"));
 const MyAddresses = lazy(() => import("./pages/MyAccount/MyAddresses"));
-const MyOrders = lazy(() => import("./pages/Order/MyOrders"));
+const ViewOrders = lazy(() => import("osnack-frontend-shared/src/pages/Order/ViewOrders"));
 const LoginPage = lazy(() => import("./pages/Login/LoginPage"));
 const ProductPage = lazy(() => import("./pages/ProductPage/ProductPage"));
 const PageNotFound = lazy(() => import("osnack-frontend-shared/src/pages/PageNotFound"));
@@ -43,13 +44,13 @@ const App = () => {
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/Shop/Product" Render={(props: any) => <ProductPage {...props} />} />
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/Shop" Render={(props: any) => <Shop {...props} />} />
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/Checkout" Render={(props: any) => <Basket {...props} />} />
-                        <CustomRoute authenticate={useSilentOfficialAuthentication} path="/MyOrders" Render={(props: any) => <MyOrders {...props} />} />
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/About" Render={(props: any) => <About {...props} />} />
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/Contact" Render={(props: any) => <ContactUs {...props} />} />
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/TermsAndConditions" Render={(props: any) => <TermsAndConditions {...props} />} />
 
                         {/***** Protected Routes  ****/}
                         <CustomRoute authenticate={useSilentOfficialAuthentication} exact AuthRequired path="/MyAccount" Render={(props: any) => <MyAccount {...props} />} />
+                        <CustomRoute authenticate={useSilentOfficialAuthentication} exact AuthRequired path="/MyOrders" Render={(props: any) => <ViewOrders {...props} access={Access} />} />
                         <CustomRoute authenticate={useSilentOfficialAuthentication} exact AuthRequired path="/MyAddresses" Render={(props: any) => <MyAddresses {...props} />} />
 
                         {/***** Route Not Found  ****/}

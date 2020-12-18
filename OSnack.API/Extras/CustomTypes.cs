@@ -32,13 +32,22 @@
 
    public enum OrderStatusType
    {
-      Placed = 0,
-      Hold = 1,
-      Confirmed = 2,
+      In_Progress = 0,
+      Confirmed = 1,
+      Canceled = 2,
       Delivered = 3,
       Refund_Request = 4,
       Refund_Refused = 5,
-      Refunded = 6
+      Partialy_Refunded = 6,
+      Fully_Refunded = 7
+   }
+
+   public enum PaymentType
+   {
+      Pendig = 0,
+      Complete = 1,
+      Partialy_Refunded = 2,
+      Fully_Refunded = 3
    }
 
    public enum ProductUnitType

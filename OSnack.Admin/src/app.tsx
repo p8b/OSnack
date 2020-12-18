@@ -8,6 +8,8 @@ import AuthenticationContext from "osnack-frontend-shared/src/_core/authenticati
 // Main Components such as pages, navbar, footer
 import NavMenu from "./components/NavMenu/NavMenu";
 import { useSilentSecretAuthentication } from "./SecretHooks/useAuthenticationHook";
+import { useAllUserOrder } from "./SecretHooks/useOrderHook";
+import { Access } from "./_core/appConstant.Variables";
 const Dashboard = lazy(() => import("./pages/Dashboard/Dashboard"));
 const MyAccount = lazy(() => import("./pages/MyAccount/MyAccount"));
 const LoginPage = lazy(() => import("./pages/LoginPage/LoginPage"));
@@ -20,6 +22,7 @@ const ConfirmEmail = lazy(() => import("osnack-frontend-shared/src/pages/Confirm
 const PasswordReset = lazy(() => import("osnack-frontend-shared/src/pages/PasswordReset"));
 const EmailTemplateManagement = lazy(() => import("./pages/EmailTemplates/EmailTemplateManagement"));
 const EmailTemplateEdit = lazy(() => import("./pages/EmailTemplates/EmailTemplateEdit"));
+const ViewOrders = lazy(() => import("osnack-frontend-shared/src/pages/Order/ViewOrders"));
 
 const App = () => {
    const [isOpenMainContainer, setIsOpenMainContainer] = useState(true);
@@ -45,6 +48,7 @@ const App = () => {
                      <CustomRoute authenticate={useSilentSecretAuthentication} exact AuthRequired path="/EmailTemplate" Render={(props: any) => <EmailTemplateManagement {...props} />} />
                      <CustomRoute authenticate={useSilentSecretAuthentication} exact AuthRequired path="/EmailTemplate/Edit" Render={(props: any) => <EmailTemplateEdit {...props} />} />
                      <CustomRoute authenticate={useSilentSecretAuthentication} exact AuthRequired path="/Users" Render={(props: any) => <UserManagement {...props} />} />
+                     <CustomRoute authenticate={useSilentSecretAuthentication} exact AuthRequired path="/ViewOrders" Render={(props: any) => <ViewOrders {...props} useAllUserOrderSecret={useAllUserOrder} access={Access} />} />
 
                      {/***** Route Not Found  ****/}
                      <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="*" Render={(props: any) => <PageNotFound {...props} />} />

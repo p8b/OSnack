@@ -1,9 +1,15 @@
 import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
-import { Order, Order2 } from "../../_core/apiModels";
-export const useAllOrder = async (): Promise<{ data:Order[] , status?: number}> =>{
-        let url_ = API_URL + "/Order/Get/All";
+import { OrderListAndTotalNumber, Order, Order2 } from "../../_core/apiModels";
+export const useAllOrder = async (selectedPage: number, maxNumberPerItemsPage: number, filterStatus: string | null): Promise<{ data:OrderListAndTotalNumber , status?: number}> =>{
+        let url_ = API_URL + "/Order/Get/All/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}";
+        if (selectedPage !== null && selectedPage !== undefined)
+        url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
+        if (maxNumberPerItemsPage !== null && maxNumberPerItemsPage !== undefined)
+        url_ = url_.replace("{maxNumberPerItemsPage}", encodeURIComponent("" + maxNumberPerItemsPage));
+        if (filterStatus !== null && filterStatus !== undefined)
+        url_ = url_.replace("{filterStatus}", encodeURIComponent("" + filterStatus));
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);
         if( response?.status === 400){
@@ -14,7 +20,7 @@ export const useAllOrder = async (): Promise<{ data:Order[] , status?: number}> 
         switch(response?.status){
 
                 case 200: 
-                        var responseData: Order[] = await response?.json();
+                        var responseData: OrderListAndTotalNumber = await response?.json();
                         return { data: responseData, status: response?.status };
 
                 case 417: 

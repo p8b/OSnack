@@ -35,16 +35,16 @@ namespace OSnack.API.Controllers
          try
          {
             /// if the Order record with the same id is not found
-            if (!await _DbContext.Categories.AnyAsync(d => d.Id == order.Id).ConfigureAwait(false))
-            {
-               CoreFunc.Error(ref ErrorsList, "Order not found");
-               return NotFound(ErrorsList);
-            }
+            //if (!await _DbContext.Categories.AnyAsync(d => d.Id == order.Id).ConfigureAwait(false))
+            //{
+            //   CoreFunc.Error(ref ErrorsList, "Order not found");
+            //   return NotFound(ErrorsList);
+            //}
 
             /// now delete the Order record
-            _DbContext.Orders.Remove(order);
+            // _DbContext.Orders.Remove(order);
             /// save the changes to the database
-            await _DbContext.SaveChangesAsync().ConfigureAwait(false);
+            /// await _DbContext.SaveChangesAsync().ConfigureAwait(false);
             /// return 200 OK status
             return Ok($"Order '{order.Id}' was deleted");
          }

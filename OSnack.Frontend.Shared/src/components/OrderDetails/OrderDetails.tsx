@@ -1,7 +1,5 @@
 ﻿import React from 'react';
-import { Order, OrderStatusType, ProductUnitType } from '../../_core/apiModels';
-import PageHeader from '../../components/Texts/PageHeader';
-import { Button } from '../../components/Buttons/Button';
+import { Order, OrderStatusTypeList, ProductUnitType } from '../../_core/apiModels';
 import { onImageError } from '../../_core/appFunc';
 import { API_URL } from '../../_core/constant.Variables';
 
@@ -32,7 +30,7 @@ const OrderDetails = (props: IProps) => {
                </div>
                <div className="row col-12 pm-0 mt-3">
                   <div className="col-8 pm-0 small-text text-gray" >Status:</div>
-                  <div className="col-4 p-0 font-weight-bold">{OrderStatusType[props.order.status]}</div>
+                  <div className="col-4 p-0 font-weight-bold">{OrderStatusTypeList.find(o => o.Value == props.order.status)?.Name}</div>
                </div>
                <div className="row col-12  pm-0">
                   <div className="col-8 pm-0 small-text text-gray">Payment date :</div>

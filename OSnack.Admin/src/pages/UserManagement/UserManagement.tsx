@@ -12,6 +12,7 @@ import { useGetUser } from '../../SecretHooks/useUserHook';
 import UserModal from './UserModal';
 import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
 import { useGetRole } from '../../SecretHooks/useRoleHook';
+import { Redirect } from 'react-router-dom';
 
 const UserManagement = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -20,6 +21,7 @@ const UserManagement = (props: IProps) => {
    const [selectedUser, setSelectedUser] = useState(new User());
    const [selectedRoleFilter, setselectedRoleFilter] = useState(GetAllRecords);
    const [isOpenUserModal, setIsOpenUserModal] = useState(false);
+   const [redirectToOrders, setRedirectToOrders] = useState(false);
    const [roleList, setRoleList] = useState<Role[]>([]);
 
    const [tableData, setTableData] = useState(new TableData());
@@ -101,7 +103,12 @@ const UserManagement = (props: IProps) => {
             user.email,
             user.role?.name,
             <div className="col-auto pm-0">
-               <button className="btn btn-sm btn-blue col-12 m-0 mt-1 mt-xl-0 edit-icon"
+               {user.orderLength! > 0 &&
+                  <button className="btn btn-sm btn-white col-6 m-0 mt-1 mt-xl-0 open-eye-icon"
+                     onClick={() => { viewOrders(user); }}
+                     children="Orders" />
+               }
+               <button className={`btn btn-sm btn-blue ${user.orderLength! > 0 ? "col-6" : "col-12"}  m-0 mt-1 mt-xl-0 edit-icon`}
                   onClick={() => { editUser(user); }}
                   children="Edit" />
             </div>
@@ -123,6 +130,12 @@ const UserManagement = (props: IProps) => {
       setSelectedUser(new User());
    };
 
+   const viewOrders = (user: User) => {
+      setSelectedUser(user);
+      setRedirectToOrders(true);
+   };
+   if (redirectToOrders == true)
+      return <Redirect to={{ pathname: "/ViewOrders", state: { userId: selectedUser.id } }} />;
    return (
       <Container className="container-fluid pr-0">
          <PageHeader title="Users" className="line-header-lg" />

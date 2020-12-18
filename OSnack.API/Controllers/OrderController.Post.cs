@@ -81,43 +81,29 @@ namespace OSnack.API.Controllers
             orderData.Payment = new Payment()
             {
                PaymentProvider = "PayPal",
-               Reference = "N/A",
-               DateTime = DateTime.UtcNow
+               Reference = paypalId,
+               DateTime = DateTime.UtcNow,
+               Type = PaymentType.Pendig
             };
-            try
-            {
-               await _DbContext.Orders.AddAsync(orderData).ConfigureAwait(false);
-               foreach (Address address in orderData.User.Addresses)
-               {
-                  _DbContext.Entry(address).State = EntityState.Unchanged;
-               }
-               _DbContext.Entry(orderData.User).State = EntityState.Unchanged;
-               await _DbContext.SaveChangesAsync().ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-               AppLog log = _LoggingService.Log(Request.Path, AppLogType.PaymentException, new { orderData, exception = ex }, User);
-               CoreFunc.Error(ref ErrorsList, $"There was a issue with your payment. Please get in touch with us referencing {log.Id} Id.");
-               return StatusCode(503, ErrorsList);
-            }
 
-            var request = new PayPalCheckoutSdk.Orders.OrdersCaptureRequest(paypalId);
-            request.Prefer("return=representation");
-            request.RequestBody(new PayPalCheckoutSdk.Orders.OrderActionRequest());
-            var response = await PayPalClient.client().Execute(request);
-            var paypalOrder = response.Result<PayPalCheckoutSdk.Orders.Order>();
-            if (!paypalOrder.Status.Equals("COMPLETED"))
-            {
-               _DbContext.Orders.Remove(orderData);
-               await _DbContext.SaveChangesAsync().ConfigureAwait(false);
-               CoreFunc.Error(ref ErrorsList, "Payment cannot be varified.");
-               return UnprocessableEntity(ErrorsList);
-            }
-            orderData.Status = OrderStatusType.Hold;
-            orderData.Payment.Reference = paypalId;
-            orderData.Payment.DateTime = DateTime.Parse(paypalOrder.UpdateTime);
+            orderData = await TryToSave(orderData);
+            //var request = new PayPalCheckoutSdk.Orders.OrdersCaptureRequest(paypalId);
+            //request.Prefer("return=representation");
+            //request.RequestBody(new PayPalCheckoutSdk.Orders.OrderActionRequest());
+            //var response = await PayPalClient.client().Execute(request);
+            //var paypalOrder = response.Result<PayPalCheckoutSdk.Orders.Order>();
+            //if (!paypalOrder.Status.Equals("COMPLETED"))
+            //{
+            //   _DbContext.Orders.Remove(orderData);
+            //   await _DbContext.SaveChangesAsync().ConfigureAwait(false);
+            //   CoreFunc.Error(ref ErrorsList, "Payment cannot be varified.");
+            //   return UnprocessableEntity(ErrorsList);
+            //}
+            //orderData.Status = OrderStatusType.In_Progress;
+            //orderData.Payment.Reference = paypalId;
+            //orderData.Payment.DateTime = DateTime.Parse(paypalOrder.UpdateTime);
 
-            await _DbContext.SaveChangesAsync().ConfigureAwait(false);
+            //await _DbContext.SaveChangesAsync().ConfigureAwait(false);
 
             return Created("Success", orderData.Id);
          }
@@ -129,6 +115,28 @@ namespace OSnack.API.Controllers
          }
       }
 
+      private async Task<Order> TryToSave(Order orderData)
+      {
+
+         try
+         {
+            orderData.Id = $"{CoreFunc.StringGenerator(3, 4, 0, 4, 0)}-{CoreFunc.StringGenerator(3, 4, 0, 4, 0)}";
+            await _DbContext.Orders.AddAsync(orderData).ConfigureAwait(false);
+            foreach (Address address in orderData.User.Addresses)
+            {
+               _DbContext.Entry(address).State = EntityState.Unchanged;
+            }
+            _DbContext.Entry(orderData.User).State = EntityState.Unchanged;
+            await _DbContext.SaveChangesAsync().ConfigureAwait(false);
+            return orderData;
+         }
+         catch (Exception ex)
+         {
+            _LoggingService.Log(Request.Path, AppLogType.OrderException, new { orderData, exception = ex }, User);
+            return await TryToSave(orderData);
+
+         }
+      }
 
       private async Task<Order> CheckOrderDetail(Order orderData)
       {

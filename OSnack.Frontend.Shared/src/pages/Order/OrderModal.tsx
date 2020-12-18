@@ -1,9 +1,9 @@
 ﻿import React from 'react';
-import { Order } from 'osnack-frontend-shared/src/_core/apiModels';
-import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
-import OrderDetails from 'osnack-frontend-shared/src/components/OrderDetails/OrderDetails';
-import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
-import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
+import { Order } from '../../_core/apiModels';
+import Modal from '../../components/Modals/Modal';
+import OrderDetails from '../../components/OrderDetails/OrderDetails';
+import PageHeader from '../../components/Texts/PageHeader';
+import { Button } from '../../components/Buttons/Button';
 
 
 

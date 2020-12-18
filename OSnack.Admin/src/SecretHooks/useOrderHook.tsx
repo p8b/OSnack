@@ -34,8 +34,8 @@ export const useDeleteOrder = async (order: Order): Promise<{ data:string , stat
         }
   
 }
-export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, filterStatus: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:OrderListAndTotalNumber , status?: number}> =>{
-        let url_ = API_URL + "/Order/Get/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}";
+export const useAllOrder = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, filterStatus: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:OrderListAndTotalNumber , status?: number}> =>{
+        let url_ = API_URL + "/Order/Get/All/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}";
         if (selectedPage !== null && selectedPage !== undefined)
         url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
         if (maxNumberPerItemsPage !== null && maxNumberPerItemsPage !== undefined)
@@ -48,6 +48,40 @@ export const useGetOrder = async (selectedPage: number, maxNumberPerItemsPage: n
         url_ = url_.replace("{isSortAsce}", encodeURIComponent("" + isSortAsce));
         if (sortName !== null && sortName !== undefined)
         url_ = url_.replace("{sortName}", encodeURIComponent("" + sortName));
+        url_ = url_.replace(/[?&]$/, "");
+        let response = await httpCaller.GET(url_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.GET(url_);
+        }
+
+        switch(response?.status){
+
+                case 200: 
+                        var responseData: OrderListAndTotalNumber = await response?.json();
+                        return { data: responseData, status: response?.status };
+
+                case 417: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
+
+                default:
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
+                        throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
+        }
+  
+}
+export const useAllUserOrder = async (userId: number, selectedPage: number, maxNumberPerItemsPage: number, filterStatus: string | null): Promise<{ data:OrderListAndTotalNumber , status?: number}> =>{
+        let url_ = API_URL + "/Order/Get/AllUser/{userId}/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}";
+        if (userId !== null && userId !== undefined)
+        url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
+        if (selectedPage !== null && selectedPage !== undefined)
+        url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
+        if (maxNumberPerItemsPage !== null && maxNumberPerItemsPage !== undefined)
+        url_ = url_.replace("{maxNumberPerItemsPage}", encodeURIComponent("" + maxNumberPerItemsPage));
+        if (filterStatus !== null && filterStatus !== undefined)
+        url_ = url_.replace("{filterStatus}", encodeURIComponent("" + filterStatus));
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);
         if( response?.status === 400){

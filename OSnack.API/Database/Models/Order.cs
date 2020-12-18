@@ -20,8 +20,7 @@ namespace OSnack.API.Database.Models
    public partial class Order : OrderAddressBase
    {
       [Key]
-      [DefaultValue(0)]
-      public int Id { get; set; }
+      public string Id { get; set; }
 
       [Column(TypeName = "nvarchar(100)")]
       [DataType(DataType.Date)]
@@ -30,7 +29,7 @@ namespace OSnack.API.Database.Models
       [Required(ErrorMessage = "Status is required \n")]
       public OrderStatusType Status { get; set; }
 
-      [Required(ErrorMessage = "Status is required \n")]
+      //[Required(ErrorMessage = "Status is required \n")]
       public DeliveryOption DeliveryOption { get; set; }
 
 
@@ -55,8 +54,13 @@ namespace OSnack.API.Database.Models
       [Column(Order = 0)]
       public int? UserId { get; set; }
 
+      [DataType(DataType.EmailAddress, ErrorMessage = "Invalid Email \n")]
+      [RegularExpression(@"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$",
+         ErrorMessage = "Invalid Email \n")]
+      public string Email { get; set; }
+
       [Required(ErrorMessage = "Payment is required \n")]
-      [ForeignKey("PaymentId")]
+      [InverseProperty("Order")]
       public Payment Payment { get; set; }
 
       [ForeignKey("Code")]

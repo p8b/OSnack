@@ -74,8 +74,11 @@ namespace OSnack.API.Controllers
                 .OrderByDynamic(sortName, isSortAsce)
                 .Skip((selectedPage - 1) * maxItemsPerPage)
                 .Take(maxItemsPerPage)
+                .Include(u => u.Orders)
+
                 .ToListAsync()
                 .ConfigureAwait(false);
+            list.ForEach(u => u.OrderLength = u.Orders.Count());
             /// return the list of Role ordered by name
             return Ok(new MultiResult<List<User>, int>(list, totalCount));
          }

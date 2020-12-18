@@ -75,25 +75,57 @@ namespace OSnack.API.Controllers
       /// </summary>
       #region *** 200 OK, 417 ExpectationFailed ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(typeof(List<Order>), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(MultiResult<List<Order>, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
-      [HttpGet("Get/[action]")]
+      [HttpGet("Get/[action]/{userId}/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}")]
+      [Authorize(AppConst.AccessPolicies.Secret)]
+      public async Task<IActionResult> AllUser(int userId,
+          int selectedPage,
+          int maxNumberPerItemsPage,
+          string filterStatus = CoreConst.GetAllRecords) =>
+        await AllOrder(userId, selectedPage, maxNumberPerItemsPage, filterStatus).ConfigureAwait(false);
+
+      /// <summary>
+      /// Used to get a list of all Order with OrderItems
+      /// </summary>
+      #region *** 200 OK, 417 ExpectationFailed ***
+      [Consumes(MediaTypeNames.Application.Json)]
+      [ProducesResponseType(typeof(MultiResult<List<Order>, int>), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
+      #endregion
+      [HttpGet("Get/[action]/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}")]
       [Authorize(AppConst.AccessPolicies.Official)]
-      public async Task<IActionResult> All()
+      public async Task<IActionResult> All(int selectedPage,
+          int maxNumberPerItemsPage,
+          string filterStatus = CoreConst.GetAllRecords) =>
+        await AllOrder(AppFunc.GetUserId(User), selectedPage, maxNumberPerItemsPage, filterStatus).ConfigureAwait(false);
+
+      private async Task<IActionResult> AllOrder(int userId, int selectedPage,
+          int maxNumberPerItemsPage,
+          string filterStatus = CoreConst.GetAllRecords)
       {
          try
          {
+            int totalCount = await _DbContext.Orders
+               .Include(o => o.User)
+               .Where(o => o.User.Id == userId)
+                .CountAsync(r => filterStatus.Equals(CoreConst.GetAllRecords) ? true : r.Status.Equals((OrderStatusType)Enum.Parse(typeof(OrderStatusType), filterStatus, true)))
+                .ConfigureAwait(false);
+
             List<Order> list = await _DbContext.Orders
                .Include(o => o.User)
-               .Where(o => o.User.Id == AppFunc.GetUserId(User))
+               .Where(o => o.User.Id == userId)
+               .Where(r => filterStatus.Equals(CoreConst.GetAllRecords) ? true : r.Status.Equals((OrderStatusType)Enum.Parse(typeof(OrderStatusType), filterStatus, true)))
+               .Skip((selectedPage - 1) * maxNumberPerItemsPage)
+                .Take(maxNumberPerItemsPage)
                 .Include(o => o.OrderItems)
                 .Include(o => o.Payment)
                 .Include(o => o.DeliveryOption)
-                .OrderByDescending(o => o.Date)
+                .OrderByDescending(o => o.Date).ThenBy(o => o.Status)
                 .ToListAsync()
                 .ConfigureAwait(false);
-            return Ok(list);
+            return Ok(new MultiResult<List<Order>, int>(list, totalCount));
          }
          catch (Exception ex)
          {
@@ -110,7 +142,7 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpGet("[action]/{orderId}")]
       [Authorize(AppConst.AccessPolicies.Official)]
-      public async Task<IActionResult> Get(int orderId)
+      public async Task<IActionResult> Get(string orderId)
       {
          try
          {

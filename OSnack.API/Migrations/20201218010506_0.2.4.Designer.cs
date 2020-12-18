@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OSnack.API.Database;
 
 namespace OSnack.API.Migrations
 {
     [DbContext(typeof(OSnackDbContext))]
-    partial class OSnackDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201218010506_0.2.4")]
+    partial class _024
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -305,80 +307,6 @@ namespace OSnack.API.Migrations
                     b.ToTable("NutritionalInfos");
                 });
 
-            modelBuilder.Entity("OSnack.API.Database.Models.Order", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Code")
-                        .HasColumnType("nvarchar(25)");
-
-                    b.Property<string>("Date")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int?>("DeliveryOptionId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("DeliveryPrice")
-                        .HasColumnType("decimal(7,2)");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstLine")
-                        .IsRequired()
-                        .HasMaxLength(400)
-                        .HasColumnType("nvarchar(400)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Postcode")
-                        .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
-
-                    b.Property<string>("SecondLine")
-                        .HasMaxLength(400)
-                        .HasColumnType("nvarchar(400)");
-
-                    b.Property<decimal>("ShippingPrice")
-                        .HasColumnType("decimal(7,2)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("TotalDiscount")
-                        .HasColumnType("decimal(7,2)");
-
-                    b.Property<decimal>("TotalItemPrice")
-                        .HasColumnType("decimal(7,2)");
-
-                    b.Property<decimal>("TotalPrice")
-                        .HasColumnType("decimal(7,2)");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Code");
-
-                    b.HasIndex("DeliveryOptionId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Orders");
-                });
-
             modelBuilder.Entity("OSnack.API.Database.Models.OrderItem", b =>
                 {
                     b.Property<int>("Id")
@@ -394,10 +322,6 @@ namespace OSnack.API.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("OrderId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal?>("Price")
                         .IsRequired()
@@ -423,8 +347,6 @@ namespace OSnack.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId");
-
                     b.HasIndex("ProductId");
 
                     b.ToTable("OrderItems");
@@ -443,10 +365,6 @@ namespace OSnack.API.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OrderId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("PaymentProvider")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -459,9 +377,6 @@ namespace OSnack.API.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OrderId")
-                        .IsUnique();
 
                     b.ToTable("Payments");
                 });
@@ -783,57 +698,14 @@ namespace OSnack.API.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("OSnack.API.Database.Models.Order", b =>
-                {
-                    b.HasOne("OSnack.API.Database.Models.Coupon", "Coupon")
-                        .WithMany("Orders")
-                        .HasForeignKey("Code")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("OSnack.API.Database.Models.DeliveryOption", "DeliveryOption")
-                        .WithMany("Orders")
-                        .HasForeignKey("DeliveryOptionId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("OSnack.API.Database.Models.User", "User")
-                        .WithMany("Orders")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Coupon");
-
-                    b.Navigation("DeliveryOption");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("OSnack.API.Database.Models.OrderItem", b =>
                 {
-                    b.HasOne("OSnack.API.Database.Models.Order", "Order")
-                        .WithMany("OrderItems")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("OSnack.API.Database.Models.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.Navigation("Order");
-
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("OSnack.API.Database.Models.Payment", b =>
-                {
-                    b.HasOne("OSnack.API.Database.Models.Order", "Order")
-                        .WithOne("Payment")
-                        .HasForeignKey("OSnack.API.Database.Models.Payment", "OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("OSnack.API.Database.Models.Product", b =>
@@ -919,27 +791,9 @@ namespace OSnack.API.Migrations
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("OSnack.API.Database.Models.Coupon", b =>
-                {
-                    b.Navigation("Orders");
-                });
-
-            modelBuilder.Entity("OSnack.API.Database.Models.DeliveryOption", b =>
-                {
-                    b.Navigation("Orders");
-                });
-
             modelBuilder.Entity("OSnack.API.Database.Models.EmailTemplate", b =>
                 {
                     b.Navigation("ServerVariables");
-                });
-
-            modelBuilder.Entity("OSnack.API.Database.Models.Order", b =>
-                {
-                    b.Navigation("OrderItems");
-
-                    b.Navigation("Payment")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("OSnack.API.Database.Models.Product", b =>
@@ -959,8 +813,6 @@ namespace OSnack.API.Migrations
             modelBuilder.Entity("OSnack.API.Database.Models.User", b =>
                 {
                     b.Navigation("Addresses");
-
-                    b.Navigation("Orders");
 
                     b.Navigation("RegistrationMethod")
                         .IsRequired();

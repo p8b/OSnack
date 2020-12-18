@@ -8,9 +8,13 @@
     <IncludeOpenAPIAnalyzers>true</IncludeOpenAPIAnalyzers>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Controllers\.vshistory\**" />
     <Compile Remove="wwwroot\Images\Categories\CHoZgq7072\**" />
+    <Content Remove="Controllers\.vshistory\**" />
     <Content Remove="wwwroot\Images\Categories\CHoZgq7072\**" />
+    <EmbeddedResource Remove="Controllers\.vshistory\**" />
     <EmbeddedResource Remove="wwwroot\Images\Categories\CHoZgq7072\**" />
+    <None Remove="Controllers\.vshistory\**" />
     <None Remove="wwwroot\Images\Categories\CHoZgq7072\**" />
   </ItemGroup>
 

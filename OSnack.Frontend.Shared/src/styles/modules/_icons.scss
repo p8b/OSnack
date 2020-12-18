@@ -45,9 +45,9 @@
 .edit-icon {
     &:before {
         text-decoration: none;
-        padding: 0 .2rem;
+        padding: 0.2rem;
         content: "\f044";
-        display: inline;
+        display: inline-block;
         font-family: "FA5 Solid" !important;
     }
 }
@@ -238,6 +238,7 @@
 .open-eye-icon {
     &:before {
         text-decoration: none;
+        padding: 0.2rem;
         content: "\f06e";
         display: inline-block;
         font-family: "FA5 Solid" !important;

@@ -267,6 +267,7 @@
     <Folder Include="src\hooks\OfficialHooks\" />
     <Folder Include="src\hooks\PublicHooks\" />
     <Folder Include="src\pages\" />
+    <Folder Include="src\pages\Order\" />
     <Folder Include="src\styles\" />
     <Folder Include="src\components\Login\" />
     <Folder Include="src\styles\animation\" />
@@ -329,6 +330,8 @@
     <TypeScriptCompile Include="src\hooks\PublicHooks\useNewsletterHook.tsx" />
     <TypeScriptCompile Include="src\hooks\PublicHooks\useProductHook.tsx" />
     <TypeScriptCompile Include="src\hooks\PublicHooks\useUserHook.tsx" />
+    <TypeScriptCompile Include="src\pages\Order\ViewOrders.tsx" />
+    <TypeScriptCompile Include="src\pages\Order\OrderModal.tsx" />
     <TypeScriptCompile Include="src\pages\PasswordReset.tsx" />
     <TypeScriptCompile Include="src\pages\ConfirmEmail.tsx" />
     <TypeScriptCompile Include="src\pages\PageNotFound.tsx" />

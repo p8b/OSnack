@@ -24,6 +24,7 @@ const PaymentModal = (props: IProps) => {
 
    };
    const onApprove = (data: any, action: any) => {
+
       props.onCompelete(data.orderID);
       setIsLoading(true);
    };

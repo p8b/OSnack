@@ -70,6 +70,8 @@ namespace OSnack.API.Database.Models
 
       [NotMapped]
       public bool SubscribeNewsLetter { get; set; }
+      [NotMapped]
+      public int OrderLength { get; set; }
 
       #region **** JsonIgnore extra properties and sensitive properties ****
       [JsonIgnore]

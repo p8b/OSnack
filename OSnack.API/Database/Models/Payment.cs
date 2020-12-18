@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
+using OSnack.API.Extras.CustomTypes;
 
 namespace OSnack.API.Database.Models
 {
@@ -19,11 +20,16 @@ namespace OSnack.API.Database.Models
       [Required(ErrorMessage = "Reference is required \n")]
       public string Reference { get; set; }
 
+      [Required(ErrorMessage = "Payment Type is required \n")]
+      public PaymentType Type { get; set; }
+
+      public string Email { get; set; }
+
       [Required(ErrorMessage = "Date is required \n")]
       public DateTime DateTime { get; set; }
 
       [Required(ErrorMessage = "Order is required \n")]
-      [InverseProperty("Payment")]
+      [ForeignKey("OrderId")]
       [JsonIgnore]
       public Order Order { get; set; }
    }
