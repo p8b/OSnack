@@ -270,6 +270,9 @@ const Checkout = (props: IProps) => {
                   <Button className="col-12 btn-lg btn-green mb-4 mt-4" children="Guest Checkout" onClick={checkout} />
                </>
             }
+            <div className="row justify-content-center">
+               <img src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/cc-badges-ppcmcvdam.png" alt="Pay with PayPal Credit or any major credit card" />
+            </div>
          </div>
          {/***** Add/ modify category modal  ****/}
          {auth.state.isAuthenticated &&

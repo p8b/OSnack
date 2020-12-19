@@ -55,7 +55,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="NSwag.AspNetCore" Version="13.9.4.1" />
-    <PackageReference Include="NSwag.CodeGeneration.TypeScript" Version="13.9.4.1" />
+    <PackageReference Include="NSwag.CodeGeneration.TypeScript" Version="13.9.4.2" />
     <PackageReference Include="PayPalCheckoutSdk" Version="1.0.3" />
     <PackageReference Include="PayPalHttp" Version="1.0.0" />
   </ItemGroup>

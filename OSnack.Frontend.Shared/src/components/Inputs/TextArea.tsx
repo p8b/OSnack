@@ -1,4 +1,5 @@
-﻿import React from 'react';
+﻿/// <reference path="../../../../OSnack.Client/src/pages/Basket/PaymentModal.tsx" />
+import React from 'react';
 
 export const TextArea = (props: IProps) => {
    const id: string = Math.random().toString();
@@ -21,9 +22,9 @@ export const TextArea = (props: IProps) => {
          <label htmlFor={id}
             className={`col-form-label  pm-0 `}
             children={props.label} />
-         <textarea value={props.value} id={id}
+         <textarea value={props.value || ""} id={id}
             onChange={i => {
-               props.onChange!(i);
+               props.onChange && props.onChange(i);
                props.validationPattern ?? validationClassName(i.target);
             }}
             onBlur={(i) => {
