@@ -4,8 +4,7 @@ import { API_URL } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import { getBase64fromUrlImage } from 'osnack-frontend-shared/src/_core/appFunc';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Input } from 'osnack-frontend-shared/src/components/Inputs/Input';
-import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
-import ButtonPopupConfirm from 'osnack-frontend-shared/src/components/Buttons/ButtonPopupConfirm';
+import ModalFooter from 'osnack-frontend-shared/src/components/Modals/ModalFooter';
 import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
 import ImageUpload from '../../components/ImageUpload/ImageUpload';
 import Alert, { AlertObj, AlertTypes, ErrorDto, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
@@ -161,33 +160,11 @@ const CategoryModal = (props: IProps) => {
             className="col-12 mb-2"
             onClosed={() => { errorAlert.clear(); }}
          />
-
-         {/***** buttons ****/}
-         <div className="row col-12 pm-0 ">
-            {category.id === 0 ?
-               <Button children="Create"
-                  className="col-12 mt-2 btn-green col-sm-6 btn-lg"
-                  onClick={createCategory} />
-               :
-               <div className="row col-12 col-sm-8 pm-0">
-                  <ButtonPopupConfirm title="Update"
-                     popupMessage="Are you sure?"
-                     className="col-12 mt-2 col-sm-6"
-                     btnClassName="btn-green"
-                     onConfirmClick={updateCategory}
-                  />
-                  <ButtonPopupConfirm title="Delete"
-                     popupMessage="Are you sure?"
-                     className="col-12 col-sm-6 mt-2"
-                     btnClassName="btn-red"
-                     onConfirmClick={deleteCategory}
-                  />
-               </div>
-            }
-            <Button children="Cancel"
-               className={`col-12 mt-2 btn-white btn-lg ${category.id === 0 ? "col-sm-6" : "col-sm-4"}`}
-               onClick={() => { errorAlert.clear(); resetImageUpload(); props.onClose(); }} />
-         </div>
+         <ModalFooter IsNew={category.id === 0}
+            onCreate={createCategory}
+            onUpdate={updateCategory}
+            onDelete={deleteCategory}
+            onClose={() => { errorAlert.clear(); resetImageUpload(); props.onClose(); }} />
       </Modal >
    );
 };

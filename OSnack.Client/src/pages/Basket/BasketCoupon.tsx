@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { AlertObj, AlertTypes, ErrorDto } from 'osnack-frontend-shared/src/components/Texts/Alert';
 const BasketCoupon = (props: IProps) => {
    const [code, setCode] = useState("");
-   useEffect(() => { setCode(props.coupon.code); }, [props.coupon]);
+   useEffect(() => { setCode(props.coupon.code); }, []);
    const couponCheck = () => {
       if (code == undefined) {
          props.setAlert(new AlertObj(
@@ -27,7 +27,8 @@ const BasketCoupon = (props: IProps) => {
             props.setAlert(new AlertObj(
                [new ErrorDto("Access Denied", `Minimum total price must be higher than £${result.data.minimumOrderPrice!}`)],
                AlertTypes.Error));
-            setCode("");
+            console.log(result.data.code);
+            setCode(result.data.code);
             return;
          }
          props.setCoupon(result.data);

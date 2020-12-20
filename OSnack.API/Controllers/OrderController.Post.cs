@@ -189,22 +189,7 @@ namespace OSnack.API.Controllers
             return null;
          }
 
-         //Check coupon
-         if (orderData.Coupon != null && !string.IsNullOrEmpty(orderData.Coupon.Code))
-         {
-            Coupon currentCoupon = await _DbContext.Coupons.AsTracking()
-                           .SingleOrDefaultAsync(c => c.Code == orderData.Coupon.Code)
-                           .ConfigureAwait(false);
-            if (currentCoupon == null || currentCoupon.MaxUseQuantity < 1 || currentCoupon.ExpiryDate < DateTime.UtcNow)
-            {
-               _LoggingService.Log(Request.Path, AppLogType.OrderException,
-                                 new { message = "Coupon Invalid", order = orderData }, User);
-               CoreFunc.Error(ref ErrorsList, $"'{orderData.Coupon.Code}' is invalid");
-               return null;
-            }
-            else
-               orderData.Coupon = currentCoupon;
-         }
+
 
          List<Product> productList = await _DbContext.Products.AsTracking()
            .Include(p => p.Category)
@@ -241,6 +226,23 @@ namespace OSnack.API.Controllers
             CheckedOrderItems.Add(new OrderItem(originalProduct, orderItem.Quantity));
 
 
+         }
+
+         //Check coupon
+         if (orderData.Coupon != null && !string.IsNullOrEmpty(orderData.Coupon.Code))
+         {
+            Coupon currentCoupon = await _DbContext.Coupons.AsTracking()
+                           .SingleOrDefaultAsync(c => c.Code == orderData.Coupon.Code)
+                           .ConfigureAwait(false);
+            if (currentCoupon == null || currentCoupon.MaxUseQuantity < 1 || currentCoupon.ExpiryDate < DateTime.UtcNow || orderData.TotalItemPrice < currentCoupon.MinimumOrderPrice)
+            {
+               _LoggingService.Log(Request.Path, AppLogType.OrderException,
+                                 new { message = "Coupon Invalid", order = orderData }, User);
+               CoreFunc.Error(ref ErrorsList, $"'{orderData.Coupon.Code}' is invalid");
+               return null;
+            }
+            else
+               orderData.Coupon = currentCoupon;
          }
          orderData.CalculateTotalPrice();
          return orderData;

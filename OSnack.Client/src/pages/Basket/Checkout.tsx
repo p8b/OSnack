@@ -35,7 +35,6 @@ const Checkout = (props: IProps) => {
    const [deliveryOptionList, setDeliveryOptionList] = useState<DeliveryOption[]>([]);
    const [availableDeliveryList, setAvailableDeliveryList] = useState<DeliveryOption[]>([]);
 
-   const [totalDiscount, setTotalDiscount] = useState(0);
    const [order, setOrder] = useState(new Order());
 
    const [paypalOrder, setPaypalOrder] = useState(new Order2());
@@ -72,63 +71,65 @@ const Checkout = (props: IProps) => {
    };
    const recalculateBasket = (deliveryOptionList: DeliveryOption[],
       selectDeliveryOption?: DeliveryOption, selectCoupon?: Coupon) => {
-      let totalPriceTemp = 0;
+      let totalDiscount = 0;
       let totalItemPriceTemp = 0;
       /// Calculate the Total item price
       basket.state.List.map(orderItem => {
-         totalPriceTemp += (orderItem.quantity * orderItem.price);
+         totalItemPriceTemp += (orderItem.quantity * orderItem.price);
       });
-      totalItemPriceTemp = totalPriceTemp;
       let removeCoupon = false;
       if (selectCoupon == undefined) {
          selectCoupon = order.coupon;
       }
-      if (selectCoupon != undefined && selectCoupon.type != CouponType.FreeDelivery && totalPriceTemp < selectCoupon?.minimumOrderPrice!) {
-         removeCoupon = true;
-         setTotalDiscount(0);
-         selectCoupon = undefined;
-      }
+      //if (selectCoupon != undefined && selectCoupon.type != CouponType.FreeDelivery && totalItemPriceTemp < selectCoupon?.minimumOrderPrice!) {
+      //   removeCoupon = true;
+      //   setTotalDiscount(0);
+      //   selectCoupon = undefined;
+      //}
       /// Decide the effect of the coupn on checkout
       switch (selectCoupon?.type) {
          case CouponType.FreeDelivery:
             if (selectDeliveryOption?.isPremitive) {
+               errorAlert.clear();
                selectDeliveryOption = deliveryOptionList.find(d => d.price > 0 && d.minimumOrderTotal == 0 && d.isPremitive) || new DeliveryOption();
-               setTotalDiscount(selectDeliveryOption.price);
+               if (totalItemPriceTemp < selectCoupon?.minimumOrderPrice!) {
+                  errorAlert.setSingleWarning("Coupon invalid", `Minimum total price must be higher than £${selectCoupon.minimumOrderPrice}`);
+                  totalDiscount = 0;
+               }
+               else {
+                  totalDiscount = selectDeliveryOption.price;
+               }
             }
             else {
                removeCoupon = true;
-               setTotalDiscount(0);
+               totalDiscount = 0;
             }
             break;
          case CouponType.DiscountPrice:
-            setTotalDiscount(selectCoupon?.discountAmount || 0);
-            totalPriceTemp -= (selectCoupon?.discountAmount || 0);
+            totalDiscount = selectCoupon?.discountAmount!;
             break;
          case CouponType.PercentageOfTotal:
             const discountPercentage = selectCoupon?.discountAmount || 0;
-            const disouctTotalTemp = (((discountPercentage * (totalPriceTemp || 0)) / 100)?.toFixed(2) as unknown as number || 0);
-            setTotalDiscount(disouctTotalTemp);
-
-            totalPriceTemp -= disouctTotalTemp;
+            totalDiscount = (((discountPercentage * (totalItemPriceTemp || 0)) / 100)?.toFixed(2) as unknown as number || 0);
             break;
          default:
-            setTotalDiscount(0);
+            totalDiscount = 0;
             break;
       }
-      if (totalPriceTemp < 0) totalPriceTemp = 0;
+      //if (totalPriceTemp < 0) totalPriceTemp = 0;
 
       let availableDeliveryOptionList: DeliveryOption[] = [];
-
+      let shippingPrice = 0;
       /// if free delivery is available 
       if (deliveryOptionList.find(o => o.price == 0 && o.minimumOrderTotal > 0 && o.isPremitive) &&
-         totalPriceTemp > (deliveryOptionList.find(o => o.price == 0 && o.minimumOrderTotal > 0 && o.isPremitive)!.minimumOrderTotal)) {
+         totalItemPriceTemp > (deliveryOptionList.find(o => o.price == 0 && o.minimumOrderTotal > 0 && o.isPremitive)!.minimumOrderTotal)) {
          if (selectDeliveryOption == undefined || selectDeliveryOption.isPremitive) {
             selectDeliveryOption = deliveryOptionList.find(d => d.price == 0 && d.minimumOrderTotal > 0 && d.isPremitive)!;
-            totalPriceTemp += selectDeliveryOption.price;
+            shippingPrice = selectDeliveryOption.price;
             availableDeliveryOptionList.push(selectDeliveryOption);
 
          } else {
-            totalPriceTemp += selectDeliveryOption.price;
+            shippingPrice = selectDeliveryOption.price;
             availableDeliveryOptionList.push(deliveryOptionList.find(d => d.price == 0 && d.minimumOrderTotal > 0 && d.isPremitive)!);
          }
       }
@@ -137,15 +138,15 @@ const Checkout = (props: IProps) => {
 
             if (selectDeliveryOption?.price == 0 && selectDeliveryOption?.minimumOrderTotal == 0) {   //if free coupon used in order
 
-               totalPriceTemp -= order.deliveryOption?.price || 0;
+               shippingPrice = 0;
                selectDeliveryOption.price = deliveryOptionList.find(d => d.price != 0 && d.minimumOrderTotal == 0 && d.isPremitive)!.price;
             }
             else
                selectDeliveryOption = deliveryOptionList.find(d => d.price != 0 && d.minimumOrderTotal == 0 && d.isPremitive)!;
-            totalPriceTemp += selectDeliveryOption.price;
+            shippingPrice = selectDeliveryOption.price;
             availableDeliveryOptionList.push(selectDeliveryOption);
          } else {
-            totalPriceTemp += selectDeliveryOption.price;
+            shippingPrice = selectDeliveryOption.price;
             availableDeliveryOptionList.push(deliveryOptionList.find(d => d.price != 0 && d.minimumOrderTotal == 0 && d.isPremitive)!);
          }
       }
@@ -158,11 +159,12 @@ const Checkout = (props: IProps) => {
       setDeliveryOptionList(deliveryOptionList);
       setOrder(prev => {
          return {
-            ...prev, totalPrice: totalPriceTemp,
+            ...prev, totalPrice: (totalItemPriceTemp + shippingPrice - totalDiscount),
             deliveryOption: selectDeliveryOption || order.deliveryOption,
             coupon: removeCoupon ? new Coupon() : selectCoupon,
             orderItems: basket.state.List,
-            totalItemPrice: totalItemPriceTemp
+            totalItemPrice: totalItemPriceTemp,
+            totalDiscount: totalDiscount
          };
       });
    };
@@ -202,7 +204,7 @@ const Checkout = (props: IProps) => {
                alert={errorAlert.alert}
                onClosed={() => { errorAlert.clear(); }} />
             <div className="col-12">
-               {totalDiscount <= 0 &&
+               {order.totalDiscount <= 0 &&
                   <BasketCoupon coupon={order.coupon || new Coupon()}
                      totalPrice={order.totalItemPrice}
                      acceptFreeCoupon={(order.deliveryOption?.price! > 0 && order.deliveryOption?.isPremitive) || false}
@@ -211,9 +213,9 @@ const Checkout = (props: IProps) => {
                }
 
                <div className="col-12 pm-0 small-text"> Subtotal : <b>£{order.totalItemPrice?.toFixed(2)}</b></div>
-               {totalDiscount > 0 &&
-                  <div className="col-12 pm-0 pb-2 small-text"> Discount : <b>-£{parseFloat(totalDiscount.toString()).toFixed(2)}</b>
-                     <span className="float-right edit-icon" onClick={() => { setOrder(prev => { return { ...prev, coupon: new Coupon() }; }); setTotalDiscount(0); }} /></div>
+               {order.totalDiscount > 0 &&
+                  <div className="col-12 pm-0 pb-2 small-text"> Discount : <b>-£{parseFloat(order.totalDiscount.toString()).toFixed(2)}</b>
+                     <span className="float-right edit-icon" onClick={() => { setOrder(prev => { return { ...prev, totalDiscount: 0 }; }); }} /></div>
                }
                <DropDown title={<><span>Shipping: <b>{order.deliveryOption?.name} £{order.deliveryOption?.price?.toFixed(2)}</b></span> <span className="float-right edit-icon" /></>}
                   titleClassName="text-left small-text"
@@ -238,7 +240,8 @@ const Checkout = (props: IProps) => {
                               {addressList.map(addr =>
                                  <a className="dropdown-item text-nav" key={addr.id}
                                     onClick={() => { setSelectAddress(addr); }}
-                                    children={<div className="col" children={`${addr.name}`} />} />)
+                                    children={<div className="col" children={`${addr.name}`} />}
+                                 />)
                               }
                               <a className="dropdown-item text-nav" key="newAddress"
                                  children='New Address'
@@ -284,7 +287,11 @@ const Checkout = (props: IProps) => {
                   setSelectAddress(address);
                }}
                address={selectAddress}
-               onClose={() => setIsOpenAddressModal(false)} />
+               onClose={() => {
+                  if (selectAddress.id == 0)
+                     setSelectAddress(addressList.find(a => a.isDefault) || new Address());
+                  setIsOpenAddressModal(false);
+               }} />
          }
          {paypalScript.isLoaded &&
             <PaymentModal isOpen={isOpenPayementModal}

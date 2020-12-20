@@ -7,13 +7,13 @@ import InputDropDown from 'osnack-frontend-shared/src/components/Inputs/InputDro
 import { Toggler } from 'osnack-frontend-shared/src/components/Inputs/Toggler';
 import Alert, { AlertObj, AlertTypes, ErrorDto, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
-import ButtonPopupConfirm from 'osnack-frontend-shared/src/components/Buttons/ButtonPopupConfirm';
 import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
 import ImageUpload from '../../components/ImageUpload/ImageUpload';
 import { usePostProduct, usePutProduct, useDeleteProduct } from '../../SecretHooks/useProductHook';
 import { TextArea } from 'osnack-frontend-shared/src/components/Inputs/TextArea';
 import { API_URL } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import ProductNutritionalInfoModal from './ProductNutritionalInfoModal';
+import ModalFooter from 'osnack-frontend-shared/src/components/Modals/ModalFooter';
 
 const ProductModal = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -242,33 +242,11 @@ const ProductModal = (props: IProps) => {
             className="col-12 mb-2"
             onClosed={() => { errorAlert.clear(); }}
          />
-
-         {/***** buttons ****/}
-         <div className="row col-12 pm-0 ">
-            {product.id === 0 ?
-               <Button children="Create"
-                  className="col-12 mt-2 btn-green col-sm-6 btn-lg"
-                  onClick={createProduct} />
-               :
-               <div className="row col-12 col-sm-8 pm-0">
-                  <ButtonPopupConfirm title="Update"
-                     popupMessage="Are you sure?"
-                     className="col-12 mt-2 col-sm-6"
-                     btnClassName="btn-green"
-                     onConfirmClick={updateProduct}
-                  />
-                  <ButtonPopupConfirm title="Delete"
-                     popupMessage="Are you sure?"
-                     className="col-12 col-sm-6 mt-2"
-                     btnClassName="btn-red"
-                     onConfirmClick={deleteProduct}
-                  />
-               </div>
-            }
-            <Button children="Cancel"
-               className={`col-12 mt-2 btn-white btn-lg ${product.id === 0 ? "col-sm-6" : "col-sm-4"}`}
-               onClick={() => { errorAlert.clear(); resetImageUpload(); props.onClose(); }} />
-         </div>
+         <ModalFooter IsNew={product.id === 0}
+            onCreate={createProduct}
+            onUpdate={updateProduct}
+            onDelete={deleteProduct}
+            onClose={() => { errorAlert.clear(); resetImageUpload(); props.onClose(); }} />
       </Modal >
    );
 };

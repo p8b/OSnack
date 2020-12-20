@@ -2,8 +2,7 @@
 import { Address } from 'osnack-frontend-shared/src/_core/apiModels';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Input } from 'osnack-frontend-shared/src/components/Inputs/Input';
-import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
-import ButtonPopupConfirm from 'osnack-frontend-shared/src/components/Buttons/ButtonPopupConfirm';
+import ModalFooter from 'osnack-frontend-shared/src/components/Modals/ModalFooter';
 import { TextArea } from 'osnack-frontend-shared/src/components/Inputs/TextArea';
 import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
 import Alert, { AlertObj, AlertTypes, ErrorDto, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
@@ -137,33 +136,11 @@ const AddressModal = (props: IProps) => {
             className="col-12 mb-2"
             onClosed={() => { errorAlert.clear(); }}
          />
-
-         {/***** buttons ****/}
-         <div className="row col-12 pm-0 ">
-            {address.id === 0 ?
-               <Button children="Create"
-                  className="col-12 mt-2 btn-green col-sm-6 btn-lg"
-                  onClick={createAddress} />
-               :
-               <div className="row col-12 col-sm-8 pm-0">
-                  <ButtonPopupConfirm title="Update"
-                     popupMessage="Are you sure?"
-                     className="col-12 mt-2 col-sm-6"
-                     btnClassName="btn-green"
-                     onConfirmClick={updateAddress}
-                  />
-                  <ButtonPopupConfirm title="Delete"
-                     popupMessage="Are you sure?"
-                     className="col-12 col-sm-6 mt-2"
-                     btnClassName="btn-red"
-                     onConfirmClick={deleteAddress}
-                  />
-               </div>
-            }
-            <Button children="Cancel"
-               className={`col-12 mt-2 btn-white btn-lg ${address.id === 0 ? "col-sm-6" : "col-sm-4"}`}
-               onClick={() => { errorAlert.clear(); props.onClose(); }} />
-         </div>
+         <ModalFooter IsNew={address.id === 0}
+            onCreate={createAddress}
+            onUpdate={updateAddress}
+            onDelete={deleteAddress}
+            onClose={() => { errorAlert.clear(); props.onClose(); }} />
       </Modal >
    );
 };

@@ -312,6 +312,7 @@
     <TypeScriptCompile Include="src\components\Inputs\TextArea.tsx" />
     <TypeScriptCompile Include="src\components\Inputs\Toggler.tsx" />
     <TypeScriptCompile Include="src\components\Loading\Loading.tsx" />
+    <TypeScriptCompile Include="src\components\Modals\ModalFooter.tsx" />
     <TypeScriptCompile Include="src\components\OrderDetails\OrderDetails.tsx" />
     <TypeScriptCompile Include="src\components\Pagination\Pagination.tsx" />
     <TypeScriptCompile Include="src\components\Table\Table.tsx" />

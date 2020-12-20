@@ -2,12 +2,11 @@
 import { RegistrationTypes, RegistrationTypesList, Role, User } from 'osnack-frontend-shared/src/_core/apiModels';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Input } from 'osnack-frontend-shared/src/components/Inputs/Input';
-import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
-import ButtonPopupConfirm from 'osnack-frontend-shared/src/components/Buttons/ButtonPopupConfirm';
 import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { useCreateUserUser, useUpdateUserUser, useDeleteUser } from '../../SecretHooks/useUserHook';
 import InputDropdown from 'osnack-frontend-shared/src/components/Inputs/InputDropDown';
+import ModalFooter from 'osnack-frontend-shared/src/components/Modals/ModalFooter';
 
 const UserModal = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -116,33 +115,11 @@ const UserModal = (props: IProps) => {
             className="col-12 mb-2"
             onClosed={() => { errorAlert.clear(); }}
          />
-
-         {/***** buttons ****/}
-         <div className="row col-12 pm-0 ">
-            {user.id === 0 ?
-               <Button children="Create"
-                  className="col-12 mt-2 btn-green col-sm-6 btn-lg"
-                  onClick={createUser} />
-               :
-               <div className="row col-12 col-sm-8 pm-0">
-                  <ButtonPopupConfirm title="Update"
-                     popupMessage="Are you sure?"
-                     className="col-12 mt-2 col-sm-6"
-                     btnClassName="btn-green"
-                     onConfirmClick={updateUser}
-                  />
-                  <ButtonPopupConfirm title="Delete"
-                     popupMessage="Are you sure?"
-                     className="col-12 col-sm-6 mt-2"
-                     btnClassName="btn-red"
-                     onConfirmClick={deleteUser}
-                  />
-               </div>
-            }
-            <Button children="Cancel"
-               className={`col-12 mt-2 btn-white btn-lg ${user.id === 0 ? "col-sm-6" : "col-sm-4"}`}
-               onClick={() => { errorAlert.clear(); props.onClose(); }} />
-         </div>
+         <ModalFooter IsNew={user.id === 0}
+            onCreate={createUser}
+            onUpdate={updateUser}
+            onDelete={deleteUser}
+            onClose={() => { errorAlert.clear(); props.onClose(); }} />
       </Modal >
    );
 };

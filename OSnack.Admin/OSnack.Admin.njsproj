@@ -35,6 +35,9 @@
     <Content Include="public\index.html" />
     <Content Include="public\robot.txt" />
     <Content Include="README.md" />
+    <Content Include="server\cert\cert.pem" />
+    <Content Include="server\cert\exported-cert.cer" />
+    <Content Include="server\cert\key.pem" />
     <Content Include="server\server-development.js" />
     <Content Include="src\styles\animation\animations\attention_seekers\_bounce.scss" />
     <Content Include="src\styles\animation\animations\attention_seekers\_flash.scss" />
@@ -136,6 +139,7 @@
   <ItemGroup>
     <Folder Include="public\" />
     <Folder Include="server\" />
+    <Folder Include="server\cert\" />
     <Folder Include="src\" />
     <Folder Include="src\components\" />
     <Folder Include="src\components\NavMenu\" />

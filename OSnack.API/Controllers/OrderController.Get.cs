@@ -63,7 +63,7 @@ namespace OSnack.API.Controllers
                 .Include(o => o.Payment)
                 .ToListAsync()
                 .ConfigureAwait(false);
-            return Ok(new MultiResult<List<Order>, int>(list, totalCount, CoreFunc.GetCustomAttributeTypedArgument(this.ControllerContext)));
+            return Ok(new MultiResult<List<Order>, int>(list, totalCount));
          }
          catch (Exception ex)
          {

@@ -5,11 +5,10 @@ import { Input } from 'osnack-frontend-shared/src/components/Inputs/Input';
 import InputDropDown from 'osnack-frontend-shared/src/components/Inputs/InputDropDown';
 import { DatePicker } from 'osnack-frontend-shared/src/components/Inputs/DatePicker';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
-import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
-import ButtonPopupConfirm from 'osnack-frontend-shared/src/components/Buttons/ButtonPopupConfirm';
 import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
 import { useDeleteCoupon, usePutCoupon, usePostCoupon } from '../../SecretHooks/useCouponHook';
 import { getNextDate } from 'osnack-frontend-shared/src/_core/appFunc';
+import ModalFooter from 'osnack-frontend-shared/src/components/Modals/ModalFooter';
 
 
 const CouponModel = (props: IProps) => {
@@ -25,7 +24,7 @@ const CouponModel = (props: IProps) => {
          setCoupon(props.coupon);
    }, [props.coupon]);
 
-   const createProduct = async () => {
+   const createCoupon = async () => {
       errorAlert.PleaseWait(500, isUnmounted);
       usePostCoupon(coupon).then(result => {
          if (isUnmounted.current) return;
@@ -37,7 +36,7 @@ const CouponModel = (props: IProps) => {
          errorAlert.set(alert);
       });
    };
-   const updateProduct = async () => {
+   const updateCoupon = async () => {
 
       errorAlert.PleaseWait(500, isUnmounted);
       usePutCoupon(coupon).then(result => {
@@ -52,7 +51,7 @@ const CouponModel = (props: IProps) => {
 
    };
 
-   const deleteProduct = async () => {
+   const deleteCoupon = async () => {
       errorAlert.PleaseWait(500, isUnmounted);
       useDeleteCoupon(coupon).then(() => {
          if (isUnmounted.current) return;
@@ -131,32 +130,12 @@ const CouponModel = (props: IProps) => {
             onClosed={() => { errorAlert.clear(); }}
          />
 
-         {/***** buttons ****/}
-         <div className="row col-12 pm-0 ">
-            {coupon.code == undefined ?
-               <Button children="Create"
-                  className="col-12 mt-2 btn-green col-sm-6 btn-lg"
-                  onClick={createProduct} />
-               :
-               <div className="row col-12 col-sm-8 pm-0">
-                  <ButtonPopupConfirm title="Update"
-                     popupMessage="Are you sure?"
-                     className="col-12 mt-2 col-sm-6"
-                     btnClassName="btn-green"
-                     onConfirmClick={updateProduct}
-                  />
-                  <ButtonPopupConfirm title="Delete"
-                     popupMessage="Are you sure?"
-                     className="col-12 col-sm-6 mt-2"
-                     btnClassName="btn-red"
-                     onConfirmClick={deleteProduct}
-                  />
-               </div>
-            }
-            <Button children="Cancel"
-               className={`col-12 mt-2 btn-white btn-lg ${coupon.code == undefined ? "col-sm-6" : "col-sm-4"}`}
-               onClick={() => { errorAlert.clear(); props.onClose(); }} />
-         </div>
+         <ModalFooter IsNew={coupon.code == undefined}
+            onCreate={createCoupon}
+            onUpdate={updateCoupon}
+            onDelete={deleteCoupon}
+            onClose={() => { errorAlert.clear(); props.onClose(); }} />
+
       </Modal >
    );
 };
