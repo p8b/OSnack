@@ -78,7 +78,7 @@ const ProductManagement = (props: IProps) => {
       useSearchSecretProduct(selectedPage, maxItemsPerPage, categoryFilter, searchString, statusFilter, isSortAsc, sortName)
          .then(result => {
             if (isUnmounted.current) return;
-            setTblTotalItemCount(result.data.totalNumber || 0);
+            setTblTotalItemCount(result.data.totalCount || 0);
             populateProductTable(result.data.productList!);
             errorAlert.clear();
          }).catch(alert => {

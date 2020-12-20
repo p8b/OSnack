@@ -8,6 +8,7 @@ using OSnack.API.Extras;
 using OSnack.API.Extras.CustomTypes;
 
 using P8B.Core.CSharp;
+using P8B.Core.CSharp.Attributes;
 using P8B.Core.CSharp.Models;
 
 using System;
@@ -19,7 +20,7 @@ namespace OSnack.API.Controllers
 {
    public partial class EmailTemplateController
    {
-      #region *** ***
+      #region *** ***        
       [ProducesResponseType(typeof(List<EmailTemplate>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
@@ -57,7 +58,8 @@ namespace OSnack.API.Controllers
          }
       }
 
-      #region *** ***
+      #region *** ***                 
+      [MultiResultPropertyNames(new string[] { "emailTemplate", "defaultEmailTemplate" })]
       [ProducesResponseType(typeof(MultiResult<EmailTemplate, EmailTemplate>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
@@ -77,7 +79,7 @@ namespace OSnack.API.Controllers
             defaultTemplate.PrepareDesign(WebHost.WebRootPath);
             template.PrepareDesign(WebHost.WebRootPath);
 
-            return Ok(new MultiResult<EmailTemplate, EmailTemplate>(template, defaultTemplate));
+            return Ok(new MultiResult<EmailTemplate, EmailTemplate>(template, defaultTemplate, CoreFunc.GetCustomAttributeTypedArgument(this.ControllerContext)));
          }
          catch (Exception ex)
          {

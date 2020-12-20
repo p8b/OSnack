@@ -1,7 +1,7 @@
 import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/components/Texts/Alert";
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
-import { Coupon, CouponListAndTotalNumber } from "osnack-frontend-shared/src/_core/apiModels";
+import { Coupon, CouponListAndTotalCount } from "osnack-frontend-shared/src/_core/apiModels";
 export const useDeleteCoupon = async (coupon: Coupon): Promise<{ data:string , status?: number}> =>{
         let url_ = API_URL + "/Coupon/Delete";
         url_ = url_.replace(/[?&]$/, "");
@@ -39,7 +39,7 @@ export const useDeleteCoupon = async (coupon: Coupon): Promise<{ data:string , s
         }
   
 }
-export const useSearchCoupon = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, filterType: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:CouponListAndTotalNumber , status?: number}> =>{
+export const useSearchCoupon = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, filterType: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:CouponListAndTotalCount , status?: number}> =>{
         let url_ = API_URL + "/Coupon/Get/Search/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{filterType}/{isSortAsce}/{sortName}";
         if (selectedPage !== null && selectedPage !== undefined)
         url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
@@ -63,7 +63,7 @@ export const useSearchCoupon = async (selectedPage: number, maxNumberPerItemsPag
         switch(response?.status){
 
                 case 200: 
-                        var responseData: CouponListAndTotalNumber = await response?.json();
+                        var responseData: CouponListAndTotalCount = await response?.json();
                         return { data: responseData, status: response?.status };
 
                 case 417: 

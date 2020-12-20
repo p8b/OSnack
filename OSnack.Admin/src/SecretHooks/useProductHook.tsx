@@ -1,7 +1,7 @@
 import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/components/Texts/Alert";
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
-import { Product, ProductListAndTotalNumber } from "osnack-frontend-shared/src/_core/apiModels";
+import { Product, ProductListAndTotalCount } from "osnack-frontend-shared/src/_core/apiModels";
 export const useDeleteProduct = async (product: Product): Promise<{ data:string , status?: number}> =>{
         let url_ = API_URL + "/Product/Delete";
         url_ = url_.replace(/[?&]$/, "");
@@ -34,7 +34,7 @@ export const useDeleteProduct = async (product: Product): Promise<{ data:string 
         }
   
 }
-export const useSearchSecretProduct = async (selectedPage: number, maxItemsPerPage: number, filterCategory: string | null, searchValue: string | null, filterStatus: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:ProductListAndTotalNumber , status?: number}> =>{
+export const useSearchSecretProduct = async (selectedPage: number, maxItemsPerPage: number, filterCategory: string | null, searchValue: string | null, filterStatus: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:ProductListAndTotalCount , status?: number}> =>{
         let url_ = API_URL + "/Product/GET/SearchSecret/{selectedPage}/{maxItemsPerPage}/{filterCategory}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}";
         if (selectedPage !== null && selectedPage !== undefined)
         url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
@@ -60,7 +60,7 @@ export const useSearchSecretProduct = async (selectedPage: number, maxItemsPerPa
         switch(response?.status){
 
                 case 200: 
-                        var responseData: ProductListAndTotalNumber = await response?.json();
+                        var responseData: ProductListAndTotalCount = await response?.json();
                         return { data: responseData, status: response?.status };
 
                 case 417: 

@@ -1,7 +1,7 @@
 import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/components/Texts/Alert";
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
-import { User, UserListAndTotalNumber } from "osnack-frontend-shared/src/_core/apiModels";
+import { User, UserListAndTotalCount } from "osnack-frontend-shared/src/_core/apiModels";
 export const useDeleteUser = async (thisUser: User): Promise<{ data:string , status?: number}> =>{
         let url_ = API_URL + "/User/Delete";
         url_ = url_.replace(/[?&]$/, "");
@@ -34,7 +34,7 @@ export const useDeleteUser = async (thisUser: User): Promise<{ data:string , sta
         }
   
 }
-export const useGetUser = async (selectedPage: number, maxItemsPerPage: number, searchValue: string | null, filterRole: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:UserListAndTotalNumber , status?: number}> =>{
+export const useGetUser = async (selectedPage: number, maxItemsPerPage: number, searchValue: string | null, filterRole: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:UserListAndTotalCount , status?: number}> =>{
         let url_ = API_URL + "/User/Get/{selectedPage}/{maxItemsPerPage}/{searchValue}/{filterRole}/{isSortAsce}/{sortName}";
         if (selectedPage !== null && selectedPage !== undefined)
         url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
@@ -58,7 +58,7 @@ export const useGetUser = async (selectedPage: number, maxItemsPerPage: number, 
         switch(response?.status){
 
                 case 200: 
-                        var responseData: UserListAndTotalNumber = await response?.json();
+                        var responseData: UserListAndTotalCount = await response?.json();
                         return { data: responseData, status: response?.status };
 
                 case 417: 

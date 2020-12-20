@@ -33,7 +33,7 @@ const ProductPage = (props: IProps) => {
                if (isUnmounted.current) return;
                setProduct(result.data.product!);
                window.scrollTo(0, 0);
-               setCarousel(<Carousel items={getCarouselItems(result.data.productList!)} />);
+               setCarousel(<Carousel items={getCarouselItems(result.data.relatedProductList!)} />);
                errorAlert.clear();
             }).catch(alert => {
                if (isUnmounted.current) return;

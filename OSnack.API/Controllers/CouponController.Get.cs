@@ -8,6 +8,7 @@ using OSnack.API.Extras;
 using OSnack.API.Extras.CustomTypes;
 
 using P8B.Core.CSharp;
+using P8B.Core.CSharp.Attributes;
 using P8B.Core.CSharp.Extentions;
 using P8B.Core.CSharp.Models;
 
@@ -25,6 +26,7 @@ namespace OSnack.API.Controllers
       /// search by Code or filter by type
       /// </summary>
       #region *** ***
+      [MultiResultPropertyNames(new string[] { "couponList", "totalCount" })]
       [ProducesResponseType(typeof(MultiResult<List<Coupon>, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<P8B.Core.CSharp.Models.Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
@@ -55,7 +57,7 @@ namespace OSnack.API.Controllers
                 .ToListAsync()
                 .ConfigureAwait(false);
 
-            return Ok(new MultiResult<List<Coupon>, int>(list, totalCount));
+            return Ok(new MultiResult<List<Coupon>, int>(list, totalCount, CoreFunc.GetCustomAttributeTypedArgument(this.ControllerContext)));
          }
          catch (Exception ex)
          {

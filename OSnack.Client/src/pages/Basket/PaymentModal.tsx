@@ -1,5 +1,4 @@
-﻿
-import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
+﻿import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
 import { Order2 } from 'osnack-frontend-shared/src/_core/apiModels';
 import React, { RefObject, useEffect, useState } from 'react';

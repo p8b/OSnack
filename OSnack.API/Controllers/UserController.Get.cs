@@ -7,6 +7,7 @@ using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 
 using P8B.Core.CSharp;
+using P8B.Core.CSharp.Attributes;
 using P8B.Core.CSharp.Extentions;
 using P8B.Core.CSharp.Models;
 
@@ -23,7 +24,8 @@ namespace OSnack.API.Controllers
       /// <summary>
       /// Used to get a list of all users
       /// </summary>
-      #region ***  ***
+      #region ***  ***                                  
+      [MultiResultPropertyNames(new string[] { "userList", "totalCount" })]
       [ProducesResponseType(typeof(MultiResult<List<User>, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
@@ -80,7 +82,7 @@ namespace OSnack.API.Controllers
                 .ConfigureAwait(false);
             list.ForEach(u => u.OrderLength = u.Orders.Count());
             /// return the list of Role ordered by name
-            return Ok(new MultiResult<List<User>, int>(list, totalCount));
+            return Ok(new MultiResult<List<User>, int>(list, totalCount, CoreFunc.GetCustomAttributeTypedArgument(this.ControllerContext)));
          }
          catch (Exception ex)
          {

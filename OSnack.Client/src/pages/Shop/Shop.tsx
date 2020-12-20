@@ -94,14 +94,14 @@ const Shop = (props: IProps) => {
          .then(result => {
             if (isUnmounted.current) return;
 
-            setTblTotalItemCount(result.data.totalNumber || 0);
+            setTblTotalItemCount(result.data.totalCount || 0);
             //let list: Product[] = productList;
             //if (selectedPage == 1)
             //   list = [] as Product[];
             //if (result.data.productList != undefined)
             //   list.push(...result.data.productList);
             setProductList(result.data.productList!);
-            if (result.data.totalNumber === 0)
+            if (result.data.totalCount === 0)
                errorAlert.setSingleDefault("", "No Result Found");
             else
                errorAlert.clear();

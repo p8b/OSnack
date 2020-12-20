@@ -1,7 +1,7 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import { useAllOrder } from '../../hooks/OfficialHooks/useOrderHook';
 import Alert, { AlertObj, useAlert } from '../../components/Texts/Alert';
-import { Order, OrderListAndTotalNumber, OrderStatusTypeList } from '../../_core/apiModels';
+import { Order, OrderListAndTotalCount, OrderStatusTypeList } from '../../_core/apiModels';
 import PageHeader from '../../components/Texts/PageHeader';
 import ButtonCard from '../../components/Buttons/ButtonCard';
 import OrderModal from './OrderModal';
@@ -142,7 +142,7 @@ const ViewOrders = (props: IProps) => {
 
 declare type IProps = {
    access: ClientAppAccess;
-   useAllUserOrderSecret?: (userId: number, selectedPage: number, maxNumberPerItemsPage: number, filterStatus: string | null) => Promise<{ data: OrderListAndTotalNumber, status?: number; }>;
+   useAllUserOrderSecret?: (userId: number, selectedPage: number, maxNumberPerItemsPage: number, filterStatus: string | null) => Promise<{ data: OrderListAndTotalCount, status?: number; }>;
    location: any;
 };
 export default ViewOrders;

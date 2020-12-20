@@ -1,8 +1,8 @@
 import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
-import { OrderListAndTotalNumber, Order } from "../../_core/apiModels";
-export const useAllOrder = async (selectedPage: number, maxNumberPerItemsPage: number, filterStatus: string | null): Promise<{ data:OrderListAndTotalNumber , status?: number}> =>{
+import { OrderListAndTotalCount, Order } from "../../_core/apiModels";
+export const useAllOrder = async (selectedPage: number, maxNumberPerItemsPage: number, filterStatus: string | null): Promise<{ data:OrderListAndTotalCount , status?: number}> =>{
         let url_ = API_URL + "/Order/Get/All/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}";
         if (selectedPage !== null && selectedPage !== undefined)
         url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
@@ -20,7 +20,7 @@ export const useAllOrder = async (selectedPage: number, maxNumberPerItemsPage: n
         switch(response?.status){
 
                 case 200: 
-                        var responseData: OrderListAndTotalNumber = await response?.json();
+                        var responseData: OrderListAndTotalCount = await response?.json();
                         return { data: responseData, status: response?.status };
 
                 case 417: 

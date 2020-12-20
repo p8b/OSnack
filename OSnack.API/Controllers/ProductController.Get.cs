@@ -7,6 +7,7 @@ using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 
 using P8B.Core.CSharp;
+using P8B.Core.CSharp.Attributes;
 using P8B.Core.CSharp.Extentions;
 using P8B.Core.CSharp.Models;
 
@@ -19,7 +20,8 @@ namespace OSnack.API.Controllers
 {
    public partial class ProductController
    {
-      #region ***  ***
+      #region ***  ***                
+      [MultiResultPropertyNames(new string[] { "productList", "totalCount" })]
       [ProducesResponseType(typeof(MultiResult<List<Product>, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
@@ -32,6 +34,7 @@ namespace OSnack.API.Controllers
          await Search(selectedPage, maxItemsPerPage, filterCategory, searchValue, "true", isSortAsce, sortName).ConfigureAwait(false);
 
       #region ***  ***
+      [MultiResultPropertyNames(new string[] { "productList", "totalCount" })]
       [ProducesResponseType(typeof(MultiResult<List<Product>, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
@@ -75,7 +78,7 @@ namespace OSnack.API.Controllers
                 .Take(maxItemsPerPage)
                 .ToListAsync()
                 .ConfigureAwait(false);
-            return Ok(new MultiResult<List<Product>, int>(list, totalCount));
+            return Ok(new MultiResult<List<Product>, int>(list, totalCount, CoreFunc.GetCustomAttributeTypedArgument(this.ControllerContext)));
          }
          catch (Exception ex)
          {
@@ -88,7 +91,8 @@ namespace OSnack.API.Controllers
       /// <summary>
       /// Get a single product by using product and category name 
       /// </summary>
-      #region ***  ***
+      #region ***  ***         
+      [MultiResultPropertyNames(new string[] { "product", "relatedProductList" })]
       [ProducesResponseType(typeof(MultiResult<Product, List<Product>>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status404NotFound)]
@@ -132,7 +136,7 @@ namespace OSnack.API.Controllers
                 .ConfigureAwait(false));
 
 
-            return Ok(new MultiResult<Product, List<Product>>(product, relatedProducts));
+            return Ok(new MultiResult<Product, List<Product>>(product, relatedProducts, CoreFunc.GetCustomAttributeTypedArgument(this.ControllerContext)));
          }
          catch (Exception ex)
          {

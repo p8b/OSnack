@@ -1,7 +1,7 @@
 import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/components/Texts/Alert";
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
-import { EmailTemplate, EmailtemplateAndEmailtemplate1, ServerVariables } from "osnack-frontend-shared/src/_core/apiModels";
+import { EmailTemplate, EmailTemplateAndDefaultEmailTemplate, ServerVariables } from "osnack-frontend-shared/src/_core/apiModels";
 export const useDeleteEmailTemplate = async (emailTemplate: EmailTemplate): Promise<{ data:string , status?: number}> =>{
         let url_ = API_URL + "/EmailTemplate/Delete";
         url_ = url_.replace(/[?&]$/, "");
@@ -60,7 +60,7 @@ export const useAllEmailTemplate = async (): Promise<{ data:EmailTemplate[] , st
         }
   
 }
-export const useGetEmailTemplate = async (templateId: number): Promise<{ data:EmailtemplateAndEmailtemplate1 , status?: number}> =>{
+export const useGetEmailTemplate = async (templateId: number): Promise<{ data:EmailTemplateAndDefaultEmailTemplate , status?: number}> =>{
         let url_ = API_URL + "/EmailTemplate/Get/{templateId}";
         if (templateId !== null && templateId !== undefined)
         url_ = url_.replace("{templateId}", encodeURIComponent("" + templateId));
@@ -74,7 +74,7 @@ export const useGetEmailTemplate = async (templateId: number): Promise<{ data:Em
         switch(response?.status){
 
                 case 200: 
-                        var responseData: EmailtemplateAndEmailtemplate1 = await response?.json();
+                        var responseData: EmailTemplateAndDefaultEmailTemplate = await response?.json();
                         return { data: responseData, status: response?.status };
 
                 case 417: 

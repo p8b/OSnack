@@ -1,8 +1,8 @@
 import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
-import { ProductListAndTotalNumber, ProductAndProductList } from "../../_core/apiModels";
-export const useSearchPublicProduct = async (selectedPage: number, maxItemsPerPage: number, filterCategory: string | null, searchValue: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:ProductListAndTotalNumber , status?: number}> =>{
+import { ProductListAndTotalCount, ProductAndRelatedProductList } from "../../_core/apiModels";
+export const useSearchPublicProduct = async (selectedPage: number, maxItemsPerPage: number, filterCategory: string | null, searchValue: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:ProductListAndTotalCount , status?: number}> =>{
         let url_ = API_URL + "/Product/GET/SearchPublic/{selectedPage}/{maxItemsPerPage}/{filterCategory}/{searchValue}/{isSortAsce}/{sortName}";
         if (selectedPage !== null && selectedPage !== undefined)
         url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
@@ -26,7 +26,7 @@ export const useSearchPublicProduct = async (selectedPage: number, maxItemsPerPa
         switch(response?.status){
 
                 case 200: 
-                        var responseData: ProductListAndTotalNumber = await response?.json();
+                        var responseData: ProductListAndTotalCount = await response?.json();
                         return { data: responseData, status: response?.status };
 
                 case 417: 
@@ -40,7 +40,7 @@ export const useSearchPublicProduct = async (selectedPage: number, maxItemsPerPa
         }
   
 }
-export const useProductAndRelateProduct = async (categoryName: string | null, productName: string | null): Promise<{ data:ProductAndProductList , status?: number}> =>{
+export const useProductAndRelateProduct = async (categoryName: string | null, productName: string | null): Promise<{ data:ProductAndRelatedProductList , status?: number}> =>{
         let url_ = API_URL + "/Product/GET/ProductAndRelate/{categoryName}/{productName}";
         if (categoryName !== null && categoryName !== undefined)
         url_ = url_.replace("{categoryName}", encodeURIComponent("" + categoryName));
@@ -56,7 +56,7 @@ export const useProductAndRelateProduct = async (categoryName: string | null, pr
         switch(response?.status){
 
                 case 200: 
-                        var responseData: ProductAndProductList = await response?.json();
+                        var responseData: ProductAndRelatedProductList = await response?.json();
                         return { data: responseData, status: response?.status };
 
                 case 417: 

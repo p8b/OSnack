@@ -8,6 +8,7 @@ using OSnack.API.Extras;
 using OSnack.API.Extras.CustomTypes;
 
 using P8B.Core.CSharp;
+using P8B.Core.CSharp.Attributes;
 using P8B.Core.CSharp.Extentions;
 using P8B.Core.CSharp.Models;
 
@@ -26,6 +27,7 @@ namespace OSnack.API.Controllers
       /// </summary>
       #region *** 200 OK, 417 ExpectationFailed ***
       [Consumes(MediaTypeNames.Application.Json)]
+      [MultiResultPropertyNames(new string[] { "orderList", "totalCount" })]
       [ProducesResponseType(typeof(MultiResult<List<Order>, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
@@ -61,7 +63,7 @@ namespace OSnack.API.Controllers
                 .Include(o => o.Payment)
                 .ToListAsync()
                 .ConfigureAwait(false);
-            return Ok(new MultiResult<List<Order>, int>(list, totalCount));
+            return Ok(new MultiResult<List<Order>, int>(list, totalCount, CoreFunc.GetCustomAttributeTypedArgument(this.ControllerContext)));
          }
          catch (Exception ex)
          {
@@ -73,8 +75,9 @@ namespace OSnack.API.Controllers
       /// <summary>
       /// Used to get a list of all Order with OrderItems
       /// </summary>
-      #region *** 200 OK, 417 ExpectationFailed ***
+      #region ***  ***
       [Consumes(MediaTypeNames.Application.Json)]
+      [MultiResultPropertyNames(new string[] { "orderList", "totalCount" })]
       [ProducesResponseType(typeof(MultiResult<List<Order>, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
@@ -91,6 +94,7 @@ namespace OSnack.API.Controllers
       /// </summary>
       #region *** 200 OK, 417 ExpectationFailed ***
       [Consumes(MediaTypeNames.Application.Json)]
+      [MultiResultPropertyNames(new string[] { "orderList", "totalCount" })]
       [ProducesResponseType(typeof(MultiResult<List<Order>, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
@@ -125,7 +129,7 @@ namespace OSnack.API.Controllers
                 .OrderByDescending(o => o.Date).ThenBy(o => o.Status)
                 .ToListAsync()
                 .ConfigureAwait(false);
-            return Ok(new MultiResult<List<Order>, int>(list, totalCount));
+            return Ok(new MultiResult<List<Order>, int>(list, totalCount, CoreFunc.GetCustomAttributeTypedArgument(this.ControllerContext)));
          }
          catch (Exception ex)
          {
@@ -134,7 +138,7 @@ namespace OSnack.API.Controllers
          }
       }
 
-      #region *** 200 OK, 417 ExpectationFailed ***
+      #region ***  ***
       [Consumes(MediaTypeNames.Application.Json)]
       [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]

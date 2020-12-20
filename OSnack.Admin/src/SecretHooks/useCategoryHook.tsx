@@ -1,7 +1,7 @@
 import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/components/Texts/Alert";
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
-import { Category, CategoryListAndTotalNumber } from "osnack-frontend-shared/src/_core/apiModels";
+import { Category, CategoryListAndTotalCount } from "osnack-frontend-shared/src/_core/apiModels";
 export const useDeleteCategory = async (category: Category): Promise<{ data:string , status?: number}> =>{
         let url_ = API_URL + "/Category/Delete";
         url_ = url_.replace(/[?&]$/, "");
@@ -39,7 +39,7 @@ export const useDeleteCategory = async (category: Category): Promise<{ data:stri
         }
   
 }
-export const useSearchCategory = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:CategoryListAndTotalNumber , status?: number}> =>{
+export const useSearchCategory = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:CategoryListAndTotalCount , status?: number}> =>{
         let url_ = API_URL + "/Category/Get/Search/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{isSortAsce}/{sortName}";
         if (selectedPage !== null && selectedPage !== undefined)
         url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
@@ -61,7 +61,7 @@ export const useSearchCategory = async (selectedPage: number, maxNumberPerItemsP
         switch(response?.status){
 
                 case 200: 
-                        var responseData: CategoryListAndTotalNumber = await response?.json();
+                        var responseData: CategoryListAndTotalCount = await response?.json();
                         return { data: responseData, status: response?.status };
 
                 case 417: 

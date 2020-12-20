@@ -149,7 +149,6 @@
     <Folder Include="src\pages\CouponManagement\" />
     <Folder Include="src\pages\UserManagement\" />
     <Folder Include="src\pages\ProductManagement\" />
-    <Folder Include="src\SecretHooks\" />
     <Folder Include="src\styles\" />
     <Folder Include="src\styles\animation\" />
     <Folder Include="src\styles\animation\animations\" />

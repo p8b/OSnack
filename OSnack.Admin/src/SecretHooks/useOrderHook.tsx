@@ -1,7 +1,7 @@
 import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/components/Texts/Alert";
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
-import { Order, OrderListAndTotalNumber } from "osnack-frontend-shared/src/_core/apiModels";
+import { Order, OrderListAndTotalCount } from "osnack-frontend-shared/src/_core/apiModels";
 export const useDeleteOrder = async (order: Order): Promise<{ data:string , status?: number}> =>{
         let url_ = API_URL + "/Order/Delete";
         url_ = url_.replace(/[?&]$/, "");
@@ -34,7 +34,7 @@ export const useDeleteOrder = async (order: Order): Promise<{ data:string , stat
         }
   
 }
-export const useAllOrder = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, filterStatus: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:OrderListAndTotalNumber , status?: number}> =>{
+export const useAllOrder = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, filterStatus: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:OrderListAndTotalCount , status?: number}> =>{
         let url_ = API_URL + "/Order/Get/All/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}";
         if (selectedPage !== null && selectedPage !== undefined)
         url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
@@ -58,7 +58,7 @@ export const useAllOrder = async (selectedPage: number, maxNumberPerItemsPage: n
         switch(response?.status){
 
                 case 200: 
-                        var responseData: OrderListAndTotalNumber = await response?.json();
+                        var responseData: OrderListAndTotalCount = await response?.json();
                         return { data: responseData, status: response?.status };
 
                 case 417: 
@@ -72,7 +72,7 @@ export const useAllOrder = async (selectedPage: number, maxNumberPerItemsPage: n
         }
   
 }
-export const useAllUserOrder = async (userId: number, selectedPage: number, maxNumberPerItemsPage: number, filterStatus: string | null): Promise<{ data:OrderListAndTotalNumber , status?: number}> =>{
+export const useAllUserOrder = async (userId: number, selectedPage: number, maxNumberPerItemsPage: number, filterStatus: string | null): Promise<{ data:OrderListAndTotalCount , status?: number}> =>{
         let url_ = API_URL + "/Order/Get/AllUser/{userId}/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}";
         if (userId !== null && userId !== undefined)
         url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
@@ -92,7 +92,7 @@ export const useAllUserOrder = async (userId: number, selectedPage: number, maxN
         switch(response?.status){
 
                 case 200: 
-                        var responseData: OrderListAndTotalNumber = await response?.json();
+                        var responseData: OrderListAndTotalCount = await response?.json();
                         return { data: responseData, status: response?.status };
 
                 case 417: 

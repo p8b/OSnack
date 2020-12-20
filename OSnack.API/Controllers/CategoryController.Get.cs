@@ -7,6 +7,7 @@ using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 
 using P8B.Core.CSharp;
+using P8B.Core.CSharp.Attributes;
 using P8B.Core.CSharp.Extentions;
 using P8B.Core.CSharp.Models;
 
@@ -24,6 +25,7 @@ namespace OSnack.API.Controllers
       /// search by name or filter by unit or status
       /// </summary>
       #region *** ***
+      [MultiResultPropertyNames(new string[] { "categoryList", "totalCount" })]
       [ProducesResponseType(typeof(MultiResult<List<Category>, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
@@ -55,7 +57,7 @@ namespace OSnack.API.Controllers
                   .CountAsync(p => p.Category.Id == category.Id)
                   .ConfigureAwait(false);
             }
-            return Ok(new MultiResult<List<Category>, int>(list, totalCount));
+            return Ok(new MultiResult<List<Category>, int>(list, totalCount, CoreFunc.GetCustomAttributeTypedArgument(this.ControllerContext)));
          }
          catch (Exception ex)
          {

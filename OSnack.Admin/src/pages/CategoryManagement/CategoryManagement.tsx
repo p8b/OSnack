@@ -58,7 +58,7 @@ const CategoryManagement = (props: IProps) => {
          result => {
             if (isUnmounted.current) return;
             errorAlert.clear();
-            setTblTotalItemCount(result.data.totalNumber || 0);
+            setTblTotalItemCount(result.data.totalCount || 0);
             populateCategoryTable(result.data.categoryList);
          }).catch((alert) => {
             if (isUnmounted.current) return;
