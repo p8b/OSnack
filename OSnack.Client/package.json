@@ -49,7 +49,7 @@
     "webpack-dev-server": "3.11.0"
   },
   "dependencies": {
-    "osnack-frontend-shared": "file://../osnack.frontend.shared",
+    "osnack-frontend-shared": "file://../OSnack.Frontend.Shared",
     "react-alice-carousel": "^2.0.2"
   },
   "peerDependencies": {}

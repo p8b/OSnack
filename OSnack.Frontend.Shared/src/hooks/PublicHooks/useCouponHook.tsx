@@ -2,7 +2,8 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { Coupon } from "../../_core/apiModels";
-export const useValidateCoupon = async (couponCode: string | null): Promise<{ data:Coupon , status?: number}> =>{
+export type IReturnUseValidateCoupon={ data:Coupon , status?: number;};
+export const useValidateCoupon = async (couponCode: string | null): Promise<IReturnUseValidateCoupon> =>{
         let url_ = API_URL + "/Coupon/Get/Validate/{couponCode}";
         if (couponCode !== null && couponCode !== undefined)
         url_ = url_.replace("{couponCode}", encodeURIComponent("" + couponCode));

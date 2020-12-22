@@ -1,16 +1,20 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
-import { useAllOrder } from '../../hooks/OfficialHooks/useOrderHook';
+import { IReturnUseAllOrder, useAllOrder } from '../../hooks/OfficialHooks/useOrderHook';
 import Alert, { AlertObj, useAlert } from '../../components/Texts/Alert';
-import { Order, OrderListAndTotalCount, OrderStatusTypeList } from '../../_core/apiModels';
+import { Order, OrderStatusType, OrderStatusTypeList } from '../../_core/apiModels';
 import PageHeader from '../../components/Texts/PageHeader';
 import ButtonCard from '../../components/Buttons/ButtonCard';
 import OrderModal from './OrderModal';
 import DropDown from '../../components/Buttons/DropDown';
 import { ClientAppAccess, ConstMaxNumberOfPerItemsPage, GetAllRecords } from '../../_core/constant.Variables';
 import LoadMore from '../../components/Pagination/LoadMore';
+import { Button } from '../../components/Buttons/Button';
+import { useHistory } from 'react-router-dom';
+import { getBadgeByOrderStatusType } from '../../_core/appFunc';
 
 const ViewOrders = (props: IProps) => {
    const isUnmounted = useRef(false);
+   const history = useHistory();
    const errorAlert = useAlert(new AlertObj());
    const [selectOrder, setSelectOrder] = useState(new Order());
    const [orderList, setOrderList] = useState<Order[]>([]);
@@ -19,7 +23,7 @@ const ViewOrders = (props: IProps) => {
    const [tblTotalItemCount, setTblTotalItemCount] = useState(0);
    const [tblMaxItemsPerPage, setTblMaxItemsPerPage] = useState(ConstMaxNumberOfPerItemsPage);
    const [isOpenOrderModal, setIsOpenOrderModal] = useState(false);
-
+   const [availableStatusTypeList, setavailableStatusTypeList] = useState<OrderStatusType[]>([]);
    useEffect(() => {
       onSearch();
    }, []);
@@ -46,7 +50,7 @@ const ViewOrders = (props: IProps) => {
             break;
          case ClientAppAccess.Secret:
             if (props.useAllUserOrderSecret != undefined)
-               props.useAllUserOrderSecret(props.location.state?.userId || 0, selectedPage, maxItemsPerPage, filterType)
+               props.useAllUserOrderSecret(props.location?.state?.userId || 0, selectedPage, maxItemsPerPage, filterType)
                   .then(onGetUserOrderSuccess)
                   .catch(onGetUserOrderFailed);
             break;
@@ -56,42 +60,53 @@ const ViewOrders = (props: IProps) => {
 
 
    };
-   const onGetUserOrderSuccess = (result: any) => {
+   const onGetUserOrderSuccess = (result: IReturnUseAllOrder) => {
       if (isUnmounted.current) return;
       errorAlert.clear();
-      setTblTotalItemCount(result.data.totalNumber || 0);
+      setTblTotalItemCount(result.data.totalCount || 0);
       let list = orderList;
       if (result.data.orderList != undefined)
          list = list.concat(result.data.orderList);
       setOrderList(list);
+      setavailableStatusTypeList(result.data.availableTypes!);
    };
    const onGetUserOrderFailed = (alert: any) => {
       if (isUnmounted.current) return;
       errorAlert.set(alert);
    };
 
+
+
    return (
-      <div className="container pb-4 ">
-         <PageHeader title="My Orders" className="hr-section-sm" />
+      <>
+         <PageHeader title={props.location?.state?.fullName == undefined ? "My Orders" : `Orders - ${props.location?.state?.fullName}`} className="hr-section-sm line-limit-1" />
          <Alert alert={errorAlert.alert}
             className="col-12 mb-2"
             onClosed={() => { errorAlert.clear(); }}
          />
-         <DropDown title={`Status Type: ${OrderStatusTypeList.find((s) => s.Id?.toString() == selectType)?.Name || "All"}`}
-            className="col-12 col-sm-6 col-md-4 ml-auto m-0 p-1"
-            titleClassName="btn btn-white filter-icon">
-            <button className="dropdown-item"
-               onClick={() => { onSearch(undefined, undefined, GetAllRecords); }} >
-               All
-                  </button>
-            {OrderStatusTypeList.map(statusType =>
-               <button className="dropdown-item" key={statusType.Id}
-                  onClick={() => { onSearch(undefined, undefined, statusType.Id?.toString()); }} >
-                  {statusType.Name}
-               </button>
-            )}
-         </DropDown>
+         <div className="row pm-0">
+            <span className="col-12 pm-0 small-text text-gray ">Total Items:{tblTotalItemCount}</span>
+            <div className="col-12 col-sm-6 col-md-4 pm-0" >
+               {props.backUrl != undefined &&
+                  <Button onClick={() => history.push(props.backUrl!)} children="Back" className="mr-auto btn-lg back-icon" />
+               }
 
+            </div>
+            <DropDown title={`Status Type: ${OrderStatusTypeList.find((s) => s.Id?.toString() == selectType)?.Name || "All"}`}
+               className="col-12 col-sm-6 col-md-4 ml-auto m-0 p-1"
+               titleClassName="btn btn-white filter-icon">
+               <button className="dropdown-item"
+                  onClick={() => { onSearch(undefined, undefined, GetAllRecords); }} >
+                  All
+                  </button>
+               {OrderStatusTypeList.filter(o => o.Value in availableStatusTypeList)?.map(statusType =>
+                  <button className="dropdown-item" key={statusType.Id}
+                     onClick={() => { onSearch(undefined, undefined, statusType.Id?.toString()); }} >
+                     {statusType.Name}
+                  </button>
+               )}
+            </DropDown>
+         </div>
          <div className="row justify-content-center pm-0">
             {orderList.length > 0 &&
                orderList.map(order => {
@@ -102,7 +117,7 @@ const ViewOrders = (props: IProps) => {
                            setIsOpenOrderModal(true);
                         }} >
                         <div className="col-12  mt-3 ">
-                           <div className="row text-left ml-2  mt-auto">Status: <p className="pm-0 ml-1 h6 mt-auto mb-auto "
+                           <div className="row text-left ml-2  mt-auto ">Status: <p className={`${getBadgeByOrderStatusType(order.status)} font-weight-bold pm-0 ml-1 h6 mt-auto mb-auto `}
                               children={OrderStatusTypeList.find(t => t.Value == order.status)?.Name} /> </div>
                            <div className="row text-left ml-2">Total Price: <div className="pm-0 ml-1 h6 mt-auto mb-auto"
                               children={`£${order.totalPrice}`} /> </div>
@@ -135,14 +150,18 @@ const ViewOrders = (props: IProps) => {
             listCount={tblTotalItemCount} />
          <OrderModal isOpen={isOpenOrderModal}
             order={selectOrder}
+            access={props.access}
             onClose={() => setIsOpenOrderModal(false)} />
-      </div >
+      </ >
    );
 };
 
 declare type IProps = {
    access: ClientAppAccess;
-   useAllUserOrderSecret?: (userId: number, selectedPage: number, maxNumberPerItemsPage: number, filterStatus: string | null) => Promise<{ data: OrderListAndTotalCount, status?: number; }>;
-   location: any;
+   useAllUserOrderSecret?: (userId: number, selectedPage: number, maxNumberPerItemsPage: number, filterStatus: string | null) => Promise<IReturnUseAllOrder>;
+   location?: {
+      state: { userId: number, fullName: string; };
+   };
+   backUrl?: string;
 };
 export default ViewOrders;

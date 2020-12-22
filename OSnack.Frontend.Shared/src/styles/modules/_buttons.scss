@@ -127,6 +127,12 @@
             height: 18rem !important;
             width: 18rem;
         }
+
+        &.card-view {
+            height: auto !important;
+            width: 18rem;
+            padding: 0.1rem;
+        }
     }
 }
 /// *** Button Colors

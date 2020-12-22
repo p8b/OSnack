@@ -2,7 +2,8 @@ import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/compo
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
 import { Role } from "osnack-frontend-shared/src/_core/apiModels";
-export const useGetRole = async (): Promise<{ data:Role[] , status?: number}> =>{
+export type IReturnUseGetRole={ data:Role[] , status?: number;};
+export const useGetRole = async (): Promise<IReturnUseGetRole> =>{
         let url_ = API_URL + "/Role/Get";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);

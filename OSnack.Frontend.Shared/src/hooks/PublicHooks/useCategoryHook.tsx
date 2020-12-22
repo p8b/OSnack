@@ -2,7 +2,8 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { Category } from "../../_core/apiModels";
-export const useAllPublicCategory = async (): Promise<{ data:Category[] , status?: number}> =>{
+export type IReturnUseAllPublicCategory={ data:Category[] , status?: number;};
+export const useAllPublicCategory = async (): Promise<IReturnUseAllPublicCategory> =>{
         let url_ = API_URL + "/Category/Get/AllPublic";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);

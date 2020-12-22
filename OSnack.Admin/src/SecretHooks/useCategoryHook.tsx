@@ -2,7 +2,8 @@ import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/compo
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
 import { Category, CategoryListAndTotalCount } from "osnack-frontend-shared/src/_core/apiModels";
-export const useDeleteCategory = async (category: Category): Promise<{ data:string , status?: number}> =>{
+export type IReturnUseDeleteCategory={ data:string , status?: number;};
+export const useDeleteCategory = async (category: Category): Promise<IReturnUseDeleteCategory> =>{
         let url_ = API_URL + "/Category/Delete";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = category;
@@ -39,7 +40,8 @@ export const useDeleteCategory = async (category: Category): Promise<{ data:stri
         }
   
 }
-export const useSearchCategory = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:CategoryListAndTotalCount , status?: number}> =>{
+export type IReturnUseSearchCategory={ data:CategoryListAndTotalCount , status?: number;};
+export const useSearchCategory = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, isSortAsce: boolean, sortName: string | null): Promise<IReturnUseSearchCategory> =>{
         let url_ = API_URL + "/Category/Get/Search/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{isSortAsce}/{sortName}";
         if (selectedPage !== null && selectedPage !== undefined)
         url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
@@ -75,7 +77,8 @@ export const useSearchCategory = async (selectedPage: number, maxNumberPerItemsP
         }
   
 }
-export const useAllSecretCategory = async (): Promise<{ data:Category[] , status?: number}> =>{
+export type IReturnUseAllSecretCategory={ data:Category[] , status?: number;};
+export const useAllSecretCategory = async (): Promise<IReturnUseAllSecretCategory> =>{
         let url_ = API_URL + "/Category/Get/AllSecret";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);
@@ -101,7 +104,8 @@ export const useAllSecretCategory = async (): Promise<{ data:Category[] , status
         }
   
 }
-export const usePostCategory = async (newCategory: Category): Promise<{ data:Category , status?: number}> =>{
+export type IReturnUsePostCategory={ data:Category , status?: number;};
+export const usePostCategory = async (newCategory: Category): Promise<IReturnUsePostCategory> =>{
         let url_ = API_URL + "/Category/Post";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = newCategory;
@@ -138,7 +142,8 @@ export const usePostCategory = async (newCategory: Category): Promise<{ data:Cat
         }
   
 }
-export const usePutCategory = async (modifiedCategory: Category): Promise<{ data:Category , status?: number}> =>{
+export type IReturnUsePutCategory={ data:Category , status?: number;};
+export const usePutCategory = async (modifiedCategory: Category): Promise<IReturnUsePutCategory> =>{
         let url_ = API_URL + "/Category/Put";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = modifiedCategory;

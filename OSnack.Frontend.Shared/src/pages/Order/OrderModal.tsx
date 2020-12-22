@@ -4,6 +4,8 @@ import Modal from '../../components/Modals/Modal';
 import OrderDetails from '../../components/OrderDetails/OrderDetails';
 import PageHeader from '../../components/Texts/PageHeader';
 import { Button } from '../../components/Buttons/Button';
+import { ClientAppAccess } from '../../_core/constant.Variables';
+
 
 
 
@@ -17,13 +19,25 @@ const OrderModal = (props: IProps) => {
          <>
             <PageHeader title="Order Details" />
             <div className="row  mt-1">
-               <OrderDetails order={props.order} />
+               <OrderDetails order={props.order} access={props.access} />
                {/***** buttons ****/}
-               <div className="row col-12 pm-0 pos-b-sticky bg-white pb-3">
-                  <Button children="Cancel"
-                     className={`col-12 mt-2 btn-white btn-lg col-sm-6"}`}
-                     onClick={() => { props.onClose(); }} />
-               </div>
+               {props.access == ClientAppAccess.Official &&
+                  <div className="row col-12 pm-0 pos-b-sticky bg-white pb-3">
+                     <Button children="Cancel"
+                        className={`col-12 mt-2 btn-white btn-lg col-sm-6"}`}
+                        onClick={() => { props.onClose(); }} />
+                  </div>
+               }
+               {props.access == ClientAppAccess.Secret &&
+                  <div className="row col-12 pm-0 pos-b-sticky bg-white pb-3">
+                     <Button children="Save"
+                        className={`col-12 col-md-6 mt-2 btn-green btn-lg col-sm-6"}`}
+                        onClick={() => { props.onClose(); }} />
+                     <Button children="Cancel"
+                        className={`col-12 col-md-6 mt-2 btn-white btn-lg col-sm-6"}`}
+                        onClick={() => { props.onClose(); }} />
+                  </div>
+               }
             </div >
          </>
       </Modal >
@@ -37,5 +51,6 @@ declare type IProps = {
    isOpen: boolean;
    onClose: () => void;
    modalRef?: any;
+   access: ClientAppAccess;
 };
 export default OrderModal;

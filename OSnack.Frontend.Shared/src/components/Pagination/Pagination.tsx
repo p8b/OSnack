@@ -20,6 +20,7 @@ const Pagination = (props: IProps) => {
    };
 
    const CalculateVisibleButtons = async () => {
+
       let firstPage = 1, lastPage = 1, maxButtonsToBeShown = 4, halfMaxButtonsToBeShown = Math.floor(maxButtonsToBeShown / 2);
 
       let selectedPage = props.selectedPage; /// currently selected page
@@ -43,7 +44,6 @@ const Pagination = (props: IProps) => {
 
       if (props.selectedPage >= TOTALpages) {
          selectedPage = TOTALpages;
-         props.onChange(selectedPage, props.maxItemsPerPage);
       }
 
       /// if the current page is less than half of the
@@ -125,7 +125,7 @@ const Pagination = (props: IProps) => {
                {arrayOfPageNumbers.map(i => {
                   let isActiveCss = "";
                   if (i === props.selectedPage)
-                     isActiveCss = " active";
+                     isActiveCss = " btn-blue";
 
                   return (
                      <button key={i}
@@ -158,7 +158,9 @@ const Pagination = (props: IProps) => {
                   <option value="90" children="90" />
                   <option value="100" children="100" />
                </select>
-               <div className="col-auto align-self-center mr-auto mr-md-0 ml-0 ml-md-auto" children={`Total items: ${props.listCount}`} />
+               {props.showCount &&
+                  <div className="col-auto align-self-center mr-auto mr-md-0 ml-0 ml-md-auto"
+                     children={`Total items: ${props.listCount}`} />}
             </div>
          }
       </>
@@ -169,5 +171,6 @@ interface IProps {
    maxItemsPerPage: number;
    onChange: (selectedPage: number, MaxItemsPerPage: number) => void;
    listCount: number;
+   showCount?: boolean;
 }
 export default Pagination;

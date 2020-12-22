@@ -2,7 +2,8 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { DeliveryOption } from "../../_core/apiModels";
-export const useAllDeliveryOption = async (): Promise<{ data:DeliveryOption[] , status?: number}> =>{
+export type IReturnUseAllDeliveryOption={ data:DeliveryOption[] , status?: number;};
+export const useAllDeliveryOption = async (): Promise<IReturnUseAllDeliveryOption> =>{
         let url_ = API_URL + "/DeliveryOption/Get/All";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);

@@ -4,8 +4,9 @@ import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { @@Models@@ } from "../../_core/apiModels";
 {% for operation in Operations -%}
-    {% template Client.Method.Documentation %}
-export const use{{ operation.ActualOperationNameUpper }}{{ Class }} = async ({% for parameter in operation.Parameters %}{{ parameter.VariableName }}{% if GenerateOptionalParameters and parameter.IsOptional %}?{% endif %}: {{ parameter.Type }}{{ parameter.TypePostfix }}{% if parameter.IsLast == false %}, {% endif %}{% endfor %}{% if UseAbortSignal %}{% if operation.Parameters.size > 0 %}, {% endif %}signal?: AbortSignal | undefined{% endif %}): Promise<{ data:{% if operation.ResultType =="void" %} null {% else %}{{  operation.ResultType  }} {% endif %}, status?: number}> =>{
+export type IReturnUse{{ operation.ActualOperationNameUpper }}{{ Class }}={ data:{% if operation.ResultType =="void" %} null {% else %}{{  operation.ResultType  }} {% endif %}, status?: number;};
+{% template Client.Method.Documentation %}
+export const use{{ operation.ActualOperationNameUpper }}{{ Class }} = async ({% for parameter in operation.Parameters %}{{ parameter.VariableName }}{% if GenerateOptionalParameters and parameter.IsOptional %}?{% endif %}: {{ parameter.Type }}{{ parameter.TypePostfix }}{% if parameter.IsLast == false %}, {% endif %}{% endfor %}{% if UseAbortSignal %}{% if operation.Parameters.size > 0 %}, {% endif %}signal?: AbortSignal | undefined{% endif %}): Promise<IReturnUse{{ operation.ActualOperationNameUpper }}{{ Class }}> =>{
         {% template Client.RequestUrl %}
 {%     if operation.HasBody -%}
         {% template Client.RequestBody %}

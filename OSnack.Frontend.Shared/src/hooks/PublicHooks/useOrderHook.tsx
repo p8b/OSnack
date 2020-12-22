@@ -2,7 +2,8 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { Order, Order2 } from "../../_core/apiModels";
-export const usePostOrder = async (paypalId: string | null, orderData: Order): Promise<{ data:Order , status?: number}> =>{
+export type IReturnUsePostOrder={ data:Order , status?: number;};
+export const usePostOrder = async (paypalId: string | null, orderData: Order): Promise<IReturnUsePostOrder> =>{
         let url_ = API_URL + "/Order/Post/{paypalId}";
         if (paypalId !== null && paypalId !== undefined)
         url_ = url_.replace("{paypalId}", encodeURIComponent("" + paypalId));
@@ -41,7 +42,8 @@ export const usePostOrder = async (paypalId: string | null, orderData: Order): P
         }
   
 }
-export const useVerifyOrderOrder = async (newOrder: Order): Promise<{ data:Order2 , status?: number}> =>{
+export type IReturnUseVerifyOrderOrder={ data:Order2 , status?: number;};
+export const useVerifyOrderOrder = async (newOrder: Order): Promise<IReturnUseVerifyOrderOrder> =>{
         let url_ = API_URL + "/Order/VerifyOrder";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = newOrder;

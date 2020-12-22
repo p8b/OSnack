@@ -2,7 +2,8 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { Score } from "../../_core/apiModels";
-export const useScoreProduct = async (newScore: Score): Promise<{ data:Score , status?: number}> =>{
+export type IReturnUseScoreProduct={ data:Score , status?: number;};
+export const useScoreProduct = async (newScore: Score): Promise<IReturnUseScoreProduct> =>{
         let url_ = API_URL + "/Product/Post/Score/Score";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = newScore;

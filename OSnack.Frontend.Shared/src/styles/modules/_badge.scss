@@ -1,8 +1,11 @@
 ﻿.badge {
     font-size: 0.9rem;
-    border-radius: 0.9rem;
-    border: 0.1rem solid black;
+    border-radius: 0.2rem;
+    border: 0;
+    padding: 0.3rem;
     user-select: all;
+    color: white !important;
+
 
     &-lg {
         font-size: 1.2rem;
@@ -15,6 +18,18 @@
     }
 
     &.red {
-        border: 0.2rem solid rgb(135, 35, 35);
+        background: rgb(165, 21, 8);
+    }
+
+    &.blue {
+        background: rgb(2, 6, 76);
+    }
+
+    &.light-blue {
+        background: rgb(3, 140, 101);
+    }
+
+    &.green {
+        background: rgb(69, 115, 2);
     }
 }

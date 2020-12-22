@@ -1,12 +1,20 @@
 ﻿import React, { useEffect, useState } from 'react';
+import CardView from './CardView';
+import RowView from './RowView';
 
 const Table = (props: IProps) => {
+   const [currentView, setCurrentViews] = useState(TableView.CardView);
    const [isSortAsc, setIsSortAsc] = useState(true);
    const [selectedSortName, setSelectedSortName] = useState(props.defaultSortName);
 
    useEffect(() => {
       setSelectedSortName(props.defaultSortName);
    }, [props.defaultSortName]);
+
+
+   useEffect(() => {
+      setCurrentViews(props.view || TableView.CardView);
+   }, []);
 
    const sort = (sortName: string) => {
       if (selectedSortName === sortName) {
@@ -25,48 +33,45 @@ const Table = (props: IProps) => {
    };
 
    return (
-      <div className={`table-responsive`}>
-         <table className={`table ${props.className} `}>
-            {props?.colGroup}
-            <thead>
-               <tr>
-                  {(props.data.headers != null && props.data.headers.length > 0) &&
-                     props.data.headers.map(header =>
-                        header.isSortable ?
-                           <th key={Math.random()}>
-                              <span onClick={() => sort(header.sortName)}
-                                 className={`col ${getSortedColCss(header.sortName)}`}>
-                                 <span className="table-header-sort">{header.name}</span>
-                              </span>
-                           </th>
-                           :
-                           <th key={Math.random()}>
-                              <span className="col table-header" >{header.name}</span>
-                           </th>
-                     )
+      <>
+         <div className="row col-12 pm-0">
+
+            <div className="col text-left text-gray"
+               children={props.listCount != undefined ? `Total items: ${props.listCount}` : ""} />
+
+            {currentView == TableView.CardView && props.data.headers != null && props.data.headers.length > 0 &&
+               <div className="col-auto">
+                  {
+                     props.data.headers.filter(h => h.isSortable).map(header =>
+                        <span key={Math.random()} onClick={() => sort(header.sortName)}
+                           className={`col ${getSortedColCss(header.sortName)}`}>
+                           <span className="table-header-sort font-weight-bold">{header.name}</span>
+                        </span>)
                   }
-               </tr>
-            </thead>
-            {(props.data.rows && props.data.rows.length > 0) &&
-               <tbody>
-                  {props.data.rows.map(row =>
-                     <tr key={Math.random()}>
-                        {row.data.map(d =>
-                           <td key={Math.random()} >
-                              {(typeof d === "string") &&
-                                 <span data-toggle="tooltip" data-placement="top" title={d} className="select-all-text line-limit-1">{d}</span>
-                              }
-                              {(typeof d !== "string") && d}
-                           </td>
-                        )}
-                     </tr>
-                  )}
-                  {props.postRow && props.postRow}
-               </tbody>
+               </div>
             }
-         </table>
-      </div >
+            <div className="row col pm-0">
+               <div className="row col-auto pm-0 ml-auto ">
+                  <button className={`btn-no-style table-card-icon cursor-pointer ${currentView != TableView.CardView ? "disabled" : ""}`} onClick={() => setCurrentViews(TableView.CardView)} />
+                  <button className={`btn-no-style table-row-icon cursor-pointer ${currentView != TableView.RowView ? " disabled" : ""}`} onClick={() => setCurrentViews(TableView.RowView)} />
+               </div>
+            </div>
+         </div>
+         {currentView == TableView.CardView &&
+            <CardView className={props.className}
+               defaultSortName={props.defaultSortName}
+               data={props.data}
+               onSortClick={props.onSortClick}
+            />}
+         {currentView == TableView.RowView &&
+            <RowView className={props.className}
+               defaultSortName={props.defaultSortName}
+               data={props.data}
+               onSortClick={props.onSortClick}
+            />}
+      </>
    );
+
 };
 
 
@@ -74,7 +79,9 @@ interface IProps {
    onSortClick?: (isSortAsce: boolean, selectedSortName: string) => void;
    className?: string;
    data: TableData;
+   listCount?: number;
    defaultSortName?: string;
+   view?: TableView;
    colGroup?: any;
    postRow?: any;
 }
@@ -82,13 +89,14 @@ export default Table;
 
 
 
+export enum TableView {
+   RowView = 0,
+   CardView = 1
+}
+
 export class TableData {
    rows: TableRowData[] = [];
    headers: TableHeaderData[] = [];
-   //constructor(rows: TableRowData[], headers: TableHeaderData[]) {
-   //   this.rows = rows;
-   //   this.headers = headers;
-   //}
 }
 
 export class TableHeaderData {

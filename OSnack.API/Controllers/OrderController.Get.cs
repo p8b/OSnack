@@ -77,8 +77,8 @@ namespace OSnack.API.Controllers
       /// </summary>
       #region ***  ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [MultiResultPropertyNames(new string[] { "orderList", "totalCount" })]
-      [ProducesResponseType(typeof(MultiResult<List<Order>, int>), StatusCodes.Status200OK)]
+      [MultiResultPropertyNames(new string[] { "orderList", "availableTypes", "totalCount" })]
+      [ProducesResponseType(typeof(MultiResult<List<Order>, List<OrderStatusType>, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]/{userId}/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}")]
@@ -94,8 +94,8 @@ namespace OSnack.API.Controllers
       /// </summary>
       #region *** 200 OK, 417 ExpectationFailed ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [MultiResultPropertyNames(new string[] { "orderList", "totalCount" })]
-      [ProducesResponseType(typeof(MultiResult<List<Order>, int>), StatusCodes.Status200OK)]
+      [MultiResultPropertyNames(new string[] { "orderList", "availableTypes", "totalCount" })]
+      [ProducesResponseType(typeof(MultiResult<List<Order>, List<OrderStatusType>, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}")]
@@ -117,6 +117,14 @@ namespace OSnack.API.Controllers
                 .CountAsync(r => filterStatus.Equals(CoreConst.GetAllRecords) ? true : r.Status.Equals((OrderStatusType)Enum.Parse(typeof(OrderStatusType), filterStatus, true)))
                 .ConfigureAwait(false);
 
+            List<OrderStatusType> availebeStatusTypes = await _DbContext.Orders
+                           .Include(o => o.User)
+                           .Where(o => o.User.Id == userId)
+                           .Select(o => o.Status)
+                           .Distinct()
+                           .ToListAsync()
+                           .ConfigureAwait(false);
+
             List<Order> list = await _DbContext.Orders
                .Include(o => o.User)
                .Where(o => o.User.Id == userId)
@@ -129,7 +137,7 @@ namespace OSnack.API.Controllers
                 .OrderByDescending(o => o.Date).ThenBy(o => o.Status)
                 .ToListAsync()
                 .ConfigureAwait(false);
-            return Ok(new MultiResult<List<Order>, int>(list, totalCount, CoreFunc.GetCustomAttributeTypedArgument(this.ControllerContext)));
+            return Ok(new MultiResult<List<Order>, List<OrderStatusType>, int>(list, availebeStatusTypes, totalCount, CoreFunc.GetCustomAttributeTypedArgument(this.ControllerContext)));
          }
          catch (Exception ex)
          {

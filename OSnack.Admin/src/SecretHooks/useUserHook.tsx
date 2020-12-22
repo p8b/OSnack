@@ -2,7 +2,8 @@ import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/compo
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
 import { User, UserListAndTotalCount } from "osnack-frontend-shared/src/_core/apiModels";
-export const useDeleteUser = async (thisUser: User): Promise<{ data:string , status?: number}> =>{
+export type IReturnUseDeleteUser={ data:string , status?: number;};
+export const useDeleteUser = async (thisUser: User): Promise<IReturnUseDeleteUser> =>{
         let url_ = API_URL + "/User/Delete";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = thisUser;
@@ -34,7 +35,8 @@ export const useDeleteUser = async (thisUser: User): Promise<{ data:string , sta
         }
   
 }
-export const useGetUser = async (selectedPage: number, maxItemsPerPage: number, searchValue: string | null, filterRole: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:UserListAndTotalCount , status?: number}> =>{
+export type IReturnUseGetUser={ data:UserListAndTotalCount , status?: number;};
+export const useGetUser = async (selectedPage: number, maxItemsPerPage: number, searchValue: string | null, filterRole: string | null, isSortAsce: boolean, sortName: string | null): Promise<IReturnUseGetUser> =>{
         let url_ = API_URL + "/User/Get/{selectedPage}/{maxItemsPerPage}/{searchValue}/{filterRole}/{isSortAsce}/{sortName}";
         if (selectedPage !== null && selectedPage !== undefined)
         url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
@@ -72,7 +74,8 @@ export const useGetUser = async (selectedPage: number, maxItemsPerPage: number, 
         }
   
 }
-export const useCreateUserUser = async (newUser: User): Promise<{ data:User , status?: number}> =>{
+export type IReturnUseCreateUserUser={ data:User , status?: number;};
+export const useCreateUserUser = async (newUser: User): Promise<IReturnUseCreateUserUser> =>{
         let url_ = API_URL + "/User/Post/CreateUser";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = newUser;
@@ -109,7 +112,8 @@ export const useCreateUserUser = async (newUser: User): Promise<{ data:User , st
         }
   
 }
-export const useUpdateUserUser = async (modifiedUser: User): Promise<{ data:User , status?: number}> =>{
+export type IReturnUseUpdateUserUser={ data:User , status?: number;};
+export const useUpdateUserUser = async (modifiedUser: User): Promise<IReturnUseUpdateUserUser> =>{
         let url_ = API_URL + "/User/Put/UpdateUser";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = modifiedUser;
@@ -146,7 +150,8 @@ export const useUpdateUserUser = async (modifiedUser: User): Promise<{ data:User
         }
   
 }
-export const useUserLockoutUser = async (userId: number, lockoutEnabled: boolean): Promise<{ data:User , status?: number}> =>{
+export type IReturnUseUserLockoutUser={ data:User , status?: number;};
+export const useUserLockoutUser = async (userId: number, lockoutEnabled: boolean): Promise<IReturnUseUserLockoutUser> =>{
         let url_ = API_URL + "/User/Put/UserLockout/{userId}/{lockoutEnabled}";
         if (userId !== null && userId !== undefined)
         url_ = url_.replace("{userId}", encodeURIComponent("" + userId));

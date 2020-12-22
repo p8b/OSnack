@@ -151,8 +151,10 @@
     <Folder Include="src\pages\EmailTemplates\" />
     <Folder Include="src\pages\CategoryManagement\" />
     <Folder Include="src\pages\CouponManagement\" />
+    <Folder Include="src\pages\Order\" />
     <Folder Include="src\pages\UserManagement\" />
     <Folder Include="src\pages\ProductManagement\" />
+    <Folder Include="src\SecretHooks\" />
     <Folder Include="src\styles\" />
     <Folder Include="src\styles\animation\" />
     <Folder Include="src\styles\animation\animations\" />
@@ -194,6 +196,7 @@
     <TypeScriptCompile Include="src\pages\EmailTemplates\EmailTemplateEdit.tsx" />
     <TypeScriptCompile Include="src\pages\LoginPage\LoginPage.tsx" />
     <TypeScriptCompile Include="src\pages\MyAccount\MyAccount.tsx" />
+    <TypeScriptCompile Include="src\pages\Order\ViewUserOrders.tsx" />
     <TypeScriptCompile Include="src\pages\ProductManagement\ProductManagement.tsx" />
     <TypeScriptCompile Include="src\pages\ProductManagement\ProductNutritionalInfoModal.tsx" />
     <TypeScriptCompile Include="src\pages\ProductManagement\ProductModal.tsx" />

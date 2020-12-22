@@ -1,8 +1,9 @@
 import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
-import { OrderListAndTotalCount, Order } from "../../_core/apiModels";
-export const useAllOrder = async (selectedPage: number, maxNumberPerItemsPage: number, filterStatus: string | null): Promise<{ data:OrderListAndTotalCount , status?: number}> =>{
+import { OrderListAndAvailableTypesAndTotalCount, Order } from "../../_core/apiModels";
+export type IReturnUseAllOrder={ data:OrderListAndAvailableTypesAndTotalCount , status?: number;};
+export const useAllOrder = async (selectedPage: number, maxNumberPerItemsPage: number, filterStatus: string | null): Promise<IReturnUseAllOrder> =>{
         let url_ = API_URL + "/Order/Get/All/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}";
         if (selectedPage !== null && selectedPage !== undefined)
         url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
@@ -20,7 +21,7 @@ export const useAllOrder = async (selectedPage: number, maxNumberPerItemsPage: n
         switch(response?.status){
 
                 case 200: 
-                        var responseData: OrderListAndTotalCount = await response?.json();
+                        var responseData: OrderListAndAvailableTypesAndTotalCount = await response?.json();
                         return { data: responseData, status: response?.status };
 
                 case 417: 
@@ -34,7 +35,8 @@ export const useAllOrder = async (selectedPage: number, maxNumberPerItemsPage: n
         }
   
 }
-export const useGetOrder = async (orderId: string | null): Promise<{ data:Order , status?: number}> =>{
+export type IReturnUseGetOrder={ data:Order , status?: number;};
+export const useGetOrder = async (orderId: string | null): Promise<IReturnUseGetOrder> =>{
         let url_ = API_URL + "/Order/Get/{orderId}";
         if (orderId !== null && orderId !== undefined)
         url_ = url_.replace("{orderId}", encodeURIComponent("" + orderId));

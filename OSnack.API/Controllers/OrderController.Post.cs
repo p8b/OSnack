@@ -202,6 +202,13 @@ namespace OSnack.API.Controllers
          foreach (var orderItem in orderData.OrderItems)
          {
             originalProduct = productList.SingleOrDefault(t => t.Id == orderItem.ProductId);
+            if (originalProduct == null)
+            {
+               _LoggingService.Log(Request.Path, AppLogType.OrderException,
+                              new { message = $"Product ({orderItem.Name}) Unavailable.", order = orderData }, User);
+               CoreFunc.Error(ref ErrorsList, $"Product ({orderItem.Name}) Unavailable.");
+               return null;
+            }
             if (orderItem.Price != originalProduct.Price)
             {
                _LoggingService.Log(Request.Path, AppLogType.OrderException,

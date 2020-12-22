@@ -2,7 +2,8 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { UpdateCurrentUserData, User } from "../../_core/apiModels";
-export const useUpdateCurrentUserUser = async (currentUserData: UpdateCurrentUserData): Promise<{ data:User , status?: number}> =>{
+export type IReturnUseUpdateCurrentUserUser={ data:User , status?: number;};
+export const useUpdateCurrentUserUser = async (currentUserData: UpdateCurrentUserData): Promise<IReturnUseUpdateCurrentUserUser> =>{
         let url_ = API_URL + "/User/Put/UpdateCurrent";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = currentUserData;
@@ -39,7 +40,8 @@ export const useUpdateCurrentUserUser = async (currentUserData: UpdateCurrentUse
         }
   
 }
-export const useUpdateCurrentUserPasswordUser = async (data: UpdateCurrentUserData): Promise<{ data:User , status?: number}> =>{
+export type IReturnUseUpdateCurrentUserPasswordUser={ data:User , status?: number;};
+export const useUpdateCurrentUserPasswordUser = async (data: UpdateCurrentUserData): Promise<IReturnUseUpdateCurrentUserPasswordUser> =>{
         let url_ = API_URL + "/User/Put/UpdateCurrentUser";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = data;

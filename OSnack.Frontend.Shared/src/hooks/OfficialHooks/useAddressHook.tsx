@@ -2,7 +2,8 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { Address } from "../../_core/apiModels";
-export const useDeleteAddress = async (address: Address): Promise<{ data:string , status?: number}> =>{
+export type IReturnUseDeleteAddress={ data:string , status?: number;};
+export const useDeleteAddress = async (address: Address): Promise<IReturnUseDeleteAddress> =>{
         let url_ = API_URL + "/Address/Delete";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = address;
@@ -39,7 +40,8 @@ export const useDeleteAddress = async (address: Address): Promise<{ data:string 
         }
   
 }
-export const useAllAddress = async (): Promise<{ data:Address[] , status?: number}> =>{
+export type IReturnUseAllAddress={ data:Address[] , status?: number;};
+export const useAllAddress = async (): Promise<IReturnUseAllAddress> =>{
         let url_ = API_URL + "/Address/Get/All";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);
@@ -65,7 +67,8 @@ export const useAllAddress = async (): Promise<{ data:Address[] , status?: numbe
         }
   
 }
-export const usePostAddress = async (newAddress: Address): Promise<{ data:Address , status?: number}> =>{
+export type IReturnUsePostAddress={ data:Address , status?: number;};
+export const usePostAddress = async (newAddress: Address): Promise<IReturnUsePostAddress> =>{
         let url_ = API_URL + "/Address/Post";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = newAddress;
@@ -97,7 +100,8 @@ export const usePostAddress = async (newAddress: Address): Promise<{ data:Addres
         }
   
 }
-export const usePutAddress = async (modifiedAddress: Address): Promise<{ data:Address , status?: number}> =>{
+export type IReturnUsePutAddress={ data:Address , status?: number;};
+export const usePutAddress = async (modifiedAddress: Address): Promise<IReturnUsePutAddress> =>{
         let url_ = API_URL + "/Address/Put";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = modifiedAddress;
@@ -129,7 +133,8 @@ export const usePutAddress = async (modifiedAddress: Address): Promise<{ data:Ad
         }
   
 }
-export const useSetDefaultAddress = async (addressId: number): Promise<{ data: null , status?: number}> =>{
+export type IReturnUseSetDefaultAddress={ data: null , status?: number;};
+export const useSetDefaultAddress = async (addressId: number): Promise<IReturnUseSetDefaultAddress> =>{
         let url_ = API_URL + "/Address/Put/SetDefault";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = addressId;

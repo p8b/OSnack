@@ -3,18 +3,16 @@ import { Access } from '../../_core/appConstant.Variables';
 
 import Login from 'osnack-frontend-shared/src/components/Login/Login';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
-import { useDetectOutsideClick } from 'osnack-frontend-shared/src/hooks/function/useDetectOutsideClick';
 import { User } from 'osnack-frontend-shared/src/_core/apiModels';
 import Container from '../../components/Container';
 import NewCustomer from './NewCustomerModal';
 
 const LoginPage = (props: IProps) => {
    const [newUser, setNewUser] = useState(new User());
-   const toggleContainerModal = React.createRef<HTMLDivElement>();
-   const [outsideClickModal, setOutsideClickModal] = useDetectOutsideClick([toggleContainerModal], false);
+   const [isOpenNewCustomer, setIsOpenNewCustomer] = useState(false);
    console.log(props.location.state?.fromPath);
    const externalLoginFailed = (user: User) => {
-      setOutsideClickModal(true);
+      setIsOpenNewCustomer(true);
       setNewUser(user);
    };
    return (
@@ -24,15 +22,14 @@ const LoginPage = (props: IProps) => {
                <Login externalLoginFailed={externalLoginFailed} fromPath={props.location.state?.fromPath} access={Access} />
                <Button children="New Customer" className="btn-lg btn-white col-12 mt-2"
                   onClick={() => {
-                     setOutsideClickModal((prev) => !prev);
+                     setIsOpenNewCustomer((prev) => !prev);
                   }}
                />
             </div>
          </div>
-         <NewCustomer isOpen={outsideClickModal}
-            modalRef={toggleContainerModal}
+         <NewCustomer isOpen={isOpenNewCustomer}
             onCancel={() => {
-               setOutsideClickModal(false);
+               setIsOpenNewCustomer(false);
                setNewUser(new User());
             }}
             newUser={newUser}

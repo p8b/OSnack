@@ -2,7 +2,8 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { ProductListAndTotalCount, ProductAndRelatedProductList } from "../../_core/apiModels";
-export const useSearchPublicProduct = async (selectedPage: number, maxItemsPerPage: number, filterCategory: string | null, searchValue: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:ProductListAndTotalCount , status?: number}> =>{
+export type IReturnUseSearchPublicProduct={ data:ProductListAndTotalCount , status?: number;};
+export const useSearchPublicProduct = async (selectedPage: number, maxItemsPerPage: number, filterCategory: string | null, searchValue: string | null, isSortAsce: boolean, sortName: string | null): Promise<IReturnUseSearchPublicProduct> =>{
         let url_ = API_URL + "/Product/GET/SearchPublic/{selectedPage}/{maxItemsPerPage}/{filterCategory}/{searchValue}/{isSortAsce}/{sortName}";
         if (selectedPage !== null && selectedPage !== undefined)
         url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
@@ -40,7 +41,8 @@ export const useSearchPublicProduct = async (selectedPage: number, maxItemsPerPa
         }
   
 }
-export const useProductAndRelateProduct = async (categoryName: string | null, productName: string | null): Promise<{ data:ProductAndRelatedProductList , status?: number}> =>{
+export type IReturnUseProductAndRelateProduct={ data:ProductAndRelatedProductList , status?: number;};
+export const useProductAndRelateProduct = async (categoryName: string | null, productName: string | null): Promise<IReturnUseProductAndRelateProduct> =>{
         let url_ = API_URL + "/Product/GET/ProductAndRelate/{categoryName}/{productName}";
         if (categoryName !== null && categoryName !== undefined)
         url_ = url_.replace("{categoryName}", encodeURIComponent("" + categoryName));

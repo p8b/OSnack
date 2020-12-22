@@ -2,7 +2,7 @@
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
-import Table, { TableData, TableHeaderData, TableRowData } from 'osnack-frontend-shared/src/components/Table/Table';
+import Table, { TableData, TableHeaderData, TableRowData, TableView } from 'osnack-frontend-shared/src/components/Table/Table';
 import { Category, Product, ProductUnitTypeList } from 'osnack-frontend-shared/src/_core/apiModels';
 import ProductModal from './ProductModal';
 import Container from '../../components/Container';
@@ -12,6 +12,7 @@ import Pagination from 'osnack-frontend-shared/src/components/Pagination/Paginat
 import { useSearchSecretProduct } from '../../SecretHooks/useProductHook';
 import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
 import { useAllSecretCategory } from '../../SecretHooks/useCategoryHook';
+import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRowButtons';
 
 const ProductManagement = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -103,11 +104,10 @@ const ProductManagement = (props: IProps) => {
             `£${product.price}`,
             `${product.unitQuantity} ${productUnitTypeList.find(pu => pu.Value == product.unitType)?.Name}`,
             product.status ? "Active" : "Disabled",
-            <div className="col-auto pm-0">
-               <button className="btn btn-sm btn-blue col-12 m-0  edit-icon"
-                  onClick={() => { editProduct(product); }}
-                  children="Edit" />
-            </div>
+            <TableRowButtons
+               btnClassName="btn-blue edit-icon"
+               btnClick={() => { editProduct(product); }}
+            />
          ]));
       });
       if (productList.length == 0) {
@@ -199,12 +199,15 @@ const ProductManagement = (props: IProps) => {
                   defaultSortName={tblSortName}
                   data={tableData}
                   onSortClick={onSearch}
+                  view={TableView.CardView}
+                  listCount={tblTotalItemCount}
                />
                <Pagination
                   maxItemsPerPage={tblMaxItemsPerPage}
                   selectedPage={tblSelectedPage}
+                  listCount={tblTotalItemCount}
                   onChange={(selectedPage, maxItemsPerPage) => { onSearch(tblIsSortAsc, tblSortName, selectedPage, maxItemsPerPage); }}
-                  listCount={tblTotalItemCount} />
+               />
             </div>
 
             {/***** Add/ modify category modal  ****/}

@@ -40,9 +40,9 @@ const EmailTemplatesEdit = (props: IProps) => {
       if (props.location.state.emailTemplate.id && props.location.state.emailTemplate.id > 0)
          useGetEmailTemplate(props.location.state.emailTemplate.id).then(
             result => {
-               setTemplate(result.data.emailtemplate ? result.data.emailtemplate : new EmailTemplate());
-               setInitialLockedStatus(result.data.emailtemplate?.locked);
-               setDefaultTemplate(result.data.emailtemplate1 ? result.data.emailtemplate1 : new EmailTemplate());
+               setTemplate(result.data.emailTemplate ? result.data.emailTemplate : new EmailTemplate());
+               setInitialLockedStatus(result.data.emailTemplate?.locked);
+               setDefaultTemplate(result.data.defaultEmailTemplate ? result.data.defaultEmailTemplate : new EmailTemplate());
             });
 
       useGetServerVariablesEmailTemplate().then(result => {

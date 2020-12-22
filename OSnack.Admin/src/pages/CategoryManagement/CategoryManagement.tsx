@@ -10,6 +10,7 @@ import { useSearchCategory } from '../../SecretHooks/useCategoryHook';
 import { ConstMaxNumberOfPerItemsPage, GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRowButtons';
 
 const CategoryManagement = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -76,11 +77,10 @@ const CategoryManagement = (props: IProps) => {
          tData.rows.push(new TableRowData([
             category.name,
             category.totalProducts,
-            <div className="col-auto pm-0">
-               <button className="btn btn-sm btn-blue col-12 m-0 mt-1 mt-xl-0 edit-icon"
-                  onClick={() => { editCategory(category); }}
-                  children="Edit" />
-            </div>
+            <TableRowButtons
+               btnClassName="btn-blue edit-icon"
+               btnClick={() => { editCategory(category); }}
+            />
          ])));
       if (categoryList?.length == 0) {
          errorAlert.setSingleWarning("0", "No Result Found");
@@ -127,12 +127,14 @@ const CategoryManagement = (props: IProps) => {
                   defaultSortName={tblSortName}
                   data={tableData}
                   onSortClick={onSearch}
+                  listCount={tblTotalItemCount}
                />
                <Pagination
                   maxItemsPerPage={tblMaxItemsPerPage}
                   selectedPage={tblSelectedPage}
+                  listCount={tblTotalItemCount}
                   onChange={(selectedPage, maxItemsPerPage) => { onSearch(tblIsSortAsc, tblSortName, selectedPage, maxItemsPerPage); }}
-                  listCount={tblTotalItemCount} />
+               />
             </div>
 
             {/***** Add/ modify category modal  ****/}

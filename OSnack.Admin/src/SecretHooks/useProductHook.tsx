@@ -2,7 +2,8 @@ import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/compo
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
 import { Product, ProductListAndTotalCount } from "osnack-frontend-shared/src/_core/apiModels";
-export const useDeleteProduct = async (product: Product): Promise<{ data:string , status?: number}> =>{
+export type IReturnUseDeleteProduct={ data:string , status?: number;};
+export const useDeleteProduct = async (product: Product): Promise<IReturnUseDeleteProduct> =>{
         let url_ = API_URL + "/Product/Delete";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = product;
@@ -34,7 +35,8 @@ export const useDeleteProduct = async (product: Product): Promise<{ data:string 
         }
   
 }
-export const useSearchSecretProduct = async (selectedPage: number, maxItemsPerPage: number, filterCategory: string | null, searchValue: string | null, filterStatus: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:ProductListAndTotalCount , status?: number}> =>{
+export type IReturnUseSearchSecretProduct={ data:ProductListAndTotalCount , status?: number;};
+export const useSearchSecretProduct = async (selectedPage: number, maxItemsPerPage: number, filterCategory: string | null, searchValue: string | null, filterStatus: string | null, isSortAsce: boolean, sortName: string | null): Promise<IReturnUseSearchSecretProduct> =>{
         let url_ = API_URL + "/Product/GET/SearchSecret/{selectedPage}/{maxItemsPerPage}/{filterCategory}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}";
         if (selectedPage !== null && selectedPage !== undefined)
         url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
@@ -74,7 +76,8 @@ export const useSearchSecretProduct = async (selectedPage: number, maxItemsPerPa
         }
   
 }
-export const usePostProduct = async (newProduct: Product): Promise<{ data:Product , status?: number}> =>{
+export type IReturnUsePostProduct={ data:Product , status?: number;};
+export const usePostProduct = async (newProduct: Product): Promise<IReturnUsePostProduct> =>{
         let url_ = API_URL + "/Product/Post";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = newProduct;
@@ -111,7 +114,8 @@ export const usePostProduct = async (newProduct: Product): Promise<{ data:Produc
         }
   
 }
-export const usePutProduct = async (modifiedProduct: Product): Promise<{ data:Product , status?: number}> =>{
+export type IReturnUsePutProduct={ data:Product , status?: number;};
+export const usePutProduct = async (modifiedProduct: Product): Promise<IReturnUsePutProduct> =>{
         let url_ = API_URL + "/Product/Put";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = modifiedProduct;

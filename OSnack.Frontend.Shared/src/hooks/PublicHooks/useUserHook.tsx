@@ -2,7 +2,8 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { User } from "../../_core/apiModels";
-export const useCreateCustomerUser = async (newCustomer: User): Promise<{ data:User , status?: number}> =>{
+export type IReturnUseCreateCustomerUser={ data:User , status?: number;};
+export const useCreateCustomerUser = async (newCustomer: User): Promise<IReturnUseCreateCustomerUser> =>{
         let url_ = API_URL + "/User/Post/CreateCustomer";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = newCustomer;
@@ -39,7 +40,8 @@ export const useCreateCustomerUser = async (newCustomer: User): Promise<{ data:U
         }
   
 }
-export const useRequestPasswordResetUser = async (email: string): Promise<{ data: null , status?: number}> =>{
+export type IReturnUseRequestPasswordResetUser={ data: null , status?: number;};
+export const useRequestPasswordResetUser = async (email: string): Promise<IReturnUseRequestPasswordResetUser> =>{
         let url_ = API_URL + "/User/Post/RequestPasswordReset";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = email;
@@ -70,7 +72,8 @@ export const useRequestPasswordResetUser = async (email: string): Promise<{ data
         }
   
 }
-export const useConfirmEmailUser = async (pathName: string): Promise<{ data: null , status?: number}> =>{
+export type IReturnUseConfirmEmailUser={ data: null , status?: number;};
+export const useConfirmEmailUser = async (pathName: string): Promise<IReturnUseConfirmEmailUser> =>{
         let url_ = API_URL + "/User/Put/ConfirmEmail";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = pathName;
@@ -101,7 +104,8 @@ export const useConfirmEmailUser = async (pathName: string): Promise<{ data: nul
         }
   
 }
-export const useUpdatePasswordWithTokenUser = async (data: any): Promise<{ data:User , status?: number}> =>{
+export type IReturnUseUpdatePasswordWithTokenUser={ data:User , status?: number;};
+export const useUpdatePasswordWithTokenUser = async (data: any): Promise<IReturnUseUpdatePasswordWithTokenUser> =>{
         let url_ = API_URL + "/User/Put/UpdatePasswordWithToken";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = data;

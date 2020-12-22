@@ -11,6 +11,7 @@ import { ConstMaxNumberOfPerItemsPage, GetAllRecords } from 'osnack-frontend-sha
 import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
+import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRowButtons';
 
 const CouponManagement = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -88,11 +89,10 @@ const CouponManagement = (props: IProps) => {
          tData.rows.push(new TableRowData([
             <div>{coupon.code} <small className="text-danger" children={isExpire(coupon.expiryDate)} /></div>,
             CouponTypeList.find(c => c.Value == coupon.type)?.Name,
-            <div className="col-auto pm-0">
-               <button className="btn btn-sm btn-blue col-12 m-0 mt-1 mt-xl-0 edit-icon"
-                  onClick={() => { editCoupon(coupon); }}
-                  children="Edit" />
-            </div>
+            <TableRowButtons
+               btnClassName="btn-blue edit-icon"
+               btnClick={() => { editCoupon(coupon); }}
+            />
          ])));
       if (couponList?.length == 0) {
          errorAlert.setSingleWarning("0", "No Result Found");
@@ -158,12 +158,14 @@ const CouponManagement = (props: IProps) => {
                   defaultSortName={tblSortName}
                   data={tableData}
                   onSortClick={onSearch}
+                  listCount={tblTotalItemCount}
                />
                <Pagination
                   maxItemsPerPage={tblMaxItemsPerPage}
                   selectedPage={tblSelectedPage}
                   onChange={(selectedPage, maxItemsPerPage) => { onSearch(tblIsSortAsc, tblSortName, selectedPage, maxItemsPerPage); }}
-                  listCount={tblTotalItemCount} />
+                  listCount={tblTotalItemCount}
+               />
             </div>
 
             {/***** Add/ modify category modal  ****/}

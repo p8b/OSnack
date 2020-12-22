@@ -265,6 +265,7 @@
     <Folder Include="src\hooks\function\" />
     <Folder Include="public\" />
     <Folder Include="src\hooks\OfficialHooks\" />
+    <Folder Include="src\hooks\PublicHooks\" />
     <Folder Include="src\pages\" />
     <Folder Include="src\pages\Order\" />
     <Folder Include="src\styles\" />
@@ -315,7 +316,10 @@
     <TypeScriptCompile Include="src\components\Modals\ModalFooter.tsx" />
     <TypeScriptCompile Include="src\components\OrderDetails\OrderDetails.tsx" />
     <TypeScriptCompile Include="src\components\Pagination\Pagination.tsx" />
+    <TypeScriptCompile Include="src\components\Table\CardView.tsx" />
+    <TypeScriptCompile Include="src\components\Table\RowView.tsx" />
     <TypeScriptCompile Include="src\components\Table\Table.tsx" />
+    <TypeScriptCompile Include="src\components\Table\TableRowButtons.tsx" />
     <TypeScriptCompile Include="src\components\Texts\CopyText.tsx" />
     <TypeScriptCompile Include="src\hooks\function\useScript.tsx" />
     <TypeScriptCompile Include="src\hooks\OfficialHooks\useAddressHook.tsx" />

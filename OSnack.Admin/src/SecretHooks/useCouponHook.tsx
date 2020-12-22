@@ -2,7 +2,8 @@ import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/compo
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
 import { Coupon, CouponListAndTotalCount } from "osnack-frontend-shared/src/_core/apiModels";
-export const useDeleteCoupon = async (coupon: Coupon): Promise<{ data:string , status?: number}> =>{
+export type IReturnUseDeleteCoupon={ data:string , status?: number;};
+export const useDeleteCoupon = async (coupon: Coupon): Promise<IReturnUseDeleteCoupon> =>{
         let url_ = API_URL + "/Coupon/Delete";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = coupon;
@@ -39,7 +40,8 @@ export const useDeleteCoupon = async (coupon: Coupon): Promise<{ data:string , s
         }
   
 }
-export const useSearchCoupon = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, filterType: string | null, isSortAsce: boolean, sortName: string | null): Promise<{ data:CouponListAndTotalCount , status?: number}> =>{
+export type IReturnUseSearchCoupon={ data:CouponListAndTotalCount , status?: number;};
+export const useSearchCoupon = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, filterType: string | null, isSortAsce: boolean, sortName: string | null): Promise<IReturnUseSearchCoupon> =>{
         let url_ = API_URL + "/Coupon/Get/Search/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{filterType}/{isSortAsce}/{sortName}";
         if (selectedPage !== null && selectedPage !== undefined)
         url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
@@ -77,7 +79,8 @@ export const useSearchCoupon = async (selectedPage: number, maxNumberPerItemsPag
         }
   
 }
-export const usePostCoupon = async (newCoupon: Coupon): Promise<{ data:Coupon , status?: number}> =>{
+export type IReturnUsePostCoupon={ data:Coupon , status?: number;};
+export const usePostCoupon = async (newCoupon: Coupon): Promise<IReturnUsePostCoupon> =>{
         let url_ = API_URL + "/Coupon/Post";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = newCoupon;
@@ -114,7 +117,8 @@ export const usePostCoupon = async (newCoupon: Coupon): Promise<{ data:Coupon , 
         }
   
 }
-export const usePutCoupon = async (modifiedCoupon: Coupon): Promise<{ data:Coupon , status?: number}> =>{
+export type IReturnUsePutCoupon={ data:Coupon , status?: number;};
+export const usePutCoupon = async (modifiedCoupon: Coupon): Promise<IReturnUsePutCoupon> =>{
         let url_ = API_URL + "/Coupon/Put";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = modifiedCoupon;

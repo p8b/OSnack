@@ -1,7 +1,8 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
-import Table, { TableData, TableHeaderData, TableRowData } from 'osnack-frontend-shared/src/components/Table/Table';
+import Table, { TableData, TableHeaderData, TableRowData, TableView } from 'osnack-frontend-shared/src/components/Table/Table';
+import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRowButtons';
 import { Role, User } from 'osnack-frontend-shared/src/_core/apiModels';
 import Container from '../../components/Container';
 import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
@@ -93,7 +94,7 @@ const UserManagement = (props: IProps) => {
       tData.headers.push(new TableHeaderData("Name", "FirstName", true));
       tData.headers.push(new TableHeaderData("Surname", "Surname", true));
       tData.headers.push(new TableHeaderData("Email", "Email", true));
-      tData.headers.push(new TableHeaderData("Role", "Role.Name", true));
+      tData.headers.push(new TableHeaderData("Role", "Role.Name", false));
       tData.headers.push(new TableHeaderData("", "", false));
 
       userList.map(user =>
@@ -102,16 +103,24 @@ const UserManagement = (props: IProps) => {
             user.surname,
             user.email,
             user.role?.name,
-            <div className="col-auto pm-0">
+            <>
                {user.orderLength! > 0 &&
-                  <button className="btn btn-sm btn-white col-6 m-0 mt-1 mt-xl-0 open-eye-icon"
-                     onClick={() => { viewOrders(user); }}
-                     children="Orders" />
+                  <TableRowButtons
+                     btnClassName="btn-white cart-icon"
+                     btnChildren={user.orderLength}
+                     btnClick={() => { viewOrders(user); }}
+                     btn1ClassName="btn-blue edit-icon"
+                     btn1Click={() => { editUser(user); }}
+                  />
+
                }
-               <button className={`btn btn-sm btn-blue ${user.orderLength! > 0 ? "col-6" : "col-12"}  m-0 mt-1 mt-xl-0 edit-icon`}
-                  onClick={() => { editUser(user); }}
-                  children="Edit" />
-            </div>
+               {user.orderLength == 0 &&
+                  <TableRowButtons
+                     btnClassName="btn-blue edit-icon"
+                     btnClick={() => { editUser(user); }}
+                  />
+               }
+            </>
          ])));
       if (userList.length == 0) {
          errorAlert.setSingleWarning("0", "No Result Found");
@@ -135,7 +144,7 @@ const UserManagement = (props: IProps) => {
       setRedirectToOrders(true);
    };
    if (redirectToOrders == true)
-      return <Redirect to={{ pathname: "/ViewOrders", state: { userId: selectedUser.id } }} />;
+      return <Redirect to={{ pathname: "/ViewUserOrders", state: { userId: selectedUser.id, fullName: selectedUser.firstName + " " + selectedUser.surname } }} />;
    return (
       <Container className="container-fluid pr-0">
          <PageHeader title="Users" className="line-header-lg" />
@@ -180,10 +189,13 @@ const UserManagement = (props: IProps) => {
 
             {/***** Category Table  ****/}
             <div className="row col-12 pm-0">
+
                <Table className="col-12 text-center table-striped mt-4"
                   defaultSortName={tblSortName}
                   data={tableData}
                   onSortClick={onSearch}
+                  view={TableView.CardView}
+                  listCount={tblTotalItemCount}
                />
                <Pagination
                   maxItemsPerPage={tblMaxItemsPerPage}

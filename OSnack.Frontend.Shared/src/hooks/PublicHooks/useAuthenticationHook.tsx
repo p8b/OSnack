@@ -2,7 +2,8 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { LoginInfo, User, ExternalLoginDetails } from "../../_core/apiModels";
-export const useAntiforgeryTokenAuthentication = async (): Promise<{ data: null , status?: number}> =>{
+export type IReturnUseAntiforgeryTokenAuthentication={ data: null , status?: number;};
+export const useAntiforgeryTokenAuthentication = async (): Promise<IReturnUseAntiforgeryTokenAuthentication> =>{
         let url_ = API_URL + "/Authentication/Get/AntiforgeryToken";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);
@@ -22,7 +23,8 @@ export const useAntiforgeryTokenAuthentication = async (): Promise<{ data: null 
         }
   
 }
-export const useLoginOfficialAuthentication = async (loginInfo: LoginInfo): Promise<{ data:User , status?: number}> =>{
+export type IReturnUseLoginOfficialAuthentication={ data:User , status?: number;};
+export const useLoginOfficialAuthentication = async (loginInfo: LoginInfo): Promise<IReturnUseLoginOfficialAuthentication> =>{
         let url_ = API_URL + "/Authentication/Post/LoginOfficial";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = loginInfo;
@@ -59,7 +61,8 @@ export const useLoginOfficialAuthentication = async (loginInfo: LoginInfo): Prom
         }
   
 }
-export const useLoginSecretAuthentication = async (loginInfo: LoginInfo): Promise<{ data:User , status?: number}> =>{
+export type IReturnUseLoginSecretAuthentication={ data:User , status?: number;};
+export const useLoginSecretAuthentication = async (loginInfo: LoginInfo): Promise<IReturnUseLoginSecretAuthentication> =>{
         let url_ = API_URL + "/Authentication/Post/LoginSecret";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = loginInfo;
@@ -96,7 +99,8 @@ export const useLoginSecretAuthentication = async (loginInfo: LoginInfo): Promis
         }
   
 }
-export const useExternalLoginOfficialAuthentication = async (externalLoginInfo: ExternalLoginDetails): Promise<{ data:User , status?: number}> =>{
+export type IReturnUseExternalLoginOfficialAuthentication={ data:User , status?: number;};
+export const useExternalLoginOfficialAuthentication = async (externalLoginInfo: ExternalLoginDetails): Promise<IReturnUseExternalLoginOfficialAuthentication> =>{
         let url_ = API_URL + "/Authentication/Post/ExternalLoginOfficial";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = externalLoginInfo;
@@ -142,7 +146,8 @@ export const useExternalLoginOfficialAuthentication = async (externalLoginInfo: 
         }
   
 }
-export const useExternalLoginSecretAuthentication = async (externalLoginInfo: ExternalLoginDetails): Promise<{ data:User , status?: number}> =>{
+export type IReturnUseExternalLoginSecretAuthentication={ data:User , status?: number;};
+export const useExternalLoginSecretAuthentication = async (externalLoginInfo: ExternalLoginDetails): Promise<IReturnUseExternalLoginSecretAuthentication> =>{
         let url_ = API_URL + "/Authentication/Post/ExternalLoginSecret";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = externalLoginInfo;

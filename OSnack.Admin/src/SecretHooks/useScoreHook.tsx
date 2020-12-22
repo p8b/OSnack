@@ -2,7 +2,8 @@ import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/compo
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
 import { Score } from "osnack-frontend-shared/src/_core/apiModels";
-export const usePostScore = async (newScore: Score): Promise<{ data:Score , status?: number}> =>{
+export type IReturnUsePostScore={ data:Score , status?: number;};
+export const usePostScore = async (newScore: Score): Promise<IReturnUsePostScore> =>{
         let url_ = API_URL + "/Score/Post";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = newScore;

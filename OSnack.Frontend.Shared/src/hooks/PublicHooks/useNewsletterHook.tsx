@@ -2,7 +2,8 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { Newsletter } from "../../_core/apiModels";
-export const usePostNewsletter = async (newsletter: Newsletter): Promise<{ data:Newsletter , status?: number}> =>{
+export type IReturnUsePostNewsletter={ data:Newsletter , status?: number;};
+export const usePostNewsletter = async (newsletter: Newsletter): Promise<IReturnUsePostNewsletter> =>{
         let url_ = API_URL + "/Newsletter/Post";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = newsletter;
@@ -34,7 +35,8 @@ export const usePostNewsletter = async (newsletter: Newsletter): Promise<{ data:
         }
   
 }
-export const useDeleteNewsletter = async (email: string | null): Promise<{ data:string , status?: number}> =>{
+export type IReturnUseDeleteNewsletter={ data:string , status?: number;};
+export const useDeleteNewsletter = async (email: string | null): Promise<IReturnUseDeleteNewsletter> =>{
         let url_ = API_URL + "/Newsletter/Delete/{email}";
         if (email !== null && email !== undefined)
         url_ = url_.replace("{email}", encodeURIComponent("" + email));

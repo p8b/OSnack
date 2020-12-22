@@ -4,6 +4,7 @@ import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import React, { useContext } from 'react';
 import { Redirect } from 'react-router';
 import Container from '../../components/Container';
+import { Access } from '../../_core/appConstant.Variables';
 import { ShopContext } from '../../_core/shopContext';
 const OrderSuccess = (props: IProps) => {
    if (props.location.state.order != null) {
@@ -16,7 +17,7 @@ const OrderSuccess = (props: IProps) => {
                <PageHeader className="h1" title="Thank you for your order." />
             </div>
             <div className="row col-12">
-               <OrderDetails order={props.location.state.order} />
+               <OrderDetails order={props.location.state.order} access={Access} />
             </div>
          </Container>
       );

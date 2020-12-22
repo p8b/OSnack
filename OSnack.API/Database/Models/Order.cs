@@ -105,13 +105,13 @@ namespace OSnack.API.Database.Models
             switch (Coupon.Type)
             {
                case CouponType.FreeDelivery:
-                  TotalDiscount += DeliveryOption.Price;
+                  TotalDiscount = DeliveryOption.Price;
                   break;
                case CouponType.DiscountPrice:
-                  TotalDiscount += Coupon.DiscountAmount;
+                  TotalDiscount = Coupon.DiscountAmount;
                   break;
                case CouponType.PercentageOfTotal:
-                  TotalDiscount += ((Coupon.DiscountAmount * TotalItemPrice) / 100);
+                  TotalDiscount = ((Coupon.DiscountAmount * TotalItemPrice) / 100);
                   break;
                default:
                   break;

@@ -1,4 +1,5 @@
 ﻿import 'whatwg-fetch';
+import { OrderStatusType } from './apiModels';
 import { AntiforgeryTokenCookieName, API_URL } from "./constant.Variables";
 
 //#region *** 'Cookie Management' ***
@@ -216,4 +217,25 @@ export const getNextDate = (day: number = 1) => {
    var now = new Date();
    var nextDay = new Date(now);
    return new Date(nextDay.setDate(now.getDate() + day));
+};
+
+
+export const getBadgeByOrderStatusType = (type: OrderStatusType) => {
+   switch (type) {
+
+      case OrderStatusType.In_Progress:
+      case OrderStatusType.Refund_Request:
+         return "badge blue";
+      case OrderStatusType.Confirmed:
+      case OrderStatusType.Fully_Refunded:
+      case OrderStatusType.Partialy_Refunded:
+         return "badge light-blue";
+      case OrderStatusType.Canceled:
+      case OrderStatusType.Refund_Refused:
+         return "badge red";
+      case OrderStatusType.Delivered:
+         return "badge green";
+      default:
+         return "";
+   }
 };

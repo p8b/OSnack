@@ -2,7 +2,8 @@ import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { User } from "../../_core/apiModels";
-export const useLogoutAuthentication = async (): Promise<{ data: null , status?: number}> =>{
+export type IReturnUseLogoutAuthentication={ data: null , status?: number;};
+export const useLogoutAuthentication = async (): Promise<IReturnUseLogoutAuthentication> =>{
         let url_ = API_URL + "/Authentication/Get/Logout";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);
@@ -27,7 +28,8 @@ export const useLogoutAuthentication = async (): Promise<{ data: null , status?:
         }
   
 }
-export const useSilentOfficialAuthentication = async (): Promise<{ data:User , status?: number}> =>{
+export type IReturnUseSilentOfficialAuthentication={ data:User , status?: number;};
+export const useSilentOfficialAuthentication = async (): Promise<IReturnUseSilentOfficialAuthentication> =>{
         let url_ = API_URL + "/Authentication/Post/SilentOfficial";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.POST(url_);
@@ -58,7 +60,8 @@ export const useSilentOfficialAuthentication = async (): Promise<{ data:User , s
         }
   
 }
-export const useConfirmCurrentUserPasswordAuthentication = async (password: string): Promise<{ data:User , status?: number}> =>{
+export type IReturnUseConfirmCurrentUserPasswordAuthentication={ data:User , status?: number;};
+export const useConfirmCurrentUserPasswordAuthentication = async (password: string): Promise<IReturnUseConfirmCurrentUserPasswordAuthentication> =>{
         let url_ = API_URL + "/Authentication/Post/ConfirmCurrentUserPassword";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = password;
