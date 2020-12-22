@@ -5,8 +5,6 @@ import React, { RefObject, useEffect, useState } from 'react';
 import { AlertObj } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Loading } from 'osnack-frontend-shared/src/components/Loading/Loading';
 
-
-
 const PaymentModal = (props: IProps) => {
 
    // @ts-ignore

@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace OSnack.API.Controllers
 {
-   public partial class EmailTemplateController
+   public partial class EmailController
    {
       #region *** ***
       [ProducesResponseType(typeof(EmailTemplate), StatusCodes.Status201Created)]
@@ -36,9 +36,6 @@ namespace OSnack.API.Controllers
             if (!emailTemplate.ValidateHTMLServerVariables(ref ErrorsList))
                return UnprocessableEntity(ErrorsList);
 
-
-            emailTemplate.IsDefaultTemplate = false;
-
             /// save files
             emailTemplate.SaveFilesToWWWRoot(WebHost.WebRootPath);
 
@@ -49,6 +46,7 @@ namespace OSnack.API.Controllers
          }
          catch (Exception ex)
          {
+            emailTemplate.DeleteFiles(WebHost.WebRootPath);
             CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }

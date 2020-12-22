@@ -7,10 +7,10 @@ export enum RegistrationTypes {
 }
 
 export const RegistrationTypesList=[
-{Id:0,Name:"Application".replace(/_/g, ' '),Value:RegistrationTypes.Application},
-{Id:1,Name:"Google".replace(/_/g, ' '),Value:RegistrationTypes.Google},
-{Id:2,Name:"Facebook".replace(/_/g, ' '),Value:RegistrationTypes.Facebook},
-{Id:3,Name:"Github".replace(/_/g, ' '),Value:RegistrationTypes.Github},
+{Id:0,Name:"Application".replace(/([A-Z])/g, ' $1').trim(),Value:RegistrationTypes.Application},
+{Id:1,Name:"Google".replace(/([A-Z])/g, ' $1').trim(),Value:RegistrationTypes.Google},
+{Id:2,Name:"Facebook".replace(/([A-Z])/g, ' $1').trim(),Value:RegistrationTypes.Facebook},
+{Id:3,Name:"Github".replace(/([A-Z])/g, ' $1').trim(),Value:RegistrationTypes.Github},
 ]
 export enum CouponType {
 
@@ -20,73 +20,95 @@ export enum CouponType {
 }
 
 export const CouponTypeList=[
-{Id:0,Name:"FreeDelivery".replace(/_/g, ' '),Value:CouponType.FreeDelivery},
-{Id:1,Name:"DiscountPrice".replace(/_/g, ' '),Value:CouponType.DiscountPrice},
-{Id:2,Name:"PercentageOfTotal".replace(/_/g, ' '),Value:CouponType.PercentageOfTotal},
+{Id:0,Name:"FreeDelivery".replace(/([A-Z])/g, ' $1').trim(),Value:CouponType.FreeDelivery},
+{Id:1,Name:"DiscountPrice".replace(/([A-Z])/g, ' $1').trim(),Value:CouponType.DiscountPrice},
+{Id:2,Name:"PercentageOfTotal".replace(/([A-Z])/g, ' $1').trim(),Value:CouponType.PercentageOfTotal},
 ]
-export enum EmailTemplateServerVariables {
+export enum EmailTemplateTypes {
 
-    UserName = 0,
-    RegistrationMethod = 1,
-    Role = 2,
-    TokenUrl = 3,
-    ExpiaryDateTime = 4,
+    Others = 0,
+    DefaultTemplate = 1,
+    EmailConfirmation = 2,
+    WelcomeExternalRegistration = 3,
+    WelcomeNewEmployee = 4,
+    PasswordReset = 5,
+    ContactUsMessage = 6,
+    OrderReceipt = 7,
+    OrderCanceled = 8,
 }
 
-export const EmailTemplateServerVariablesList=[
-{Id:0,Name:"UserName".replace(/_/g, ' '),Value:EmailTemplateServerVariables.UserName},
-{Id:1,Name:"RegistrationMethod".replace(/_/g, ' '),Value:EmailTemplateServerVariables.RegistrationMethod},
-{Id:2,Name:"Role".replace(/_/g, ' '),Value:EmailTemplateServerVariables.Role},
-{Id:3,Name:"TokenUrl".replace(/_/g, ' '),Value:EmailTemplateServerVariables.TokenUrl},
-{Id:4,Name:"ExpiaryDateTime".replace(/_/g, ' '),Value:EmailTemplateServerVariables.ExpiaryDateTime},
+export const EmailTemplateTypesList=[
+{Id:0,Name:"Others".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.Others},
+{Id:1,Name:"DefaultTemplate".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.DefaultTemplate},
+{Id:2,Name:"EmailConfirmation".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.EmailConfirmation},
+{Id:3,Name:"WelcomeExternalRegistration".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.WelcomeExternalRegistration},
+{Id:4,Name:"WelcomeNewEmployee".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.WelcomeNewEmployee},
+{Id:5,Name:"PasswordReset".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.PasswordReset},
+{Id:6,Name:"ContactUsMessage".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.ContactUsMessage},
+{Id:7,Name:"OrderReceipt".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.OrderReceipt},
+{Id:8,Name:"OrderCanceled".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.OrderCanceled},
+]
+export enum EmailTemplateClassNames {
+
+    User = 0,
+    Order = 1,
+    ContactUsMessage = 2,
+    Token = 3,
+}
+
+export const EmailTemplateClassNamesList=[
+{Id:0,Name:"User".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateClassNames.User},
+{Id:1,Name:"Order".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateClassNames.Order},
+{Id:2,Name:"ContactUsMessage".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateClassNames.ContactUsMessage},
+{Id:3,Name:"Token".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateClassNames.Token},
 ]
 export enum OrderStatusType {
 
-    In_Progress = 0,
+    InProgress = 0,
     Confirmed = 1,
     Canceled = 2,
     Delivered = 3,
-    Refund_Request = 4,
-    Refund_Refused = 5,
-    Partialy_Refunded = 6,
-    Fully_Refunded = 7,
+    RefundRequest = 4,
+    RefundRefused = 5,
+    PartialyRefunded = 6,
+    FullyRefunded = 7,
 }
 
 export const OrderStatusTypeList=[
-{Id:0,Name:"In_Progress".replace(/_/g, ' '),Value:OrderStatusType.In_Progress},
-{Id:1,Name:"Confirmed".replace(/_/g, ' '),Value:OrderStatusType.Confirmed},
-{Id:2,Name:"Canceled".replace(/_/g, ' '),Value:OrderStatusType.Canceled},
-{Id:3,Name:"Delivered".replace(/_/g, ' '),Value:OrderStatusType.Delivered},
-{Id:4,Name:"Refund_Request".replace(/_/g, ' '),Value:OrderStatusType.Refund_Request},
-{Id:5,Name:"Refund_Refused".replace(/_/g, ' '),Value:OrderStatusType.Refund_Refused},
-{Id:6,Name:"Partialy_Refunded".replace(/_/g, ' '),Value:OrderStatusType.Partialy_Refunded},
-{Id:7,Name:"Fully_Refunded".replace(/_/g, ' '),Value:OrderStatusType.Fully_Refunded},
+{Id:0,Name:"InProgress".replace(/([A-Z])/g, ' $1').trim(),Value:OrderStatusType.InProgress},
+{Id:1,Name:"Confirmed".replace(/([A-Z])/g, ' $1').trim(),Value:OrderStatusType.Confirmed},
+{Id:2,Name:"Canceled".replace(/([A-Z])/g, ' $1').trim(),Value:OrderStatusType.Canceled},
+{Id:3,Name:"Delivered".replace(/([A-Z])/g, ' $1').trim(),Value:OrderStatusType.Delivered},
+{Id:4,Name:"RefundRequest".replace(/([A-Z])/g, ' $1').trim(),Value:OrderStatusType.RefundRequest},
+{Id:5,Name:"RefundRefused".replace(/([A-Z])/g, ' $1').trim(),Value:OrderStatusType.RefundRefused},
+{Id:6,Name:"PartialyRefunded".replace(/([A-Z])/g, ' $1').trim(),Value:OrderStatusType.PartialyRefunded},
+{Id:7,Name:"FullyRefunded".replace(/([A-Z])/g, ' $1').trim(),Value:OrderStatusType.FullyRefunded},
 ]
 export enum PaymentType {
 
     Pendig = 0,
     Complete = 1,
-    Partialy_Refunded = 2,
-    Fully_Refunded = 3,
+    PartialyRefunded = 2,
+    FullyRefunded = 3,
 }
 
 export const PaymentTypeList=[
-{Id:0,Name:"Pendig".replace(/_/g, ' '),Value:PaymentType.Pendig},
-{Id:1,Name:"Complete".replace(/_/g, ' '),Value:PaymentType.Complete},
-{Id:2,Name:"Partialy_Refunded".replace(/_/g, ' '),Value:PaymentType.Partialy_Refunded},
-{Id:3,Name:"Fully_Refunded".replace(/_/g, ' '),Value:PaymentType.Fully_Refunded},
+{Id:0,Name:"Pendig".replace(/([A-Z])/g, ' $1').trim(),Value:PaymentType.Pendig},
+{Id:1,Name:"Complete".replace(/([A-Z])/g, ' $1').trim(),Value:PaymentType.Complete},
+{Id:2,Name:"PartialyRefunded".replace(/([A-Z])/g, ' $1').trim(),Value:PaymentType.PartialyRefunded},
+{Id:3,Name:"FullyRefunded".replace(/([A-Z])/g, ' $1').trim(),Value:PaymentType.FullyRefunded},
 ]
 export enum ProductUnitType {
 
     Kg = 0,
     Grams = 1,
-    Per_Item = 2,
+    PerItem = 2,
 }
 
 export const ProductUnitTypeList=[
-{Id:0,Name:"Kg".replace(/_/g, ' '),Value:ProductUnitType.Kg},
-{Id:1,Name:"Grams".replace(/_/g, ' '),Value:ProductUnitType.Grams},
-{Id:2,Name:"Per_Item".replace(/_/g, ' '),Value:ProductUnitType.Per_Item},
+{Id:0,Name:"Kg".replace(/([A-Z])/g, ' $1').trim(),Value:ProductUnitType.Kg},
+{Id:1,Name:"Grams".replace(/([A-Z])/g, ' $1').trim(),Value:ProductUnitType.Grams},
+{Id:2,Name:"PerItem".replace(/([A-Z])/g, ' $1').trim(),Value:ProductUnitType.PerItem},
 ]
 export abstract class OrderAddressBase {
     name!: string;
@@ -162,20 +184,19 @@ export class DeliveryOption {
 }
 export class EmailTemplate {
     id?: number = 0;
-    name!: string;
+    name?: string | undefined;
+    templateType!: EmailTemplateTypes;
     subject!: string;
     tokenUrlPath?: string | undefined;
-    serverVariables?: ServerVariables[] | undefined;
-    locked?: boolean;
-    isDefaultTemplate?: boolean;
+    serverClasses?: EmailTemplateServerClass[] | undefined;
     html!: string;
     design!: any;
 
 }
-export class ServerVariables {
+export class EmailTemplateServerClass {
     id?: number = 0;
-    enumValue!: EmailTemplateServerVariables;
-    replacementValue!: string;
+    value!: EmailTemplateClassNames;
+    variables?: string[] | undefined;
 
 }
 export class EmailTemplateAndDefaultEmailTemplate {
@@ -208,11 +229,6 @@ export abstract class OrderProductBase {
 export class OrderListAndTotalCount {
     orderList?: Order[] | undefined;
     totalCount?: number;
-
-}
-export class OrderListAndAvailableTypes {
-    orderList?: Order[] | undefined;
-    availableTypes?: OrderStatusType[] | undefined;
 
 }
 export class Order2 {
@@ -556,10 +572,6 @@ export class OrderItem extends OrderProductBase {
     productCategoryName!: string;
     productId?: number | undefined;
     quantity!: number;
-
-}
-export class OrderListAndAvailableTypesAndTotalCount extends OrderListAndAvailableTypes {
-    totalCount?: number;
 
 }
 export class Product extends OrderProductBase {

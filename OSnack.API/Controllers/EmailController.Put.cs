@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace OSnack.API.Controllers
 {
-   public partial class EmailTemplateController
+   public partial class EmailController
    {
       #region *** ***
       [ProducesResponseType(typeof(EmailTemplate), StatusCodes.Status200OK)]
@@ -43,7 +43,6 @@ namespace OSnack.API.Controllers
 
             EmailTemplate foundTemplate = await _DbContext.EmailTemplates
                .AsTracking()
-               .Include(et => et.ServerVariables)
                .FirstOrDefaultAsync((et) => et.Id == emailTemplate.Id)
                .ConfigureAwait(false);
 
@@ -69,13 +68,12 @@ namespace OSnack.API.Controllers
             foundTemplate.Name = emailTemplate.Name;
             foundTemplate.Subject = emailTemplate.Subject;
             foundTemplate.TokenUrlPath = emailTemplate.TokenUrlPath;
-            foundTemplate.ServerVariables = emailTemplate.ServerVariables;
 
             // ignore changing the lock status of the default template
-            if (!await _DbContext.EmailTemplates
-               .AnyAsync(et => et.IsDefaultTemplate && et.Id == emailTemplate.Id)
-               .ConfigureAwait(false))
-               foundTemplate.Locked = emailTemplate.Locked;
+            //if (!await _DbContext.EmailTemplates
+            //   .AnyAsync(et => et.IsDefaultTemplate && et.Id == emailTemplate.Id)
+            //   .ConfigureAwait(false))
+            //   foundTemplate.Locked = emailTemplate.Locked;
 
             //await _DbContext.EmailTemplates.AddAsync(foundTemplate).ConfigureAwait(false);
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);

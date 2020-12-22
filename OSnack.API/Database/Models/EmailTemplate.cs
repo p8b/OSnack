@@ -19,24 +19,21 @@ namespace OSnack.API.Database.Models
    [Table("EmailTemplates")]
    public class EmailTemplate
    {
-      [Key]
-      [DefaultValue(0)]
+      [Key,
+         DefaultValue(0)]
       public int Id { get; set; }
 
-      [StringLength(50, ErrorMessage = "Must be less than 50 Characters \n")]
-      [Required(ErrorMessage = "Name Is Required \n")]
+      [Column(TypeName = "nvarchar(256)")]
       public string Name { get; set; }
+      [Required(ErrorMessage = "Type Is Required \n")]
+      public EmailTemplateTypes TemplateType { get; set; }
 
       [Required(ErrorMessage = "Subject Is Required \n")]
       public string Subject { get; set; } = "";
 
       public string TokenUrlPath { get; set; }
 
-      public List<ServerVariables> ServerVariables { get; set; }
-
-      public bool Locked { get; set; } = true;
-
-      public bool IsDefaultTemplate { get; set; } = false;
+      public List<EmailTemplateServerClass> ServerClasses { get; set; }
 
       [JsonIgnore]
       public string HtmlPath { get; set; }
@@ -45,12 +42,12 @@ namespace OSnack.API.Database.Models
       public string DesignPath { get; set; }
 
 
-      [NotMapped]
-      [Required(ErrorMessage = "HTML Template Is Required \n")]
+      [NotMapped,
+         Required(ErrorMessage = "HTML Template Is Required \n")]
       public string HTML { get; set; }
 
-      [NotMapped]
-      [Required(ErrorMessage = "Design File Is Required \n")]
+      [NotMapped,
+         Required(ErrorMessage = "Design File Is Required \n")]
       public dynamic Design { get; set; }
 
       internal void SaveFilesToWWWRoot(string webRootPath)
@@ -59,8 +56,8 @@ namespace OSnack.API.Database.Models
          var SelectedFolder = Path.Combine(webRootPath, $"EmailTemplates");
          DeleteFiles(webRootPath);
 
-         if (!Directory.Exists(Path.Combine(SelectedFolder, Name)))
-            Directory.CreateDirectory(Path.Combine(SelectedFolder, Name));
+         if (!Directory.Exists(Path.Combine(SelectedFolder, Name.ToString())))
+            Directory.CreateDirectory(Path.Combine(SelectedFolder, Name.ToString()));
 
          HtmlPath = string.Format(@"{0}\html-{1}.html", Name, new Random().Next(0, 100));
          DesignPath = string.Format(@"{0}\design-{1}.json", Name, new Random().Next(0, 100));
@@ -103,28 +100,28 @@ namespace OSnack.API.Database.Models
 
       internal bool ValidateHTMLServerVariables(ref List<Error> ErrorList)
       {
-         if (ServerVariables != null)
-         {
+         //if (ServerVariables != null)
+         //{
 
-            foreach (ServerVariables item in ServerVariables)
-            {
-               // if tokenUrl is added to the attached email template but the value of URL path is not
-               if (item.EnumValue == EmailTemplateServerVariables.TokenUrl && string.IsNullOrEmpty(TokenUrlPath))
-                  ErrorList.Add(new Error("TokenUrlPath", "Token URL is Required"));
+         //   foreach (ServerVariables item in ServerVariables)
+         //   {
+         //      // if tokenUrl is added to the attached email template but the value of URL path is not
+         //      if (item.EnumValue == EmailTemplateServerVariables.TokenUrl && string.IsNullOrEmpty(TokenUrlPath))
+         //         ErrorList.Add(new Error("TokenUrlPath", "Token URL is Required"));
 
 
-               if (!HTML.Contains(item.ReplacementValue))
-                  ErrorList.Add(new Error(item.ReplacementValue, $"Server Variable {item.ReplacementValue } is Required"));
+         //      if (!HTML.Contains(item.ReplacementValue))
+         //         ErrorList.Add(new Error(item.ReplacementValue, $"Server Variable {item.ReplacementValue } is Required"));
 
-               /// Set to 0 so it would not conflict with dbContext
-               item.Id = 0;
-            }
-         }
+         //      /// Set to 0 so it would not conflict with dbContext
+         //      item.Id = 0;
+         //   }
+         //}
 
-         if (ErrorList.Count > 0)
-            return false;
-         else
-            return true;
+         //if (ErrorList.Count > 0)
+         //   return false;
+         //else
+         return true;
       }
 
       internal void RemoveHtmlComment() =>

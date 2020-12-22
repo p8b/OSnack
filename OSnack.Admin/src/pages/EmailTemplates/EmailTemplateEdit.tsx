@@ -3,13 +3,13 @@ import EmailEditor from 'react-email-editor';
 import ButtonPopupConfirm from 'osnack-frontend-shared/src/components/Buttons/ButtonPopupConfirm';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
-import { EmailTemplate, ServerVariables } from 'osnack-frontend-shared/src/_core/apiModels';
+import { EmailTemplate, EmailTemplateTypes } from 'osnack-frontend-shared/src/_core/apiModels';
 import { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';;
 import CopyText from 'osnack-frontend-shared/src/components/Texts/CopyText';
 import { sleep } from 'osnack-frontend-shared/src/_core/appFunc';
 import EmailTemplateEditDetailsModal from './EmailTemplateEditDetailsModal';
 import { Redirect, useHistory } from 'react-router-dom';
-import { useDeleteEmailTemplate, useGetEmailTemplate, useGetServerVariablesEmailTemplate, usePostEmailTemplate, usePutEmailTemplate } from '../../SecretHooks/useEmailTemplateHook';
+import { useDeleteEmailTemplate, useGetEmailTemplate, usePostEmailTemplate, usePutEmailTemplate } from '../../SecretHooks/useEmailTemplateHook';
 
 const EmailTemplatesEdit = (props: IProps) => {
    const history = useHistory();
@@ -19,10 +19,10 @@ const EmailTemplatesEdit = (props: IProps) => {
 
    const [template, setTemplate] = useState(new EmailTemplate());
    const [defaultTemplate, setDefaultTemplate] = useState(new EmailTemplate());
-   const [serverVariables, setServerVariables] = useState<ServerVariables[]>([]);
+   //const [serverVariables, setServerVariables] = useState<ServerVariables[]>([]);
    const [isSaved, setIsSaved] = useState(false);
    const [isEditorLoaded, setIsEditorLoaded] = useState(false);
-   const [isOpenDetailsModal, setIsOpenDetailsModal] = useState(false);
+   const [isOpenDetailsModal, setIsOpenDetailsModal] = useState(true);
    const [isTemplateRecognised, setIsTemplateRecognised] = useState(true);
    const [isDefaultTemplateUsed, setIsDefaultTemplateUsed] = useState(false);
    const [initialLockedStatus, setInitialLockedStatus] = useState<boolean | undefined>(true);
@@ -34,21 +34,16 @@ const EmailTemplatesEdit = (props: IProps) => {
       }
 
       setTemplate(props.location.state.emailTemplate);
-      setInitialLockedStatus(props.location.state.emailTemplate.locked);
+      setInitialLockedStatus(props.location.state.emailTemplate.templateType != EmailTemplateTypes.Others);
       setDefaultTemplate(props.location.state.defaultEmailTemplate);
 
       if (props.location.state.emailTemplate.id && props.location.state.emailTemplate.id > 0)
          useGetEmailTemplate(props.location.state.emailTemplate.id).then(
             result => {
                setTemplate(result.data.emailTemplate ? result.data.emailTemplate : new EmailTemplate());
-               setInitialLockedStatus(result.data.emailTemplate?.locked);
+               setInitialLockedStatus(result.data.emailTemplate?.templateType != EmailTemplateTypes.Others);
                setDefaultTemplate(result.data.defaultEmailTemplate ? result.data.defaultEmailTemplate : new EmailTemplate());
             });
-
-      useGetServerVariablesEmailTemplate().then(result => {
-         setServerVariables(result.data);
-      });
-
 
       if (props.location.state.emailTemplate.id == 0)
          setIsOpenDetailsModal(true);
@@ -92,7 +87,7 @@ const EmailTemplatesEdit = (props: IProps) => {
             errorAlert.clear();
             setIsSaved(true);
             setTemplate(resultTemplate);
-            setInitialLockedStatus(resultTemplate?.locked);
+            setInitialLockedStatus(resultTemplate?.templateType != EmailTemplateTypes.Others);
             sleep(3000, isUnmounted).then(() => { setIsSaved(false); });
          }
       });
@@ -141,13 +136,13 @@ const EmailTemplatesEdit = (props: IProps) => {
    };
 
    const renderInsertDefaultTemplateButton = () => {
-      if (!template.isDefaultTemplate && !isDefaultTemplateUsed)
+      if (template.templateType != EmailTemplateTypes.DefaultTemplate && !isDefaultTemplateUsed)
          return <Button onClick={insertDefault} children="Add Default" className="btn-lg btn-blue ml-auto" />;
       else
          return <></>;
    };
    const renderDeleteButton = () => {
-      if (!template.isDefaultTemplate && template.id && template.id > 0 && !initialLockedStatus)
+      if (template.templateType != EmailTemplateTypes.DefaultTemplate && template.id && template.id > 0 && !initialLockedStatus)
          return <ButtonPopupConfirm title=""
             popupMessage="Are your Sure?"
             onConfirmClick={onDelete}
@@ -172,12 +167,12 @@ const EmailTemplatesEdit = (props: IProps) => {
          </div>
          <div className="row col-12 ml-2">
             <div className="col-12 pm-0">Name: {template.name}</div>
-            {template.serverVariables && template.serverVariables?.length > 0 &&
+            {template.serverClasses != undefined && template.serverClasses!.length > 0 &&
                <>
                   <div>Required Server Variables:</div>
-                  {template.serverVariables?.map((sv: any) =>
-                     <div className="badge col-auto ml-1 mt-1 mt-sm-0" key={sv.enumValue}>
-                        <CopyText text={sv.replacementValue} />
+                  {template.serverClasses?.map(sc =>
+                     <div className="badge col-auto ml-1 mt-1 mt-sm-0" key={sc.value}>
+                        {sc.variables?.map(v => <CopyText text={v} />)}
                      </div>
                   )}
                </>
@@ -197,7 +192,6 @@ const EmailTemplatesEdit = (props: IProps) => {
                setIsOpenDetailsModal(false);
                setTemplate(temp);
             }}
-            serverVariables={serverVariables}
          />
       </>
    );

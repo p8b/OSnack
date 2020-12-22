@@ -67,7 +67,15 @@ namespace OSnack.API.Extras
             string zipFolder = Path.Combine(@$"{webHostRoot}\StaticFiles\tsApiFiles\{document.Info.Title}Hooks");
             if (document.Tags.Any(t => t.Name.Equals("IsModelOnly")))
                zipFolder = Path.Combine(@$"{webHostRoot}\StaticFiles\tsApiFiles");
-            try { File.Delete(zipFilePath); } catch (Exception) { }
+            try { File.Delete(zipFilePath); } catch { }
+            try
+            {
+               foreach (var file in new DirectoryInfo(zipFolder).GetFiles())
+               {
+                  file.Delete();
+               }
+            }
+            catch { }
             if (!Directory.Exists(zipFolder))
             {
                Directory.CreateDirectory(zipFolder);
