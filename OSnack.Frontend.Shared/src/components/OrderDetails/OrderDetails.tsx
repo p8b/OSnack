@@ -9,10 +9,9 @@ import Alert, { AlertObj, useAlert } from '../Texts/Alert';
 const OrderDetails = (props: IProps) => {
 
    const errorAlert = useAlert(new AlertObj());
-   const [selectOrder, SetSelectOrder] = useState(new Order());
+   const [selectedStatus, SetSelectStatuse] = useState(OrderStatusType.InProgress);
    useEffect(() => {
-      SetSelectOrder(props.order);
-      console.log(setAvailableType());
+      SetSelectStatuse(props.order.status);
    }, [props.order]);
 
    const getTotalItemsCount = () => {
@@ -24,25 +23,7 @@ const OrderDetails = (props: IProps) => {
 
    };
 
-   const setAvailableType = () => {
-      switch (props.order.status) {
 
-         case OrderStatusType.In_Progress:
-            return [OrderStatusType.Confirmed, OrderStatusType.Canceled];
-         case OrderStatusType.Refund_Request:
-            return [OrderStatusType.Refund_Refused, OrderStatusType.Fully_Refunded, OrderStatusType.Partialy_Refunded];
-         case OrderStatusType.Confirmed:
-            return [OrderStatusType.Delivered];
-         case OrderStatusType.Fully_Refunded:
-         case OrderStatusType.Partialy_Refunded:
-         case OrderStatusType.Canceled:
-         case OrderStatusType.Refund_Refused:
-         case OrderStatusType.Delivered:
-            return [];
-         default:
-            return [];
-      }
-   };
 
    return (
       <>
@@ -50,25 +31,29 @@ const OrderDetails = (props: IProps) => {
          <div className="col-12 col-sm-5">
             <Alert alert={errorAlert.alert}
                className="col-12 mb-2"
-               onClosed={() => { errorAlert.clear(); }}
-            />
+               onClosed={() => { errorAlert.clear(); }} />
             <div className=" pos-sticky t-0">
                {props.access == ClientAppAccess.Secret &&
                   <div className="col-12 p-0 font-weight-bold">
-                     <InputDropdown dropdownTitle={`${OrderStatusTypeList.find((s) => s.Value == selectOrder.status)?.Name || "All"}`}
-                        label="Status"
-                        showDanger={errorAlert.checkExistFilterRequired("Category")}
-                        className="col-12 " >
-                        {OrderStatusTypeList.filter(o => o.Value in setAvailableType)?.map(statusType =>
-                           <button className="dropdown-item" key={statusType.Id}
-                              onClick={() => { SetSelectOrder({ ...selectOrder, status: statusType.Value }); }} >
-                              <span children={statusType.Name} className={`${getBadgeByOrderStatusType(statusType.Value)}`} />
-                           </button>
-                        )}
-                     </InputDropdown>
+                     {props.availabeType!.length > 0 &&
+                        <InputDropdown
+                           dropdownTitle={<span className={`${getBadgeByOrderStatusType(selectedStatus)}`}
+                              children={`${OrderStatusTypeList.find((s) => s.Value == selectedStatus)?.Name || "All"}`} />}
+                           label="Status"
+                           labelClassName="small-text gray-text"
+                           showDanger={errorAlert.checkExistFilterRequired("status")}
+                           className="col-12 " >
+                           {OrderStatusTypeList.filter(o => props.availabeType!.includes(o.Value))?.map(statusType =>
+                              <button className="dropdown-item" key={statusType.Id}
+                                 onClick={() => { SetSelectStatuse(statusType.Value); props.statusChanged!(statusType.Value); }} >
+                                 <div children={statusType.Name} />
+                              </button>
+                           )}
+                        </InputDropdown>
+                     }
                   </div>
                }
-               {props.access == ClientAppAccess.Official &&
+               {(props.access == ClientAppAccess.Official || props.availabeType!.length == 0) &&
                   <div className="row col-12 pm-0 mt-3">
                      <div className="col-8 pm-0 small-text text-gray" >Status:</div>
                      <span className={`${getBadgeByOrderStatusType(props.order.status)}`}
@@ -118,8 +103,6 @@ const OrderDetails = (props: IProps) => {
                   <div className="col-12 p-0">{props.order.postcode}</div>
                </div>
             </div>
-
-
          </div>
 
 
@@ -128,7 +111,7 @@ const OrderDetails = (props: IProps) => {
             <div className="row pl-3 pr-3">
                <span className="col-12 pm-0 small-text text-gray">Basket Items:{getTotalItemsCount()}</span>
                {props.order.orderItems?.map(orderItem =>
-                  <>
+                  <div key={orderItem.productId} className="row col-12">
                      <div className="col-2 pm-0 mb-3">
                         <img className="shop-card-img" onError={onImageError.Product}
                            src={`${API_URL}/${orderItem.imagePath}`} alt={name} />
@@ -138,19 +121,19 @@ const OrderDetails = (props: IProps) => {
                         <div className="col-12 small-text">{orderItem.unitQuantity} {ProductUnitType[orderItem.unitType]}</div>
                         <div className="col-12 h6 mb-1">£{orderItem.price} x {orderItem.quantity} :  <b>£{(orderItem.price * orderItem.quantity).toFixed(2)}</b></div>
                      </div>
-                  </>
+                  </div>
                )}
             </div>
          </div>
 
       </>
-
-
    );
 };
 
 declare type IProps = {
    order: Order;
    access: ClientAppAccess;
+   statusChanged?: (status: OrderStatusType) => void;
+   availabeType?: OrderStatusType[];
 };
 export default OrderDetails;

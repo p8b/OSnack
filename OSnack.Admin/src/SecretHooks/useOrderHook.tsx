@@ -159,7 +159,17 @@ export const usePutOrderStatusOrder = async (modifiedOrder: Order): Promise<IRet
                         var responseData: Order = await response?.json();
                         return { data: responseData, status: response?.status };
 
+                case 412: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
+
                 case 417: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
+
+                case 422: 
                         return response?.json().then((data: ErrorDto[]) => {
                                 throw new AlertObj(data, AlertTypes.Error, response?.status);
                         });

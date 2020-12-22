@@ -35,8 +35,10 @@ const ViewOrders = (props: IProps) => {
    ) => {
       if (selectedPage != tblSelectedPage)
          setTblSelectedPage(selectedPage);
-      if (filterType != selectType)
+      if (filterType != selectType) {
+         selectedPage = 1;
          setSelectType(filterType);
+      }
 
       if (maxItemsPerPage != tblMaxItemsPerPage)
          setTblMaxItemsPerPage(maxItemsPerPage);
@@ -45,13 +47,15 @@ const ViewOrders = (props: IProps) => {
       switch (props.access) {
          case ClientAppAccess.Official:
             useAllOrder(selectedPage, maxItemsPerPage, filterType)
-               .then(onGetUserOrderSuccess)
+               .then((result) => onGetUserOrderSuccess(result, selectedPage))
                .catch(onGetUserOrderFailed);
             break;
          case ClientAppAccess.Secret:
+            if (props.location?.state?.userId == undefined)
+               history.push(props.backUrl!);
             if (props.useAllUserOrderSecret != undefined)
                props.useAllUserOrderSecret(props.location?.state?.userId || 0, selectedPage, maxItemsPerPage, filterType)
-                  .then(onGetUserOrderSuccess)
+                  .then((result) => onGetUserOrderSuccess(result, selectedPage))
                   .catch(onGetUserOrderFailed);
             break;
          default:
@@ -60,11 +64,15 @@ const ViewOrders = (props: IProps) => {
 
 
    };
-   const onGetUserOrderSuccess = (result: IReturnUseAllOrder) => {
+
+
+   const onGetUserOrderSuccess = (result: IReturnUseAllOrder, selectedPage: number) => {
       if (isUnmounted.current) return;
       errorAlert.clear();
       setTblTotalItemCount(result.data.totalCount || 0);
       let list = orderList;
+      if (selectedPage == 1)
+         list = [] as Order[];
       if (result.data.orderList != undefined)
          list = list.concat(result.data.orderList);
       setOrderList(list);
@@ -75,7 +83,22 @@ const ViewOrders = (props: IProps) => {
       errorAlert.set(alert);
    };
 
-
+   const UpdateOrder = (order: Order) => {
+      setIsOpenOrderModal(false);
+      switch (props.access) {
+         case ClientAppAccess.Official:
+            break;
+         case ClientAppAccess.Secret:
+            props.usePutOrderStatusOrder!(order).then(() => {
+               errorAlert.clear();
+               errorAlert.setSingleSuccess("updated", "Order Updated.");
+               onSearch();
+            }).catch(onGetUserOrderFailed);
+            break;
+         default:
+            break;
+      };
+   };
 
    return (
       <>
@@ -99,7 +122,7 @@ const ViewOrders = (props: IProps) => {
                   onClick={() => { onSearch(undefined, undefined, GetAllRecords); }} >
                   All
                   </button>
-               {OrderStatusTypeList.filter(o => o.Value in availableStatusTypeList)?.map(statusType =>
+               {OrderStatusTypeList.filter(o => availableStatusTypeList.includes(o.Value))?.map(statusType =>
                   <button className="dropdown-item" key={statusType.Id}
                      onClick={() => { onSearch(undefined, undefined, statusType.Id?.toString()); }} >
                      {statusType.Name}
@@ -151,7 +174,8 @@ const ViewOrders = (props: IProps) => {
          <OrderModal isOpen={isOpenOrderModal}
             order={selectOrder}
             access={props.access}
-            onClose={() => setIsOpenOrderModal(false)} />
+            onClose={() => setIsOpenOrderModal(false)}
+            onSave={UpdateOrder} />
       </ >
    );
 };
@@ -159,6 +183,7 @@ const ViewOrders = (props: IProps) => {
 declare type IProps = {
    access: ClientAppAccess;
    useAllUserOrderSecret?: (userId: number, selectedPage: number, maxNumberPerItemsPage: number, filterStatus: string | null) => Promise<IReturnUseAllOrder>;
+   usePutOrderStatusOrder?: (modifiedOrder: Order) => Promise<{ data: Order, status?: number; }>;
    location?: {
       state: { userId: number, fullName: string; };
    };

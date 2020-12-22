@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
-
+using OSnack.API.Extras.CustomTypes;
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Attributes;
 using P8B.Core.CSharp.Extentions;
@@ -80,7 +80,11 @@ namespace OSnack.API.Controllers
 
                 .ToListAsync()
                 .ConfigureAwait(false);
-            list.ForEach(u => u.OrderLength = u.Orders.Count());
+            list.ForEach(u =>
+            {
+               u.OrderLength = u.Orders.Count(o => o.Status == OrderStatusType.Confirmed || o.Status == OrderStatusType.Confirmed || o.Status == OrderStatusType.Confirmed);
+               u.HasOrder = u.Orders.Count > 0;
+            });
             /// return the list of Role ordered by name
             return Ok(new MultiResult<List<User>, int>(list, totalCount, CoreFunc.GetCustomAttributeTypedArgument(this.ControllerContext)));
          }

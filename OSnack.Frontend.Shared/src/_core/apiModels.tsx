@@ -196,7 +196,7 @@ export class EmailTemplate {
 export class EmailTemplateServerClass {
     id?: number = 0;
     value!: EmailTemplateClassNames;
-    variables?: string[] | undefined;
+    classProperties?: string[] | undefined;
 
 }
 export class EmailTemplateAndDefaultEmailTemplate {
@@ -216,6 +216,7 @@ export class Payment {
     type!: PaymentType;
     email?: string | undefined;
     dateTime!: Date;
+    expireDate?: Date;
 
 }
 export abstract class OrderProductBase {
@@ -229,6 +230,11 @@ export abstract class OrderProductBase {
 export class OrderListAndTotalCount {
     orderList?: Order[] | undefined;
     totalCount?: number;
+
+}
+export class OrderListAndAvailableTypes {
+    orderList?: Order[] | undefined;
+    availableTypes?: OrderStatusType[] | undefined;
 
 }
 export class Order2 {
@@ -547,6 +553,7 @@ export class User extends UserBase {
     password?: string | undefined;
     subscribeNewsLetter?: boolean;
     orderLength?: number;
+    hasOrder?: boolean;
 
 }
 export class Order extends OrderAddressBase {
@@ -556,6 +563,7 @@ export class Order extends OrderAddressBase {
     deliveryOption?: DeliveryOption | undefined;
     deliveryPrice?: number;
     addressId!: number;
+    shippingReference?: string | undefined;
     userId?: number | undefined;
     email?: string | undefined;
     payment: Payment = new Payment();
@@ -572,6 +580,10 @@ export class OrderItem extends OrderProductBase {
     productCategoryName!: string;
     productId?: number | undefined;
     quantity!: number;
+
+}
+export class OrderListAndAvailableTypesAndTotalCount extends OrderListAndAvailableTypes {
+    totalCount?: number;
 
 }
 export class Product extends OrderProductBase {

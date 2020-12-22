@@ -324,7 +324,6 @@
     <TypeScriptCompile Include="src\hooks\function\useScript.tsx" />
     <TypeScriptCompile Include="src\hooks\OfficialHooks\useAddressHook.tsx" />
     <TypeScriptCompile Include="src\hooks\OfficialHooks\useAuthenticationHook.tsx" />
-    <TypeScriptCompile Include="src\hooks\OfficialHooks\useCouponHook.tsx" />
     <TypeScriptCompile Include="src\hooks\OfficialHooks\useOrderHook.tsx" />
     <TypeScriptCompile Include="src\hooks\OfficialHooks\useProductHook.tsx" />
     <TypeScriptCompile Include="src\hooks\OfficialHooks\useUserHook.tsx" />

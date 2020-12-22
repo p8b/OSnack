@@ -3,15 +3,15 @@ import DropDown from '../Buttons/DropDown';
 
 const InputDropdown = (props: IProps) => {
    return (
-      <div className={`pb-3 m-0 ${props.className}`}>
+      <div className={`pm-0 pb-3  ${props.className}`}>
          <label children={props.label}
-            className={`col-form-label pm-0 `} />
+            className={`col-form-label pm-0 ${props.labelClassName}`} />
 
          <DropDown title={props.dropdownTitle}
             className="w-100 "
             disabled={props.disabled}
             preventCloseOnClickInsideMenu={props.preventCloseOnClickInsideMenu}
-            titleClassName={`btn input-dropdown no-shadow w-100 dropdown-icon ${props.showDanger ? "danger" : ""}`}>
+            titleClassName={`btn input-dropdown no-shadow dropdown-icon ${props.titleClassName} ${props.showDanger ? "danger" : ""}`}>
             {props.children}
          </DropDown>
       </div>
@@ -20,8 +20,10 @@ const InputDropdown = (props: IProps) => {
 
 interface IProps {
    label: string;
-   dropdownTitle: string;
+   dropdownTitle: any;
    className?: string;
+   labelClassName?: string;
+   titleClassName?: string;
    showDanger?: boolean;
    children: any;
    preventCloseOnClickInsideMenu?: boolean;

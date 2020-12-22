@@ -205,7 +205,6 @@
     <TypeScriptCompile Include="src\SecretHooks\useAuthenticationHook.tsx" />
     <TypeScriptCompile Include="src\SecretHooks\useCategoryHook.tsx" />
     <TypeScriptCompile Include="src\SecretHooks\useCouponHook.tsx" />
-    <TypeScriptCompile Include="src\SecretHooks\useEmailTemplateHook.tsx" />
     <TypeScriptCompile Include="src\SecretHooks\useOrderHook.tsx" />
     <TypeScriptCompile Include="src\SecretHooks\useProductHook.tsx" />
     <TypeScriptCompile Include="src\SecretHooks\useRoleHook.tsx" />

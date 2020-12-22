@@ -2,7 +2,8 @@ import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/compo
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
 import { EmailTemplate, EmailTemplateAndDefaultEmailTemplate, EmailTemplateServerClass } from "osnack-frontend-shared/src/_core/apiModels";
-export const useDeleteEmail = async (emailTemplate: EmailTemplate): Promise<{ data:string , status?: number}> =>{
+export type IReturnUseDeleteEmail={ data:string , status?: number;};
+export const useDeleteEmail = async (emailTemplate: EmailTemplate): Promise<IReturnUseDeleteEmail> =>{
         let url_ = API_URL + "/Email/Delete";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = emailTemplate;
@@ -34,7 +35,8 @@ export const useDeleteEmail = async (emailTemplate: EmailTemplate): Promise<{ da
         }
   
 }
-export const useAllEmail = async (): Promise<{ data:EmailTemplate[] , status?: number}> =>{
+export type IReturnUseAllEmail={ data:EmailTemplate[] , status?: number;};
+export const useAllEmail = async (): Promise<IReturnUseAllEmail> =>{
         let url_ = API_URL + "/Email/Get/All";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);
@@ -60,7 +62,8 @@ export const useAllEmail = async (): Promise<{ data:EmailTemplate[] , status?: n
         }
   
 }
-export const useGetEmail = async (templateId: number): Promise<{ data:EmailTemplateAndDefaultEmailTemplate , status?: number}> =>{
+export type IReturnUseGetEmail={ data:EmailTemplateAndDefaultEmailTemplate , status?: number;};
+export const useGetEmail = async (templateId: number): Promise<IReturnUseGetEmail> =>{
         let url_ = API_URL + "/Email/Get/{templateId}";
         if (templateId !== null && templateId !== undefined)
         url_ = url_.replace("{templateId}", encodeURIComponent("" + templateId));
@@ -88,7 +91,8 @@ export const useGetEmail = async (templateId: number): Promise<{ data:EmailTempl
         }
   
 }
-export const useGetServerVariablesEmail = async (): Promise<{ data:EmailTemplateServerClass[] , status?: number}> =>{
+export type IReturnUseGetServerVariablesEmail={ data:EmailTemplateServerClass[] , status?: number;};
+export const useGetServerVariablesEmail = async (): Promise<IReturnUseGetServerVariablesEmail> =>{
         let url_ = API_URL + "/Email/GetServerVariables";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);
@@ -114,7 +118,8 @@ export const useGetServerVariablesEmail = async (): Promise<{ data:EmailTemplate
         }
   
 }
-export const usePostEmail = async (emailTemplate: EmailTemplate): Promise<{ data:EmailTemplate , status?: number}> =>{
+export type IReturnUsePostEmail={ data:EmailTemplate , status?: number;};
+export const usePostEmail = async (emailTemplate: EmailTemplate): Promise<IReturnUsePostEmail> =>{
         let url_ = API_URL + "/Email/Post";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = emailTemplate;
@@ -146,7 +151,8 @@ export const usePostEmail = async (emailTemplate: EmailTemplate): Promise<{ data
         }
   
 }
-export const usePutEmail = async (emailTemplate: EmailTemplate): Promise<{ data:EmailTemplate , status?: number}> =>{
+export type IReturnUsePutEmail={ data:EmailTemplate , status?: number;};
+export const usePutEmail = async (emailTemplate: EmailTemplate): Promise<IReturnUsePutEmail> =>{
         let url_ = API_URL + "/Email/Put";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = emailTemplate;

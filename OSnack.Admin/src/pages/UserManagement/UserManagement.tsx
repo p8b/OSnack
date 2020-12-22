@@ -104,7 +104,7 @@ const UserManagement = (props: IProps) => {
             user.email,
             user.role?.name,
             <>
-               {user.orderLength! > 0 &&
+               {user.hasOrder &&
                   <TableRowButtons
                      btnClassName="btn-white cart-icon"
                      btnChildren={user.orderLength}
@@ -114,7 +114,7 @@ const UserManagement = (props: IProps) => {
                   />
 
                }
-               {user.orderLength == 0 &&
+               {!user.hasOrder &&
                   <TableRowButtons
                      btnClassName="btn-blue edit-icon"
                      btnClick={() => { editUser(user); }}

@@ -7,7 +7,6 @@ using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 using OSnack.API.Extras.CustomTypes;
 using OSnack.API.Extras.Paypal;
-
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Models;
 
@@ -70,26 +69,63 @@ namespace OSnack.API.Controllers
       [HttpPut("[action]")]
       [Consumes(MediaTypeNames.Application.Json)]
       [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [Authorize(AppConst.AccessPolicies.Secret)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
+      [ProducesDefaultResponseType]
       /// Ready For Test
       public async Task<IActionResult> PutOrderStatus([FromBody] Order modifiedOrder)
       {
          try
          {
 
-            ///TODO Change Statues Only
-            Order orginalOrder = await _DbContext.Orders.FindAsync(modifiedOrder.Id).ConfigureAwait(false);
-            orginalOrder.Status = modifiedOrder.Status;
-            /// Update the current Order to the EF context
-            _DbContext.Orders.Update(orginalOrder);
+            Order originalOrder = await _DbContext.Orders.AsTracking()
+                     .Include(o => o.Payment)
+                     .SingleOrDefaultAsync(o => o.Id == modifiedOrder.Id).ConfigureAwait(false);
+
+
+            if (originalOrder == null)
+            {
+               /// extract the errors and return bad request containing the errors
+               CoreFunc.Error(ref ErrorsList, "Order not exist");
+               return StatusCode(412, ErrorsList);
+            }
+            if (modifiedOrder.Status == OrderStatusType.Confirmed)
+            {
+
+               var request = new PayPalCheckoutSdk.Orders.OrdersCaptureRequest(originalOrder.Payment.Reference);
+               request.Prefer("return=representation");
+               request.RequestBody(new PayPalCheckoutSdk.Orders.OrderActionRequest());
+               var response = await PayPalClient.client().Execute(request);
+               var paypalOrder = response.Result<PayPalCheckoutSdk.Orders.Order>();
+               if (!paypalOrder.Status.Equals("COMPLETED"))
+               {
+                  originalOrder.Status = OrderStatusType.Canceled;
+                  await _DbContext.SaveChangesAsync().ConfigureAwait(false);
+                  CoreFunc.Error(ref ErrorsList, "Payment cannot be varified.");
+                  return UnprocessableEntity(ErrorsList);
+               }
+               originalOrder.Status = OrderStatusType.Confirmed;
+               originalOrder.Payment.DateTime = DateTime.Parse(paypalOrder.UpdateTime);
+            }
+            else
+               originalOrder.Status = modifiedOrder.Status;
+
+            //await _DbContext.SaveChangesAsync().ConfigureAwait(false);
+
+
+
+            //originalOrder.Status = ;
+            ///// Update the current Order to the EF context
+            //_DbContext.Orders.Update(originalOrder);
 
             /// save the changes to the data base
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
             /// return 200 OK (Update) status with the modified object
             /// and success message
-            return Ok(orginalOrder);
+            return Ok(originalOrder);
          }
          catch (Exception ex)
          {
