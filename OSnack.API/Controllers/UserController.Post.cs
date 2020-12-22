@@ -247,6 +247,8 @@ namespace OSnack.API.Controllers
                CoreFunc.Error(ref ErrorsList, "You are already registered.");
                return StatusCode(412, ErrorsList);
             }
+
+            newUser.Id = 0;
             /// Create the new user
             IdentityResult newUserResult = await _UserManager.CreateAsync(newUser, newUser.PasswordHash)
                                                             .ConfigureAwait(false);

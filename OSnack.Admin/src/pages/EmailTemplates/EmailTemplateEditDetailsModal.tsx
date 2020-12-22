@@ -5,17 +5,25 @@ import Modal from "osnack-frontend-shared/src/components/Modals/Modal";
 import { Input } from "osnack-frontend-shared/src/components/Inputs/Input";
 import { Button } from "osnack-frontend-shared/src/components/Buttons/Button";
 
-import { EmailTemplate, ServerVariables } from "osnack-frontend-shared/src/_core/apiModels";
+import { EmailTemplate, EmailTemplateClassNames, EmailTemplateClassNamesList, EmailTemplateServerClass, EmailTemplateTypes, EmailTemplateTypesList } from "osnack-frontend-shared/src/_core/apiModels";
 import Alert, { AlertObj, useAlert } from "osnack-frontend-shared/src/components/Texts/Alert";
 import InputDropdown from "osnack-frontend-shared/src/components/Inputs/InputDropDown";
+import { useGetServerVariablesEmail } from "../../SecretHooks/useEmailHook";
 
 const EmailTemplateEditDetailsModal = (props: IProps) => {
    const errorAlert = useAlert(new AlertObj());
    const [template, setTemplate] = useState(props.emailTemplate);
    const [isNewTemplate, setIsNewTemplate] = useState(true);
-   const [isTokenUrlRequired, setIsTokenUrlRequired] = useState(false);
-   const [serverVariables, setServerVariables] = useState<ServerVariables[]>([]);
+   const [serverClasses, setServerClasses] = useState<EmailTemplateServerClass[]>([]);
 
+   useEffect(() => {
+      useGetServerVariablesEmail().then(result => {
+         console.log(result.data);
+         setServerClasses(result.data);
+      }).catch(alert => {
+         errorAlert.set(alert);
+      });
+   }, []);
    useEffect(() => {
       if (props.emailTemplate.id && props.emailTemplate.id > 0)
          setIsNewTemplate(false);
@@ -25,29 +33,10 @@ const EmailTemplateEditDetailsModal = (props: IProps) => {
       setTemplate(props.emailTemplate);
    }, [props.isOpen]);
    useEffect(() => {
-      let arr = props.serverVariables;
-      if (props.emailTemplate.serverVariables)
-         for (var i = 0; i < props.emailTemplate.serverVariables?.length; i++) {
-            arr = arr.filter(sv => sv.enumValue != props.emailTemplate.serverVariables![i].enumValue);
-            if (props.emailTemplate.serverVariables[i].replacementValue == "@@TokenUrl@@")
-               setIsTokenUrlRequired(true);
-         }
-      setServerVariables(arr);
-   }, [props.serverVariables]);
-   useEffect(() => {
-      const temp = template.serverVariables?.find(sv => sv.replacementValue == "@@TokenUrl@@");
-      if (temp != undefined && template.serverVariables!.includes(temp)) {
-         setIsTokenUrlRequired(true);
-      } else {
-         setIsTokenUrlRequired(false);
-      }
-   }, [template.serverVariables]);
-   useEffect(() => {
       errorAlert.set(props.alert || new AlertObj());
    }, [props.alert]);
 
    const onSubmit = async () => {
-      console.log(template);
       props.onSubmit(template);
    };
 
@@ -63,58 +52,74 @@ const EmailTemplateEditDetailsModal = (props: IProps) => {
          isOpen={props.isOpen}>
          <PageHeader title={`Template Details`} />
          <div className="row" >
-            <Input label="Name *" className="col-10"
+            <Input label="Name" className="col-12 col-sm-6"
+               disabled={template.templateType != EmailTemplateTypes.Others}
                value={template.name}
-               disabled={template.locked}
                showDanger={errorAlert.checkExist("name")}
                onChange={i => setTemplate({ ...template, name: i.target?.value })}
             />
-            <button className={`col-2 btn ${template.locked ? "lock-icon" : "unlock-icon"}`}
-               children={`${template.locked ? "lock" : "unlock"}`}
-               onClick={() => setTemplate((prev) => ({ ...prev, locked: !prev.locked }))} />
+            <InputDropdown dropdownTitle={`${template.templateType != undefined ? EmailTemplateTypesList.find(t => t.Value == template.templateType)?.Name : "Select Option"}`}
+               label="Type *"
+               disabled={template.templateType != undefined && template.id! > 0}
+               className="col-12 col-sm-6">
+               {EmailTemplateTypesList.map(t =>
+                  <div className="dropdown-item cursor-pointer" key={t.Id}
+                     onClick={() => {
+                        setTemplate({ ...template, name: t.Name, templateType: t.Value });
+                     }} >
+                     {t.Name}
+                  </div>
+               )}
+            </InputDropdown>
             <div className="col-12 col-sm-6 pm-0">
+               <Input label="Token URL Path*" className="col-12"
+                  value={template.tokenUrlPath}
+                  disabled={template.serverClasses?.find(c => c.value == EmailTemplateClassNames.Token) == undefined}
+                  showDanger={errorAlert.checkExist("TokenUrlPath")}
+                  onChange={i => setTemplate({ ...template, tokenUrlPath: i.target?.value })}
+               />
                <Input label="Subject *" className="col-12"
                   value={template.subject}
                   showDanger={errorAlert.checkExist("Subject")}
                   onChange={i => setTemplate({ ...template, subject: i.target?.value })}
                />
-               <Input label="Token URL Path*" className="col-12"
-                  value={template.tokenUrlPath}
-                  disabled={!isTokenUrlRequired}
-                  showDanger={errorAlert.checkExist("TokenUrlPath")}
-                  onChange={i => setTemplate({ ...template, tokenUrlPath: i.target?.value })}
-               />
             </div>
             <div className="col-12 col-sm-6 pm-0">
-               <InputDropdown dropdownTitle={"Select Option"}
+               <InputDropdown dropdownTitle={`${serverClasses.length == 0 ? "No Options" : "Select Option"}`}
                   label="Server Variables Required"
+                  disabled={serverClasses.length == 0}
                   className="col-12">
-                  {serverVariables.map(sv =>
-                     <div className="dropdown-item cursor-pointer" key={Math.random()}
+                  {serverClasses.map(sc =>
+                     <div className="dropdown-item cursor-pointer" key={sc.value}
                         onClick={() => {
-                           let arr: ServerVariables[] = [sv];
-                           if (template.serverVariables!.length > 0)
-                              arr = arr.concat(template.serverVariables!);
+                           let arr: EmailTemplateServerClass[] = [sc];
+                           if (template.serverClasses != undefined && template.serverClasses!.length > 0)
+                              arr = arr.concat(template.serverClasses!);
 
-                           setServerVariables(serverVariables.filter(SV => SV != sv));
-                           setTemplate({ ...template, serverVariables: arr });
+                           setServerClasses(serverClasses.filter(SC => SC != sc));
+                           setTemplate({ ...template, serverClasses: arr });
                         }} >
-                        {sv.replacementValue}
+                        {EmailTemplateClassNamesList.find(c => c.Value == sc.value)?.Name}
                      </div>
                   )}
+                  {serverClasses.length == 0 &&
+                     <div className="dropdown-item cursor-pointer">
+                        No Options
+                     </div>
+                  }
                </InputDropdown>
                <div className="row col-12 justify-content-center">
-                  {template.serverVariables?.map(sv =>
-                     <div className={`badge col-auto m-1 ${errorAlert.checkExist(sv.replacementValue) ? "red" : ""}`} key={sv.enumValue}>
-                        <CopyText text={sv.replacementValue} />
+                  {template.serverClasses?.map(sc =>
+                     <div className={`badge col-auto m-1`} key={sc.value}>
+                        <CopyText text={EmailTemplateClassNamesList.find(c => c.Value == sc.value)?.Name || ""} />
 
                         <span className="" onClick={() => {
-                           let arr: ServerVariables[] = [sv];
-                           if (template.serverVariables!.length > 0)
-                              arr = arr.concat(serverVariables);
+                           let arr: EmailTemplateServerClass[] = [sc];
+                           if (template.serverClasses!.length > 0)
+                              arr = arr.concat(serverClasses);
 
-                           setTemplate({ ...template, serverVariables: template.serverVariables!.filter(SV => SV != sv) });
-                           setServerVariables(arr);
+                           setTemplate({ ...template, serverClasses: template.serverClasses!.filter(SV => SV != sc) });
+                           setServerClasses(arr);
                         }}
                            children="X"
                         />
@@ -145,7 +150,6 @@ type IProps = {
    alert?: AlertObj,
    clearAlert?: () => void,
    emailTemplate: EmailTemplate,
-   serverVariables: ServerVariables[],
    onSubmit: (template: EmailTemplate) => void;
    onCancel: () => void;
    modalRef?: any;

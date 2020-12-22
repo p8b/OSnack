@@ -29,10 +29,10 @@ const DropDown = (props: IProps) => {
    return (
       <div className={`dropdown ${props.className}`} ref={dropDown}>
          <div className="col p-0">
-            <button disabled={props.disabled} className={`col p-0 btn-no-style ${isOpen ? "show" : ""} `}
+            <button disabled={props.disabled} className={`col p-0 btn-no-style ${isOpen ? "show" : ""}`}
                onClick={() => setIsOpen((prev) => !prev)}
                ref={(props.buttonRef || dropDownButton)}>
-               <div className={` line-limit-1 ${props?.titleClassName}`}>
+               <div aria-disabled={props.disabled} className={` line-limit-1 ${props?.titleClassName} ${props.disabled ? "disabled" : ""}`}>
                   {props.title}
                </div>
             </button>

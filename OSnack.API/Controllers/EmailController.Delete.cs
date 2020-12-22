@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace OSnack.API.Controllers
 {
-   public partial class EmailTemplateController
+   public partial class EmailController
    {
       #region *** ***
       [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
@@ -34,16 +34,16 @@ namespace OSnack.API.Controllers
                ErrorsList.Add(new Error("", "Template cannot be found."));
                return UnprocessableEntity(ErrorsList);
             }
-            if (foundTemplate.Locked)
-            {
-               ErrorsList.Add(new Error("", "Template locked."));
-               return UnprocessableEntity(ErrorsList);
-            }
-            if (foundTemplate.IsDefaultTemplate)
-            {
-               ErrorsList.Add(new Error("", "Cannot Delete Default Template."));
-               return UnprocessableEntity(ErrorsList);
-            }
+            //if (foundTemplate.Locked)
+            //{
+            //   ErrorsList.Add(new Error("", "Template locked."));
+            //   return UnprocessableEntity(ErrorsList);
+            //}
+            //if (foundTemplate.IsDefaultTemplate)
+            //{
+            //   ErrorsList.Add(new Error("", "Cannot Delete Default Template."));
+            //   return UnprocessableEntity(ErrorsList);
+            //}
             /// save files
             foundTemplate.DeleteFiles(WebHost.WebRootPath);
 

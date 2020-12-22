@@ -76,7 +76,7 @@ namespace OSnack.API.Controllers
             if (purchaseUnit.ShippingDetail.AddressPortable.AdminArea2 != null)
                orderData.City = purchaseUnit.ShippingDetail.AddressPortable.AdminArea2;
             orderData.Postcode = purchaseUnit.ShippingDetail.AddressPortable.PostalCode;
-            orderData.Status = OrderStatusType.In_Progress;
+            orderData.Status = OrderStatusType.InProgress;
             orderData.Payment.Reference = paypalId;
             orderData.Payment.DateTime = DateTime.Parse(paypalOrder.CreateTime);
 

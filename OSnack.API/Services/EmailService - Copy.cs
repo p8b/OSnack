@@ -8,6 +8,7 @@ using MimeKit;
 
 using OSnack.API.Database;
 using OSnack.API.Database.Models;
+using OSnack.API.Extras.CustomTypes;
 
 using P8B.Core.CSharp.Models;
 
@@ -20,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace P8B.UK.API.Services
 {
-   public class EmailService1
+   public class EmailService
    {
 
       #region *** Properties ***
@@ -31,8 +32,8 @@ namespace P8B.UK.API.Services
       private IWebHostEnvironment _WebEnv { get; }
       #endregion
 
-      public EmailService1() { }
-      public EmailService1(
+      public EmailService() { }
+      public EmailService(
           EmailSettings emailSettings,
           LoggingService loggingService,
           IWebHostEnvironment webEnv,
@@ -44,6 +45,104 @@ namespace P8B.UK.API.Services
          _DbContext = dbContext;
          _WebEnv = webEnv;
          _LoggingService = loggingService;
+      }
+
+      /// <summary>
+      ///     This method is used to welcome message for user with external login at registration
+      /// </summary>
+      /// <param name="user">The user object</param>
+      /// <returns>bool: true (if email is send correctly) else false</returns>
+      public async Task<bool> ExternalRegistrationWelcomeAsync(User user)
+      {
+         string templateName = "Welcome External Registration";
+         try
+         {
+            return await PopulateUserAndTokenVariables(templateName, user)
+               .ConfigureAwait(false);
+         }
+         catch (Exception ex)
+         {
+            _LoggingService.LogEmailFailure(ex.Message, new { ex, templateName }, user);
+            return false;
+         }
+      }
+
+      /// <summary>
+      ///     This method is used to send token to the user after registration in order to
+      ///     validate their email address.
+      /// </summary>
+      /// <param name="user">The user object</param>
+      /// <param name="ExpiaryDate">The expiry date for token</param>
+      /// <returns>bool: true (if email is send correctly) else false</returns>
+      public async Task<bool> EmailConfirmationAsync(User user, string DomainUrl)
+      {
+         string templateName = "Email Confirmation";
+         try
+         {
+            return await PopulateUserAndTokenVariables(templateName, user
+               , new Token
+               {
+                  Type = TokenTypes.ConfirmEmail,
+                  UrlDomain = DomainUrl,
+               }
+               , DateTime.UtcNow.AddYears(1))
+               .ConfigureAwait(false);
+         }
+         catch (Exception ex)
+         {
+            _LoggingService.LogEmailFailure(ex.Message, new { ex, templateName, domainUrl = DomainUrl }, user);
+            return false;
+         }
+      }
+
+      /// <param name="user">The user object</param>
+      /// <param name="DomainUrl">Domain set for the token</param>
+      /// <returns>bool: true (if email is send correctly) else false</returns>
+      public async Task<bool> NewEmployeePasswordAsync(User user, string DomainUrl)
+      {
+         string templateName = "Welcome New Employee";
+         try
+         {
+            return await PopulateUserAndTokenVariables(templateName, user
+               , new Token
+               {
+                  Type = TokenTypes.ChangePassword,
+                  UrlDomain = DomainUrl,
+               }
+               , DateTime.UtcNow.AddDays(5))
+               .ConfigureAwait(false);
+         }
+         catch (Exception ex)
+         {
+            _LoggingService.LogEmailFailure(ex.Message, new { ex, templateName, domainUrl = DomainUrl }, user);
+            return false;
+         }
+      }
+
+      /// <summary>
+      ///     This method is used to email a token value to the user in order to rest their password
+      /// </summary>
+      /// <param name="user">User object</param>                            
+      /// <param name="DomainUrl">Domain set for the token</param>
+      /// <returns>bool: true (if email is send correctly) else false</returns>
+      public async Task<bool> PasswordResetAsync(User user, string DomainUrl)
+      {
+         string templateName = "Welcome New Employee";
+         try
+         {
+            return await PopulateUserAndTokenVariables("Password Reset", user
+               , new Token
+               {
+                  Type = TokenTypes.ChangePassword,
+                  UrlDomain = DomainUrl,
+               }
+               , DateTime.UtcNow.AddHours(5));
+         }
+         catch (Exception ex)
+         {
+            _LoggingService.LogEmailFailure(ex.Message, new { ex, templateName, domainUrl = DomainUrl }, user);
+            return false;
+         }
       }
 
       /// <summary>
@@ -156,7 +255,7 @@ namespace P8B.UK.API.Services
          await sendMail().ConfigureAwait(false);
       }
 
-      private async Task<bool> PopulateUserAndTokenVariables(string templateName, User user = null, Token token = null,
+      private async Task<bool> PopulateUserAndTokenVariables(string templateName, User user, Token token = null,
          DateTime expiaryDate = new DateTime())
       {
          EmailTemplate template = await GetUserTemplate(templateName).ConfigureAwait(false);
@@ -194,7 +293,6 @@ namespace P8B.UK.API.Services
       private async Task<EmailTemplate> GetUserTemplate(string templateName)
       {
          EmailTemplate template = await _DbContext.EmailTemplates
-           .Include(et => et.ServerClasses)
            .FirstOrDefaultAsync(et => et.Name.Equals(templateName)).ConfigureAwait(false);
 
          if (template == null)

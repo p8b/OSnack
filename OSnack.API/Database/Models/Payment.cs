@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+
+using OSnack.API.Extras.CustomTypes;
+
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Newtonsoft.Json;
-using OSnack.API.Extras.CustomTypes;
 
 namespace OSnack.API.Database.Models
 {
@@ -27,6 +29,8 @@ namespace OSnack.API.Database.Models
 
       [Required(ErrorMessage = "Date is required \n")]
       public DateTime DateTime { get; set; }
+
+      public DateTime ExpireDate { get; set; }
 
       [Required(ErrorMessage = "Order is required \n")]
       [ForeignKey("OrderId")]

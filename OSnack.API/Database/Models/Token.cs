@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 
+using OSnack.API.Extras.Attributes;
 using OSnack.API.Extras.CustomTypes;
 
 using System;
@@ -31,6 +32,7 @@ namespace OSnack.API.Database.Models
       [JsonIgnore]
       public string Url { get; set; }
 
+      [EmailTemplateVariable]
       [Column(TypeName = "nvarchar(30)")]
       [DataType(DataType.Date)]
       [Required(ErrorMessage = "Expiry Date is Required \n")]

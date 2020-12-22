@@ -44,6 +44,10 @@ namespace OSnack.API.Database.Models
       [NotMapped]
       public int AddressId { get; set; }
 
+      [Column(TypeName = "nvarchar(100)")]
+      [StringLength(8, ErrorMessage = "Must be less than 100 Characters \n")]
+      public string ShippingReference { get; set; }
+
       /// <summary>
       /// <b>Json Ignore</b>
       /// </summary>

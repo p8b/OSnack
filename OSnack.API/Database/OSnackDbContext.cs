@@ -70,9 +70,7 @@ namespace OSnack.API.Database
          builder.Entity<Order>().HasOne(o => o.Payment).WithOne(r => r.Order).OnDelete(DeleteBehavior.Cascade);
          builder.Entity<Product>().HasOne(t => t.NutritionalInfo).WithOne(r => r.Product).OnDelete(DeleteBehavior.Cascade);
          builder.Entity<OrderItem>().HasOne(o => o.Product).WithMany().OnDelete(DeleteBehavior.SetNull);
-         builder.Entity<AppLog>().HasOne(l => l.User).WithOne().OnDelete(DeleteBehavior.Cascade);
-         builder.Entity<ServerVariables>().HasKey(s => s.Id);
-         builder.Entity<EmailTemplate>().HasMany(e => e.ServerVariables).WithOne(e => e.EmailTemplate).OnDelete(DeleteBehavior.Cascade);
+         builder.Entity<AppLog>().HasOne(l => l.User).WithMany().OnDelete(DeleteBehavior.Cascade);
          builder.Entity<User>().HasMany(u => u.Orders).WithOne(o => o.User).OnDelete(DeleteBehavior.SetNull);
          builder.Entity<Coupon>().HasMany(u => u.Orders).WithOne(o => o.Coupon).OnDelete(DeleteBehavior.SetNull);
          builder.Entity<DeliveryOption>().HasMany(u => u.Orders).WithOne(o => o.DeliveryOption).OnDelete(DeleteBehavior.SetNull);

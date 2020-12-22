@@ -13,14 +13,14 @@ namespace OSnack.API.Controllers
    [Route("[controller]")]
    [AutoValidateAntiforgeryToken]
    [ApiControllerAttribute]
-   public partial class EmailTemplateController : ControllerBase
+   public partial class EmailController : ControllerBase
    {
       private OSnackDbContext _DbContext { get; }
       private LoggingService _LoggingService { get; }
       private List<Error> ErrorsList = new List<Error>();
       private IWebHostEnvironment WebHost { get; }
 
-      public EmailTemplateController(OSnackDbContext db, IWebHostEnvironment webEnv)
+      public EmailController(OSnackDbContext db, IWebHostEnvironment webEnv)
       {
          _DbContext = db;
          WebHost = webEnv;

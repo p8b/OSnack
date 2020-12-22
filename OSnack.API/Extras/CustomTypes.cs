@@ -7,13 +7,24 @@
       PercentageOfTotal = 2
    }
 
-   public enum EmailTemplateServerVariables
+   public enum EmailTemplateClassNames
    {
-      UserName = 0,
-      RegistrationMethod = 1,
-      Role = 2,
-      TokenUrl = 3,
-      ExpiaryDateTime = 4,
+      User = 0,
+      Order = 1,
+      ContactUsMessage = 2,
+      Token = 3,
+   }
+   public enum EmailTemplateTypes
+   {
+      Others = 0,
+      DefaultTemplate = 1,
+      EmailConfirmation = 2,
+      WelcomeExternalRegistration = 3,
+      WelcomeNewEmployee = 4,
+      PasswordReset = 5,
+      ContactUsMessage = 6,
+      OrderReceipt = 7,
+      OrderCanceled = 8,
    }
 
    public enum TokenTypes
@@ -23,39 +34,33 @@
       EndSubscription = 2
    }
 
-   //public enum DeliveryPriceOptions
-   //{
-   //   Free = 0,
-   //   Standard = 1,
-   //   Premium = 2,
-   //}
-
    public enum OrderStatusType
    {
-      In_Progress = 0,
+      InProgress = 0,
       Confirmed = 1,
       Canceled = 2,
       Delivered = 3,
-      Refund_Request = 4,
-      Refund_Refused = 5,
-      Partialy_Refunded = 6,
-      Fully_Refunded = 7
+      RefundRequest = 4,
+      RefundRefused = 5,
+      PartialyRefunded = 6,
+      FullyRefunded = 7
    }
 
    public enum PaymentType
    {
       Pendig = 0,
       Complete = 1,
-      Partialy_Refunded = 2,
-      Fully_Refunded = 3
+      PartialyRefunded = 2,
+      FullyRefunded = 3
    }
 
    public enum ProductUnitType
    {
       Kg = 0,
       Grams = 1,
-      Per_Item = 2
+      PerItem = 2
    }
+
    public enum AppLogType
    {
       Exception = 0,

@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace OSnack.API.Controllers
 {
-   public partial class EmailTemplateController
+   public partial class EmailController
    {
       #region *** ***        
       [ProducesResponseType(typeof(List<EmailTemplate>), StatusCodes.Status200OK)]
@@ -38,8 +38,8 @@ namespace OSnack.API.Controllers
             EmailTemplate copyDefaultTemplate = null;
             foreach (EmailTemplate item in templateList)
             {
-               if (item.IsDefaultTemplate)
-                  copyDefaultTemplate = item;
+               //if (item.IsDefaultTemplate)
+               //   copyDefaultTemplate = item;
                item.PrepareDesign(WebHost.WebRootPath);
                item.PrepareHtml(WebHost.WebRootPath);
             }
@@ -70,10 +70,8 @@ namespace OSnack.API.Controllers
          try
          {
             var defaultTemplate = await _DbContext.EmailTemplates
-               .Include(et => et.ServerVariables)
-               .SingleOrDefaultAsync(et => et.IsDefaultTemplate).ConfigureAwait(false);
+               .SingleOrDefaultAsync(et => et.TemplateType.Equals(EmailTemplateTypes.DefaultTemplate)).ConfigureAwait(false);
             var template = await _DbContext.EmailTemplates
-               .Include(et => et.ServerVariables)
                .SingleOrDefaultAsync(et => et.Id == templateId).ConfigureAwait(false);
 
             defaultTemplate.PrepareDesign(WebHost.WebRootPath);
@@ -89,7 +87,7 @@ namespace OSnack.API.Controllers
       }
 
       #region *** ***
-      [ProducesResponseType(typeof(List<ServerVariables>), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<EmailTemplateServerClass>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("[action]")]
@@ -98,13 +96,28 @@ namespace OSnack.API.Controllers
       {
          try
          {
-            var List = new List<ServerVariables>();
+            var List = new List<EmailTemplateServerClass>();
 
-            List.Add(new ServerVariables(EmailTemplateServerVariables.ExpiaryDateTime));
-            List.Add(new ServerVariables(EmailTemplateServerVariables.RegistrationMethod));
-            List.Add(new ServerVariables(EmailTemplateServerVariables.Role));
-            List.Add(new ServerVariables(EmailTemplateServerVariables.TokenUrl));
-            List.Add(new ServerVariables(EmailTemplateServerVariables.UserName));
+            foreach (var property in _DbContext.GetType().GetProperties())
+            {
+               foreach (var selectedClass in property.PropertyType.GenericTypeArguments.Where(g => g.GetProperties().Any(p => p.CustomAttributes.Any(c => c.AttributeType.Name.Equals("EmailTemplateVariableAttribute")))))
+               {
+                  var properties = selectedClass.GetProperties().Where(p => p.CustomAttributes.Any(c => c.AttributeType.Name.Equals("EmailTemplateVariableAttribute")));
+                  if (properties.Count() > 0)
+                  {
+                     var serverClass = new EmailTemplateServerClass()
+                     {
+                        Value = Enum.Parse<EmailTemplateClassNames>(selectedClass.Name),
+                        ClassProperties = new List<string>()
+                     };
+                     foreach (var prop in properties)
+                     {
+                        serverClass.ClassProperties.Add($"@@{prop.Name}@@");
+                     }
+                     List.Add(serverClass);
+                  }
+               }
+            }
 
             return Ok(List);
          }

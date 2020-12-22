@@ -1,10 +1,11 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import ButtonCard from 'osnack-frontend-shared/src/components/Buttons/ButtonCard';
-import { EmailTemplate } from 'osnack-frontend-shared/src/_core/apiModels';
+import { EmailTemplate, EmailTemplateTypes } from 'osnack-frontend-shared/src/_core/apiModels';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Redirect } from 'react-router-dom';
 import { useAllEmailTemplate } from '../../SecretHooks/useEmailTemplateHook';
+import Container from '../../components/Container';
 
 const EmailTemplatePanel = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -19,22 +20,21 @@ const EmailTemplatePanel = (props: IProps) => {
       return () => { isUnmounted.current = true; };
    }, []);
 
-   const newTemplate = () => {
-      setEmailTemplate(new EmailTemplate());
-      setRedirectToEditPage(true);
-   };
    const reloadTemplateList = () => {
       errorAlert.PleaseWait(500, isUnmounted);
-      useAllEmailTemplate().then((result) => {
+      useAllEmailTemplate().then(result => {
          if (isUnmounted.current) return;
-
-         setTempList(result.data);
-         setDefaultEmailTemplate(result.data.find(tl => tl.isDefaultTemplate) || new EmailTemplate());
          errorAlert.clear();
-      }).catch((alert) => {
+         setTempList(result.data);
+         setDefaultEmailTemplate(result.data.find(tl => tl.templateType == EmailTemplateTypes.Default_Template) || new EmailTemplate());
+      }).catch(alert => {
          if (isUnmounted.current) return;
          errorAlert.set(alert);
       });
+   };
+   const newTemplate = () => {
+      setEmailTemplate(new EmailTemplate());
+      setRedirectToEditPage(true);
    };
 
    if (redirectToEditPage)
@@ -42,18 +42,15 @@ const EmailTemplatePanel = (props: IProps) => {
 
    return (
       <>
-         <PageHeader title="Email Templates" className="line-header-lg" />
-         <Alert alert={errorAlert.alert}
-            className="col-12 mb-2"
-            onClosed={() => { errorAlert.clear(); }}
-         />
-         <div id="test" className="row justify-content-center">
-            <ButtonCard cardClassName="d-flex align-items-center"
-               onClick={newTemplate}>
+         <PageHeader title="Email Templates" className="line-header" />
+         <Container id="test" className="justify-content-center">
+            <Alert alert={errorAlert.alert} onClosed={errorAlert.clear}
+               className="col-12 mb-2" />
+            <ButtonCard cardClassName="d-flex align-items-center" onClick={newTemplate}>
                <div className="col ">
                   <div className="col-12 fas add-icon" />
-                        New Template
-                      </div>
+                  <div children="New Template" />
+               </div>
             </ButtonCard>
             {tempList.length > 0 &&
                tempList.map(temp => {
@@ -65,14 +62,14 @@ const EmailTemplatePanel = (props: IProps) => {
                         }}>
 
                         <img id={`${temp.id}`} />
-                        <div className={`col ${temp.locked ? "lock-icon" : "unlock-icon"}`}>
+                        <div className={`col ${temp.templateType != EmailTemplateTypes.Others ? "lock-icon" : "unlock-icon"}`}>
                            {temp.name}
                         </div>
                      </ButtonCard>
                   );
                })
             }
-         </div>
+         </Container>
       </>
    );
 };

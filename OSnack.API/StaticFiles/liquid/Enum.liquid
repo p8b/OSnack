@@ -9,5 +9,5 @@ export enum {{ Name }} {
 }
 
 export const {{Name}}List=[
-{% for enumeration in Enums -%} {Id:{{ enumeration.Value }},Name:"{{ enumeration.Name }}".replace(/_/g, ' '),Value:{{Name}}.{{enumeration.Name}}},
+{% for enumeration in Enums -%} {Id:{{ enumeration.Value }},Name:"{{ enumeration.Name }}".replace(/([A-Z])/g, ' $1').trim(),Value:{{Name}}.{{enumeration.Name}}},
 {% endfor -%}]

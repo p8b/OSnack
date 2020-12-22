@@ -265,6 +265,7 @@
     <Folder Include="src\hooks\function\" />
     <Folder Include="public\" />
     <Folder Include="src\hooks\OfficialHooks\" />
+    <Folder Include="src\hooks\PublicHooks\" />
     <Folder Include="src\pages\" />
     <Folder Include="src\pages\Order\" />
     <Folder Include="src\styles\" />

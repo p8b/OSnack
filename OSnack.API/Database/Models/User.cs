@@ -2,6 +2,8 @@
 
 using Newtonsoft.Json;
 
+using OSnack.API.Extras.Attributes;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,29 +20,25 @@ namespace OSnack.API.Database.Models
       public override int Id { get; set; }
       public User() => UserName = $"p8b{new Random().Next(0, 99)}";
 
-      #region nvarchar(256), Required, StringLength(256)
+      [EmailTemplateVariable]
       [Column(TypeName = "nvarchar(256)")]
       [Required(ErrorMessage = "Name Required \n")]
       [StringLength(256, ErrorMessage = "Name must be less than 256 Characters \n")]
-      #endregion
       public string FirstName { get; set; }
 
-      #region nvarchar(256), Required, StringLength(256)
+      [EmailTemplateVariable]
       [Column(TypeName = "nvarchar(256)")]
       [Required(ErrorMessage = "Surname Required \n")]
       [StringLength(256, ErrorMessage = "Surname must be less than 256 Characters \n")]
-      #endregion
       public string Surname { get; set; }
 
       [Required(ErrorMessage = "Role Required \n")]
       [ForeignKey("RoleId")]
       public Role Role { get; set; }
 
-      #region Required, DateType(Password), JsonIgnore
       [DataType(DataType.Password)]
       [Required(ErrorMessage = "Password Required \n")]
       [JsonIgnore]
-      #endregion
       public override string PasswordHash { get; set; }
 
       [RegularExpression(@"^\+?(?:\d\s?){10,12}$", ErrorMessage = "Invalid UK Phone Number \n")]
@@ -50,12 +48,11 @@ namespace OSnack.API.Database.Models
       [InverseProperty("User")]
       public RegistrationMethod RegistrationMethod { get; set; }
 
-      #region Required, DateType(EmailAddress), RegularExpression
+      [EmailTemplateVariable]
       [DataType(DataType.EmailAddress, ErrorMessage = "Invalid Email \n")]
       [Required(ErrorMessage = "Email is Required \n")]
       [RegularExpression(@"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$",
           ErrorMessage = "Invalid Email \n")]
-      #endregion
       public override string Email { get; set; }
 
       [InverseProperty("User")]

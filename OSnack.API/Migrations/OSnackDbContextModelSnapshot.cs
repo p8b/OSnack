@@ -93,9 +93,7 @@ namespace OSnack.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique()
-                        .HasFilter("[UserId] IS NOT NULL");
+                    b.HasIndex("UserId");
 
                     b.ToTable("AppLogs");
                 });
@@ -221,20 +219,15 @@ namespace OSnack.API.Migrations
                     b.Property<string>("HtmlPath")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsDefaultTemplate")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Locked")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("Subject")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TemplateType")
+                        .HasColumnType("int");
 
                     b.Property<string>("TokenUrlPath")
                         .HasColumnType("nvarchar(max)");
@@ -242,6 +235,26 @@ namespace OSnack.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EmailTemplates");
+                });
+
+            modelBuilder.Entity("OSnack.API.Database.Models.EmailTemplateServerClass", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<int?>("EmailTemplateId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Value")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmailTemplateId");
+
+                    b.ToTable("EmailTemplateServerClass");
                 });
 
             modelBuilder.Entity("OSnack.API.Database.Models.Newsletter", b =>
@@ -353,6 +366,10 @@ namespace OSnack.API.Migrations
                     b.Property<decimal>("ShippingPrice")
                         .HasColumnType("decimal(7,2)");
 
+                    b.Property<string>("ShippingReference")
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -442,6 +459,9 @@ namespace OSnack.API.Migrations
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ExpireDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("OrderId")
                         .IsRequired()
@@ -591,30 +611,6 @@ namespace OSnack.API.Migrations
                     b.ToTable("Score");
                 });
 
-            modelBuilder.Entity("OSnack.API.Database.Models.ServerVariables", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<int?>("EmailTemplateId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EnumValue")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ReplacementValue")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmailTemplateId");
-
-                    b.ToTable("ServerVariablesForEmail");
-                });
-
             modelBuilder.Entity("OSnack.API.Database.Models.Token", b =>
                 {
                     b.Property<int>("Id")
@@ -748,8 +744,8 @@ namespace OSnack.API.Migrations
             modelBuilder.Entity("OSnack.API.Database.Models.AppLog", b =>
                 {
                     b.HasOne("OSnack.API.Database.Models.User", "User")
-                        .WithOne()
-                        .HasForeignKey("OSnack.API.Database.Models.AppLog", "UserId")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("User");
@@ -770,6 +766,15 @@ namespace OSnack.API.Migrations
                     b.Navigation("OrderItem");
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("OSnack.API.Database.Models.EmailTemplateServerClass", b =>
+                {
+                    b.HasOne("OSnack.API.Database.Models.EmailTemplate", "EmailTemplate")
+                        .WithMany("ServerClasses")
+                        .HasForeignKey("EmailTemplateId");
+
+                    b.Navigation("EmailTemplate");
                 });
 
             modelBuilder.Entity("OSnack.API.Database.Models.NutritionalInfo", b =>
@@ -874,16 +879,6 @@ namespace OSnack.API.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("OSnack.API.Database.Models.ServerVariables", b =>
-                {
-                    b.HasOne("OSnack.API.Database.Models.EmailTemplate", "EmailTemplate")
-                        .WithMany("ServerVariables")
-                        .HasForeignKey("EmailTemplateId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("EmailTemplate");
-                });
-
             modelBuilder.Entity("OSnack.API.Database.Models.Token", b =>
                 {
                     b.HasOne("OSnack.API.Database.Models.User", "User")
@@ -931,7 +926,7 @@ namespace OSnack.API.Migrations
 
             modelBuilder.Entity("OSnack.API.Database.Models.EmailTemplate", b =>
                 {
-                    b.Navigation("ServerVariables");
+                    b.Navigation("ServerClasses");
                 });
 
             modelBuilder.Entity("OSnack.API.Database.Models.Order", b =>

@@ -45,6 +45,11 @@
         font-family: "FA5 Solid" !important;
     }
 
+    &.disabled {
+        background-color: rgb(224, 224, 224) !important;
+        color: black;
+    }
+
     &.danger {
         border-bottom: 0.15rem solid rgb(189, 28, 28) !important;
     }
