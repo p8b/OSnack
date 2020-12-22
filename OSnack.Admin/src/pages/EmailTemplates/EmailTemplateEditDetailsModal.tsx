@@ -18,13 +18,13 @@ const EmailTemplateEditDetailsModal = (props: IProps) => {
 
    useEffect(() => {
       useGetServerVariablesEmail().then(result => {
-         console.log(result.data);
          setServerClasses(result.data);
       }).catch(alert => {
          errorAlert.set(alert);
       });
    }, []);
    useEffect(() => {
+      console.log(props.emailTemplate);
       if (props.emailTemplate.id && props.emailTemplate.id > 0)
          setIsNewTemplate(false);
       else

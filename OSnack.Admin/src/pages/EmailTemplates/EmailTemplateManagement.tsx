@@ -4,7 +4,7 @@ import ButtonCard from 'osnack-frontend-shared/src/components/Buttons/ButtonCard
 import { EmailTemplate, EmailTemplateTypes } from 'osnack-frontend-shared/src/_core/apiModels';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Redirect } from 'react-router-dom';
-import { useAllEmailTemplate } from '../../SecretHooks/useEmailTemplateHook';
+import { useAllEmail } from '../../SecretHooks/useEmailHook';
 import Container from '../../components/Container';
 
 const EmailTemplatePanel = (props: IProps) => {
@@ -24,11 +24,11 @@ const EmailTemplatePanel = (props: IProps) => {
 
    const reloadTemplateList = () => {
       errorAlert.PleaseWait(500, isUnmounted);
-      useAllEmailTemplate().then(result => {
+      useAllEmail().then(result => {
          if (isUnmounted.current) return;
          errorAlert.clear();
          setTempList(result.data);
-         setDefaultEmailTemplate(result.data.find(tl => tl.templateType == EmailTemplateTypes.Default_Template) || new EmailTemplate());
+         setDefaultEmailTemplate(result.data.find(tl => tl.templateType == EmailTemplateTypes.DefaultTemplate) || new EmailTemplate());
       }).catch(alert => {
          if (isUnmounted.current) return;
          errorAlert.set(alert);

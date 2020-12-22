@@ -9,7 +9,7 @@ import CopyText from 'osnack-frontend-shared/src/components/Texts/CopyText';
 import { sleep } from 'osnack-frontend-shared/src/_core/appFunc';
 import EmailTemplateEditDetailsModal from './EmailTemplateEditDetailsModal';
 import { Redirect, useHistory } from 'react-router-dom';
-import { useDeleteEmailTemplate, useGetEmailTemplate, usePostEmailTemplate, usePutEmailTemplate } from '../../SecretHooks/useEmailTemplateHook';
+import { useDeleteEmail, useGetEmail, usePostEmail, usePutEmail } from '../../SecretHooks/useEmailHook';
 
 const EmailTemplatesEdit = (props: IProps) => {
    const history = useHistory();
@@ -22,7 +22,7 @@ const EmailTemplatesEdit = (props: IProps) => {
    //const [serverVariables, setServerVariables] = useState<ServerVariables[]>([]);
    const [isSaved, setIsSaved] = useState(false);
    const [isEditorLoaded, setIsEditorLoaded] = useState(false);
-   const [isOpenDetailsModal, setIsOpenDetailsModal] = useState(true);
+   const [isOpenDetailsModal, setIsOpenDetailsModal] = useState(false);
    const [isTemplateRecognised, setIsTemplateRecognised] = useState(true);
    const [isDefaultTemplateUsed, setIsDefaultTemplateUsed] = useState(false);
    const [initialLockedStatus, setInitialLockedStatus] = useState<boolean | undefined>(true);
@@ -38,9 +38,9 @@ const EmailTemplatesEdit = (props: IProps) => {
       setDefaultTemplate(props.location.state.defaultEmailTemplate);
 
       if (props.location.state.emailTemplate.id && props.location.state.emailTemplate.id > 0)
-         useGetEmailTemplate(props.location.state.emailTemplate.id).then(
+         useGetEmail(props.location.state.emailTemplate.id).then(
             result => {
-               setTemplate(result.data.emailTemplate ? result.data.emailTemplate : new EmailTemplate());
+               setTemplate(result.data.emailTemplate != undefined ? result.data.emailTemplate : new EmailTemplate());
                setInitialLockedStatus(result.data.emailTemplate?.templateType != EmailTemplateTypes.Others);
                setDefaultTemplate(result.data.defaultEmailTemplate ? result.data.defaultEmailTemplate : new EmailTemplate());
             });
@@ -68,14 +68,14 @@ const EmailTemplatesEdit = (props: IProps) => {
          emailTemp.design = data.design;
          var resultTemplate: EmailTemplate | undefined;
          if (template.id == 0)
-            await usePostEmailTemplate(template).then((result) => {
+            await usePostEmail(template).then((result) => {
                resultTemplate = result.data;
             }).catch((alert) => {
                errorAlert.set(alert);
                setIsOpenDetailsModal(true);
             });
          else if (template.id != null)
-            await usePutEmailTemplate(template).then((result) => {
+            await usePutEmail(template).then((result) => {
                resultTemplate = result.data;
             }).catch((alert) => {
                errorAlert.set(alert);
@@ -94,7 +94,7 @@ const EmailTemplatesEdit = (props: IProps) => {
    };
    const onDelete = async () => {
       errorAlert.PleaseWait(500, isUnmounted);
-      useDeleteEmailTemplate(template).then(result => {
+      useDeleteEmail(template).then(result => {
          if (isUnmounted.current) return;
          errorAlert.setSingleSuccess("Deleted", result.data);
          sleep(3000, isUnmounted).then(() => { setIsTemplateRecognised(false); });
@@ -113,7 +113,6 @@ const EmailTemplatesEdit = (props: IProps) => {
 
          const temp = defaultTemplate.design;
          setIsDefaultTemplateUsed(true);
-         console.log(template.design);
          (temp?.body.rows[0] as any).columns[0].contents
             = (temp?.body.rows[0] as any).columns[0].contents.concat((template.design?.body.rows[0] as any).columns[0].contents);
          emailEditorRef.current.editor.loadDesign(temp);
@@ -172,7 +171,7 @@ const EmailTemplatesEdit = (props: IProps) => {
                   <div>Required Server Variables:</div>
                   {template.serverClasses?.map(sc =>
                      <div className="badge col-auto ml-1 mt-1 mt-sm-0" key={sc.value}>
-                        {sc.variables?.map(v => <CopyText text={v} />)}
+                        {sc.classProperties?.map(v => <CopyText text={v} />)}
                      </div>
                   )}
                </>
