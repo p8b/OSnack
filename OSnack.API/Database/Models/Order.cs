@@ -45,11 +45,11 @@ namespace OSnack.API.Database.Models
       public int AddressId { get; set; }
 
       [Column(TypeName = "nvarchar(100)")]
-      [StringLength(8, ErrorMessage = "Must be less than 100 Characters \n")]
+      [StringLength(100, ErrorMessage = "Must be less than 100 Characters \n")]
       public string ShippingReference { get; set; }
 
       [Column(TypeName = "nvarchar(100)")]
-      [StringLength(8, ErrorMessage = "Must be less than 100 Characters \n")]
+      [StringLength(100, ErrorMessage = "Must be less than 100 Characters \n")]
       public string Message { get; set; }
 
       /// <summary>
@@ -61,11 +61,6 @@ namespace OSnack.API.Database.Models
 
       [Column(Order = 0)]
       public int? UserId { get; set; }
-
-      [DataType(DataType.EmailAddress, ErrorMessage = "Invalid Email \n")]
-      [RegularExpression(@"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$",
-         ErrorMessage = "Invalid Email \n")]
-      public string Email { get; set; }
 
       [Required(ErrorMessage = "Payment is required \n")]
       [InverseProperty("Order")]
