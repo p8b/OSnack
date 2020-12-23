@@ -30,7 +30,9 @@ namespace OSnack.API.Database.Models
       [Required(ErrorMessage = "Date is required \n")]
       public DateTime DateTime { get; set; }
 
-      public DateTime ExpireDate { get; set; }
+      [DataType(DataType.Currency, ErrorMessage = "Invalid Currency \n")]
+      [Column(TypeName = "decimal(7,2)")]
+      public decimal RefundAmount { get; set; }
 
       [Required(ErrorMessage = "Order is required \n")]
       [ForeignKey("OrderId")]

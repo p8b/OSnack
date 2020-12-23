@@ -29,7 +29,7 @@ namespace OSnack.API.Database.Models
       [Required(ErrorMessage = "Status is required \n")]
       public OrderStatusType Status { get; set; }
 
-      //[Required(ErrorMessage = "Status is required \n")]
+      [Required(ErrorMessage = "Status is required \n")]
       public DeliveryOption DeliveryOption { get; set; }
 
 
@@ -47,6 +47,10 @@ namespace OSnack.API.Database.Models
       [Column(TypeName = "nvarchar(100)")]
       [StringLength(8, ErrorMessage = "Must be less than 100 Characters \n")]
       public string ShippingReference { get; set; }
+
+      [Column(TypeName = "nvarchar(100)")]
+      [StringLength(8, ErrorMessage = "Must be less than 100 Characters \n")]
+      public string Message { get; set; }
 
       /// <summary>
       /// <b>Json Ignore</b>
