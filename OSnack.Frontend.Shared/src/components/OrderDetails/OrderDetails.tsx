@@ -9,9 +9,9 @@ import Alert, { AlertObj, useAlert } from '../Texts/Alert';
 const OrderDetails = (props: IProps) => {
 
    const errorAlert = useAlert(new AlertObj());
-   const [selectedStatus, SetSelectStatuse] = useState(OrderStatusType.InProgress);
+   const [selectedStatus, SetSelectStatus] = useState(OrderStatusType.InProgress);
    useEffect(() => {
-      SetSelectStatuse(props.order.status);
+      SetSelectStatus(props.order.status);
    }, [props.order]);
 
    const getTotalItemsCount = () => {
@@ -22,8 +22,6 @@ const OrderDetails = (props: IProps) => {
       return totalCount;
 
    };
-
-
 
    return (
       <>
@@ -42,10 +40,10 @@ const OrderDetails = (props: IProps) => {
                            label="Status"
                            labelClassName="small-text gray-text"
                            showDanger={errorAlert.checkExistFilterRequired("status")}
-                           className="col-12 " >
+                           className="col-12 m-0" >
                            {OrderStatusTypeList.filter(o => props.availabeType!.includes(o.Value))?.map(statusType =>
                               <button className="dropdown-item" key={statusType.Id}
-                                 onClick={() => { SetSelectStatuse(statusType.Value); props.statusChanged!(statusType.Value); }} >
+                                 onClick={() => { SetSelectStatus(statusType.Value); props.statusChanged!(statusType.Value); }} >
                                  <div children={statusType.Name} />
                               </button>
                            )}
@@ -68,7 +66,6 @@ const OrderDetails = (props: IProps) => {
                   <div className="col-8 pm-0 small-text text-gray" >{props.order.payment.paymentProvider} Reference :</div>
                   <div className="col-4 p-0 small-text">{props.order.payment.reference}</div>
                </div>
-
                <div className="row col-12  pm-0">
                   <div className="col-8 pm-0 small-text text-gray">Payment date :</div>
                   <div className="col-4 p-0 small-text">{new Date(props.order.date!).ToShortDate()}</div>

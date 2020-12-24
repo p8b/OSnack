@@ -144,9 +144,9 @@ const UserManagement = (props: IProps) => {
       setRedirectToOrders(true);
    };
    if (redirectToOrders == true)
-      return <Redirect to={{ pathname: "/ViewUserOrders", state: { userId: selectedUser.id, fullName: selectedUser.firstName + " " + selectedUser.surname } }} />;
+      return <Redirect to={{ pathname: `/ViewUserOrders/${selectedUser.id}` }} />;
    return (
-      <Container className="container-fluid pr-0">
+      <Container >
          <PageHeader title="Users" className="line-header-lg" />
          <div className="row col-12 col-md-11 pt-2 pb-2 bg-white ml-auto mr-auto">
             {/***** Search Input and new category button  ****/}
@@ -167,7 +167,7 @@ const UserManagement = (props: IProps) => {
             <div className="row col-12 pm-0 pt-3 ">
 
                <DropDown title={`Role: ${roleList.find((r) => r.id?.toString() == selectedRoleFilter)?.name || "All"}`}
-                  className="col-12 col-sm-6 col-md-4 ml-auto m-0 p-1"
+                  className="col-12 col-md-4 ml-auto pm-0"
                   titleClassName="btn btn-white filter-icon ">
                   <button className="dropdown-item"
                      onClick={() => { onSearch(undefined, undefined, undefined, undefined, GetAllRecords); }} >
@@ -187,10 +187,10 @@ const UserManagement = (props: IProps) => {
                />
             </div>
 
-            {/***** Category Table  ****/}
+            {/***** Users Table  ****/}
             <div className="row col-12 pm-0">
 
-               <Table className="col-12 text-center table-striped mt-4"
+               <Table className="col-12 text-center table-striped"
                   defaultSortName={tblSortName}
                   data={tableData}
                   onSortClick={onSearch}

@@ -7,9 +7,9 @@ import { useAllUserOrder, usePutOrderStatusOrder } from '../../SecretHooks/useOr
 const ViewUserOrders = (props: IProps) => {
 
    return (
-      <Container className="container-fluid">
+      <Container>
          <ViewOrders backUrl="/Users"
-            access={Access} location={props.location}
+            access={Access}
             useAllUserOrderSecret={useAllUserOrder}
             usePutOrderStatusOrder={usePutOrderStatusOrder}
          />

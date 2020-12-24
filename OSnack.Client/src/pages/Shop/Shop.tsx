@@ -187,6 +187,5 @@ const Shop = (props: IProps) => {
    );
 };
 
-declare type IProps = {
-};
+declare type IProps = {};
 export default Shop;

@@ -1,0 +1,11 @@
+﻿.border {
+    &-bottom {
+        border-bottom-color: rgb(185, 185, 185) !important;
+        border-bottom-style: solid !important;
+
+        &-1 {
+            @extend .border-bottom;
+            border-bottom-width: 0.01rem !important;
+        }
+    }
+}

@@ -86,15 +86,15 @@ export const OrderStatusTypeList=[
 ]
 export enum PaymentType {
 
-    Pendig = 0,
-    Complete = 1,
+    Complete = 0,
+    Failed = 1,
     PartialyRefunded = 2,
     FullyRefunded = 3,
 }
 
 export const PaymentTypeList=[
-{Id:0,Name:"Pendig".replace(/([A-Z])/g, ' $1').trim(),Value:PaymentType.Pendig},
-{Id:1,Name:"Complete".replace(/([A-Z])/g, ' $1').trim(),Value:PaymentType.Complete},
+{Id:0,Name:"Complete".replace(/([A-Z])/g, ' $1').trim(),Value:PaymentType.Complete},
+{Id:1,Name:"Failed".replace(/([A-Z])/g, ' $1').trim(),Value:PaymentType.Failed},
 {Id:2,Name:"PartialyRefunded".replace(/([A-Z])/g, ' $1').trim(),Value:PaymentType.PartialyRefunded},
 {Id:3,Name:"FullyRefunded".replace(/([A-Z])/g, ' $1').trim(),Value:PaymentType.FullyRefunded},
 ]
@@ -216,7 +216,7 @@ export class Payment {
     type!: PaymentType;
     email?: string | undefined;
     dateTime!: Date;
-    expireDate?: Date;
+    refundAmount?: number;
 
 }
 export abstract class OrderProductBase {
@@ -560,12 +560,12 @@ export class Order extends OrderAddressBase {
     id?: string | undefined;
     date?: Date;
     status!: OrderStatusType;
-    deliveryOption?: DeliveryOption | undefined;
+    deliveryOption: DeliveryOption = new DeliveryOption();
     deliveryPrice?: number;
     addressId!: number;
     shippingReference?: string | undefined;
+    message?: string | undefined;
     userId?: number | undefined;
-    email?: string | undefined;
     payment: Payment = new Payment();
     coupon?: Coupon | undefined;
     orderItems?: OrderItem[] | undefined;

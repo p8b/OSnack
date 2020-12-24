@@ -9,9 +9,10 @@ using OSnack.API.Extras.CustomTypes;
 using OSnack.API.Extras.Paypal;
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Models;
-
+using PayPalCheckoutSdk.Payments;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Mime;
 using System.Threading.Tasks;
 
@@ -62,10 +63,8 @@ namespace OSnack.API.Controllers
          }
       }
 
-      /// <summary>
-      ///     Update a modified Order
-      /// </summary>
-      #region *** 200 OK, 304 NotModified,412 PreconditionFailed ,422 UnprocessableEntity, 417 ExpectationFailed***
+
+      #region *** ***
       [HttpPut("[action]")]
       [Consumes(MediaTypeNames.Application.Json)]
       [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
@@ -82,7 +81,8 @@ namespace OSnack.API.Controllers
          {
 
             Order originalOrder = await _DbContext.Orders.AsTracking()
-                     .Include(o => o.Payment)
+                     .Include(o => o.Payment).AsTracking()
+                     .Include(o => o.OrderItems)
                      .SingleOrDefaultAsync(o => o.Id == modifiedOrder.Id).ConfigureAwait(false);
 
 
@@ -92,39 +92,49 @@ namespace OSnack.API.Controllers
                CoreFunc.Error(ref ErrorsList, "Order not exist");
                return StatusCode(412, ErrorsList);
             }
-            if (modifiedOrder.Status == OrderStatusType.Confirmed)
+
+            if (!originalOrder.ChangeStatus(modifiedOrder.Status))
             {
-
-               var request = new PayPalCheckoutSdk.Orders.OrdersCaptureRequest(originalOrder.Payment.Reference);
-               request.Prefer("return=representation");
-               request.RequestBody(new PayPalCheckoutSdk.Orders.OrderActionRequest());
-               var response = await PayPalClient.client().Execute(request);
-               var paypalOrder = response.Result<PayPalCheckoutSdk.Orders.Order>();
-               if (!paypalOrder.Status.Equals("COMPLETED"))
-               {
-                  originalOrder.Status = OrderStatusType.Canceled;
-                  await _DbContext.SaveChangesAsync().ConfigureAwait(false);
-                  CoreFunc.Error(ref ErrorsList, "Payment cannot be varified.");
-                  return UnprocessableEntity(ErrorsList);
-               }
-               originalOrder.Status = OrderStatusType.Confirmed;
-               originalOrder.Payment.DateTime = DateTime.Parse(paypalOrder.UpdateTime);
+               _LoggingService.Log(Request.Path, AppLogType.OrderException,
+                        new { message = $"Order Status Mismatch.", originalOrder = originalOrder, modifiedOrder = modifiedOrder }, User);
+               CoreFunc.Error(ref ErrorsList, "Order Status Mismatch.");
+               return StatusCode(412, ErrorsList);
             }
-            else
-               originalOrder.Status = modifiedOrder.Status;
 
-            //await _DbContext.SaveChangesAsync().ConfigureAwait(false);
+            if (originalOrder.Status == OrderStatusType.Canceled)
+            {
+               try
+               {
+                  RefundRequest refundRequest = new RefundRequest()
+                  {
+                     Amount = new Money
+                     {
+                        CurrencyCode = AppConst.Settings.PayPal.CurrencyCode,
+                        Value = originalOrder.TotalPrice.ToString("0.00")
+                     },
 
-
-
-            //originalOrder.Status = ;
-            ///// Update the current Order to the EF context
-            //_DbContext.Orders.Update(originalOrder);
-
-            /// save the changes to the data base
+                     NoteToPayer = modifiedOrder.Message
+                  };
+                  var request = new CapturesRefundRequest(originalOrder.Payment.Reference);
+                  request.Prefer("return=representation");
+                  request.RequestBody(refundRequest);
+                  var response = await PayPalClient.client().Execute(request);
+                  originalOrder.Payment.RefundAmount = originalOrder.TotalPrice;
+                  originalOrder.Payment.Type = PaymentType.FullyRefunded;
+                  originalOrder.Message = modifiedOrder.Message;
+                  await backItemToProductQuantity(originalOrder);
+               }
+               catch (Exception ex)
+               {
+                  _LoggingService.Log(Request.Path, AppLogType.OrderException,
+                      new { message = $"Refund Proccess Failed.", ex = ex, modifiedOrder = modifiedOrder }, User);
+                  CoreFunc.Error(ref ErrorsList, "Refund Proccess Failed.");
+                  return StatusCode(412, ErrorsList);
+               }
+            }
+            if (originalOrder.Status == OrderStatusType.Confirmed)
+               originalOrder.ShippingReference = modifiedOrder.ShippingReference;
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
-            /// return 200 OK (Update) status with the modified object
-            /// and success message
             return Ok(originalOrder);
          }
          catch (Exception ex)
@@ -134,6 +144,15 @@ namespace OSnack.API.Controllers
          }
       }
 
-
+      private async Task backItemToProductQuantity(Order order)
+      {
+         List<Product> productList = await _DbContext.Products.AsTracking()
+           .Where(p => order.OrderItems.Select(t => t.ProductId).Contains(p.Id) == true)
+           .ToListAsync();
+         foreach (var product in productList)
+         {
+            product.StockQuantity += order.OrderItems.SingleOrDefault(o => o.ProductId == product.Id).Quantity;
+         }
+      }
    }
 }

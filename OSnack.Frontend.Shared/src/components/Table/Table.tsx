@@ -1,4 +1,5 @@
 ﻿import React, { useEffect, useState } from 'react';
+import InputDropdown from '../Inputs/InputDropDown';
 import CardView from './CardView';
 import RowView from './RowView';
 
@@ -6,6 +7,22 @@ const Table = (props: IProps) => {
    const [currentView, setCurrentViews] = useState(TableView.CardView);
    const [isSortAsc, setIsSortAsc] = useState(true);
    const [selectedSortName, setSelectedSortName] = useState(props.defaultSortName);
+
+   useEffect(() => {
+      sizeChange();
+      window.addEventListener("resize", sizeChange);
+
+
+      return () => {
+         window.removeEventListener("resize", sizeChange);
+      };
+   }, []);
+
+   const sizeChange = () => {
+      if (window.screen.width <= 650)
+         setCurrentViews(TableView.CardView);
+
+   };
 
    useEffect(() => {
       setSelectedSortName(props.defaultSortName);
@@ -34,27 +51,28 @@ const Table = (props: IProps) => {
 
    return (
       <>
-         <div className="row col-12 pm-0">
+         <div className="row col-12 pm-0  border-bottom-1 pt-1">
 
-            <div className="col text-left text-gray"
-               children={props.listCount != undefined ? `Total items: ${props.listCount}` : ""} />
 
             {currentView == TableView.CardView && props.data.headers != null && props.data.headers.length > 0 &&
-               <div className="col-auto">
-                  {
-                     props.data.headers.filter(h => h.isSortable).map(header =>
-                        <span key={Math.random()} onClick={() => sort(header.sortName)}
-                           className={`col ${getSortedColCss(header.sortName)}`}>
-                           <span className="table-header-sort font-weight-bold">{header.name}</span>
-                        </span>)
-                  }
-               </div>
+
+               <InputDropdown dropdownTitle={`Sort By: ${selectedSortName}`}
+                  className="col-12  col-md-auto pm-0 pb-0 "
+                  titleClassName={`btn ${!isSortAsc ? "sort-numeric-down-icon" : "sort-numeric-up-icon"}`}>
+                  {props.data.headers.filter(h => h.isSortable).map(header =>
+                     <button className={`dropdown-item ${getSortedColCss(header.sortName)}`} onClick={() => { sort(header.sortName); }}>
+                        {header.name}
+                     </button>
+                  )}
+               </InputDropdown>
+
             }
-            <div className="row col pm-0">
-               <div className="row col-auto pm-0 ml-auto ">
-                  <button className={`btn-no-style table-card-icon cursor-pointer ${currentView != TableView.CardView ? "disabled" : ""}`} onClick={() => setCurrentViews(TableView.CardView)} />
-                  <button className={`btn-no-style table-row-icon cursor-pointer ${currentView != TableView.RowView ? " disabled" : ""}`} onClick={() => setCurrentViews(TableView.RowView)} />
-               </div>
+
+            <div className="row col-12 col-md-auto ml-md-auto">
+               <button className={`btn-no-style table-card-icon cursor-pointer ${currentView != TableView.CardView ? "disabled" : ""}`} onClick={() => setCurrentViews(TableView.CardView)} />
+               <button className={`btn-no-style table-row-icon cursor-pointer ${currentView != TableView.RowView ? " disabled" : ""}`} onClick={() => setCurrentViews(TableView.RowView)} />
+               <div className="col-auto pm-0 ml-auto small-text text-gray mt-auto mb-auto"
+                  children={props.listCount != undefined ? `Total items: ${props.listCount}` : ""} />
             </div>
          </div>
          {currentView == TableView.CardView &&

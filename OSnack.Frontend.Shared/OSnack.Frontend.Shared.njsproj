@@ -144,6 +144,7 @@
     <Content Include="src\styles\bootstrap\mixins\_buttons.scss" />
     <Content Include="src\styles\bootstrap\mixins\_caret.scss" />
     <Content Include="src\styles\bootstrap\mixins\_clearfix.scss" />
+    <Content Include="src\styles\modules\_border.scss" />
     <Content Include="src\styles\modules\_datepicker.scss" />
     <Content Include="src\styles\bootstrap\mixins\_deprecate.scss" />
     <Content Include="src\styles\bootstrap\mixins\_float.scss" />
@@ -335,6 +336,7 @@
     <TypeScriptCompile Include="src\hooks\PublicHooks\useOrderHook.tsx" />
     <TypeScriptCompile Include="src\hooks\PublicHooks\useProductHook.tsx" />
     <TypeScriptCompile Include="src\hooks\PublicHooks\useUserHook.tsx" />
+    <TypeScriptCompile Include="src\pages\Order\OrderMessageModal.tsx" />
     <TypeScriptCompile Include="src\pages\Order\ViewOrders.tsx" />
     <TypeScriptCompile Include="src\pages\Order\OrderModal.tsx" />
     <TypeScriptCompile Include="src\pages\PasswordReset.tsx" />

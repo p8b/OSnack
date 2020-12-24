@@ -3,7 +3,7 @@ import DropDown from '../Buttons/DropDown';
 
 const InputDropdown = (props: IProps) => {
    return (
-      <div className={`pm-0 pb-3  ${props.className}`}>
+      <div className={`pb-3 p-0  ${props.className}`}>
          <label children={props.label}
             className={`col-form-label pm-0 ${props.labelClassName}`} />
 
@@ -19,7 +19,7 @@ const InputDropdown = (props: IProps) => {
 };
 
 interface IProps {
-   label: string;
+   label?: string;
    dropdownTitle: any;
    className?: string;
    labelClassName?: string;

@@ -105,6 +105,7 @@
     margin: 0;
     color: rgba(75, 75, 75,.9);
 
+
     &:hover, &:focus, &:active {
         color: rgba(0,0,0,1);
         box-shadow: none !important;
@@ -130,7 +131,7 @@
 
         &.card-view {
             height: auto !important;
-            width: 18rem;
+            width: auto !important;
             padding: 0.1rem;
         }
     }

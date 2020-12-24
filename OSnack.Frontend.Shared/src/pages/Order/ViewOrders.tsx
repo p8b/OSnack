@@ -1,61 +1,90 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import { IReturnUseAllOrder, useAllOrder } from '../../hooks/OfficialHooks/useOrderHook';
 import Alert, { AlertObj, useAlert } from '../../components/Texts/Alert';
-import { Order, OrderStatusType, OrderStatusTypeList } from '../../_core/apiModels';
-import PageHeader from '../../components/Texts/PageHeader';
-import ButtonCard from '../../components/Buttons/ButtonCard';
-import OrderModal from './OrderModal';
-import DropDown from '../../components/Buttons/DropDown';
+import { Order, OrderStatusType, OrderStatusTypeList, PaymentTypeList } from '../../_core/apiModels';
 import { ClientAppAccess, ConstMaxNumberOfPerItemsPage, GetAllRecords } from '../../_core/constant.Variables';
-import LoadMore from '../../components/Pagination/LoadMore';
-import { Button } from '../../components/Buttons/Button';
 import { useHistory } from 'react-router-dom';
 import { getBadgeByOrderStatusType } from '../../_core/appFunc';
+import Table, { TableData, TableHeaderData, TableRowData, TableView } from '../../components/Table/Table';
+import TableRowButtons from '../../components/Table/TableRowButtons';
+import PageHeader from '../../components/Texts/PageHeader';
+import Pagination from '../../components/Pagination/Pagination';
+import OrderModal from './OrderModal';
+import { Button } from '../../components/Buttons/Button';
+import DropDown from '../../components/Buttons/DropDown';
+
 
 const ViewOrders = (props: IProps) => {
    const isUnmounted = useRef(false);
    const history = useHistory();
    const errorAlert = useAlert(new AlertObj());
+   const [selectUserId, setSelectUserId] = useState(0);
    const [selectOrder, setSelectOrder] = useState(new Order());
-   const [orderList, setOrderList] = useState<Order[]>([]);
-   const [selectType, setSelectType] = useState(GetAllRecords);
-   const [tblSelectedPage, setTblSelectedPage] = useState(1);
-   const [tblTotalItemCount, setTblTotalItemCount] = useState(0);
-   const [tblMaxItemsPerPage, setTblMaxItemsPerPage] = useState(ConstMaxNumberOfPerItemsPage);
+   const [selectType, setSelectType] = useState(OrderStatusTypeList.find(o => o.Value == OrderStatusType.InProgress)?.Id.toString() || "");
    const [isOpenOrderModal, setIsOpenOrderModal] = useState(false);
+
    const [availableStatusTypeList, setavailableStatusTypeList] = useState<OrderStatusType[]>([]);
+
+   const [tableData, setTableData] = useState(new TableData());
+   const [tblSortName, setTblsortName] = useState("Date");
+   const [tblIsSortAsc, setTblIsSortAsc] = useState(false);
+   const [tblTotalItemCount, setTblTotalItemCount] = useState(0);
+   const [tblSelectedPage, setTblSelectedPage] = useState(1);
+   const [tblMaxItemsPerPage, setTblMaxItemsPerPage] = useState(ConstMaxNumberOfPerItemsPage);
+
    useEffect(() => {
-      onSearch();
+      const userId = Number(extractUrl(window.location.pathname)[PathNameQuery.userId]) || 0;
+      setSelectUserId(userId);
+      const selectPage = Number(extractUrl(window.location.pathname)[PathNameQuery.selectPage]) || tblSelectedPage;
+      const maxItem = Number(extractUrl(window.location.pathname)[PathNameQuery.maxItem]) || tblMaxItemsPerPage;
+      const status = extractUrl(window.location.pathname)[PathNameQuery.status] || selectType;
+      const sortName = extractUrl(window.location.pathname)[PathNameQuery.sortName] || tblSortName;
+      const sortType = extractUrl(window.location.pathname)[PathNameQuery.sortType] === 'true' || tblIsSortAsc;
+      onSearch(sortType, sortName, selectPage, maxItem, status, userId);
    }, []);
 
+   const extractUrl = (pathName: string) => {
+      return pathName.split('/').filter(val => val.length > 0);
+   };
+
    const onSearch = (
+      isSortAsc = tblIsSortAsc,
+      sortName = tblSortName,
       selectedPage = tblSelectedPage,
       maxItemsPerPage = tblMaxItemsPerPage,
       filterType = selectType,
+      userId = selectUserId,
    ) => {
+
       if (selectedPage != tblSelectedPage)
          setTblSelectedPage(selectedPage);
       if (filterType != selectType) {
-         selectedPage = 1;
          setSelectType(filterType);
       }
 
+      if (isSortAsc != tblIsSortAsc)
+         setTblIsSortAsc(isSortAsc);
+
+      if (sortName != tblSortName)
+         setTblsortName(sortName);
+
+      if (selectedPage != undefined && selectedPage != tblSelectedPage)
+         setTblSelectedPage(selectedPage);
+
       if (maxItemsPerPage != tblMaxItemsPerPage)
          setTblMaxItemsPerPage(maxItemsPerPage);
-
+      history.push(`/${extractUrl(window.location.pathname)[PathNameQuery.path]}/${userId}/${selectedPage || tblSelectedPage}/${maxItemsPerPage}/${filterType}/${sortName}/${isSortAsc}`);
       errorAlert.PleaseWait(500, isUnmounted);
       switch (props.access) {
          case ClientAppAccess.Official:
             useAllOrder(selectedPage, maxItemsPerPage, filterType)
-               .then((result) => onGetUserOrderSuccess(result, selectedPage))
+               .then(onGetUserOrderSuccess)
                .catch(onGetUserOrderFailed);
             break;
          case ClientAppAccess.Secret:
-            if (props.location?.state?.userId == undefined)
-               history.push(props.backUrl!);
             if (props.useAllUserOrderSecret != undefined)
-               props.useAllUserOrderSecret(props.location?.state?.userId || 0, selectedPage, maxItemsPerPage, filterType)
-                  .then((result) => onGetUserOrderSuccess(result, selectedPage))
+               props.useAllUserOrderSecret(userId, selectedPage, maxItemsPerPage, filterType, isSortAsc, sortName)
+                  .then(onGetUserOrderSuccess)
                   .catch(onGetUserOrderFailed);
             break;
          default:
@@ -64,32 +93,55 @@ const ViewOrders = (props: IProps) => {
 
 
    };
-
-
-   const onGetUserOrderSuccess = (result: IReturnUseAllOrder, selectedPage: number) => {
+   const onGetUserOrderSuccess = (result: IReturnUseAllOrder) => {
       if (isUnmounted.current) return;
-      errorAlert.clear();
       setTblTotalItemCount(result.data.totalCount || 0);
-      let list = orderList;
-      if (selectedPage == 1)
-         list = [] as Order[];
-      if (result.data.orderList != undefined)
-         list = list.concat(result.data.orderList);
-      setOrderList(list);
       setavailableStatusTypeList(result.data.availableTypes!);
+      populateOrderTable(result.data.orderList!);
+      errorAlert.clear();
    };
    const onGetUserOrderFailed = (alert: any) => {
       if (isUnmounted.current) return;
       errorAlert.set(alert);
    };
+   const populateOrderTable = (orderList: Order[]) => {
+      let tData = new TableData();
+      tData.headers.push(new TableHeaderData("Status", "Status", true));
+      tData.headers.push(new TableHeaderData("Total Price", "TotalPrice", true));
+      tData.headers.push(new TableHeaderData("Date", "Date", true));
+      tData.headers.push(new TableHeaderData("Payment", "", false));
+      tData.headers.push(new TableHeaderData("", "", false));
 
+      orderList.map(order =>
+         tData.rows.push(new TableRowData([
+            <span>  <span className={`${getBadgeByOrderStatusType(order.status)} font-weight-bold pm-0  h6 mt-auto mb-auto `}
+               children={OrderStatusTypeList.find(t => t.Value == order.status)?.Name} /></span>,
+            `£${order.totalPrice}`,
+            new Date(order.date!).ToShortDate(),
+            PaymentTypeList.find(t => t.Value == order.payment.type)?.Name,
+            <TableRowButtons
+               btnClassName="btn-blue edit-icon"
+               btnClick={() => {
+                  setSelectOrder(order);
+                  setIsOpenOrderModal(true);
+               }}
+            />
+         ])));
+      if (orderList.length == 0) {
+         errorAlert.setSingleWarning("0", "No Result Found");
+      } else {
+         errorAlert.clear();
+      }
+      setTableData(tData);
+   };
    const UpdateOrder = (order: Order) => {
       setIsOpenOrderModal(false);
+
       switch (props.access) {
          case ClientAppAccess.Official:
             break;
          case ClientAppAccess.Secret:
-            props.usePutOrderStatusOrder!(order).then(() => {
+            props.usePutOrderStatusOrder!(order != undefined ? order : selectOrder).then(() => {
                errorAlert.clear();
                errorAlert.setSingleSuccess("updated", "Order Updated.");
                onSearch();
@@ -102,91 +154,74 @@ const ViewOrders = (props: IProps) => {
 
    return (
       <>
-         <PageHeader title={props.location?.state?.fullName == undefined ? "My Orders" : `Orders - ${props.location?.state?.fullName}`} className="hr-section-sm line-limit-1" />
+         <PageHeader title={undefined == undefined ? "My Orders" : `Orders - ${undefined}`} className="hr-section-sm line-limit-1" />
          <Alert alert={errorAlert.alert}
             className="col-12 mb-2"
             onClosed={() => { errorAlert.clear(); }}
          />
          <div className="row pm-0">
-            <span className="col-12 pm-0 small-text text-gray ">Total Items:{tblTotalItemCount}</span>
             <div className="col-12 col-sm-6 col-md-4 pm-0" >
                {props.backUrl != undefined &&
                   <Button onClick={() => history.push(props.backUrl!)} children="Back" className="mr-auto btn-lg back-icon" />
                }
-
             </div>
             <DropDown title={`Status Type: ${OrderStatusTypeList.find((s) => s.Id?.toString() == selectType)?.Name || "All"}`}
                className="col-12 col-sm-6 col-md-4 ml-auto m-0 p-1"
                titleClassName="btn btn-white filter-icon">
                <button className="dropdown-item"
-                  onClick={() => { onSearch(undefined, undefined, GetAllRecords); }} >
+                  onClick={() => { onSearch(undefined, undefined, 1, undefined, GetAllRecords); }} >
                   All
                   </button>
                {OrderStatusTypeList.filter(o => availableStatusTypeList.includes(o.Value))?.map(statusType =>
                   <button className="dropdown-item" key={statusType.Id}
-                     onClick={() => { onSearch(undefined, undefined, statusType.Id?.toString()); }} >
+                     onClick={() => { onSearch(undefined, undefined, 1, undefined, statusType.Id?.toString()); }} >
                      {statusType.Name}
                   </button>
                )}
             </DropDown>
          </div>
-         <div className="row justify-content-center pm-0">
-            {orderList.length > 0 &&
-               orderList.map(order => {
-                  return (
-                     <ButtonCard key={order.id} cardClassName="card-lg col-12 row pm-0"
-                        onClick={() => {
-                           setSelectOrder(order);
-                           setIsOpenOrderModal(true);
-                        }} >
-                        <div className="col-12  mt-3 ">
-                           <div className="row text-left ml-2  mt-auto ">Status: <p className={`${getBadgeByOrderStatusType(order.status)} font-weight-bold pm-0 ml-1 h6 mt-auto mb-auto `}
-                              children={OrderStatusTypeList.find(t => t.Value == order.status)?.Name} /> </div>
-                           <div className="row text-left ml-2">Total Price: <div className="pm-0 ml-1 h6 mt-auto mb-auto"
-                              children={`£${order.totalPrice}`} /> </div>
-                           <div className="row text-left ml-2 ">Date:
-                              <div className="pm-0 h6 ml-1 mt-auto mb-auto"
-                                 children={new Date(order.date!).ToShortDate()} /> </div>
-
-                           <div className="text-left ml-2">Delivery Address:
-                              <p className="pm-0 ml-1 h6 line-limit-1" children={order.name} />
-                              <p className="pm-0 ml-1 h6 line-limit-2" children={order.firstLine} />
-                              <p className="pm-0 ml-1 h6 line-limit-2" children={order.secondLine} />
-                              <p className="pm-0 ml-1 h6 line-limit-2" children={order.city} />
-                              <p className="pm-0 ml-1 h6 line-limit-2" children={order.postcode} />
-                           </div>
-
-                        </div>
-                        <div className="row col-12 pm-0  mt-auto">
-                           <div className="btn-sm  col m-0 radius-none" children="Details" />
-
-                        </div>
-                     </ButtonCard>
-                  );
-               })
-            }
+         <div className="row col-12 pm-0  bg-white pb-2">
+            <Table className="col-12 text-center table-striped"
+               defaultSortName={tblSortName}
+               data={tableData}
+               onSortClick={onSearch}
+               view={TableView.CardView}
+               listCount={tblTotalItemCount}
+            />
+            <Pagination
+               maxItemsPerPage={tblMaxItemsPerPage}
+               selectedPage={tblSelectedPage}
+               onChange={(selectedPage, maxItemsPerPage) => {
+                  onSearch(tblIsSortAsc, tblSortName, selectedPage, maxItemsPerPage);
+               }}
+               listCount={tblTotalItemCount} />
          </div>
-         <LoadMore
-            maxItemsPerPage={tblMaxItemsPerPage}
-            selectedPage={tblSelectedPage}
-            onChange={(selectedPage, maxItemsPerPage) => { onSearch(selectedPage, maxItemsPerPage); }}
-            listCount={tblTotalItemCount} />
          <OrderModal isOpen={isOpenOrderModal}
             order={selectOrder}
             access={props.access}
             onClose={() => setIsOpenOrderModal(false)}
             onSave={UpdateOrder} />
-      </ >
+
+
+      </>
    );
 };
 
 declare type IProps = {
    access: ClientAppAccess;
-   useAllUserOrderSecret?: (userId: number, selectedPage: number, maxNumberPerItemsPage: number, filterStatus: string | null) => Promise<IReturnUseAllOrder>;
+   useAllUserOrderSecret?: (userId: number, selectedPage: number, maxNumberPerItemsPage: number, filterStatus: string | null, isSortAsce: boolean | undefined, sortName: string | null | undefined) => Promise<IReturnUseAllOrder>;
    usePutOrderStatusOrder?: (modifiedOrder: Order) => Promise<{ data: Order, status?: number; }>;
-   location?: {
-      state: { userId: number, fullName: string; };
-   };
    backUrl?: string;
 };
 export default ViewOrders;
+
+enum PathNameQuery {
+   path,
+   userId,
+   selectPage,
+   maxItem,
+   status,
+   sortName,
+   sortType
+
+}

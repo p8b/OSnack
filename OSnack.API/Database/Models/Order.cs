@@ -92,6 +92,24 @@ namespace OSnack.API.Database.Models
       [Required]
       public decimal TotalDiscount { get; set; }
 
+
+      internal bool ChangeStatus(OrderStatusType orderStatusType)
+      {
+         bool canChange = (Status, orderStatusType) switch
+         {
+            (OrderStatusType.InProgress, OrderStatusType.Confirmed) => true,
+            (OrderStatusType.InProgress, OrderStatusType.Canceled) => true,
+            (OrderStatusType.RefundRequest, OrderStatusType.RefundRefused) => true,
+            (OrderStatusType.RefundRequest, OrderStatusType.FullyRefunded) => true,
+            (OrderStatusType.RefundRequest, OrderStatusType.PartialyRefunded) => true,
+            (OrderStatusType.Confirmed, OrderStatusType.Delivered) => true,
+            (_, _) => false
+         };
+
+         if (canChange)
+            Status = orderStatusType;
+         return canChange;
+      }
       internal void CalculateTotalPrice()
       {
          CalculateDiscount();
@@ -226,7 +244,6 @@ namespace OSnack.API.Database.Models
 
          return paypalOrder;
       }
-
       internal List<Item> ConvertItem()
       {
          List<Item> orderItems = new List<Item>();

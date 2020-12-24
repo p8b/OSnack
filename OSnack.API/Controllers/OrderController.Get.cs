@@ -39,7 +39,7 @@ namespace OSnack.API.Controllers
           string searchValue = "",
           string filterStatus = CoreConst.GetAllRecords,
           bool isSortAsce = true,
-          string sortName = "Code")
+          string sortName = "Date")
       {
          try
          {
@@ -61,6 +61,7 @@ namespace OSnack.API.Controllers
                 .Include(o => o.User)
                 .Include(o => o.Coupon)
                 .Include(o => o.Payment)
+
                 .ToListAsync()
                 .ConfigureAwait(false);
             return Ok(new MultiResult<List<Order>, int>(list, totalCount));
@@ -86,8 +87,10 @@ namespace OSnack.API.Controllers
       public async Task<IActionResult> AllUser(int userId,
           int selectedPage,
           int maxNumberPerItemsPage,
-          string filterStatus = CoreConst.GetAllRecords) =>
-        await AllOrder(userId, selectedPage, maxNumberPerItemsPage, filterStatus).ConfigureAwait(false);
+          string filterStatus = CoreConst.GetAllRecords,
+          bool isSortAsce = true,
+          string sortName = "Date") =>
+        await AllOrder(userId, selectedPage, maxNumberPerItemsPage, filterStatus, isSortAsce, sortName).ConfigureAwait(false);
 
       /// <summary>
       /// Used to get a list of all Order with OrderItems
@@ -107,7 +110,8 @@ namespace OSnack.API.Controllers
 
       private async Task<IActionResult> AllOrder(int userId, int selectedPage,
           int maxNumberPerItemsPage,
-          string filterStatus = CoreConst.GetAllRecords)
+          string filterStatus = CoreConst.GetAllRecords, bool isSortAsce = false,
+          string sortName = "Date")
       {
          try
          {
@@ -128,13 +132,13 @@ namespace OSnack.API.Controllers
             List<Order> list = await _DbContext.Orders
                .Include(o => o.User)
                .Where(o => o.User.Id == userId)
+               .OrderByDynamic(sortName, isSortAsce)
                .Where(r => filterStatus.Equals(CoreConst.GetAllRecords) ? true : r.Status.Equals((OrderStatusType)Enum.Parse(typeof(OrderStatusType), filterStatus, true)))
                .Skip((selectedPage - 1) * maxNumberPerItemsPage)
                 .Take(maxNumberPerItemsPage)
                 .Include(o => o.OrderItems)
                 .Include(o => o.Payment)
                 .Include(o => o.DeliveryOption)
-                .OrderByDescending(o => o.Date).ThenBy(o => o.Status)
                 .ToListAsync()
                 .ConfigureAwait(false);
             return Ok(new MultiResult<List<Order>, List<OrderStatusType>, int>(list, availebeStatusTypes, totalCount, CoreFunc.GetCustomAttributeTypedArgument(this.ControllerContext)));

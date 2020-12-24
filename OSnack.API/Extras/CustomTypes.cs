@@ -48,8 +48,8 @@
 
    public enum PaymentType
    {
-      Pendig = 0,
-      Complete = 1,
+      Complete = 0,
+      Failed = 1,
       PartialyRefunded = 2,
       FullyRefunded = 3
    }

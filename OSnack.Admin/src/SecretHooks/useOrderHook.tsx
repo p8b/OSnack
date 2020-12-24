@@ -75,8 +75,8 @@ export const useAllOrder = async (selectedPage: number, maxNumberPerItemsPage: n
   
 }
 export type IReturnUseAllUserOrder={ data:OrderListAndAvailableTypesAndTotalCount , status?: number;};
-export const useAllUserOrder = async (userId: number, selectedPage: number, maxNumberPerItemsPage: number, filterStatus: string | null): Promise<IReturnUseAllUserOrder> =>{
-        let url_ = API_URL + "/Order/Get/AllUser/{userId}/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}";
+export const useAllUserOrder = async (userId: number, selectedPage: number, maxNumberPerItemsPage: number, filterStatus: string | null, isSortAsce: boolean | undefined, sortName: string | null | undefined): Promise<IReturnUseAllUserOrder> =>{
+        let url_ = API_URL + "/Order/Get/AllUser/{userId}/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}?";
         if (userId !== null && userId !== undefined)
         url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
         if (selectedPage !== null && selectedPage !== undefined)
@@ -85,6 +85,8 @@ export const useAllUserOrder = async (userId: number, selectedPage: number, maxN
         url_ = url_.replace("{maxNumberPerItemsPage}", encodeURIComponent("" + maxNumberPerItemsPage));
         if (filterStatus !== null && filterStatus !== undefined)
         url_ = url_.replace("{filterStatus}", encodeURIComponent("" + filterStatus));
+            url_ += "isSortAsce=" + encodeURIComponent("" + isSortAsce) + "&";
+            url_ += "sortName=" + encodeURIComponent("" + sortName) + "&";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);
         if( response?.status === 400){

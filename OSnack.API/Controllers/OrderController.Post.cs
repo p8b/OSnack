@@ -45,30 +45,35 @@ namespace OSnack.API.Controllers
             {
                return UnprocessableEntity(ErrorsList);
             }
-
+            orderData.User = _DbContext.Users.AsTracking().SingleOrDefault(u => u.Id == AppFunc.GetUserId(User));
             orderData.Payment = new Payment()
             {
                PaymentProvider = "PayPal",
                Reference = paypalId,
                DateTime = DateTime.UtcNow,
-               Type = PaymentType.Pendig
             };
 
-            var request = new PayPalCheckoutSdk.Orders.OrdersGetRequest(paypalId);
-            //request.Prefer("return=representation");
-            //request.RequestBody(new PayPalCheckoutSdk.Orders.OrderActionRequest());
+
+            var request = new PayPalCheckoutSdk.Orders.OrdersCaptureRequest(paypalId);
+            request.Prefer("return=representation");
+            request.RequestBody(new PayPalCheckoutSdk.Orders.OrderActionRequest());
             var response = await PayPalClient.client().Execute(request);
             var paypalOrder = response.Result<PayPalCheckoutSdk.Orders.Order>();
-            if (!paypalOrder.Status.Equals("APPROVED"))
+            if (!paypalOrder.Status.Equals("COMPLETED"))
             {
+               await _DbContext.SaveChangesAsync().ConfigureAwait(false);
                CoreFunc.Error(ref ErrorsList, "Payment cannot be varified.");
                return UnprocessableEntity(ErrorsList);
             }
+            orderData.Status = OrderStatusType.InProgress;
+            orderData.Payment.Reference = paypalOrder.PurchaseUnits.FirstOrDefault().Payments.Captures.FirstOrDefault().Id;
+            orderData.Payment.DateTime = DateTime.Parse(paypalOrder.UpdateTime);
+            orderData.Payment.Type = PaymentType.Complete;
+            orderData.Payment.Email = paypalOrder.Payer.Email;
+
 
             var purchaseUnit = paypalOrder.PurchaseUnits.FirstOrDefault();
             orderData.Name = purchaseUnit.ShippingDetail.Name.FullName;
-            orderData.Email = purchaseUnit.Payee.Email;
-            orderData.Payment.Email = purchaseUnit.Payee.Email;
             orderData.FirstLine = purchaseUnit.ShippingDetail.AddressPortable.AddressLine1;
             orderData.SecondLine = purchaseUnit.ShippingDetail.AddressPortable.AddressLine2;
             if (purchaseUnit.ShippingDetail.AddressPortable.AdminArea1 != null)
@@ -76,11 +81,8 @@ namespace OSnack.API.Controllers
             if (purchaseUnit.ShippingDetail.AddressPortable.AdminArea2 != null)
                orderData.City = purchaseUnit.ShippingDetail.AddressPortable.AdminArea2;
             orderData.Postcode = purchaseUnit.ShippingDetail.AddressPortable.PostalCode;
-            orderData.Status = OrderStatusType.InProgress;
-            orderData.Payment.Reference = paypalId;
-            orderData.Payment.DateTime = DateTime.Parse(paypalOrder.CreateTime);
 
-            orderData = await TryToSave(orderData);
+            orderData = await TryToSave(orderData, 1);
 
             return Created("Success", orderData);
          }
@@ -119,7 +121,7 @@ namespace OSnack.API.Controllers
          }
       }
 
-      private async Task<Order> TryToSave(Order orderData)
+      private async Task<Order> TryToSave(Order orderData, int tryCount)
       {
 
          try
@@ -135,12 +137,17 @@ namespace OSnack.API.Controllers
                _DbContext.Entry(orderData.User).State = EntityState.Unchanged;
             }
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
+
             return orderData;
          }
          catch (Exception ex)
          {
             _LoggingService.Log(Request.Path, AppLogType.OrderException, new { orderData, exception = ex }, User);
-            return await TryToSave(orderData);
+            if (tryCount > 4)
+            {
+               throw ex;
+            }
+            return await TryToSave(orderData, tryCount++);
 
          }
       }

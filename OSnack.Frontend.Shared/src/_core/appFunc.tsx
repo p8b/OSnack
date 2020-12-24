@@ -223,15 +223,15 @@ export const getNextDate = (day: number = 1) => {
 export const getBadgeByOrderStatusType = (type: OrderStatusType) => {
    switch (type) {
 
-      case OrderStatusType.In_Progress:
-      case OrderStatusType.Refund_Request:
+      case OrderStatusType.InProgress:
+      case OrderStatusType.RefundRequest:
          return "badge blue";
       case OrderStatusType.Confirmed:
-      case OrderStatusType.Fully_Refunded:
-      case OrderStatusType.Partialy_Refunded:
+      case OrderStatusType.FullyRefunded:
+      case OrderStatusType.PartialyRefunded:
          return "badge light-blue";
       case OrderStatusType.Canceled:
-      case OrderStatusType.Refund_Refused:
+      case OrderStatusType.RefundRefused:
          return "badge red";
       case OrderStatusType.Delivered:
          return "badge green";

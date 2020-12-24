@@ -2,7 +2,7 @@
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import { Input } from 'osnack-frontend-shared/src/components/Inputs/Input';
 import { Coupon, CouponType } from 'osnack-frontend-shared/src/_core/apiModels';
-import { useValidateCoupon } from 'osnack-frontend-shared/src/hooks/OfficialHooks/useCouponHook';
+import { useValidateCoupon } from 'osnack-frontend-shared/src/hooks/PublicHooks/useCouponHook';
 import React, { useEffect, useState } from 'react';
 import { AlertObj, AlertTypes, ErrorDto } from 'osnack-frontend-shared/src/components/Texts/Alert';
 const BasketCoupon = (props: IProps) => {
