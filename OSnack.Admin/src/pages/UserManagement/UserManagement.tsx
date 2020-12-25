@@ -166,7 +166,7 @@ const UserManagement = (props: IProps) => {
                <SearchInput key="searchInput"
                   value={searchValue}
                   onChange={i => setSearchValue(i.target.value)}
-                  className="col-12 col-md-9 "
+                  className="col-12 col-md-9  pr-md-4"
                   onSearch={() => { onSearch(1); }}
                />
 

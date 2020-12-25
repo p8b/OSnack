@@ -132,7 +132,7 @@ const CouponManagement = (props: IProps) => {
             <SearchInput key="searchInput"
                value={searchValue}
                onChange={i => setSearchValue(i.target.value)}
-               className="col-12 col-md-9"
+               className="col-12 col-md-9 pr-md-4"
                onSearch={() => { onSearch(1); }}
             />
 
@@ -167,7 +167,7 @@ const CouponManagement = (props: IProps) => {
             {/***** Category Table  ****/}
             {tblTotalItemCount > 0 &&
                <div className="row col-12 pm-0">
-                  <Table className="col-12 text-center table-striped mt-4"
+                  <Table className="col-12 text-center table-striped"
                      defaultSortName={tblSortName}
                      data={tableData}
                      onSortClick={(isSortAsce, sortName) => onSearch(undefined, undefined, undefined, isSortAsce, sortName)}

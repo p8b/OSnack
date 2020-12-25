@@ -16,7 +16,7 @@ const LoginPage = (props: IProps) => {
       setNewUser(user);
    };
    return (
-      <Container>
+      <Container className="mb-5">
          <div className="row justify-content-sm-center">
             <div className="col-sm-10 col-md-8 col-lg-6 bg-white p-sm-5 pt-4 pb-4">
                <Login externalLoginFailed={externalLoginFailed} fromPath={props.location.state?.fromPath} access={Access} />

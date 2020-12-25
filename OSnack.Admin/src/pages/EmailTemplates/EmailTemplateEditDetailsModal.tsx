@@ -4,7 +4,7 @@ import Modal from "osnack-frontend-shared/src/components/Modals/Modal";
 import { Input } from "osnack-frontend-shared/src/components/Inputs/Input";
 import { Button } from "osnack-frontend-shared/src/components/Buttons/Button";
 
-import { EmailTemplate, EmailTemplateClassNames, EmailTemplateServerClass, EmailTemplateTypes, EmailTemplateTypesList } from "osnack-frontend-shared/src/_core/apiModels";
+import { EmailTemplate, EmailTemplateClassNames, EmailTemplateTypes, EmailTemplateTypesList } from "osnack-frontend-shared/src/_core/apiModels";
 import Alert, { AlertObj, useAlert } from "osnack-frontend-shared/src/components/Texts/Alert";
 import InputDropdown from "osnack-frontend-shared/src/components/Inputs/InputDropDown";
 
@@ -46,7 +46,7 @@ const EmailTemplateEditDetailsModal = (props: IProps) => {
                disabled={template.templateType != undefined && template.id! > 0}
                className="col-12 col-sm-6">
                {props.templateTypes && props.templateTypes.map(t =>
-                  <div className="dropdown-item cursor-pointer" key={t}
+                  <div className="dropdown-item cursor-pointer" key={Math.random()}
                      onClick={() => {
                         setTemplate({ ...template, name: EmailTemplateTypes[t], templateType: t });
                      }} >

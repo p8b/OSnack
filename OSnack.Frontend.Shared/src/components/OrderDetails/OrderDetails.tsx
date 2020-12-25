@@ -40,7 +40,7 @@ const OrderDetails = (props: IProps) => {
                            label="Status"
                            labelClassName="small-text gray-text"
                            showDanger={errorAlert.checkExistFilterRequired("status")}
-                           className="col-12 m-0" >
+                           className="col-12 pm-0" >
                            {OrderStatusTypeList.filter(o => props.availabeType!.includes(o.Value))?.map(statusType =>
                               <button className="dropdown-item" key={statusType.Id}
                                  onClick={() => { SetSelectStatus(statusType.Value); props.statusChanged!(statusType.Value); }} >

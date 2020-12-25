@@ -57,7 +57,7 @@ const EmailTemplatePanel = (props: IProps) => {
             {tempList.length > 0 &&
                tempList.map(temp => {
                   return (
-                     <ButtonCard key={temp.id} cardClassName="d-flex align-items-center"
+                     <ButtonCard key={Math.random()} cardClassName="d-flex align-items-center"
                         onClick={() => {
                            setEmailTemplate(temp);
                            setRedirectToEditPage(true);

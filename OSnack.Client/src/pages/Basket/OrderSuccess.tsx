@@ -13,7 +13,7 @@ const OrderSuccess = (props: IProps) => {
    });
    if (props.location.state.order != null) {
       return (
-         <Container className="justify-content-center">
+         <Container className="justify-content-center mb-5 pb-5">
             <div className="col-12 text-center">
                <PageHeader className="h1" title="Thank you for your order." />
             </div>
