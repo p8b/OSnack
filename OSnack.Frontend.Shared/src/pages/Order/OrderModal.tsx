@@ -89,7 +89,7 @@ const OrderModal = (props: IProps) => {
                         onClick={() => { props.onSave!(selectedOrder); }} />
                   }
                   <Button children={`${(props.access == ClientAppAccess.Official || getAvailabeType().length == 0) ? "Close" : "Cancel"}`}
-                     className={`col-12 ${(props.access == ClientAppAccess.Official || getAvailabeType().length == 0) && "col-md-6"}mt-2 btn-white btn-lg col-sm-6"}`}
+                     className={`col-12 ${props.access == ClientAppAccess.Secret && getAvailabeType().length > 0 ? "col-md-6" : ""} mt-2 btn-white btn-lg col-sm-6"}`}
                      onClick={() => { props.onClose(); }} />
                </div>
             </div >

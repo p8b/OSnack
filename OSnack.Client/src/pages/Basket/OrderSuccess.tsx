@@ -1,16 +1,17 @@
 ﻿
 import OrderDetails from 'osnack-frontend-shared/src/components/OrderDetails/OrderDetails';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Redirect } from 'react-router';
 import Container from '../../components/Container';
 import { Access } from '../../_core/appConstant.Variables';
 import { ShopContext } from '../../_core/shopContext';
 const OrderSuccess = (props: IProps) => {
+   const basket = useContext(ShopContext);
+   useEffect(() => {
+      basket.clear();
+   });
    if (props.location.state.order != null) {
-      const basket = useContext(ShopContext);
-      if (basket.state.List.length > 0)
-         basket.clear();
       return (
          <Container className="justify-content-center">
             <div className="col-12 text-center">

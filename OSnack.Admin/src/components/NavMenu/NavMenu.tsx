@@ -48,9 +48,9 @@ const NavMenu = (props: IProps) => {
             <>
                <div className={`bg-white top-navbar row pm-0 pb-1  ${isOpenSideBar ? "show" : "hide"}`}>
                   <button type="button"
-                     className={`fas toggler-icon `}
+                     className={`fas toggler-icon pl-4`}
                      onClick={() => { setIsOpenSideBar((prevVal) => !prevVal); }} />
-                  <DropDown className="ml-auto " titleClassName={`user-circle-icon btn-no-style`} title={``}>
+                  <DropDown className="ml-auto " titleClassName={`user-circle-icon btn-no-style pr-3`} title={``}>
                      <Link className="dropdown-item"
                         to="/MyAccount"
                         children="My Account" />
