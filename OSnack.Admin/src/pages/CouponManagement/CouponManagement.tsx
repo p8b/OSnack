@@ -126,7 +126,7 @@ const CouponManagement = (props: IProps) => {
 
    return (
       <Container className="container-fluid ">
-         <PageHeader title="Coupons" className="line-header-lg" />
+         <PageHeader title="Coupons" className="line-header" />
          <Container className="row col-12 col-md-11 pt-2 pb-2 bg-white ml-auto mr-auto">
             {/***** Search Input and new category button  ****/}
             <SearchInput key="searchInput"

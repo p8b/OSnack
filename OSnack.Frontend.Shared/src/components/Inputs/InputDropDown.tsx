@@ -3,7 +3,7 @@ import DropDown from '../Buttons/DropDown';
 
 const InputDropdown = (props: IProps) => {
    return (
-      <div className={`pm-0 pb-3  ${props.className}`}>
+      <div className={`pb-3 ${props.className}`}>
          {props.label &&
 
             <label children={props.label}
@@ -11,7 +11,7 @@ const InputDropdown = (props: IProps) => {
          }
 
          <DropDown title={props.dropdownTitle}
-            className="w-100 "
+            className="w-100"
             disabled={props.disabled}
             preventCloseOnClickInsideMenu={props.preventCloseOnClickInsideMenu}
             titleClassName={`btn input-dropdown no-shadow dropdown-icon ${props.titleClassName} ${props.showDanger ? "danger" : ""}`}>

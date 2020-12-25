@@ -10,6 +10,7 @@ import { checkUri, generateUri, getBadgeByOrderStatusType } from 'osnack-fronten
 import { ConstMaxNumberOfPerItemsPage, GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import Container from '../../components/Container';
 import { useAllOrder, usePutOrderStatusOrder } from '../../SecretHooks/useOrderHook';
 import { Access } from '../../_core/appConstant.Variables';
 
@@ -130,54 +131,56 @@ const OrderManagement = (props: IProps) => {
 
 
    return (
-      <>
+
+      <Container className="container-fluid ">
          <PageHeader title="Order Management" className="hr-section-sm line-limit-1" />
-         <Alert alert={errorAlert.alert}
-            className="col-12 mb-2"
-            onClosed={() => { errorAlert.clear(); }}
-         />
-         <div className="row pm-0">
-            <DropDown title={`Status Type: ${OrderStatusTypeList.find((s) => s.Id?.toString() == selectType)?.Name || "All"}`}
-               className="col-12 col-sm-6 col-md-4 ml-auto m-0 p-1"
-               titleClassName="btn btn-white filter-icon">
-               <button className="dropdown-item"
-                  onClick={() => { onSearch(1, undefined, GetAllRecords); }} >
-                  All
+
+         <Container className="row col-12 col-md-11 pt-2 pb-2 bg-white ml-auto mr-auto">
+            <Alert alert={errorAlert.alert}
+               className="col-12 mb-2"
+               onClosed={() => { errorAlert.clear(); }}
+            />
+            <div className="row pm-0">
+               <DropDown title={`Status Type: ${OrderStatusTypeList.find((s) => s.Id?.toString() == selectType)?.Name || "All"}`}
+                  className="col-12 col-sm-6 col-md-4 ml-auto m-0 p-1"
+                  titleClassName="btn btn-white filter-icon">
+                  <button className="dropdown-item"
+                     onClick={() => { onSearch(1, undefined, GetAllRecords); }} >
+                     All
                   </button>
-               {OrderStatusTypeList.filter(o => availableStatusTypeList.includes(o.Value))?.map(statusType =>
-                  <button className="dropdown-item" key={statusType.Id}
-                     onClick={() => { onSearch(1, undefined, statusType.Id?.toString()); }} >
-                     {statusType.Name}
-                  </button>
-               )}
-            </DropDown>
-         </div>
-         {tblTotalItemCount > 0 &&
-            <div className="row col-12 pm-0  bg-white pb-2">
-               <Table className="col-12 text-center table-striped"
-                  defaultSortName={tblSortName}
-                  data={tableData}
-                  onSortClick={(isSortAsce, sortName) => onSearch(undefined, undefined, undefined, isSortAsce)}
-                  view={TableView.CardView}
-                  listCount={tblTotalItemCount}
-               />
-               <Pagination
-                  maxItemsPerPage={tblMaxItemsPerPage}
-                  selectedPage={tblSelectedPage}
-                  onChange={(selectedPage, maxItemsPerPage) => {
-                     onSearch(selectedPage, maxItemsPerPage);
-                  }}
-                  listCount={tblTotalItemCount} />
+                  {OrderStatusTypeList.filter(o => availableStatusTypeList.includes(o.Value))?.map(statusType =>
+                     <button className="dropdown-item" key={statusType.Id}
+                        onClick={() => { onSearch(1, undefined, statusType.Id?.toString()); }} >
+                        {statusType.Name}
+                     </button>
+                  )}
+               </DropDown>
             </div>
-         }
-         <OrderModal isOpen={isOpenOrderModal}
-            order={selectOrder}
-            access={Access}
-            onClose={() => setIsOpenOrderModal(false)}
-            onSave={UpdateOrder} />
-
-
-      </>
+            {tblTotalItemCount > 0 &&
+               <div className="row col-12 pm-0  bg-white pb-2">
+                  <Table className="col-12 text-center table-striped"
+                     defaultSortName={tblSortName}
+                     data={tableData}
+                     onSortClick={(isSortAsce, sortName) => onSearch(undefined, undefined, undefined, isSortAsce)}
+                     view={TableView.CardView}
+                     listCount={tblTotalItemCount}
+                  />
+                  <Pagination
+                     maxItemsPerPage={tblMaxItemsPerPage}
+                     selectedPage={tblSelectedPage}
+                     onChange={(selectedPage, maxItemsPerPage) => {
+                        onSearch(selectedPage, maxItemsPerPage);
+                     }}
+                     listCount={tblTotalItemCount} />
+               </div>
+            }
+            <OrderModal isOpen={isOpenOrderModal}
+               order={selectOrder}
+               access={Access}
+               onClose={() => setIsOpenOrderModal(false)}
+               onSave={UpdateOrder} />
+         </Container>
+      </Container>
    );
 };
 

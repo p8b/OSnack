@@ -23,7 +23,7 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpPost("[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)] /// Done   
-      public async Task<IActionResult> Post([FromBody] EmailTemplate emailTemplate)
+      public async Task<IActionResult> PostTemplate([FromBody] EmailTemplate emailTemplate)
       {
          try
          {
@@ -32,9 +32,6 @@ namespace OSnack.API.Controllers
                CoreFunc.ExtractErrors(ModelState, ref ErrorsList);
                return UnprocessableEntity(ErrorsList);
             }
-
-            if (!emailTemplate.ValidateHTMLServerVariables(ref ErrorsList))
-               return UnprocessableEntity(ErrorsList);
 
             /// save files
             emailTemplate.SaveFilesToWWWRoot(WebHost.WebRootPath);

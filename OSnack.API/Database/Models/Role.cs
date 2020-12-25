@@ -17,12 +17,12 @@ namespace OSnack.API.Database.Models
       public int Id { get; set; }
 
       [Column(TypeName = "nvarchar(30)")]
+      [EmailTemplateVariable(Name = "RoleName")]
       [Required(ErrorMessage = "Role Name is Required \n")]
       public string Name { get; set; }
 
       [Column(TypeName = "nvarchar(30)")]
       [Required(ErrorMessage = "Access Claim is Required \n")]
-      //[JsonIgnore]
       [ValidateAccessClaim]
       public string AccessClaim { get; set; }
 

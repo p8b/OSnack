@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OSnack.API.Database;
 
 namespace OSnack.API.Migrations
 {
     [DbContext(typeof(OSnackDbContext))]
-    partial class OSnackDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201223031711_0.0.4")]
+    partial class _004
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -235,6 +237,26 @@ namespace OSnack.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EmailTemplates");
+                });
+
+            modelBuilder.Entity("OSnack.API.Database.Models.EmailTemplateServerClass", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<int?>("EmailTemplateId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Value")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmailTemplateId");
+
+                    b.ToTable("EmailTemplateServerClass");
                 });
 
             modelBuilder.Entity("OSnack.API.Database.Models.Newsletter", b =>
@@ -749,6 +771,16 @@ namespace OSnack.API.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("OSnack.API.Database.Models.EmailTemplateServerClass", b =>
+                {
+                    b.HasOne("OSnack.API.Database.Models.EmailTemplate", "EmailTemplate")
+                        .WithMany("ServerClasses")
+                        .HasForeignKey("EmailTemplateId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("EmailTemplate");
+                });
+
             modelBuilder.Entity("OSnack.API.Database.Models.NutritionalInfo", b =>
                 {
                     b.HasOne("OSnack.API.Database.Models.Product", "Product")
@@ -895,6 +927,11 @@ namespace OSnack.API.Migrations
             modelBuilder.Entity("OSnack.API.Database.Models.DeliveryOption", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("OSnack.API.Database.Models.EmailTemplate", b =>
+                {
+                    b.Navigation("ServerClasses");
                 });
 
             modelBuilder.Entity("OSnack.API.Database.Models.Order", b =>

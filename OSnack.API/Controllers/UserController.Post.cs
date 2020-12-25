@@ -57,7 +57,7 @@ namespace OSnack.API.Controllers
             {
                Request.Headers.TryGetValue("Origin", out StringValues Originvalue);
                await _EmailService
-                  .NewEmployeePasswordAsync(newUser, Originvalue)
+                  .WelcomeNewEmployeeAsync(newUser, Originvalue)
                   .ConfigureAwait(false);
             }
             newUser.Password = string.Empty;
@@ -117,7 +117,7 @@ namespace OSnack.API.Controllers
                   case RegistrationTypes.Facebook:
                   case RegistrationTypes.Google:
 
-                     await _EmailService.ExternalRegistrationWelcomeAsync(newCustomer)
+                     await _EmailService.WelcomeExternalRegistrationAsync(newCustomer)
                         .ConfigureAwait(false);
                      break;
                }

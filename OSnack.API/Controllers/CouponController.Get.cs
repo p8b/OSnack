@@ -26,7 +26,7 @@ namespace OSnack.API.Controllers
       /// search by Code or filter by type
       /// </summary>
       #region *** ***
-      [MultiResultPropertyNames(new string[] { "couponList", "totalCount" })]
+      [MultiResultPropertyNames("couponList", "totalCount")]
       [ProducesResponseType(typeof(MultiResult<List<Coupon>, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<P8B.Core.CSharp.Models.Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion

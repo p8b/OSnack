@@ -8,10 +8,12 @@ using MimeKit;
 
 using OSnack.API.Database;
 using OSnack.API.Database.Models;
+using OSnack.API.Extras.CustomTypes;
 
 using P8B.Core.CSharp.Models;
 
 using System;
+using System.Collections;
 using System.IO;
 using System.Linq;
 using System.Net.Security;
@@ -20,23 +22,18 @@ using System.Threading.Tasks;
 
 namespace P8B.UK.API.Services
 {
-   public class EmailService1
+   public partial class EmailService
    {
-
-      #region *** Properties ***
       private byte[] _Attachment { set; get; }
       private LoggingService _LoggingService { get; }
+      private EmailTemplate Template { get; set; }
       private EmailSettings _EmailSettings { get; }
       private OSnackDbContext _DbContext { get; }
       private IWebHostEnvironment _WebEnv { get; }
-      #endregion
+      private string RepeateSection { get; set; }
 
-      public EmailService1() { }
-      public EmailService1(
-          EmailSettings emailSettings,
-          LoggingService loggingService,
-          IWebHostEnvironment webEnv,
-          OSnackDbContext dbContext)
+      public EmailService() { }
+      public EmailService(EmailSettings emailSettings, LoggingService loggingService, IWebHostEnvironment webEnv, OSnackDbContext dbContext)
       {
          /// Set the class attributes with the objects received from their
          /// corresponding middle-ware
@@ -46,17 +43,8 @@ namespace P8B.UK.API.Services
          _LoggingService = loggingService;
       }
 
-      /// <summary>
-      ///     This method is used to send emails by using the email settings passed to this class
-      /// </summary>
-      /// <param name="name">The Receiver's Name</param>
-      /// <param name="email">The Receiver's Email</param>
-      /// <param name="subject">Subject of the email</param>
-      /// <param name="htmlMessage">the body of the email which can include HTML tags</param>
-      /// <returns>void</returns>
-      public async Task SendEmailAsync(string name, string email, string subject, string htmlMessage)
+      private async Task SendEmailAsync(string name, string email)
       {
-
          /// Create a MineMessage object to setup an instance of email to be send
          MimeMessage message = new MimeMessage();
 
@@ -67,13 +55,13 @@ namespace P8B.UK.API.Services
          message.To.Add(new MailboxAddress(name, email));
 
          /// Add the subject of the email
-         message.Subject = subject;
+         message.Subject = Template.Subject;
 
          /// Set the body of the email and type
          BodyBuilder bodyBuilder = new BodyBuilder()
          {
-            TextBody = HtmlToPlainText(htmlMessage),
-            HtmlBody = htmlMessage
+            TextBody = HtmlToPlainText(Template.HTML),
+            HtmlBody = Template.HTML
          };
 
          /// if Email must have an attachment then add it to the multi part email
@@ -156,53 +144,16 @@ namespace P8B.UK.API.Services
          await sendMail().ConfigureAwait(false);
       }
 
-      private async Task<bool> PopulateUserAndTokenVariables(string templateName, User user = null, Token token = null,
-         DateTime expiaryDate = new DateTime())
+      private async Task SetUserTemplate(EmailTemplateTypes EmailType)
       {
-         EmailTemplate template = await GetUserTemplate(templateName).ConfigureAwait(false);
+         Template = await _DbContext.EmailTemplates
+           .FirstOrDefaultAsync(et => et.TemplateType.Equals(EmailType)).ConfigureAwait(false);
 
-         //foreach (var item in template.ServerVariables)
-         //{
-         //   switch (item.EnumValue)
-         //   {
-         //      case EmailTemplateServerVariables.UserName:
-         //         template.HTML = template.HTML.Replace(item.ReplacementValue, $"{user.FirstName.FirstCap()} {user.Surname.FirstCap()}");
-         //         break;
-         //      case EmailTemplateServerVariables.RegistrationMethod:
-         //         template.HTML = template.HTML.Replace(item.ReplacementValue, $"{user.RegistrationMethod.Type}");
-         //         break;
-         //      case EmailTemplateServerVariables.Role:
-         //         template.HTML = template.HTML.Replace(item.ReplacementValue, user.Role.Name);
-         //         break;
-         //      case EmailTemplateServerVariables.ExpiaryDateTime:
-         //         template.HTML = template.HTML.Replace(item.ReplacementValue, $"{expiaryDate.ToLongDateString()} {expiaryDate.ToShortTimeString()}");
-         //         break;
-         //      case EmailTemplateServerVariables.TokenUrl:
-         //         if (token == null)
-         //            throw new Exception("Token Is Required.");
-         //         token.GenerateToken(user, expiaryDate, _DbContext, template.TokenUrlPath);
-         //         template.HTML = template.HTML.Replace(item.ReplacementValue, token?.Url);
-         //         break;
-         //      default:
-         //         break;
-         //   }
-         //}
-         await SendEmailAsync($"{user.FirstName} {user.Surname}", user.Email, template.Subject, template.HTML).ConfigureAwait(false);
-         return true;
-      }
-
-      private async Task<EmailTemplate> GetUserTemplate(string templateName)
-      {
-         EmailTemplate template = await _DbContext.EmailTemplates
-           .Include(et => et.ServerClasses)
-           .FirstOrDefaultAsync(et => et.Name.Equals(templateName)).ConfigureAwait(false);
-
-         if (template == null)
+         if (Template == null)
             throw new Exception("Email Template cannot be found.");
 
-
-         template.PrepareHtml(_WebEnv.WebRootPath);
-         return template;
+         Template.PrepareHtml(_WebEnv.WebRootPath);
+         Template.SetServerClasses();
       }
 
       private string HtmlToPlainText(string html)
@@ -225,6 +176,75 @@ namespace P8B.UK.API.Services
              .Where(_ => _.Length > 0)
              .ToArray();
          return string.Join("\n", lines);
+      }
+
+      private void SetTemplateServerPropValue(EmailTemplateServerClass serverClass, object obj)
+      {
+         try
+         {
+            if (serverClass.Value.ToString().Equals(obj.GetType().Name))
+            {
+               foreach (var prop in serverClass.ClassProperties)
+               {
+                  if (!prop.IsIgnored)
+                  {
+
+                     Type objType = obj.GetType();
+                     var propValue = objType.GetProperty(prop.Name).GetValue(obj, null);
+                     Type propType = null;
+                     if (propValue != null)
+                        propType = propValue.GetType();
+                     if (propValue != null && (propType.Name.Equals("HashSet`1") || propType.Name.Equals("List`1")))
+                     {
+                        if (string.IsNullOrWhiteSpace(RepeateSection))
+                        {
+                           string finalSection = "";
+                           string repeatSection = "";
+                           var closingHolder = serverClass.ClassProperties.Where(cp => cp.Name.Equals(prop.Name)).LastOrDefault();
+                           string closingTemplateName = prop.TemplateName;
+                           if (closingHolder != null)
+                           {
+                              closingTemplateName = closingHolder.TemplateName;
+                           }
+                           int fromSection = Template.HTML.IndexOf(prop.TemplateName);
+                           int toSection = Template.HTML.IndexOf(closingTemplateName) + closingTemplateName.Length;
+                           repeatSection = Template.HTML.Substring(fromSection, toSection - fromSection);
+                           foreach (var item in propValue as IEnumerable)
+                           {
+                              Type itemType = item.GetType();
+                              var temp = Template.ServerClasses.FirstOrDefault(sc => sc.Value.ToString().Equals(item.GetType().Name));
+                              if (temp != null)
+                              {
+                                 string repeatSectionCopy = repeatSection;
+                                 foreach (var item2 in temp.ClassProperties)
+                                 {
+                                    var tempVal = "";
+                                    var item2Val = itemType.GetProperty(item2.Name).GetValue(item, null);
+                                    if (!string.IsNullOrWhiteSpace(item2Val.ToString()))
+                                       tempVal = item2Val.ToString();
+                                    repeatSectionCopy = repeatSectionCopy.Replace(item2.TemplateName, tempVal);
+                                 }
+                                 finalSection += repeatSectionCopy;
+                              }
+                           }
+                           finalSection = finalSection.Replace(prop.TemplateName, "");
+                           finalSection = finalSection.Replace(closingTemplateName, "");
+
+                           Template.HTML = Template.HTML.Replace(repeatSection, finalSection);
+                        }
+                     }
+                     else
+                     {
+                        var tempVal = "";
+                        if (propValue != null && !string.IsNullOrWhiteSpace(propValue.ToString()))
+                           tempVal = propValue.ToString();
+                        Template.HTML = Template.HTML.Replace(prop.TemplateName, tempVal);
+                     }
+                  }
+               }
+            }
+         }
+         catch { }
       }
    }
 }

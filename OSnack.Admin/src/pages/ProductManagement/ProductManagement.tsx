@@ -156,7 +156,7 @@ const ProductManagement = (props: IProps) => {
 
    return (
       <Container className="container-fluid pr-0">
-         <PageHeader title="Products" className="line-header-lg" />
+         <PageHeader title="Products" className="line-header" />
          <div className="row col-12 col-md-11 pt-2 pb-2 bg-white ml-auto mr-auto">
             {/***** Search Input and new product button  ****/}
             <div className="row col-12 pm-0">

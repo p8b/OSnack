@@ -28,11 +28,12 @@ namespace OSnack.API.Database.Models
       [JsonIgnore]
       public TokenTypes Type { get; set; }
 
+      [EmailTemplateVariable(Name = "TokenUrl")]
       [Required(ErrorMessage = "Url is Required \n")]
       [JsonIgnore]
       public string Url { get; set; }
 
-      [EmailTemplateVariable]
+      [EmailTemplateVariable(Name = "ExpiaryDate")]
       [Column(TypeName = "nvarchar(30)")]
       [DataType(DataType.Date)]
       [Required(ErrorMessage = "Expiry Date is Required \n")]

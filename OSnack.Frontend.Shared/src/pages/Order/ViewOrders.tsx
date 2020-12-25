@@ -73,7 +73,7 @@ const ViewOrders = (props: IProps) => {
       history.push(generateUri(window.location.pathname,
          [userId, selectedPage || tblSelectedPage,
             maxItemsPerPage, filterType == GetAllRecords ? -1 : filterType,
-            Number(isSortAsc), sortName]), props.location.state);
+            Number(isSortAsc), sortName]), props.location?.state);
 
       errorAlert.PleaseWait(500, isUnmounted);
       switch (props.access) {
@@ -163,7 +163,7 @@ const ViewOrders = (props: IProps) => {
          />
          <div className="row pm-0">
             <div className="col-12 col-sm-6 col-md-4 pm-0" >
-               {props.location.state?.backUrl != undefined &&
+               {props.location?.state?.backUrl != undefined &&
                   <Button onClick={() => history.push(props.location.state?.backUrl!)} children="Back" className="mr-auto btn-lg back-icon" />
                }
             </div>

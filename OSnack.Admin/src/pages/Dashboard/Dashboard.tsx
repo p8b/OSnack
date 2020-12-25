@@ -5,7 +5,7 @@ const Dashboard = (props: IProps) => {
 
    return (
       <Container className="container-fluid  pr-0">
-         <PageHeader title="Dashboard" className="line-header-lg" />
+         <PageHeader title="Dashboard" className="line-header" />
       </Container>
    );
 };
@@ -13,4 +13,3 @@ const Dashboard = (props: IProps) => {
 declare type IProps = {
 };
 export default Dashboard;
-

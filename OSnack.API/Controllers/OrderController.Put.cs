@@ -7,9 +7,12 @@ using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 using OSnack.API.Extras.CustomTypes;
 using OSnack.API.Extras.Paypal;
+
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Models;
+
 using PayPalCheckoutSdk.Payments;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -122,7 +125,7 @@ namespace OSnack.API.Controllers
                   originalOrder.Payment.RefundAmount = originalOrder.TotalPrice;
                   originalOrder.Payment.Type = PaymentType.FullyRefunded;
                   originalOrder.Message = modifiedOrder.Message;
-                  await backItemToProductQuantity(originalOrder);
+                  await RestoreItemToProductQuantity(originalOrder);
                }
                catch (Exception ex)
                {
@@ -144,7 +147,7 @@ namespace OSnack.API.Controllers
          }
       }
 
-      private async Task backItemToProductQuantity(Order order)
+      private async Task RestoreItemToProductQuantity(Order order)
       {
          List<Product> productList = await _DbContext.Products.AsTracking()
            .Where(p => order.OrderItems.Select(t => t.ProductId).Contains(p.Id) == true)

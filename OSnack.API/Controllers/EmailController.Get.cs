@@ -26,20 +26,19 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpGet("Get/[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)] /// Done
-      public async Task<IActionResult> All()
+      public async Task<IActionResult> AllTemplate()
       {
          try
          {
             List<EmailTemplate> templateList = await _DbContext.EmailTemplates
-               // .Include(et => et.ServerVariables)
                .OrderByDescending(et => et.Name)
                .ToListAsync().ConfigureAwait(false);
 
             EmailTemplate copyDefaultTemplate = null;
             foreach (EmailTemplate item in templateList)
             {
-               //if (item.IsDefaultTemplate)
-               //   copyDefaultTemplate = item;
+               if (item.TemplateType == EmailTemplateTypes.DefaultTemplate)
+                  copyDefaultTemplate = item;
                item.PrepareDesign(WebHost.WebRootPath);
                item.PrepareHtml(WebHost.WebRootPath);
             }
@@ -59,13 +58,13 @@ namespace OSnack.API.Controllers
       }
 
       #region *** ***                 
-      [MultiResultPropertyNames(new string[] { "emailTemplate", "defaultEmailTemplate" })]
+      [MultiResultPropertyNames("emailTemplate", "defaultEmailTemplate")]
       [ProducesResponseType(typeof(MultiResult<EmailTemplate, EmailTemplate>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("[action]/{templateId}")]
       [Authorize(AppConst.AccessPolicies.Secret)] /// Done
-      public async Task<IActionResult> Get(int templateId)
+      public async Task<IActionResult> GetTemplate(int templateId)
       {
          try
          {
@@ -77,7 +76,12 @@ namespace OSnack.API.Controllers
             defaultTemplate.PrepareDesign(WebHost.WebRootPath);
             template.PrepareDesign(WebHost.WebRootPath);
 
-            return Ok(new MultiResult<EmailTemplate, EmailTemplate>(template, defaultTemplate, CoreFunc.GetCustomAttributeTypedArgument(this.ControllerContext)));
+
+            template.SetServerClasses();
+
+
+            return Ok(new MultiResult<EmailTemplate, EmailTemplate>
+               (template, defaultTemplate, CoreFunc.GetCustomAttributeTypedArgument(this.ControllerContext)));
          }
          catch (Exception ex)
          {
@@ -86,40 +90,23 @@ namespace OSnack.API.Controllers
          }
       }
 
-      #region *** ***
-      [ProducesResponseType(typeof(List<EmailTemplateServerClass>), StatusCodes.Status200OK)]
+
+      #region *** ***                                                    
+      [ProducesResponseType(typeof(List<EmailTemplateTypes>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("[action]")]
-      [Authorize(AppConst.AccessPolicies.Secret)] /// Done
-      public IActionResult GetServerVariables()
+      [Authorize(AppConst.AccessPolicies.Secret)]
+      public IActionResult GetAllAvailableTemplateTypes()
       {
          try
          {
-            var List = new List<EmailTemplateServerClass>();
-
-            foreach (var property in _DbContext.GetType().GetProperties())
+            var typeList = Enum.GetValues(typeof(EmailTemplateTypes)).Cast<EmailTemplateTypes>().ToList();
+            foreach (var item in _DbContext.EmailTemplates.Where(et => et.TemplateType != EmailTemplateTypes.Others))
             {
-               foreach (var selectedClass in property.PropertyType.GenericTypeArguments.Where(g => g.GetProperties().Any(p => p.CustomAttributes.Any(c => c.AttributeType.Name.Equals("EmailTemplateVariableAttribute")))))
-               {
-                  var properties = selectedClass.GetProperties().Where(p => p.CustomAttributes.Any(c => c.AttributeType.Name.Equals("EmailTemplateVariableAttribute")));
-                  if (properties.Count() > 0)
-                  {
-                     var serverClass = new EmailTemplateServerClass()
-                     {
-                        Value = Enum.Parse<EmailTemplateClassNames>(selectedClass.Name),
-                        ClassProperties = new List<string>()
-                     };
-                     foreach (var prop in properties)
-                     {
-                        serverClass.ClassProperties.Add($"@@{prop.Name}@@");
-                     }
-                     List.Add(serverClass);
-                  }
-               }
+               typeList.RemoveAll(t => t == item.TemplateType);
             }
-
-            return Ok(List);
+            return Ok(typeList);
          }
          catch (Exception ex)
          {
@@ -127,5 +114,6 @@ namespace OSnack.API.Controllers
             return StatusCode(417, ErrorsList);
          }
       }
+
    }
 }

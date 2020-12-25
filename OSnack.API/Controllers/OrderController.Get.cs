@@ -22,6 +22,22 @@ namespace OSnack.API.Controllers
 {
    public partial class OrderController
    {
+      //[HttpGet("[action]")]
+      //[ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
+      //public async Task<IActionResult> TestOrder()
+      //{
+      //   var order = await _DbContext.Orders
+      //           .Include(o => o.User)
+      //           .Include(o => o.Payment)
+      //           .Include(o => o.OrderItems)
+      //           .FirstOrDefaultAsync(o => o.Status == OrderStatusType.Confirmed && o.User.Id == 1)
+      //           .ConfigureAwait(false);
+      //   await _EmailService.OrderReceiptAsync(order).ConfigureAwait(false);
+
+      //   return Ok(order);
+      //}
+
+
       /// <summary>
       /// Used to get a list of all Order with OrderItems
       /// </summary>
@@ -85,7 +101,7 @@ namespace OSnack.API.Controllers
       /// </summary>
       #region ***  ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [MultiResultPropertyNames(new string[] { "orderList", "availableTypes", "fullName", "totalCount" })]
+      [MultiResultPropertyNames("orderList", "availableTypes", "fullName", "totalCount")]
       [ProducesResponseType(typeof(MultiResult<List<Order>, List<OrderStatusType>, string, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
@@ -104,7 +120,7 @@ namespace OSnack.API.Controllers
       /// </summary>
       #region *** 200 OK, 417 ExpectationFailed ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [MultiResultPropertyNames(new string[] { "orderList", "availableTypes", "fullName", "totalCount" })]
+      [MultiResultPropertyNames("orderList", "availableTypes", "fullName", "totalCount")]
       [ProducesResponseType(typeof(MultiResult<List<Order>, List<OrderStatusType>, string, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 using OSnack.API.Extras.CustomTypes;
+
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Attributes;
 using P8B.Core.CSharp.Extentions;
@@ -25,7 +26,7 @@ namespace OSnack.API.Controllers
       /// Used to get a list of all users
       /// </summary>
       #region ***  ***                                  
-      [MultiResultPropertyNames(new string[] { "userList", "totalCount" })]
+      [MultiResultPropertyNames("userList", "totalCount")]
       [ProducesResponseType(typeof(MultiResult<List<User>, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion

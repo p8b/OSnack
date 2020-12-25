@@ -21,7 +21,7 @@ namespace OSnack.API.Controllers
    public partial class ProductController
    {
       #region ***  ***                
-      [MultiResultPropertyNames(new string[] { "productList", "totalCount" })]
+      [MultiResultPropertyNames("productList", "totalCount")]
       [ProducesResponseType(typeof(MultiResult<List<Product>, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
@@ -34,7 +34,7 @@ namespace OSnack.API.Controllers
          await Search(selectedPage, maxItemsPerPage, filterCategory, searchValue, "true", isSortAsce, sortName).ConfigureAwait(false);
 
       #region ***  ***
-      [MultiResultPropertyNames(new string[] { "productList", "totalCount" })]
+      [MultiResultPropertyNames("productList", "totalCount")]
       [ProducesResponseType(typeof(MultiResult<List<Product>, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
@@ -92,7 +92,7 @@ namespace OSnack.API.Controllers
       /// Get a single product by using product and category name 
       /// </summary>
       #region ***  ***         
-      [MultiResultPropertyNames(new string[] { "product", "relatedProductList" })]
+      [MultiResultPropertyNames("product", "relatedProductList")]
       [ProducesResponseType(typeof(MultiResult<Product, List<Product>>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status404NotFound)]

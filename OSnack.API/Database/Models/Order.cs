@@ -2,6 +2,7 @@
 
 using OSnack.API.Database.ModelsDependencies;
 using OSnack.API.Extras;
+using OSnack.API.Extras.Attributes;
 using OSnack.API.Extras.CustomTypes;
 using OSnack.API.Extras.Paypal;
 
@@ -17,9 +18,10 @@ using System.Threading.Tasks;
 namespace OSnack.API.Database.Models
 {
    [Table("Orders")]
-   public partial class Order : OrderAddressBase
+   public class Order : OrderAddressBase
    {
       [Key]
+      [EmailTemplateVariable(Name = "OrderNumber")]
       public string Id { get; set; }
 
       [Column(TypeName = "nvarchar(100)")]
@@ -70,29 +72,37 @@ namespace OSnack.API.Database.Models
       public Coupon Coupon { get; set; }
 
       [InverseProperty("Order")]
+      [EmailTemplateVariable(ListNames = new string[] { "StartRow", "EndRow" })]
       public ICollection<OrderItem> OrderItems { get; set; }
 
+      [EmailTemplateVariable(Name = "TotalPrice")]
       [DataType(DataType.Currency, ErrorMessage = "Invalid Currency \n")]
       [Column(TypeName = "decimal(7,2)")]
       [Required]
       public decimal TotalPrice { get; set; }
 
+      [EmailTemplateVariable(Name = "SubTotal")]
       [DataType(DataType.Currency, ErrorMessage = "Invalid Currency \n")]
       [Column(TypeName = "decimal(7,2)")]
       [Required]
       public decimal TotalItemPrice { get; set; }
 
+      [EmailTemplateVariable(Name = "TotalShipping")]
       [DataType(DataType.Currency, ErrorMessage = "Invalid Currency \n")]
       [Column(TypeName = "decimal(7,2)")]
       [Required]
       public decimal ShippingPrice { get; set; }
 
+      [EmailTemplateVariable(Name = "TotalDiscount")]
       [DataType(DataType.Currency, ErrorMessage = "Invalid Currency \n")]
       [Column(TypeName = "decimal(7,2)")]
       [Required]
       public decimal TotalDiscount { get; set; }
 
 
+      [EmailTemplateVariable(Name = "OrderStatus")]
+      [JsonIgnore, NotMapped]
+      public string StatusString { get { return Status.ToString(); } }
       internal bool ChangeStatus(OrderStatusType orderStatusType)
       {
          bool canChange = (Status, orderStatusType) switch

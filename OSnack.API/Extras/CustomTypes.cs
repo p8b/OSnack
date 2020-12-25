@@ -1,4 +1,7 @@
-﻿namespace OSnack.API.Extras.CustomTypes
+﻿using OSnack.API.Database.Models;
+using OSnack.API.Extras.Attributes;
+
+namespace OSnack.API.Extras.CustomTypes
 {
    public enum CouponType
    {
@@ -9,22 +12,43 @@
 
    public enum EmailTemplateClassNames
    {
-      User = 0,
-      Order = 1,
-      ContactUsMessage = 2,
-      Token = 3,
+      User,
+      Order,
+      ContactUsMessage,
+      Token,
+      RegistrationMethod,
+      Role,
+      Payment,
+      OrderItem,
    }
    public enum EmailTemplateTypes
    {
-      Others = 0,
-      DefaultTemplate = 1,
+      [EmailTemplateTypeServerClasses]
+      DefaultTemplate = 0,
+
+      [EmailTemplateTypeServerClasses]
+      Others = 1,
+
+      [EmailTemplateTypeServerClasses(typeof(User), typeof(Token))]
       EmailConfirmation = 2,
+
+      [EmailTemplateTypeServerClasses(typeof(User), typeof(RegistrationMethod))]
       WelcomeExternalRegistration = 3,
+
+      [EmailTemplateTypeServerClasses(typeof(User), typeof(Token), typeof(Role))]
       WelcomeNewEmployee = 4,
+
+      [EmailTemplateTypeServerClasses(typeof(User), typeof(Token))]
       PasswordReset = 5,
+
+      [EmailTemplateTypeServerClasses()]
       ContactUsMessage = 6,
+
+      [EmailTemplateTypeServerClasses(typeof(Order), typeof(Payment), typeof(OrderItem))]
       OrderReceipt = 7,
-      OrderCanceled = 8,
+
+      [EmailTemplateTypeServerClasses(typeof(Order), typeof(Payment))]
+      OrderCancellation = 8,
    }
 
    public enum TokenTypes

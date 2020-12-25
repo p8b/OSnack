@@ -25,7 +25,7 @@ namespace OSnack.API.Controllers
       /// search by name or filter by unit or status
       /// </summary>
       #region *** ***
-      [MultiResultPropertyNames(new string[] { "categoryList", "totalCount" })]
+      [MultiResultPropertyNames("categoryList", "totalCount")]
       [ProducesResponseType(typeof(MultiResult<List<Category>, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion

@@ -74,27 +74,27 @@ export const RegistrationTypesList=[
 ]
 export enum EmailTemplateTypes {
 
-    Others = 0,
-    DefaultTemplate = 1,
+    DefaultTemplate = 0,
+    Others = 1,
     EmailConfirmation = 2,
     WelcomeExternalRegistration = 3,
     WelcomeNewEmployee = 4,
     PasswordReset = 5,
     ContactUsMessage = 6,
     OrderReceipt = 7,
-    OrderCanceled = 8,
+    OrderCancellation = 8,
 }
 
 export const EmailTemplateTypesList=[
-{Id:0,Name:"Others".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.Others},
-{Id:1,Name:"DefaultTemplate".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.DefaultTemplate},
+{Id:0,Name:"DefaultTemplate".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.DefaultTemplate},
+{Id:1,Name:"Others".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.Others},
 {Id:2,Name:"EmailConfirmation".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.EmailConfirmation},
 {Id:3,Name:"WelcomeExternalRegistration".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.WelcomeExternalRegistration},
 {Id:4,Name:"WelcomeNewEmployee".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.WelcomeNewEmployee},
 {Id:5,Name:"PasswordReset".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.PasswordReset},
 {Id:6,Name:"ContactUsMessage".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.ContactUsMessage},
 {Id:7,Name:"OrderReceipt".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.OrderReceipt},
-{Id:8,Name:"OrderCanceled".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.OrderCanceled},
+{Id:8,Name:"OrderCancellation".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.OrderCancellation},
 ]
 export enum EmailTemplateClassNames {
 
@@ -102,6 +102,10 @@ export enum EmailTemplateClassNames {
     Order = 1,
     ContactUsMessage = 2,
     Token = 3,
+    RegistrationMethod = 4,
+    Role = 5,
+    Payment = 6,
+    OrderItem = 7,
 }
 
 export const EmailTemplateClassNamesList=[
@@ -109,6 +113,10 @@ export const EmailTemplateClassNamesList=[
 {Id:1,Name:"Order".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateClassNames.Order},
 {Id:2,Name:"ContactUsMessage".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateClassNames.ContactUsMessage},
 {Id:3,Name:"Token".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateClassNames.Token},
+{Id:4,Name:"RegistrationMethod".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateClassNames.RegistrationMethod},
+{Id:5,Name:"Role".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateClassNames.Role},
+{Id:6,Name:"Payment".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateClassNames.Payment},
+{Id:7,Name:"OrderItem".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateClassNames.OrderItem},
 ]
 export class Role {
     id?: number = 0;
@@ -299,6 +307,12 @@ export class EmailTemplate {
     design!: any;
 
 }
+export class ClassProperty {
+    name?: string | undefined;
+    templateName?: string | undefined;
+    isIgnored?: boolean;
+
+}
 export class PhoneWithType {
     phone_number?: Phone | undefined;
     phone_type?: string | undefined;
@@ -480,9 +494,9 @@ export class CouponListAndTotalCount {
 
 }
 export class EmailTemplateServerClass {
-    id?: number = 0;
-    value!: EmailTemplateClassNames;
-    classProperties?: string[] | undefined;
+    value?: EmailTemplateClassNames;
+    classProperties?: ClassProperty[] | undefined;
+    emailTemplate?: EmailTemplate | undefined;
 
 }
 export class MerchantPayableBreakdown {

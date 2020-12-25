@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 
+using OSnack.API.Extras.Attributes;
 using OSnack.API.Extras.CustomTypes;
 
 using System;
@@ -20,6 +21,7 @@ namespace OSnack.API.Database.Models
       public string PaymentProvider { get; set; }
 
       [Required(ErrorMessage = "Reference is required \n")]
+      [EmailTemplateVariable(Name = "PaymentRef")]
       public string Reference { get; set; }
 
       [Required(ErrorMessage = "Payment Type is required \n")]
@@ -29,6 +31,12 @@ namespace OSnack.API.Database.Models
 
       [Required(ErrorMessage = "Date is required \n")]
       public DateTime DateTime { get; set; }
+
+
+
+      [EmailTemplateVariable(Name = "PaymentDate")]
+      [JsonIgnore, NotMapped]
+      public string PaymentDate { get { return $"{DateTime.ToShortDateString()} {DateTime.ToShortTimeString()}"; } }
 
       [DataType(DataType.Currency, ErrorMessage = "Invalid Currency \n")]
       [Column(TypeName = "decimal(7,2)")]

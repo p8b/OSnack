@@ -91,7 +91,7 @@ const OrderDetails = (props: IProps) => {
                   <div className="col-4 p-0 font-weight-bold">£{props.order.totalPrice}</div>
                </div>
 
-               <div className="pm-0">
+               <div className="pm-0 mt-3">
                   <div className="col-12 p-0 font-weight-bold ">Shipping Address :</div>
                   <div className="col-12 p-0 line-limit-1">{props.order.name}</div>
                   <div className="col-12 p-0 line-limit-2">{props.order.firstLine}</div>

@@ -24,7 +24,7 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpPut("[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)] /// Done  
-      public async Task<IActionResult> Put([FromBody] EmailTemplate emailTemplate)
+      public async Task<IActionResult> PutTemplate([FromBody] EmailTemplate emailTemplate)
       {
          try
          {
@@ -37,12 +37,7 @@ namespace OSnack.API.Controllers
             }
 
 
-            if (!emailTemplate.ValidateHTMLServerVariables(ref ErrorsList))
-               /// return Unprocessable Entity with all the errors
-               return UnprocessableEntity(ErrorsList);
-
             EmailTemplate foundTemplate = await _DbContext.EmailTemplates
-               .AsTracking()
                .FirstOrDefaultAsync((et) => et.Id == emailTemplate.Id)
                .ConfigureAwait(false);
 
@@ -57,27 +52,16 @@ namespace OSnack.API.Controllers
             emailTemplate.RemoveHtmlComment();
             if (foundTemplate.HTML != emailTemplate.HTML)
             {
-
-               foundTemplate.HTML = emailTemplate.HTML;
-               foundTemplate.Design = emailTemplate.Design;
-               /// save files
-               foundTemplate.SaveFilesToWWWRoot(WebHost.WebRootPath);
+               emailTemplate.SaveFilesToWWWRoot(WebHost.WebRootPath);
+               foundTemplate.DeleteFiles(WebHost.WebRootPath);
             }
-
-
-            foundTemplate.Name = emailTemplate.Name;
-            foundTemplate.Subject = emailTemplate.Subject;
-            foundTemplate.TokenUrlPath = emailTemplate.TokenUrlPath;
-
-            // ignore changing the lock status of the default template
-            //if (!await _DbContext.EmailTemplates
-            //   .AnyAsync(et => et.IsDefaultTemplate && et.Id == emailTemplate.Id)
-            //   .ConfigureAwait(false))
-            //   foundTemplate.Locked = emailTemplate.Locked;
-
-            //await _DbContext.EmailTemplates.AddAsync(foundTemplate).ConfigureAwait(false);
+            else
+            {
+               emailTemplate.DesignPath = foundTemplate.DesignPath;
+               emailTemplate.HtmlPath = foundTemplate.HtmlPath;
+            }
+            _DbContext.EmailTemplates.Update(emailTemplate);
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
-
             /// return Ok with the object
             return Ok(emailTemplate);
          }

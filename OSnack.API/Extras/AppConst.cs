@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+
+using System;
 using System.IO;
 using System.Reflection;
-
-using Newtonsoft.Json;
 
 namespace OSnack.API.Extras
 {
@@ -73,24 +73,6 @@ namespace OSnack.API.Extras
          Github = 3
       }
 
-      //public static oDeliveryOption[] DeliveryOptions = {
-      //   new oDeliveryOption{
-      //      Id=0,
-      //      Name ="Free",
-      //      Price = (decimal)0.00
-      //   },
-      //   new oDeliveryOption{
-      //      Id=1,
-      //      Name ="Standard",
-      //      Price = (decimal)5.00
-      //   },
-      //   new oDeliveryOption{
-      //      Id=2,
-      //      Name ="First Class",
-      //      Price = (decimal)8.00
-      //   },
-      //};
-
       /// <summary>
       /// Get the information from the appSettings json file
       /// </summary>
@@ -108,6 +90,5 @@ namespace OSnack.API.Extras
             return JsonConvert.DeserializeObject<Settings>(File.ReadAllText(jsonFilePath));
          }
       }
-
    }
 }

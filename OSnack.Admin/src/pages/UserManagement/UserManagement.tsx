@@ -157,8 +157,8 @@ const UserManagement = (props: IProps) => {
    if (redirectToOrders == true)
       return <Redirect to={{ pathname: `/ViewUserOrders/${selectedUser.id}`, state: { backUrl: window.location.pathname } }} />;
    return (
-      <Container >
-         <PageHeader title="Users" className="line-header-lg" />
+      <Container className="container-fluid" >
+         <PageHeader title="Users" className="line-header" />
          <div className="row col-12 col-md-11 pt-2 pb-2 bg-white ml-auto mr-auto">
             {/***** Search Input and new category button  ****/}
             <div className="row col-12 pm-0">

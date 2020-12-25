@@ -3,13 +3,14 @@ import EmailEditor from 'react-email-editor';
 import ButtonPopupConfirm from 'osnack-frontend-shared/src/components/Buttons/ButtonPopupConfirm';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
-import { EmailTemplate, EmailTemplateTypes } from 'osnack-frontend-shared/src/_core/apiModels';
+import { EmailTemplate, EmailTemplateClassNames, EmailTemplateServerClass, EmailTemplateTypes } from 'osnack-frontend-shared/src/_core/apiModels';
 import { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';;
 import CopyText from 'osnack-frontend-shared/src/components/Texts/CopyText';
 import { sleep } from 'osnack-frontend-shared/src/_core/appFunc';
 import EmailTemplateEditDetailsModal from './EmailTemplateEditDetailsModal';
 import { Redirect, useHistory } from 'react-router-dom';
-import { useDeleteEmail, useGetEmail, usePostEmail, usePutEmail } from '../../SecretHooks/useEmailHook';
+import { useDeleteTemplateEmail, useGetAllAvailableTemplateTypesEmail, useGetTemplateEmail, usePostTemplateEmail, usePutTemplateEmail } from '../../SecretHooks/useEmailHook';
+import InputDropdown from 'osnack-frontend-shared/src/components/Inputs/InputDropDown';
 
 const EmailTemplatesEdit = (props: IProps) => {
    const history = useHistory();
@@ -19,7 +20,8 @@ const EmailTemplatesEdit = (props: IProps) => {
 
    const [template, setTemplate] = useState(new EmailTemplate());
    const [defaultTemplate, setDefaultTemplate] = useState(new EmailTemplate());
-   //const [serverVariables, setServerVariables] = useState<ServerVariables[]>([]);
+   const [templateTypes, setTemplateTypes] = useState<EmailTemplateTypes[]>([]);
+   const [selectedServerClass, setSelectedServerClass] = useState<EmailTemplateServerClass>();
    const [isSaved, setIsSaved] = useState(false);
    const [isEditorLoaded, setIsEditorLoaded] = useState(false);
    const [isOpenDetailsModal, setIsOpenDetailsModal] = useState(false);
@@ -38,20 +40,31 @@ const EmailTemplatesEdit = (props: IProps) => {
       setDefaultTemplate(props.location.state.defaultEmailTemplate);
 
       if (props.location.state.emailTemplate.id && props.location.state.emailTemplate.id > 0)
-         useGetEmail(props.location.state.emailTemplate.id).then(
+         useGetTemplateEmail(props.location.state.emailTemplate.id).then(
             result => {
                setTemplate(result.data.emailTemplate != undefined ? result.data.emailTemplate : new EmailTemplate());
                setInitialLockedStatus(result.data.emailTemplate?.templateType != EmailTemplateTypes.Others);
                setDefaultTemplate(result.data.defaultEmailTemplate ? result.data.defaultEmailTemplate : new EmailTemplate());
+            }).catch(alert => {
+               errorAlert.set(alert);
             });
+      else
+         useGetAllAvailableTemplateTypesEmail().then(result => {
+            setTemplateTypes(result.data);
+         }).catch(alert => {
+            errorAlert.set(alert);
+         });
 
       if (props.location.state.emailTemplate.id == 0)
          setIsOpenDetailsModal(true);
 
       /// needed for after the first time the email editor is loaded
       setIsDefaultTemplateUsed(false);
-      return () => { isUnmounted.current = true; };
+      return () => {
+         isUnmounted.current = true;
+      };
    }, []);
+
    useEffect(() => {
       loadDesgin();
    }, [template]);
@@ -66,16 +79,17 @@ const EmailTemplatesEdit = (props: IProps) => {
          let emailTemp = template;
          emailTemp.html = data.html;
          emailTemp.design = data.design;
+         console.log(template);
          var resultTemplate: EmailTemplate | undefined;
          if (template.id == 0)
-            await usePostEmail(template).then((result) => {
+            await usePostTemplateEmail(template).then((result) => {
                resultTemplate = result.data;
             }).catch((alert) => {
                errorAlert.set(alert);
                setIsOpenDetailsModal(true);
             });
          else if (template.id != null)
-            await usePutEmail(template).then((result) => {
+            await usePutTemplateEmail(template).then((result) => {
                resultTemplate = result.data;
             }).catch((alert) => {
                errorAlert.set(alert);
@@ -94,7 +108,7 @@ const EmailTemplatesEdit = (props: IProps) => {
    };
    const onDelete = async () => {
       errorAlert.PleaseWait(500, isUnmounted);
-      useDeleteEmail(template).then(result => {
+      useDeleteTemplateEmail(template).then(result => {
          if (isUnmounted.current) return;
          errorAlert.setSingleSuccess("Deleted", result.data);
          sleep(3000, isUnmounted).then(() => { setIsTemplateRecognised(false); });
@@ -155,7 +169,7 @@ const EmailTemplatesEdit = (props: IProps) => {
    }
    return (
       <>
-         <PageHeader title={`${template.id == 0 ? "New" : "Edit"} Template`} className="line-header-lg" />
+         <PageHeader title={`${template.id == 0 ? "New Template" : "Edit " + template.name?.replace(/([A-Z])/g, ' $1')}`} className="line-header line-limit-1" />
          <div className="row col-12 mb-2" >
 
             <Button onClick={() => history.push("/EmailTemplate")} children="Back" className="mr-auto btn-lg back-icon" />
@@ -164,24 +178,33 @@ const EmailTemplatesEdit = (props: IProps) => {
             {renderDeleteButton()}
             <Button onClick={saveTemplate} children={`Save${isSaved ? "d" : ""}`} className={`btn-lg btn-green ${isSaved ? "tick-icon" : "save-icon"}`} />
          </div>
-         <div className="row col-12 ml-2">
-            <div className="col-12 pm-0">Name: {template.name}</div>
+         <div className="row pm-0 pl-3 pr-3">
             {template.serverClasses != undefined && template.serverClasses!.length > 0 &&
-               <>
-                  <div>Required Server Variables:</div>
+               <InputDropdown dropdownTitle={`Server Model${selectedServerClass == undefined ? "s" : ": " + EmailTemplateClassNames[selectedServerClass.value || 0].replace(/([A-Z])/g, ' $1')}`}
+                  className="col-auto pb-0">
                   {template.serverClasses?.map(sc =>
-                     <div className="badge col-auto ml-1 mt-1 mt-sm-0" key={sc.value}>
-                        {sc.classProperties?.map(v => <CopyText text={v} />)}
+                     <div className="dropdown-item cursor-pointer pl-0 pr-0" key={Math.random()}
+                        onClick={() => { setSelectedServerClass(sc); }}>
+                        {EmailTemplateClassNames[sc.value || 0].replace(/([A-Z])/g, ' $1')}
                      </div>
                   )}
-               </>
+               </InputDropdown>
+            }
+            {selectedServerClass != undefined &&
+               selectedServerClass.classProperties?.map(v =>
+                  <div className="col-auto pm-0 mt-auto mb-auto" key={Math.random()}>
+                     <CopyText className="badge blue pl-2 pr-2 ml-1 mr-1" text={v.templateName?.ReplaceAll('@@', '').replace(/([A-Z])/g, ' $1') || ''} copyValue={v.templateName} />
+                  </div>
+               )
             }
          </div>
 
-         <div className="container-width-scroll">
-            <EmailEditor ref={emailEditorRef} onLoad={UnlayerLoaded} />
+         <div id="template-container" className="container-width-scroll">
+            <EmailEditor ref={emailEditorRef} onLoad={UnlayerLoaded}
+               minHeight={(window.innerHeight - (document.getElementById("template-container")?.getBoundingClientRect().top || 0) - 30)} />
          </div>
          <EmailTemplateEditDetailsModal emailTemplate={template}
+            templateTypes={templateTypes}
             alert={errorAlert.alert}
             clearAlert={() => errorAlert.clear()}
             isOpen={isOpenDetailsModal || (errorAlert.alert.List.length > 0)}

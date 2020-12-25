@@ -202,6 +202,7 @@
     <TypeScriptCompile Include="src\pages\MyAccount\AddressModal.tsx" />
     <TypeScriptCompile Include="src\pages\MyAccount\MyAccount.tsx" />
     <TypeScriptCompile Include="src\pages\MyAccount\MyAddresses.tsx" />
+    <TypeScriptCompile Include="src\pages\MyAccount\MyOrders.tsx" />
     <TypeScriptCompile Include="src\pages\ProductPage\ProductPage.tsx" />
     <TypeScriptCompile Include="src\pages\ProductPage\Tabs.tsx" />
     <TypeScriptCompile Include="src\pages\Shop\Shop.tsx" />

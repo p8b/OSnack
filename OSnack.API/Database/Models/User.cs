@@ -20,13 +20,13 @@ namespace OSnack.API.Database.Models
       public override int Id { get; set; }
       public User() => UserName = $"p8b{new Random().Next(0, 99)}";
 
-      [EmailTemplateVariable]
+      [EmailTemplateVariable(Name = "FirstName")]
       [Column(TypeName = "nvarchar(256)")]
       [Required(ErrorMessage = "Name Required \n")]
       [StringLength(256, ErrorMessage = "Name must be less than 256 Characters \n")]
       public string FirstName { get; set; }
 
-      [EmailTemplateVariable]
+      [EmailTemplateVariable(Name = "Surname")]
       [Column(TypeName = "nvarchar(256)")]
       [Required(ErrorMessage = "Surname Required \n")]
       [StringLength(256, ErrorMessage = "Surname must be less than 256 Characters \n")]
@@ -48,7 +48,7 @@ namespace OSnack.API.Database.Models
       [InverseProperty("User")]
       public RegistrationMethod RegistrationMethod { get; set; }
 
-      [EmailTemplateVariable]
+      [EmailTemplateVariable(Name = "UserEmail")]
       [DataType(DataType.EmailAddress, ErrorMessage = "Invalid Email \n")]
       [Required(ErrorMessage = "Email is Required \n")]
       [RegularExpression(@"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$",

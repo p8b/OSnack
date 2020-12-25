@@ -22,13 +22,13 @@ namespace OSnack.API.Controllers
    public partial class OrderController
    {
       #region *** ***
-      [HttpPost("[action]/{paypalId}")]
       [Consumes(MediaTypeNames.Application.Json)]
       [ProducesResponseType(typeof(Order), StatusCodes.Status201Created)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status503ServiceUnavailable)]
       #endregion
+      [HttpPost("[action]/{paypalId}")]
       [Authorize(AppConst.AccessPolicies.Public)]
       public async Task<IActionResult> Post(string paypalId, [FromBody] Order orderData)
       {
@@ -74,7 +74,6 @@ namespace OSnack.API.Controllers
             {
                return UnprocessableEntity(ErrorsList);
             }
-            orderData.User = _DbContext.Users.SingleOrDefault(u => u.Id == AppFunc.GetUserId(User));
             orderData.Payment = new Payment()
             {
                PaymentProvider = "PayPal",
@@ -113,6 +112,7 @@ namespace OSnack.API.Controllers
 
             orderData = await TryToSave(orderData, 1);
 
+            await _EmailService.OrderReceiptAsync(orderData).ConfigureAwait(false);
             return Created("Success", orderData);
          }
          catch (Exception ex)

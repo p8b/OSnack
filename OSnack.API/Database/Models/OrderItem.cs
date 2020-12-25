@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 
 using OSnack.API.Database.ModelsDependencies;
+using OSnack.API.Extras.Attributes;
 
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -43,11 +44,16 @@ namespace OSnack.API.Database.Models
       public int? ProductId { get; set; }
 
       [Required(ErrorMessage = "Quantity is Required")]
+      [EmailTemplateVariable(Name = "OrderItemQuantity")]
       public int Quantity { get; set; }
 
+
       [Required(ErrorMessage = "Order is Required")]
-      [ForeignKey("OrderId")]
-      [JsonIgnore]
+      [JsonIgnore, ForeignKey("OrderId")]
       public Order Order { get; set; }
+
+      [EmailTemplateVariable(Name = "TotalOrderItemPrice")]
+      [JsonIgnore, NotMapped]
+      public string TotalPrice { get { return ((decimal)(Price * Quantity)).ToString("0.00"); } }
    }
 }

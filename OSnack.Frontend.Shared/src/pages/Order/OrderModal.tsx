@@ -82,23 +82,16 @@ const OrderModal = (props: IProps) => {
                   availabeType={getAvailabeType()}
                   statusChanged={statusChange} />
                {/***** buttons ****/}
-               {(props.access == ClientAppAccess.Official || getAvailabeType().length == 0) &&
-                  <div className="row col-12 pm-0 pos-b-sticky bg-white pb-3">
-                     <Button children="Cancel"
-                        className={`col-12 mt-2 btn-white btn-lg col-sm-6"}`}
-                        onClick={() => { props.onClose(); }} />
-                  </div>
-               }
-               {props.access == ClientAppAccess.Secret && getAvailabeType().length > 0 &&
-                  <div className="row col-12 pm-0 pos-b-sticky bg-white pb-3">
+               <div className="row col-12 pm-0 pos-b-sticky bg-white pb-3">
+                  {props.access == ClientAppAccess.Secret && getAvailabeType().length > 0 &&
                      <Button children="Save"
                         className={`col-12 col-md-6 mt-2 btn-green btn-lg col-sm-6"}`}
                         onClick={() => { props.onSave!(selectedOrder); }} />
-                     <Button children="Cancel"
-                        className={`col-12 col-md-6 mt-2 btn-white btn-lg col-sm-6"}`}
-                        onClick={() => { props.onClose(); }} />
-                  </div>
-               }
+                  }
+                  <Button children={`${(props.access == ClientAppAccess.Official || getAvailabeType().length == 0) ? "Close" : "Cancel"}`}
+                     className={`col-12 ${(props.access == ClientAppAccess.Official || getAvailabeType().length == 0) && "col-md-6"}mt-2 btn-white btn-lg col-sm-6"}`}
+                     onClick={() => { props.onClose(); }} />
+               </div>
             </div >
 
             <OrderMessageModal isOpen={isOpenMessageModal}

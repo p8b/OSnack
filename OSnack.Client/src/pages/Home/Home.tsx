@@ -61,14 +61,14 @@ const Home = (props: IProps) => {
                <Link to="/Shop" className='btn btn-orange'>Shop</Link>
             </div>
          </div>
-         <div className="col-12 msg-section">
+         <div className="col-12 mt-4 msg-section">
             <h3>
                Treat yourself with <i> delicious </i> and <i> healthy </i> snacks.
             </h3>
-            <h5>
+            <div className="h5">
                Here at OSnack, we aim to select and provide the best quality snack
                so you can just enjoy the wonderful taste.
-            </h5>
+            </div>
          </div>
          <div className="col-12 categories-section">
             <PageHeader className="line-header-lg" title="Categories" />

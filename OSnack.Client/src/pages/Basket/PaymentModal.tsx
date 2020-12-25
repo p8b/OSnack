@@ -1,7 +1,7 @@
 ﻿import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
 import { Order2 } from 'osnack-frontend-shared/src/_core/apiModels';
-import React, { RefObject, useEffect, useState } from 'react';
+import React, { RefObject, useState } from 'react';
 import { AlertObj } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Loading } from 'osnack-frontend-shared/src/components/Loading/Loading';
 
@@ -19,21 +19,17 @@ const PaymentModal = (props: IProps) => {
 
    const [isLoading, setIsLoading] = useState(false);
 
-   useEffect(() => {
-   }, []);
-
    const createOrder = (data: any, action: any) => {
       return action.order.create(props.paypalOrder);
 
    };
    const onApprove = (data: any, action: any) => {
-
       props.onCompelete(data.orderID);
       setIsLoading(true);
    };
 
    return (
-      <Modal isOpen={props.isOpen}
+      <Modal isOpen={isLoading ? true : props.isOpen}
          bodyRef={props.ref}
          className="col-12 col-sm-10 col-md-7 col-lg-4 pm-0">
          {!isLoading &&
@@ -45,7 +41,12 @@ const PaymentModal = (props: IProps) => {
                />
             </div>
          }
-         {isLoading && <Loading />}
+         {isLoading &&
+            <>
+               <Loading />
+               <div className="col-12 mt-3 text-center">Please wait while we proccess your payment</div>
+            </>
+         }
       </Modal>
    );
 };

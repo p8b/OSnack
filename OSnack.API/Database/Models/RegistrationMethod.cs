@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 
+using OSnack.API.Extras.Attributes;
+
 using P8B.Core.CSharp;
 
 using System;
@@ -17,6 +19,7 @@ namespace OSnack.API.Database.Models
 
       public string ExternalLinkedId { get; set; }
 
+      [EmailTemplateVariable(Name = "RegistrationType")]
       [Required(ErrorMessage = "Registration type is required \n")]
       public RegistrationTypes Type { get; set; }
 

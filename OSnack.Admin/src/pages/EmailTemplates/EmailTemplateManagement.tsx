@@ -4,7 +4,7 @@ import ButtonCard from 'osnack-frontend-shared/src/components/Buttons/ButtonCard
 import { EmailTemplate, EmailTemplateTypes } from 'osnack-frontend-shared/src/_core/apiModels';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Redirect } from 'react-router-dom';
-import { useAllEmail } from '../../SecretHooks/useEmailHook';
+import { useAllTemplateEmail } from '../../SecretHooks/useEmailHook';
 import Container from '../../components/Container';
 
 const EmailTemplatePanel = (props: IProps) => {
@@ -24,7 +24,7 @@ const EmailTemplatePanel = (props: IProps) => {
 
    const reloadTemplateList = () => {
       errorAlert.PleaseWait(500, isUnmounted);
-      useAllEmail().then(result => {
+      useAllTemplateEmail().then(result => {
          if (isUnmounted.current) return;
          errorAlert.clear();
          setTempList(result.data);
@@ -45,7 +45,7 @@ const EmailTemplatePanel = (props: IProps) => {
    return (
       <>
          <PageHeader title="Email Templates" className="line-header" />
-         <Container id="test" className="justify-content-center">
+         <Container id="test" className="justify-content-center p-0">
             <Alert alert={errorAlert.alert} onClosed={errorAlert.clear}
                className="col-12 mb-2" />
             <ButtonCard cardClassName="d-flex align-items-center" onClick={newTemplate}>
@@ -63,9 +63,9 @@ const EmailTemplatePanel = (props: IProps) => {
                            setRedirectToEditPage(true);
                         }}>
 
-                        <img id={`${temp.id}`} />
-                        <div className={`col ${temp.templateType != EmailTemplateTypes.Others ? "lock-icon" : "unlock-icon"}`}>
-                           {temp.name}
+                        <div className={`col-12`}>
+                           <div className={`col-12 ${temp.templateType != EmailTemplateTypes.Others ? "lock-icon" : "unlock-icon"}`} />
+                           {temp.name?.replace(/([A-Z])/g, ' $1')}
                         </div>
                      </ButtonCard>
                   );
