@@ -27,8 +27,8 @@ namespace OSnack.API.Controllers
       /// </summary>
       #region *** 200 OK, 417 ExpectationFailed ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [MultiResultPropertyNames(new string[] { "orderList", "totalCount" })]
-      [ProducesResponseType(typeof(MultiResult<List<Order>, int>), StatusCodes.Status200OK)]
+      [MultiResultPropertyNames(new string[] { "orderList", "availableTypes", "totalCount" })]
+      [ProducesResponseType(typeof(MultiResult<List<Order>, List<OrderStatusType>, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}")]
@@ -48,6 +48,12 @@ namespace OSnack.API.Controllers
                 //.CountAsync(c => searchValue.Equals(CoreConst.GetAllRecords) ? true : c. .Contains(searchValue))
                 .ConfigureAwait(false);
 
+            List<OrderStatusType> availebeStatusTypes = await _DbContext.Orders
+                          .Select(o => o.Status)
+                          .Distinct()
+                          .ToListAsync()
+                          .ConfigureAwait(false);
+
             List<Order> list = await _DbContext.Orders
                      .Where(r => filterStatus.Equals(CoreConst.GetAllRecords) ? true : r.Status.Equals((OrderStatusType)Enum.Parse(typeof(OrderStatusType), filterStatus, true)))
                 .OrderByDynamic(sortName, isSortAsce)
@@ -64,7 +70,8 @@ namespace OSnack.API.Controllers
 
                 .ToListAsync()
                 .ConfigureAwait(false);
-            return Ok(new MultiResult<List<Order>, int>(list, totalCount));
+            return Ok(new MultiResult<List<Order>, List<OrderStatusType>, int>(list, availebeStatusTypes, totalCount,
+               CoreFunc.GetCustomAttributeTypedArgument(this.ControllerContext)));
          }
          catch (Exception ex)
          {
@@ -78,8 +85,8 @@ namespace OSnack.API.Controllers
       /// </summary>
       #region ***  ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [MultiResultPropertyNames(new string[] { "orderList", "availableTypes", "totalCount" })]
-      [ProducesResponseType(typeof(MultiResult<List<Order>, List<OrderStatusType>, int>), StatusCodes.Status200OK)]
+      [MultiResultPropertyNames(new string[] { "orderList", "availableTypes", "fullName", "totalCount" })]
+      [ProducesResponseType(typeof(MultiResult<List<Order>, List<OrderStatusType>, string, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]/{userId}/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}")]
@@ -97,8 +104,8 @@ namespace OSnack.API.Controllers
       /// </summary>
       #region *** 200 OK, 417 ExpectationFailed ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [MultiResultPropertyNames(new string[] { "orderList", "availableTypes", "totalCount" })]
-      [ProducesResponseType(typeof(MultiResult<List<Order>, List<OrderStatusType>, int>), StatusCodes.Status200OK)]
+      [MultiResultPropertyNames(new string[] { "orderList", "availableTypes", "fullName", "totalCount" })]
+      [ProducesResponseType(typeof(MultiResult<List<Order>, List<OrderStatusType>, string, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}")]
@@ -141,7 +148,12 @@ namespace OSnack.API.Controllers
                 .Include(o => o.DeliveryOption)
                 .ToListAsync()
                 .ConfigureAwait(false);
-            return Ok(new MultiResult<List<Order>, List<OrderStatusType>, int>(list, availebeStatusTypes, totalCount, CoreFunc.GetCustomAttributeTypedArgument(this.ControllerContext)));
+
+            User user = _DbContext.Users.SingleOrDefault(u => u.Id == userId);
+
+            return Ok(new MultiResult<List<Order>, List<OrderStatusType>, string, int>
+               (list, availebeStatusTypes, $"{user.FirstName} {user.Surname}", totalCount,
+               CoreFunc.GetCustomAttributeTypedArgument(this.ControllerContext)));
          }
          catch (Exception ex)
          {

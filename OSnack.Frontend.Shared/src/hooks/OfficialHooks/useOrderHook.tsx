@@ -1,8 +1,8 @@
 import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
-import { OrderListAndAvailableTypesAndTotalCount, Order } from "../../_core/apiModels";
-export type IReturnUseAllOrder={ data:OrderListAndAvailableTypesAndTotalCount , status?: number;};
+import { OrderListAndAvailableTypesAndFullNameAndTotalCount, Order } from "../../_core/apiModels";
+export type IReturnUseAllOrder={ data:OrderListAndAvailableTypesAndFullNameAndTotalCount , status?: number;};
 export const useAllOrder = async (selectedPage: number, maxNumberPerItemsPage: number, filterStatus: string | null): Promise<IReturnUseAllOrder> =>{
         let url_ = API_URL + "/Order/Get/All/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}";
         if (selectedPage !== null && selectedPage !== undefined)
@@ -21,7 +21,7 @@ export const useAllOrder = async (selectedPage: number, maxNumberPerItemsPage: n
         switch(response?.status){
 
                 case 200: 
-                        var responseData: OrderListAndAvailableTypesAndTotalCount = await response?.json();
+                        var responseData: OrderListAndAvailableTypesAndFullNameAndTotalCount = await response?.json();
                         return { data: responseData, status: response?.status };
 
                 case 417: 

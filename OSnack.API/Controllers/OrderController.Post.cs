@@ -32,6 +32,35 @@ namespace OSnack.API.Controllers
       [Authorize(AppConst.AccessPolicies.Public)]
       public async Task<IActionResult> Post(string paypalId, [FromBody] Order orderData)
       {
+         async Task<Order> TryToSave(Order orderData, int tryCount)
+         {
+            try
+            {
+               orderData.Id = $"{CoreFunc.StringGenerator(3, 4, 0, 4, 0)}-{CoreFunc.StringGenerator(3, 4, 0, 4, 0)}";
+               await _DbContext.Orders.AddAsync(orderData).ConfigureAwait(false);
+               if (orderData.User != null)
+               {
+                  foreach (Address address in orderData.User.Addresses)
+                  {
+                     _DbContext.Entry(address).State = EntityState.Unchanged;
+                  }
+                  _DbContext.Entry(orderData.User).State = EntityState.Unchanged;
+               }
+               await _DbContext.SaveChangesAsync().ConfigureAwait(false);
+
+               return orderData;
+            }
+            catch (Exception ex)
+            {
+               _LoggingService.Log(Request.Path, AppLogType.OrderException, new { orderData, exception = ex }, User);
+               if (tryCount > 4)
+               {
+                  throw ex;
+               }
+               return await TryToSave(orderData, tryCount++);
+
+            }
+         }
          try
          {
             if (string.IsNullOrEmpty(paypalId))
@@ -45,7 +74,7 @@ namespace OSnack.API.Controllers
             {
                return UnprocessableEntity(ErrorsList);
             }
-            orderData.User = _DbContext.Users.AsTracking().SingleOrDefault(u => u.Id == AppFunc.GetUserId(User));
+            orderData.User = _DbContext.Users.SingleOrDefault(u => u.Id == AppFunc.GetUserId(User));
             orderData.Payment = new Payment()
             {
                PaymentProvider = "PayPal",
@@ -121,36 +150,6 @@ namespace OSnack.API.Controllers
          }
       }
 
-      private async Task<Order> TryToSave(Order orderData, int tryCount)
-      {
-
-         try
-         {
-            orderData.Id = $"{CoreFunc.StringGenerator(3, 4, 0, 4, 0)}-{CoreFunc.StringGenerator(3, 4, 0, 4, 0)}";
-            await _DbContext.Orders.AddAsync(orderData).ConfigureAwait(false);
-            if (orderData.User != null)
-            {
-               foreach (Address address in orderData.User.Addresses)
-               {
-                  _DbContext.Entry(address).State = EntityState.Unchanged;
-               }
-               _DbContext.Entry(orderData.User).State = EntityState.Unchanged;
-            }
-            await _DbContext.SaveChangesAsync().ConfigureAwait(false);
-
-            return orderData;
-         }
-         catch (Exception ex)
-         {
-            _LoggingService.Log(Request.Path, AppLogType.OrderException, new { orderData, exception = ex }, User);
-            if (tryCount > 4)
-            {
-               throw ex;
-            }
-            return await TryToSave(orderData, tryCount++);
-
-         }
-      }
 
       private async Task<Order> CheckOrderDetail(Order orderData)
       {

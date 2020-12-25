@@ -215,7 +215,7 @@ const Checkout = (props: IProps) => {
                <div className="col-12 pm-0 small-text"> Subtotal : <b>£{order.totalItemPrice?.toFixed(2)}</b></div>
                {order.totalDiscount > 0 &&
                   <div className="col-12 pm-0 pb-2 small-text"> Discount : <b>-£{parseFloat(order.totalDiscount.toString()).toFixed(2)}</b>
-                     <span className="float-right edit-icon" onClick={() => { setOrder(prev => { return { ...prev, totalDiscount: 0 }; }); }} /></div>
+                     <span className="float-right edit-icon" onClick={() => { setOrder(prev => { return { ...prev, totalDiscount: 0 }; }); recalculateBasket(deliveryOptionList, order.deliveryOption, new Coupon()); }} /></div>
                }
                <DropDown title={<><span>Shipping: <b>{order.deliveryOption?.name} £{order.deliveryOption?.price?.toFixed(2)}</b></span> <span className="float-right edit-icon" /></>}
                   titleClassName="text-left small-text"

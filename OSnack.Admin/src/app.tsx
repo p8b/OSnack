@@ -15,6 +15,7 @@ const CategoryManagement = lazy(() => import("./pages/CategoryManagement/Categor
 const CouponManagement = lazy(() => import("./pages/CouponManagement/CouponManagement"));
 const ProductManagement = lazy(() => import("./pages/ProductManagement/ProductManagement"));
 const UserManagement = lazy(() => import("./pages/UserManagement/UserManagement"));
+const OrderManagement = lazy(() => import("./pages/Order/OrderManagement"));
 const PageNotFound = lazy(() => import("osnack-frontend-shared/src/pages/PageNotFound"));
 const ConfirmEmail = lazy(() => import("osnack-frontend-shared/src/pages/ConfirmEmail"));
 const PasswordReset = lazy(() => import("osnack-frontend-shared/src/pages/PasswordReset"));
@@ -40,13 +41,14 @@ const App = () => {
                      {/***** Protected Routes  ****/}
                      <CustomRoute authenticate={useSilentSecretAuthentication} exact AuthRequired path="/" Render={(props: any) => <Dashboard {...props} />} />
                      <CustomRoute authenticate={useSilentSecretAuthentication} exact AuthRequired path="/MyAccount" Render={(props: any) => <MyAccount {...props} />} />
-                     <CustomRoute authenticate={useSilentSecretAuthentication} exact AuthRequired path="/Categories" Render={(props: any) => <CategoryManagement {...props} />} />
-                     <CustomRoute authenticate={useSilentSecretAuthentication} exact AuthRequired path="/Coupons" Render={(props: any) => <CouponManagement {...props} />} />
-                     <CustomRoute authenticate={useSilentSecretAuthentication} exact AuthRequired path="/Products" Render={(props: any) => <ProductManagement {...props} />} />
+                     <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="/Categories" Render={(props: any) => <CategoryManagement {...props} />} />
+                     <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="/Coupons" Render={(props: any) => <CouponManagement {...props} />} />
+                     <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="/Products" Render={(props: any) => <ProductManagement {...props} />} />
                      <CustomRoute authenticate={useSilentSecretAuthentication} exact AuthRequired path="/EmailTemplate" Render={(props: any) => <EmailTemplateManagement {...props} />} />
                      <CustomRoute authenticate={useSilentSecretAuthentication} exact AuthRequired path="/EmailTemplate/Edit" Render={(props: any) => <EmailTemplateEdit {...props} />} />
-                     <CustomRoute authenticate={useSilentSecretAuthentication} exact AuthRequired path="/Users" Render={(props: any) => <UserManagement {...props} />} />
+                     <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="/Users" Render={(props: any) => <UserManagement {...props} />} />
                      <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="/ViewUserOrders" Render={(props: any) => <ViewUserOrders {...props} />} />
+                     <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="/Orders" Render={(props: any) => <OrderManagement {...props} />} />
 
                      {/***** Route Not Found  ****/}
                      <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="*" Render={(props: any) => <PageNotFound {...props} />} />

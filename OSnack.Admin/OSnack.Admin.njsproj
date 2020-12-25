@@ -196,6 +196,7 @@
     <TypeScriptCompile Include="src\pages\EmailTemplates\EmailTemplateEdit.tsx" />
     <TypeScriptCompile Include="src\pages\LoginPage\LoginPage.tsx" />
     <TypeScriptCompile Include="src\pages\MyAccount\MyAccount.tsx" />
+    <TypeScriptCompile Include="src\pages\Order\OrderManagement.tsx" />
     <TypeScriptCompile Include="src\pages\Order\ViewUserOrders.tsx" />
     <TypeScriptCompile Include="src\pages\ProductManagement\ProductManagement.tsx" />
     <TypeScriptCompile Include="src\pages\ProductManagement\ProductNutritionalInfoModal.tsx" />
@@ -205,6 +206,7 @@
     <TypeScriptCompile Include="src\SecretHooks\useAuthenticationHook.tsx" />
     <TypeScriptCompile Include="src\SecretHooks\useCategoryHook.tsx" />
     <TypeScriptCompile Include="src\SecretHooks\useCouponHook.tsx" />
+    <TypeScriptCompile Include="src\SecretHooks\useEmailHook.tsx" />
     <TypeScriptCompile Include="src\SecretHooks\useOrderHook.tsx" />
     <TypeScriptCompile Include="src\SecretHooks\useProductHook.tsx" />
     <TypeScriptCompile Include="src\SecretHooks\useRoleHook.tsx" />

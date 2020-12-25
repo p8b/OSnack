@@ -5,7 +5,7 @@ const Pagination = (props: IProps) => {
    const [totalPages, setTotalPages] = useState(1);
 
    const onMaxItemPerPageChange = async (MaxItemsPerPage: number) => {
-      props.onChange(props.selectedPage, MaxItemsPerPage);
+      props.onChange(1, MaxItemsPerPage);
    };
 
    const onPageAddOrMinus = (AddPage: number) => {

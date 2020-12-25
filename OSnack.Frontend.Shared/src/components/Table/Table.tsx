@@ -21,17 +21,14 @@ const Table = (props: IProps) => {
    const sizeChange = () => {
       if (window.screen.width <= 650)
          setCurrentViews(TableView.CardView);
+      else
+         setCurrentViews(TableView.RowView);
 
    };
 
    useEffect(() => {
       setSelectedSortName(props.defaultSortName);
    }, [props.defaultSortName]);
-
-
-   useEffect(() => {
-      setCurrentViews(props.view || TableView.CardView);
-   }, []);
 
    const sort = (sortName: string) => {
       if (selectedSortName === sortName) {
@@ -60,7 +57,7 @@ const Table = (props: IProps) => {
                   className="col-12  col-md-auto pm-0 pb-0 "
                   titleClassName={`btn ${!isSortAsc ? "sort-numeric-down-icon" : "sort-numeric-up-icon"}`}>
                   {props.data.headers.filter(h => h.isSortable).map(header =>
-                     <button className={`dropdown-item ${getSortedColCss(header.sortName)}`} onClick={() => { sort(header.sortName); }}>
+                     <button key={Math.random()} className={`dropdown-item ${getSortedColCss(header.sortName)}`} onClick={() => { sort(header.sortName); }}>
                         {header.name}
                      </button>
                   )}

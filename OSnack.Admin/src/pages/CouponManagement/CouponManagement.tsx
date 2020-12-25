@@ -12,9 +12,12 @@ import Pagination from 'osnack-frontend-shared/src/components/Pagination/Paginat
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
 import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRowButtons';
+import { useHistory } from 'react-router-dom';
+import { checkUri, generateUri } from 'osnack-frontend-shared/src/_core/appFunc';
 
 const CouponManagement = (props: IProps) => {
    const isUnmounted = useRef(false);
+   const history = useHistory();
    const errorAlert = useAlert(new AlertObj());
    const [searchValue, setSearchValue] = useState("");
    const [selectedFilterType, setSelectedfilterType] = useState(GetAllRecords);
@@ -29,35 +32,44 @@ const CouponManagement = (props: IProps) => {
    const [tblMaxItemsPerPage, setTblMaxItemsPerPage] = useState(ConstMaxNumberOfPerItemsPage);
 
    useEffect(() => {
-      onSearch();
+      onSearch(...checkUri(window.location.pathname,
+         [tblSelectedPage, tblMaxItemsPerPage, selectedFilterType, tblIsSortAsc, tblSortName, GetAllRecords]));
       return () => { isUnmounted.current = true; };
    }, []);
 
    const onSearch = (
-      isSortAsc = tblIsSortAsc,
-      sortName = tblSortName,
       selectedPage = tblSelectedPage,
       maxItemsPerPage = tblMaxItemsPerPage,
       filterType = selectedFilterType,
+      isSortAsc = tblIsSortAsc,
+      sortName = tblSortName,
+      searchString = GetAllRecords
    ) => {
-      let searchString = GetAllRecords;
-
       if (searchValue != null && searchValue != "")
          searchString = searchValue;
+      if (searchString != GetAllRecords)
+         setSearchValue(searchString);
 
       if (isSortAsc != tblIsSortAsc)
          setTblIsSortAsc(isSortAsc);
-
       if (sortName != tblSortName)
          setTblsortName(sortName);
 
-      if (selectedPage != tblSelectedPage)
-         setTblSelectedPage(selectedPage);
+      if (Number(filterType) == -1)
+         filterType = GetAllRecords;
       if (filterType != selectedFilterType)
          setSelectedfilterType(filterType);
 
+      if (selectedPage != tblSelectedPage)
+         setTblSelectedPage(selectedPage);
       if (maxItemsPerPage != tblMaxItemsPerPage)
          setTblMaxItemsPerPage(maxItemsPerPage);
+
+      history.push(generateUri(window.location.pathname,
+         [selectedPage || tblSelectedPage,
+            maxItemsPerPage, filterType == GetAllRecords ? -1 : filterType,
+         Number(isSortAsc), sortName, searchString != GetAllRecords ? searchString : ""]));
+
 
       errorAlert.PleaseWait(500, isUnmounted);
       useSearchCoupon(selectedPage, maxItemsPerPage, searchString, filterType, isSortAsc, sortName).then(
@@ -121,7 +133,7 @@ const CouponManagement = (props: IProps) => {
                value={searchValue}
                onChange={i => setSearchValue(i.target.value)}
                className="col-12 col-md-9"
-               onSearch={() => { onSearch(tblIsSortAsc, tblSortName); }}
+               onSearch={() => { onSearch(1); }}
             />
 
             <Button children={<span className="add-icon" children="Coupon" />}
@@ -134,12 +146,12 @@ const CouponManagement = (props: IProps) => {
                   className="col-12 col-sm-6 col-md-4 ml-auto m-0 p-1"
                   titleClassName="btn btn-white filter-icon">
                   <button className="dropdown-item"
-                     onClick={() => { onSearch(undefined, undefined, undefined, undefined, GetAllRecords); }} >
+                     onClick={() => { onSearch(1, undefined, GetAllRecords); }} >
                      All
                   </button>
                   {CouponTypeList.map(couponType =>
                      <button className="dropdown-item" key={couponType.Id}
-                        onClick={() => { onSearch(undefined, undefined, undefined, undefined, couponType.Id?.toString()); }} >
+                        onClick={() => { onSearch(1, undefined, couponType.Id?.toString()); }} >
                         {couponType.Name}
                      </button>
                   )}
@@ -153,24 +165,26 @@ const CouponManagement = (props: IProps) => {
             </div>
 
             {/***** Category Table  ****/}
-            <div className="row col-12 pm-0">
-               <Table className="col-12 text-center table-striped mt-4"
-                  defaultSortName={tblSortName}
-                  data={tableData}
-                  onSortClick={onSearch}
-                  listCount={tblTotalItemCount}
-               />
-               <Pagination
-                  maxItemsPerPage={tblMaxItemsPerPage}
-                  selectedPage={tblSelectedPage}
-                  onChange={(selectedPage, maxItemsPerPage) => { onSearch(tblIsSortAsc, tblSortName, selectedPage, maxItemsPerPage); }}
-                  listCount={tblTotalItemCount}
-               />
-            </div>
+            {tblTotalItemCount > 0 &&
+               <div className="row col-12 pm-0">
+                  <Table className="col-12 text-center table-striped mt-4"
+                     defaultSortName={tblSortName}
+                     data={tableData}
+                     onSortClick={(isSortAsce, sortName) => onSearch(undefined, undefined, undefined, isSortAsce, sortName)}
+                     listCount={tblTotalItemCount}
+                  />
+                  <Pagination
+                     maxItemsPerPage={tblMaxItemsPerPage}
+                     selectedPage={tblSelectedPage}
+                     onChange={(selectedPage, maxItemsPerPage) => { onSearch(selectedPage, maxItemsPerPage); }}
+                     listCount={tblTotalItemCount}
+                  />
+               </div>
+            }
 
             {/***** Add/ modify category modal  ****/}
             <CouponModel isOpen={isOpenCouponModal}
-               onSuccess={() => { resetCategoryModal(); onSearch(tblIsSortAsc, tblSortName); }}
+               onSuccess={() => { resetCategoryModal(); onSearch(); }}
                coupon={selectedCoupon}
                onClose={resetCategoryModal} />
          </Container>

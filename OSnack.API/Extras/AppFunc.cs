@@ -86,7 +86,7 @@ namespace OSnack.API.Extras
                string simpleModels = "";
                string extendedModels = "";
                string enums = "";
-               foreach (var modelType in tg.GetAllDtoTypes())
+               foreach (var modelType in tg.GetAllDtoTypes().OrderBy(t => t.TypeName.Length))
                {
                   if (modelType.TypeName != "ErrorDto" && modelType.TypeName != "ProblemDetails")
                   {

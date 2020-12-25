@@ -239,3 +239,33 @@ export const getBadgeByOrderStatusType = (type: OrderStatusType) => {
          return "";
    }
 };
+
+export const extractUri = (pathName: string) => {
+   return pathName.split('/').filter(val => val.length > 0);
+};
+
+export const checkUri = (patheName: string, defualtValues: any[]) => {
+   let result: any[] = [];
+   defualtValues.map((value, index) => {
+      switch (typeof value) {
+         case "number":
+            result.push(Number(extractUri(patheName)[index + 1]) || value);
+            break;
+         case "string":
+            result.push(extractUri(patheName)[index + 1] || value);
+            break;
+         case "boolean":
+            result.push(extractUri(patheName)[index + 1] == undefined ? value : extractUri(window.location.pathname)[index + 1] === '1');
+            break;
+         default:
+            throw "Type is not Valid uri parameter.";
+      }
+   });
+   return result;
+};
+
+export const generateUri = (patheName: string, values: any[]) => {
+   let uri = `/${extractUri(patheName)[0]}`;
+   values.map(value => uri += `/${value}`);
+   return uri;
+};

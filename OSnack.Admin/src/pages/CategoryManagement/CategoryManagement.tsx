@@ -11,9 +11,12 @@ import { ConstMaxNumberOfPerItemsPage, GetAllRecords } from 'osnack-frontend-sha
 import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRowButtons';
+import { useHistory } from 'react-router-dom';
+import { checkUri, generateUri } from 'osnack-frontend-shared/src/_core/appFunc';
 
 const CategoryManagement = (props: IProps) => {
    const isUnmounted = useRef(false);
+   const history = useHistory();
    const errorAlert = useAlert(new AlertObj());
    const [searchValue, setSearchValue] = useState("");
    const [selectedCategory, setSelectedCategory] = useState(new Category());
@@ -27,20 +30,23 @@ const CategoryManagement = (props: IProps) => {
    const [tblMaxItemsPerPage, setTblMaxItemsPerPage] = useState(ConstMaxNumberOfPerItemsPage);
 
    useEffect(() => {
-      onSearch();
+      onSearch(...checkUri(window.location.pathname,
+         [tblSelectedPage, tblMaxItemsPerPage, tblIsSortAsc, tblSortName, GetAllRecords]));
       return () => { isUnmounted.current = true; };
    }, []);
 
    const onSearch = (
+      selectedPage = tblSelectedPage,
+      maxItemsPerPage = tblMaxItemsPerPage,
       isSortAsc = tblIsSortAsc,
       sortName = tblSortName,
-      selectedPage = tblSelectedPage,
-      maxItemsPerPage = tblMaxItemsPerPage
+      searchString = GetAllRecords
    ) => {
-      let searchString = GetAllRecords;
 
       if (searchValue != null && searchValue != "")
          searchString = searchValue;
+      if (searchString != GetAllRecords)
+         setSearchValue(searchString);
 
       if (isSortAsc != tblIsSortAsc)
          setTblIsSortAsc(isSortAsc);
@@ -53,6 +59,10 @@ const CategoryManagement = (props: IProps) => {
 
       if (maxItemsPerPage != tblMaxItemsPerPage)
          setTblMaxItemsPerPage(maxItemsPerPage);
+
+      history.push(generateUri(window.location.pathname,
+         [selectedPage || tblSelectedPage,
+            maxItemsPerPage, Number(isSortAsc), sortName, searchString != GetAllRecords ? searchString : ""]));
 
       errorAlert.PleaseWait(500, isUnmounted);
       useSearchCategory(selectedPage, maxItemsPerPage, searchString, isSortAsc, sortName).then(
@@ -108,7 +118,7 @@ const CategoryManagement = (props: IProps) => {
                value={searchValue}
                onChange={i => setSearchValue(i.target.value)}
                className="col-12 col-md-9"
-               onSearch={() => { onSearch(tblIsSortAsc, tblSortName); }}
+               onSearch={() => { onSearch(1); }}
             />
 
             <Button children={<span className="add-icon" children="Category" />}
@@ -122,24 +132,26 @@ const CategoryManagement = (props: IProps) => {
             />
 
             {/***** Category Table  ****/}
-            <div className="row col-12 pm-0">
-               <Table className="col-12 text-center table-striped mt-4"
-                  defaultSortName={tblSortName}
-                  data={tableData}
-                  onSortClick={onSearch}
-                  listCount={tblTotalItemCount}
-               />
-               <Pagination
-                  maxItemsPerPage={tblMaxItemsPerPage}
-                  selectedPage={tblSelectedPage}
-                  listCount={tblTotalItemCount}
-                  onChange={(selectedPage, maxItemsPerPage) => { onSearch(tblIsSortAsc, tblSortName, selectedPage, maxItemsPerPage); }}
-               />
-            </div>
+            {tblTotalItemCount > 0 &&
+               <div className="row col-12 pm-0">
+                  <Table className="col-12 text-center table-striped mt-4"
+                     defaultSortName={tblSortName}
+                     data={tableData}
+                     onSortClick={(isSortAsce, sortName) => onSearch(undefined, undefined, isSortAsce, sortName)}
+                     listCount={tblTotalItemCount}
+                  />
+                  <Pagination
+                     maxItemsPerPage={tblMaxItemsPerPage}
+                     selectedPage={tblSelectedPage}
+                     listCount={tblTotalItemCount}
+                     onChange={(selectedPage, maxItemsPerPage) => { onSearch(selectedPage, maxItemsPerPage); }}
+                  />
 
+               </div>
+            }
             {/***** Add/ modify category modal  ****/}
             <CategoryModal isOpen={isOpenCategoryModal}
-               onSuccess={() => { resetCategoryModal(); onSearch(tblIsSortAsc, tblSortName); }}
+               onSuccess={() => { resetCategoryModal(); onSearch(); }}
                category={selectedCategory}
                onClose={resetCategoryModal} />
          </Container>
