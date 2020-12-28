@@ -155,13 +155,7 @@ namespace OSnack.API.Controllers
       {
 
 
-         if (orderData.DeliveryOption.Price == 0
-            && orderData.DeliveryOption.MinimumOrderTotal > orderData.TotalPrice
-            && orderData.DeliveryOption.IsPremitive)
-         {
-            CoreFunc.Error(ref ErrorsList, $"You do not meet the free delivery requirement of £{orderData.DeliveryOption.MinimumOrderTotal}");
-            return null;
-         }
+
 
          Address currentAddress = await _DbContext.Addresses.Include(a => a.User)
           .SingleOrDefaultAsync(a => a.Id == orderData.AddressId && a.User.Id == AppFunc.GetUserId(User));
@@ -239,6 +233,14 @@ namespace OSnack.API.Controllers
             CheckedOrderItems.Add(new OrderItem(originalProduct, orderItem.Quantity));
 
 
+         }
+
+         if (orderData.DeliveryOption.Price == 0
+            && orderData.DeliveryOption.MinimumOrderTotal > orderData.TotalItemPrice
+            && orderData.DeliveryOption.IsPremitive)
+         {
+            CoreFunc.Error(ref ErrorsList, $"You do not meet the free delivery requirement of £{orderData.DeliveryOption.MinimumOrderTotal}");
+            return null;
          }
 
          //Check coupon

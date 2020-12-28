@@ -21,6 +21,8 @@ namespace OSnack.API.Database.Models
    public class Order : OrderAddressBase
    {
       [Key]
+      [Column(TypeName = "nvarchar(7)")]
+      [StringLength(7, ErrorMessage = "Must be less than 7 Characters \n")]
       [EmailTemplateVariable(Name = "OrderNumber")]
       public string Id { get; set; }
 
@@ -31,8 +33,11 @@ namespace OSnack.API.Database.Models
       [Required(ErrorMessage = "Status is required \n")]
       public OrderStatusType Status { get; set; }
 
-      [Required(ErrorMessage = "Status is required \n")]
+      // [Required(ErrorMessage = "Delivery Option is required \n")]
       public DeliveryOption DeliveryOption { get; set; }
+
+      [InverseProperty("Order")]
+      public Communication Dispute { get; set; }
 
 
       [DataType(DataType.Currency, ErrorMessage = "Invalid Currency \n")]
@@ -50,15 +55,7 @@ namespace OSnack.API.Database.Models
       [StringLength(100, ErrorMessage = "Must be less than 100 Characters \n")]
       public string ShippingReference { get; set; }
 
-      [Column(TypeName = "nvarchar(100)")]
-      [StringLength(100, ErrorMessage = "Must be less than 100 Characters \n")]
-      public string Message { get; set; }
-
-      /// <summary>
-      /// <b>Json Ignore</b>
-      /// </summary>
       [ForeignKey("UserId")]
-      [JsonIgnore]
       public User User { get; set; }
 
       [Column(Order = 0)]
@@ -109,9 +106,10 @@ namespace OSnack.API.Database.Models
          {
             (OrderStatusType.InProgress, OrderStatusType.Confirmed) => true,
             (OrderStatusType.InProgress, OrderStatusType.Canceled) => true,
-            (OrderStatusType.RefundRequest, OrderStatusType.RefundRefused) => true,
-            (OrderStatusType.RefundRequest, OrderStatusType.FullyRefunded) => true,
-            (OrderStatusType.RefundRequest, OrderStatusType.PartialyRefunded) => true,
+            (OrderStatusType.Delivered, OrderStatusType.FullyRefunded) => true,
+            (OrderStatusType.Delivered, OrderStatusType.PartialyRefunded) => true,
+            (OrderStatusType.Confirmed, OrderStatusType.PartialyRefunded) => true,
+            (OrderStatusType.Confirmed, OrderStatusType.FullyRefunded) => true,
             (OrderStatusType.Confirmed, OrderStatusType.Delivered) => true,
             (_, _) => false
          };
@@ -142,7 +140,7 @@ namespace OSnack.API.Database.Models
                   TotalDiscount = Coupon.DiscountAmount;
                   break;
                case CouponType.PercentageOfTotal:
-                  TotalDiscount = ((Coupon.DiscountAmount * TotalItemPrice) / 100);
+                  TotalDiscount = Math.Round(((Coupon.DiscountAmount * TotalItemPrice) / 100), 2);
                   break;
                default:
                   break;

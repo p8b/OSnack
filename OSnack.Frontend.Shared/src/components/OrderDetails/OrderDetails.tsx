@@ -78,7 +78,7 @@ const OrderDetails = (props: IProps) => {
 
                <div className="row col-12 pm-0 ">
                   <div className="col-8 pm-0  small-text text-gray">Shippment Price:</div>
-                  <div className="col-4 small-text p-0">{props.order.deliveryOption?.price === 0 ? "Free" : `£${props.order.deliveryOption?.price}`}</div>
+                  <div className="col-4 small-text p-0">{props.order.shippingPrice === 0 ? "Free" : `£${props.order.shippingPrice}`}</div>
                </div>
                {props.order.totalDiscount > 0 &&
                   <div className="row col-12 pm-0">

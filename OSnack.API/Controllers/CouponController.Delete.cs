@@ -37,13 +37,6 @@ namespace OSnack.API.Controllers
                return NotFound(ErrorsList);
             }
 
-            if (await _DbContext.Orders.AnyAsync(c => c.Coupon.Code == coupon.Code)
-                           .ConfigureAwait(false))
-            {
-               CoreFunc.Error(ref ErrorsList, "Coupon is in use by at least one Order.");
-               return StatusCode(412, ErrorsList);
-            }
-
             _DbContext.Coupons.Remove(coupon);
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
 

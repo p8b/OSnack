@@ -21,15 +21,15 @@ namespace OSnack.API.Database.Models
       public User() => UserName = $"p8b{new Random().Next(0, 99)}";
 
       [EmailTemplateVariable(Name = "FirstName")]
-      [Column(TypeName = "nvarchar(256)")]
+      [Column(TypeName = "nvarchar(100)")]
       [Required(ErrorMessage = "Name Required \n")]
-      [StringLength(256, ErrorMessage = "Name must be less than 256 Characters \n")]
+      [StringLength(100, ErrorMessage = "Name must be less than 100 Characters \n")]
       public string FirstName { get; set; }
 
       [EmailTemplateVariable(Name = "Surname")]
-      [Column(TypeName = "nvarchar(256)")]
+      [Column(TypeName = "nvarchar(100)")]
       [Required(ErrorMessage = "Surname Required \n")]
-      [StringLength(256, ErrorMessage = "Surname must be less than 256 Characters \n")]
+      [StringLength(100, ErrorMessage = "Surname must be less than 100 Characters \n")]
       public string Surname { get; set; }
 
       [Required(ErrorMessage = "Role Required \n")]

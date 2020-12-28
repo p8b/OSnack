@@ -116,7 +116,7 @@ namespace OSnack.API.Controllers
                         Value = originalOrder.TotalPrice.ToString("0.00")
                      },
 
-                     NoteToPayer = modifiedOrder.Message
+                     NoteToPayer = modifiedOrder.Dispute.Messages[0].Body
                   };
                   var request = new CapturesRefundRequest(originalOrder.Payment.Reference);
                   request.Prefer("return=representation");
@@ -124,7 +124,7 @@ namespace OSnack.API.Controllers
                   var response = await PayPalClient.client().Execute(request);
                   originalOrder.Payment.RefundAmount = originalOrder.TotalPrice;
                   originalOrder.Payment.Type = PaymentType.FullyRefunded;
-                  originalOrder.Message = modifiedOrder.Message;
+                  originalOrder.Dispute = modifiedOrder.Dispute;
                   await RestoreItemToProductQuantity(originalOrder);
                }
                catch (Exception ex)

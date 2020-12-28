@@ -10,6 +10,16 @@ export const CouponTypeList=[
 {Id:1,Name:"DiscountPrice".replace(/([A-Z])/g, ' $1').trim(),Value:CouponType.DiscountPrice},
 {Id:2,Name:"PercentageOfTotal".replace(/([A-Z])/g, ' $1').trim(),Value:CouponType.PercentageOfTotal},
 ]
+export enum ContactType {
+
+    Dispute = 0,
+    Question = 1,
+}
+
+export const ContactTypeList=[
+{Id:0,Name:"Dispute".replace(/([A-Z])/g, ' $1').trim(),Value:ContactType.Dispute},
+{Id:1,Name:"Question".replace(/([A-Z])/g, ' $1').trim(),Value:ContactType.Question},
+]
 export enum PaymentType {
 
     Complete = 0,
@@ -30,10 +40,8 @@ export enum OrderStatusType {
     Confirmed = 1,
     Canceled = 2,
     Delivered = 3,
-    RefundRequest = 4,
-    RefundRefused = 5,
-    PartialyRefunded = 6,
-    FullyRefunded = 7,
+    PartialyRefunded = 4,
+    FullyRefunded = 5,
 }
 
 export const OrderStatusTypeList=[
@@ -41,10 +49,8 @@ export const OrderStatusTypeList=[
 {Id:1,Name:"Confirmed".replace(/([A-Z])/g, ' $1').trim(),Value:OrderStatusType.Confirmed},
 {Id:2,Name:"Canceled".replace(/([A-Z])/g, ' $1').trim(),Value:OrderStatusType.Canceled},
 {Id:3,Name:"Delivered".replace(/([A-Z])/g, ' $1').trim(),Value:OrderStatusType.Delivered},
-{Id:4,Name:"RefundRequest".replace(/([A-Z])/g, ' $1').trim(),Value:OrderStatusType.RefundRequest},
-{Id:5,Name:"RefundRefused".replace(/([A-Z])/g, ' $1').trim(),Value:OrderStatusType.RefundRefused},
-{Id:6,Name:"PartialyRefunded".replace(/([A-Z])/g, ' $1').trim(),Value:OrderStatusType.PartialyRefunded},
-{Id:7,Name:"FullyRefunded".replace(/([A-Z])/g, ' $1').trim(),Value:OrderStatusType.FullyRefunded},
+{Id:4,Name:"PartialyRefunded".replace(/([A-Z])/g, ' $1').trim(),Value:OrderStatusType.PartialyRefunded},
+{Id:5,Name:"FullyRefunded".replace(/([A-Z])/g, ' $1').trim(),Value:OrderStatusType.FullyRefunded},
 ]
 export enum ProductUnitType {
 
@@ -225,6 +231,13 @@ export class Payment {
     refundAmount?: number;
 
 }
+export class Message {
+    id?: number = 0;
+    date?: Date;
+    fullName?: string | undefined;
+    body?: string | undefined;
+
+}
 export class TaxInfo {
     tax_id?: string | undefined;
     tax_id_type?: string | undefined;
@@ -294,6 +307,16 @@ export class PurchaseUnit {
     reference_id?: string | undefined;
     shipping?: ShippingDetail | undefined;
     soft_descriptor?: string | undefined;
+
+}
+export class Communication {
+    id?: string | undefined;
+    type!: ContactType;
+    isOpen?: boolean;
+    email!: string;
+    phoneNumber?: string | undefined;
+    order?: Order | undefined;
+    messages?: Message[] | undefined;
 
 }
 export class EmailTemplate {
@@ -493,6 +516,11 @@ export class CouponListAndTotalCount {
     totalCount?: number;
 
 }
+export class ContactListAndTotalCount {
+    contactList?: Communication[] | undefined;
+    totalCount?: number;
+
+}
 export class EmailTemplateServerClass {
     value?: EmailTemplateClassNames;
     classProperties?: ClassProperty[] | undefined;
@@ -562,11 +590,12 @@ export class Order extends OrderAddressBase {
     id?: string | undefined;
     date?: Date;
     status!: OrderStatusType;
-    deliveryOption: DeliveryOption = new DeliveryOption();
+    deliveryOption?: DeliveryOption | undefined;
+    dispute?: Communication | undefined;
     deliveryPrice?: number;
     addressId!: number;
     shippingReference?: string | undefined;
-    message?: string | undefined;
+    user?: User | undefined;
     userId?: number | undefined;
     payment: Payment = new Payment();
     coupon?: Coupon | undefined;

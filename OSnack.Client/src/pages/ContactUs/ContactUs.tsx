@@ -1,28 +1,83 @@
-﻿
-import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
+﻿import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import { Input } from 'osnack-frontend-shared/src/components/Inputs/Input';
 import { TextArea } from 'osnack-frontend-shared/src/components/Inputs/TextArea';
+import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
-import React from 'react';
+import { Communication } from 'osnack-frontend-shared/src/_core/apiModels';
+import { AuthContext } from 'osnack-frontend-shared/src/_core/authenticationContext';
+import React, { useContext, useRef, useState } from 'react';
 import Container from '../../components/Container';
+import { usePostQuestionCommunication } from "osnack-frontend-shared/src/hooks/PublicHooks/useCommunicationHook";
+import { CommonRegex } from 'osnack-frontend-shared/src/_core/constant.Variables';
+
 const ContactUs = (props: IProps) => {
+   const isUnmounted = useRef(false);
+   const auth = useContext(AuthContext);
+   const errorAlert = useAlert(new AlertObj());
+   const [contact, setContact] = useState(new Communication());
+   const [message, setMessage] = useState("");
+   const [fullName, setFullName] = useState("");
+   const [showSuccess, setShowSuccess] = useState(false);
+
+
+   const sendMessage = () => {
+      errorAlert.PleaseWait(500, isUnmounted);
+      contact.messages = [{ body: message, fullName: fullName }];
+      usePostQuestionCommunication(contact)
+         .then((result) => {
+            if (isUnmounted.current) return;
+
+            errorAlert.setSingleSuccess("submit", result.data);
+            setShowSuccess(true);
+
+         }).catch(alert => {
+            if (isUnmounted.current) return;
+            errorAlert.set(alert);
+         });
+   };
+
    return (
       <Container>
          <PageHeader title="Get In Touch!" />
+
          <div className="row justify-content-center">
             <div className="col-12 col-md-6 pm-0 bg-white mb-3 pt-3 pb-3">
-               <div className="col-12 mt-auto mb-auto text-center">
-                  <div className="h2" children="Contact Us!" />
-                  <a className="col-12 phone-icon" children=" 07865690055" href="tel:07865690055" />
-                  <a className="col-12 email-icon" children=" osnack.cs@gmail.com" href="mailto:osnack.cs@gmail.com" />
-               </div>
-               <Input className="col-12" label="Name*" value="" onChange={(val) => { }} />
-               <Input className="col-12" label="Email*" value="" onChange={(val) => { }} />
-               <Input className="col-12" label="Subject" value="" onChange={(val) => { }} />
-               <TextArea className="col-12" label="Message*" rows={3} value="" onChange={(val) => { }} />
-               <div className="col-12 mt-3">
-                  <Button className="w-100 btn-lg btn-green" children="Send" />
-               </div>
+               <Alert className="col-12 mb-2"
+                  alert={errorAlert.alert}
+                  onClosed={() => { errorAlert.clear(); }} />
+               {!showSuccess &&
+                  <>
+                     <div className="col-12 mt-auto mb-auto text-center">
+                        <div className="h2" children="Contact Us!" />
+                        <a className="col-12 phone-icon" children=" 07865690055" href="tel:07865690055" />
+                        <a className="col-12 email-icon" children=" osnack.cs@gmail.com" href="mailto:osnack.cs@gmail.com" />
+                     </div>
+                     {!auth.state.isAuthenticated &&
+                        <>
+                           < Input className="col-12" label="Name*"
+                              value={fullName} onChange={(i) => { setFullName(i.target.value); }}
+                           />
+                           <Input className="col-12" label="Email*"
+                              value={contact.email} onChange={(i) => { setContact({ ...contact, email: i.target.value }); }}
+                           />
+                           <Input label="Phone Number"
+                              className="col-12"
+                              type="text"
+                              value={contact.phoneNumber || undefined}
+                              showDanger={errorAlert.checkExist("phoneNumber")}
+                              validationPattern={CommonRegex.UkNumber}
+                              onChange={i => setContact({ ...contact, phoneNumber: i.target.value })}
+                           />
+                        </>
+                     }
+
+                     <TextArea className="col-12" label="Message*" rows={3} value={message}
+                        onChange={(i) => { setMessage(i.target.value); }} />
+                     <div className="col-12 mt-3">
+                        <Button className="w-100 btn-lg btn-green" children="Send" onClick={sendMessage} />
+                     </div>
+                  </>
+               }
             </div>
             <div className="col-12 col-md-6 text-center pm-0 mt-2 mb-3 pt-3 pb-3">
                <div className="col-12 pm-0 pos-sticky">

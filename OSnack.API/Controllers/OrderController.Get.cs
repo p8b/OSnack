@@ -59,9 +59,17 @@ namespace OSnack.API.Controllers
       {
          try
          {
-            int totalCount = await _DbContext.Orders
-                .CountAsync(r => filterStatus.Equals(CoreConst.GetAllRecords) ? true : r.Status.Equals((OrderStatusType)Enum.Parse(typeof(OrderStatusType), filterStatus, true)))
-                //.CountAsync(c => searchValue.Equals(CoreConst.GetAllRecords) ? true : c. .Contains(searchValue))
+            int totalCount = await _DbContext.Orders.Include(o => o.User).Include(o => o.Payment)
+                .Where(r => filterStatus.Equals(CoreConst.GetAllRecords) ? true : r.Status.Equals((OrderStatusType)Enum.Parse(typeof(OrderStatusType), filterStatus, true)))
+                .CountAsync(c => searchValue.Equals(CoreConst.GetAllRecords) ? true : c.Name.Contains(searchValue)
+                                                                                     || c.User.FirstName.Contains(searchValue)
+                                                                                     || c.User.Surname.Contains(searchValue)
+                                                                                     || c.User.Email.Contains(searchValue)
+                                                                                     || c.Id.Contains(searchValue)
+                                                                                     || c.Date.ToShortDateString().Contains(searchValue)
+                                                                                     || c.Postcode.Contains(searchValue)
+                                                                                     || c.Payment.Email.Contains(searchValue)
+                                                                                     || c.Payment.Reference.Contains(searchValue))
                 .ConfigureAwait(false);
 
             List<OrderStatusType> availebeStatusTypes = await _DbContext.Orders
@@ -71,19 +79,22 @@ namespace OSnack.API.Controllers
                           .ConfigureAwait(false);
 
             List<Order> list = await _DbContext.Orders
-                     .Where(r => filterStatus.Equals(CoreConst.GetAllRecords) ? true : r.Status.Equals((OrderStatusType)Enum.Parse(typeof(OrderStatusType), filterStatus, true)))
-                .OrderByDynamic(sortName, isSortAsce)
-                // .Where(c => searchValue.Equals(CoreConst.GetAllRecords) ? true : c.Code.Contains(searchValue))
+                .Include(o => o.User)
+                .Include(o => o.Payment)
+                 .Where(r => filterStatus.Equals(CoreConst.GetAllRecords) ? true : r.Status.Equals((OrderStatusType)Enum.Parse(typeof(OrderStatusType), filterStatus, true)))
+                 .Where(c => searchValue.Equals(CoreConst.GetAllRecords) ? true : c.Name.Contains(searchValue)
+                                                                                     || c.User.FirstName.Contains(searchValue)
+                                                                                     || c.User.Surname.Contains(searchValue)
+                                                                                     || c.User.Email.Contains(searchValue)
+                                                                                     || c.Id.Contains(searchValue)
+                                                                                     || c.Date.ToShortDateString().Contains(searchValue)
+                                                                                     || c.Postcode.Contains(searchValue)
+                                                                                     || c.Payment.Email.Contains(searchValue)
+                                                                                     || c.Payment.Reference.Contains(searchValue))
+                 .OrderByDynamic(sortName, isSortAsce)
                 .Skip((selectedPage - 1) * maxNumberPerItemsPage)
                 .Take(maxNumberPerItemsPage)
                 .Include(o => o.OrderItems)
-                .ThenInclude(sp => sp.Product)
-                .ThenInclude(p => p.Category)
-                .Include(o => o.OrderItems)
-                .Include(o => o.User)
-                .Include(o => o.Coupon)
-                .Include(o => o.Payment)
-
                 .ToListAsync()
                 .ConfigureAwait(false);
             return Ok(new MultiResult<List<Order>, List<OrderStatusType>, int>(list, availebeStatusTypes, totalCount,

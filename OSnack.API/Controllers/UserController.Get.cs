@@ -83,7 +83,9 @@ namespace OSnack.API.Controllers
                 .ConfigureAwait(false);
             list.ForEach(u =>
             {
-               u.OrderLength = u.Orders.Count(o => o.Status == OrderStatusType.Confirmed || o.Status == OrderStatusType.InProgress || o.Status == OrderStatusType.RefundRequest);
+               u.OrderLength = u.Orders.Count(o => o.Status == OrderStatusType.Confirmed
+                                                || o.Status == OrderStatusType.InProgress
+                                                || (o.Dispute != null && o.Dispute.IsOpen));
                u.HasOrder = u.Orders.Count > 0;
             });
             /// return the list of Role ordered by name

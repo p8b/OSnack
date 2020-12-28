@@ -1,4 +1,5 @@
 ﻿import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
+import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
 import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
 import Table from 'osnack-frontend-shared/src/components/Table/Table';
 import TableRowButtons, { TableData, TableHeaderData, TableRowData, TableView } from 'osnack-frontend-shared/src/components/Table/TableRowButtons';
@@ -20,6 +21,7 @@ const OrderManagement = (props: IProps) => {
    const isUnmounted = useRef(false);
    const history = useHistory();
    const errorAlert = useAlert(new AlertObj());
+   const [searchValue, setSearchValue] = useState("");
    const [selectOrder, setSelectOrder] = useState(new Order());
    const [selectType, setSelectType] = useState(OrderStatusTypeList.find(o => o.Value == OrderStatusType.InProgress)?.Id.toString() || "");
    const [isOpenOrderModal, setIsOpenOrderModal] = useState(false);
@@ -34,7 +36,7 @@ const OrderManagement = (props: IProps) => {
 
    useEffect(() => {
       onSearch(...checkUri(window.location.pathname,
-         [tblSelectedPage, tblMaxItemsPerPage, selectType, tblIsSortAsc, tblSortName]));
+         [tblSelectedPage, tblMaxItemsPerPage, selectType, tblIsSortAsc, tblSortName, GetAllRecords]));
 
    }, []);
 
@@ -46,7 +48,14 @@ const OrderManagement = (props: IProps) => {
       filterType = selectType,
       isSortAsc = tblIsSortAsc,
       sortName = tblSortName,
+      searchString = GetAllRecords
    ) => {
+
+      if (searchValue != null && searchValue != "")
+         searchString = searchValue;
+      if (searchString != GetAllRecords)
+         setSearchValue(searchString);
+
       if (selectedPage != tblSelectedPage)
          setTblSelectedPage(selectedPage);
 
@@ -71,11 +80,11 @@ const OrderManagement = (props: IProps) => {
       history.push(generateUri(window.location.pathname,
          [selectedPage || tblSelectedPage,
             maxItemsPerPage, filterType == GetAllRecords ? -1 : filterType,
-         Number(isSortAsc), sortName]));
+         Number(isSortAsc), sortName, searchString != GetAllRecords ? searchString : ""]));
 
       errorAlert.PleaseWait(500, isUnmounted);
 
-      useAllOrder(selectedPage, maxItemsPerPage, GetAllRecords, filterType, isSortAsc, sortName).then(result => {
+      useAllOrder(selectedPage, maxItemsPerPage, searchString, filterType, isSortAsc, sortName).then(result => {
          if (isUnmounted.current) return;
          setTblTotalItemCount(result.data.totalCount || 0);
          setAvailableStatusTypeList(result.data.availableTypes!);
@@ -89,6 +98,7 @@ const OrderManagement = (props: IProps) => {
    const populateOrderTable = (orderList: Order[]) => {
       let tData = new TableData();
       tData.headers.push(new TableHeaderData("Status", "Status", true));
+      tData.headers.push(new TableHeaderData("UserName", "UserName", false));
       tData.headers.push(new TableHeaderData("Total Price", "TotalPrice", true));
       tData.headers.push(new TableHeaderData("Date", "Date", true));
       tData.headers.push(new TableHeaderData("Payment", "", false));
@@ -98,6 +108,7 @@ const OrderManagement = (props: IProps) => {
          tData.rows.push(new TableRowData([
             <span>  <span className={`${getBadgeByOrderStatusType(order.status)} font-weight-bold pm-0  h6 mt-auto mb-auto `}
                children={OrderStatusTypeList.find(t => t.Value == order.status)?.Name} /></span>,
+            getFullNameOrEmail(order),
             `£${order.totalPrice}`,
             new Date(order.date!).ToShortDate(),
             PaymentTypeList.find(t => t.Value == order.payment.type)?.Name,
@@ -116,6 +127,14 @@ const OrderManagement = (props: IProps) => {
       }
       setTableData(tData);
    };
+
+   const getFullNameOrEmail = (order: Order) => {
+      if (order.user == undefined) {
+         return <div className="row justify-content-center"><div className="small-text text-gray mr-1 mt-auto">Guest</div>{order.name}</div>;
+      }
+      return `${order.user.firstName} ${order.user.surname}`;
+   };
+
    const UpdateOrder = (order: Order) => {
       setIsOpenOrderModal(false);
       usePutOrderStatusOrder!(order != undefined ? order : selectOrder).then(() => {
@@ -140,9 +159,17 @@ const OrderManagement = (props: IProps) => {
                className="col-12 mb-2"
                onClosed={() => { errorAlert.clear(); }}
             />
-            <div className="row pm-0">
+            <div className="row col-12 pm-0">
+
+               <SearchInput key="searchInput"
+                  value={searchValue}
+                  onChange={i => setSearchValue(i.target.value)}
+                  className="col-12 col-md-9 pr-md-4"
+                  onSearch={() => { onSearch(1); }}
+               />
+
                <DropDown title={`Status Type: ${OrderStatusTypeList.find((s) => s.Id?.toString() == selectType)?.Name || "All"}`}
-                  className="col-12 col-sm-6 col-md-4 ml-auto m-0 p-1"
+                  className="col-12 col-md-3 m-0 "
                   titleClassName="btn btn-white filter-icon">
                   <button className="dropdown-item"
                      onClick={() => { onSearch(1, undefined, GetAllRecords); }} >
@@ -156,6 +183,7 @@ const OrderManagement = (props: IProps) => {
                   )}
                </DropDown>
             </div>
+
             {tblTotalItemCount > 0 &&
                <div className="row col-12 pm-0  bg-white pb-2">
                   <Table className="col-12 text-center table-striped"

@@ -145,6 +145,7 @@
     <Folder Include="src\components\NavMenu\" />
     <Folder Include="src\components\ImageUpload\" />
     <Folder Include="src\pages\" />
+    <Folder Include="src\pages\ContactManagement\" />
     <Folder Include="src\pages\Dashboard\" />
     <Folder Include="src\pages\LoginPage\" />
     <Folder Include="src\pages\MyAccount\" />
@@ -205,6 +206,7 @@
     <TypeScriptCompile Include="src\pages\UserManagement\UserManagement.tsx" />
     <TypeScriptCompile Include="src\SecretHooks\useAuthenticationHook.tsx" />
     <TypeScriptCompile Include="src\SecretHooks\useCategoryHook.tsx" />
+    <TypeScriptCompile Include="src\SecretHooks\useCommunicationHook.tsx" />
     <TypeScriptCompile Include="src\SecretHooks\useCouponHook.tsx" />
     <TypeScriptCompile Include="src\SecretHooks\useEmailHook.tsx" />
     <TypeScriptCompile Include="src\SecretHooks\useOrderHook.tsx" />

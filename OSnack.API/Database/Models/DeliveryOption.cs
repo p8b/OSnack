@@ -2,8 +2,6 @@
 
 using Newtonsoft.Json;
 
-using OSnack.API.Database.Models;
-
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -37,6 +35,7 @@ namespace OSnack.API.Database.Models
       public bool IsPremitive { get; set; } = false;
 
       [JsonIgnore]
+      [InverseProperty("DeliveryOption")]
       public ICollection<Order> Orders { get; set; }
    }
 }
