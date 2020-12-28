@@ -30,8 +30,8 @@ namespace OSnack.API.Controllers
          try
          {
 
-            if (!string.IsNullOrEmpty(newContact.Order.Id) &&
-               (await _DbContext.Orders.SingleOrDefaultAsync(o => o.Id == newContact.Order.Id) == null))
+            if (!string.IsNullOrEmpty(newContact.Order_Id) &&
+               (await _DbContext.Orders.SingleOrDefaultAsync(o => o.Id == newContact.Order_Id) == null))
             {
                CoreFunc.Error(ref ErrorsList, "Cannot find your order.");
                return UnprocessableEntity(ErrorsList);
@@ -39,17 +39,18 @@ namespace OSnack.API.Controllers
 
             var user = await _DbContext.Users.SingleOrDefaultAsync(u => u.Id == AppFunc.GetUserId(User));
             newContact.Email = user.Email;
-            newContact.Messages[0].FullName = $"{user.FirstName} {user.Surname}";
+            newContact.FullName = $"{user.FirstName} {user.Surname}";
             newContact.PhoneNumber = user.PhoneNumber;
             newContact.IsOpen = true;
-            newContact.Order = await _DbContext.Orders.SingleOrDefaultAsync(o => o.Id == newContact.Order.Id);
+            newContact.Order = await _DbContext.Orders.SingleOrDefaultAsync(o => o.Id == newContact.Order_Id);
             newContact.Type = ContactType.Dispute;
+            newContact.Messages[0].IsCustomer = true;
 
             TryValidateModel(newContact);
 
             foreach (var key in ModelState.Keys)
             {
-               if (key.StartsWith("User") || key.StartsWith("Messages"))
+               if (key.StartsWith("User") || key.StartsWith("Messages") || key.StartsWith("Order") || key.StartsWith("OrderItem"))
                   ModelState.Remove(key);
             }
 
@@ -93,12 +94,12 @@ namespace OSnack.API.Controllers
             {
                var user = await _DbContext.Users.SingleOrDefaultAsync(u => u.Id == AppFunc.GetUserId(User));
                newContact.Email = user.Email;
-               newContact.Messages[0].FullName = $"{user.FirstName} {user.Surname}";
+               newContact.FullName = $"{user.FirstName} {user.Surname}";
                newContact.PhoneNumber = user.PhoneNumber;
             }
             newContact.IsOpen = true;
             newContact.Type = ContactType.Question;
-
+            ModelState.Clear();
             TryValidateModel(newContact);
 
             foreach (var key in ModelState.Keys)
@@ -131,11 +132,11 @@ namespace OSnack.API.Controllers
          try
          {
             contactData.Id = $"{CoreFunc.StringGenerator(4, 4, 0, 4, 0)}-{CoreFunc.StringGenerator(4, 4, 0, 4, 0)}";
-            await _DbContext.Contacts.AddAsync(contactData).ConfigureAwait(false);
-            //if (contactData.Order != null)
-            //{
-            //   _DbContext.Entry(contactData.Order).State = EntityState.Unchanged;
-            //}
+            await _DbContext.Communications.AddAsync(contactData).ConfigureAwait(false);
+            if (contactData.Order != null)
+            {
+               _DbContext.Entry(contactData.Order).State = EntityState.Unchanged;
+            }
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
 
             return contactData;

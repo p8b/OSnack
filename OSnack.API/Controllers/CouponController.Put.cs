@@ -7,8 +7,9 @@ using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 
 using P8B.Core.CSharp;
-
+using P8B.Core.CSharp.Models;
 using System;
+using System.Collections.Generic;
 using System.Net.Mime;
 using System.Threading.Tasks;
 
@@ -19,9 +20,9 @@ namespace OSnack.API.Controllers
       #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
       [ProducesResponseType(typeof(Coupon), StatusCodes.Status200OK)]
-      [ProducesResponseType(typeof(System.Collections.Generic.List<P8B.Core.CSharp.Models.Error>), StatusCodes.Status412PreconditionFailed)]
-      [ProducesResponseType(typeof(System.Collections.Generic.List<P8B.Core.CSharp.Models.Error>), StatusCodes.Status422UnprocessableEntity)]
-      [ProducesResponseType(typeof(System.Collections.Generic.List<P8B.Core.CSharp.Models.Error>), StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPut("[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test         

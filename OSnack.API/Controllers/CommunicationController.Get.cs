@@ -37,8 +37,8 @@ namespace OSnack.API.Controllers
       {
          try
          {
-            int totalCount = await _DbContext.Contacts.Include(c => c.Order).ThenInclude(o => o.User)
-                .CountAsync(c => searchValue.Equals(CoreConst.GetAllRecords) ? true : c.Messages.Count(m => m.FullName == searchValue) > 0
+            int totalCount = await _DbContext.Communications.Include(c => c.Order).ThenInclude(o => o.User)
+                .CountAsync(c => searchValue.Equals(CoreConst.GetAllRecords) ? true : c.FullName.Contains(searchValue)
                                                                                      || c.Email.Contains(searchValue)
                                                                                      || c.Order.User.Email.Contains(searchValue)
                                                                                      || c.Order.User.FirstName.Contains(searchValue)
@@ -47,10 +47,10 @@ namespace OSnack.API.Controllers
                                                                                      || c.PhoneNumber.Contains(searchValue))
                 .ConfigureAwait(false);
 
-            List<Communication> list = await _DbContext.Contacts.Include(c => c.Order).ThenInclude(o => o.User)
+            List<Communication> list = await _DbContext.Communications.Include(c => c.Order).ThenInclude(o => o.User)
                .Include(c => c.Messages)
                 .OrderByDynamic(sortName, isSortAsce)
-                .Where(c => searchValue.Equals(CoreConst.GetAllRecords) ? true : c.Messages.Count(m => m.FullName == searchValue) > 0
+                .Where(c => searchValue.Equals(CoreConst.GetAllRecords) ? true : c.FullName.Contains(searchValue)
                                                                                      || c.Email.Contains(searchValue)
                                                                                      || c.Order.User.Email.Contains(searchValue)
                                                                                      || c.Order.User.FirstName.Contains(searchValue)
@@ -81,7 +81,7 @@ namespace OSnack.API.Controllers
       {
          try
          {
-            return Ok(await _DbContext.Contacts.Include(c => c.Order).ThenInclude(o => o.User).Include(c => c.Messages)
+            return Ok(await _DbContext.Communications.Include(c => c.Order).ThenInclude(o => o.User).Include(c => c.Messages)
                                                  .Where(c => c.Order.User.Id == AppFunc.GetUserId(User))
                                                  .ToListAsync().ConfigureAwait(false));
          }

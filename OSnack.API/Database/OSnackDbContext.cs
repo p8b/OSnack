@@ -33,8 +33,7 @@ namespace OSnack.API.Database
       public DbSet<DeliveryOption> DeliveryOptions { get; set; }
       public DbSet<OSnackAccessClaim<int>> AccessClaims { get; set; }
       public DbSet<NutritionalInfo> NutritionalInfos { get; set; }
-      public DbSet<Communication> Contacts { get; set; }
-      public DbSet<Message> ContactMessages { get; set; }
+      public DbSet<Communication> Communications { get; set; }
 
 
       protected override void OnModelCreating(ModelBuilder builder)

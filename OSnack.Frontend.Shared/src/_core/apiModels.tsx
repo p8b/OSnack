@@ -221,6 +221,13 @@ export class Refund {
     update_time?: string | undefined;
 
 }
+export class Message {
+    id?: number = 0;
+    date?: Date;
+    isCustomer?: boolean;
+    body?: string | undefined;
+
+}
 export class Payment {
     id?: number = 0;
     paymentProvider!: string;
@@ -229,13 +236,6 @@ export class Payment {
     email?: string | undefined;
     dateTime!: Date;
     refundAmount?: number;
-
-}
-export class Message {
-    id?: number = 0;
-    date?: Date;
-    fullName?: string | undefined;
-    body?: string | undefined;
 
 }
 export class TaxInfo {
@@ -313,9 +313,10 @@ export class Communication {
     id?: string | undefined;
     type!: ContactType;
     isOpen?: boolean;
+    fullName?: string | undefined;
     email!: string;
     phoneNumber?: string | undefined;
-    order?: Order | undefined;
+    order_Id?: string | undefined;
     messages?: Message[] | undefined;
 
 }

@@ -81,6 +81,8 @@ namespace OSnack.API.Controllers
             List<Order> list = await _DbContext.Orders
                 .Include(o => o.User)
                 .Include(o => o.Payment)
+                .Include(o => o.Dispute)
+                .ThenInclude(c => c.Messages)
                  .Where(r => filterStatus.Equals(CoreConst.GetAllRecords) ? true : r.Status.Equals((OrderStatusType)Enum.Parse(typeof(OrderStatusType), filterStatus, true)))
                  .Where(c => searchValue.Equals(CoreConst.GetAllRecords) ? true : c.Name.Contains(searchValue)
                                                                                      || c.User.FirstName.Contains(searchValue)
@@ -165,6 +167,8 @@ namespace OSnack.API.Controllers
 
             List<Order> list = await _DbContext.Orders
                .Include(o => o.User)
+               .Include(o => o.Dispute)
+               .ThenInclude(c => c.Messages)
                .Where(o => o.User.Id == userId)
                .OrderByDynamic(sortName, isSortAsce)
                .Where(r => filterStatus.Equals(CoreConst.GetAllRecords) ? true : r.Status.Equals((OrderStatusType)Enum.Parse(typeof(OrderStatusType), filterStatus, true)))

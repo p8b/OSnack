@@ -22,9 +22,7 @@ namespace OSnack.API.Database.Models
       [JsonIgnore, ForeignKey("CommunicationId")]
       public Communication Communication { get; set; }
 
-      [Column(TypeName = "nvarchar(200)")]
-      [StringLength(200, ErrorMessage = "Must be less than 200 Characters \n")]
-      public string FullName { get; set; }
+      public bool IsCustomer { get; set; }
 
       public string Body { get; set; }
    }

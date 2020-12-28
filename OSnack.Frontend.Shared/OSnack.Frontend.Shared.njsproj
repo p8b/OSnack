@@ -145,6 +145,7 @@
     <Content Include="src\styles\bootstrap\mixins\_caret.scss" />
     <Content Include="src\styles\bootstrap\mixins\_clearfix.scss" />
     <Content Include="src\styles\modules\_border.scss" />
+    <Content Include="src\styles\modules\_chat.scss" />
     <Content Include="src\styles\modules\_datepicker.scss" />
     <Content Include="src\styles\bootstrap\mixins\_deprecate.scss" />
     <Content Include="src\styles\bootstrap\mixins\_float.scss" />

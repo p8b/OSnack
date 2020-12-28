@@ -1,7 +1,7 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import { IReturnUseAllOrder, useAllOrder } from '../../hooks/OfficialHooks/useOrderHook';
 import Alert, { AlertObj, useAlert } from '../../components/Texts/Alert';
-import { Order, OrderStatusType, OrderStatusTypeList, PaymentTypeList } from '../../_core/apiModels';
+import { Communication, Order, OrderStatusType, OrderStatusTypeList, PaymentTypeList } from '../../_core/apiModels';
 import { ClientAppAccess, ConstMaxNumberOfPerItemsPage, GetAllRecords } from '../../_core/constant.Variables';
 import { useHistory } from 'react-router-dom';
 import { checkUri, generateUri, getBadgeByOrderStatusType } from '../../_core/appFunc';
@@ -121,13 +121,27 @@ const ViewOrders = (props: IProps) => {
             `£${order.totalPrice}`,
             new Date(order.date!).ToShortDate(),
             PaymentTypeList.find(t => t.Value == order.payment.type)?.Name,
-            <TableRowButtons
-               btnClassName="btn-blue edit-icon"
-               btnClick={() => {
-                  setSelectOrder(order);
-                  setIsOpenOrderModal(true);
-               }}
-            />
+            <>
+               {order.dispute == undefined &&
+                  <TableRowButtons
+                     btnClassName="btn-blue edit-icon"
+                     btnClick={() => {
+                        setSelectOrder(order);
+                        setIsOpenOrderModal(true);
+                     }}
+                  />}
+               {order.dispute != undefined &&
+                  <TableRowButtons
+                     btn1ClassName="btn-blue edit-icon"
+                     btn1Click={() => {
+                        setSelectOrder(order);
+                        setIsOpenOrderModal(true);
+                     }}
+                     btnClassName="btn-white dispute-icon"
+                     btnChildren={<div children="Dispute" className="small-text" />}
+                     btnClick={() => { props.onShowDispute!(order.dispute!); }}
+                  />}
+            </>
          ])));
       if (orderList.length == 0) {
          errorAlert.setSingleWarning("0", "No Result Found");
@@ -174,7 +188,7 @@ const ViewOrders = (props: IProps) => {
                   onClick={() => { onSearch(undefined, 1, undefined, GetAllRecords); }} >
                   All
                   </button>
-               {OrderStatusTypeList.filter(o => availableStatusTypeList.includes(o.Value))?.map(statusType =>
+               {OrderStatusTypeList.filter(o => availableStatusTypeList!.includes(o.Value))?.map(statusType =>
                   <button className="dropdown-item" key={statusType.Id}
                      onClick={() => { onSearch(undefined, 1, undefined, statusType.Id?.toString()); }} >
                      {statusType.Name}
@@ -204,7 +218,9 @@ const ViewOrders = (props: IProps) => {
             order={selectOrder}
             access={props.access}
             onClose={() => setIsOpenOrderModal(false)}
-            onSave={UpdateOrder} />
+            onSave={UpdateOrder}
+            onDispute={props.onDispute}
+         />
 
 
       </>
@@ -216,5 +232,7 @@ declare type IProps = {
    useAllUserOrderSecret?: (userId: number, selectedPage: number, maxNumberPerItemsPage: number, filterStatus: string | null, isSortAsce: boolean | undefined, sortName: string | null | undefined) => Promise<IReturnUseAllOrder>;
    usePutOrderStatusOrder?: (modifiedOrder: Order) => Promise<{ data: Order, status?: number; }>;
    location?: any;
+   onDispute?: (order: Order) => void;
+   onShowDispute?: (dispute: Communication) => void;
 };
 export default ViewOrders;

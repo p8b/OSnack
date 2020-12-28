@@ -11,6 +11,7 @@ const OrderDetails = (props: IProps) => {
    const errorAlert = useAlert(new AlertObj());
    const [selectedStatus, SetSelectStatus] = useState(OrderStatusType.InProgress);
    useEffect(() => {
+      console.log(props.order);
       SetSelectStatus(props.order.status);
    }, [props.order]);
 
@@ -90,6 +91,9 @@ const OrderDetails = (props: IProps) => {
                   <div className="col-8 p-0 pm-0 font-weight-bold ">Total Price:</div>
                   <div className="col-4 p-0 font-weight-bold">£{props.order.totalPrice}</div>
                </div>
+               {props.access == ClientAppAccess.Official && props.order.dispute == undefined &&
+                  <div className="col-12 pm-0 cursor-pointer  small-text text-primary" onClick={() => props.onDispute!(props.order)}>I have issue with this order.</div>
+               }
 
                <div className="pm-0 mt-3">
                   <div className="col-12 p-0 font-weight-bold ">Shipping Address :</div>
@@ -99,6 +103,7 @@ const OrderDetails = (props: IProps) => {
                   <div className="col-12 p-0 line-limit-1">{props.order.city}</div>
                   <div className="col-12 p-0">{props.order.postcode}</div>
                </div>
+
             </div>
          </div>
 
@@ -132,5 +137,6 @@ declare type IProps = {
    access: ClientAppAccess;
    statusChanged?: (status: OrderStatusType) => void;
    availabeType?: OrderStatusType[];
+   onDispute?: (order: Order) => void;
 };
 export default OrderDetails;

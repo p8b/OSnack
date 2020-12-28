@@ -422,3 +422,21 @@
         }
     }
 }
+
+.dispute-icon {
+
+    &:before {
+        text-decoration: none;
+        padding: 0.5rem;
+        content: "\f006";
+        display: inline;
+        font-size: 1.5rem;
+        font-family: "FA5 Solid" !important;
+    }
+
+    &.disabled {
+        &:before {
+            color: rgb(128, 128, 128);
+        }
+    }
+}

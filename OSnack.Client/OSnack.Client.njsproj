@@ -200,6 +200,8 @@
     <TypeScriptCompile Include="src\pages\Home\Home.tsx" />
     <TypeScriptCompile Include="src\pages\Login\LoginPage.tsx" />
     <TypeScriptCompile Include="src\pages\MyAccount\AddressModal.tsx" />
+    <TypeScriptCompile Include="src\pages\MyAccount\AddDisputeModal.tsx" />
+    <TypeScriptCompile Include="src\pages\MyAccount\DisputeModal.tsx" />
     <TypeScriptCompile Include="src\pages\MyAccount\MyAccount.tsx" />
     <TypeScriptCompile Include="src\pages\MyAccount\MyAddresses.tsx" />
     <TypeScriptCompile Include="src\pages\MyAccount\MyOrders.tsx" />

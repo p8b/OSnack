@@ -26,7 +26,7 @@ const ContactUs = (props: IProps) => {
       usePostQuestionCommunication(contact)
          .then((result) => {
             if (isUnmounted.current) return;
-
+            setMessage("");
             errorAlert.setSingleSuccess("submit", result.data);
             setShowSuccess(true);
 
@@ -44,7 +44,7 @@ const ContactUs = (props: IProps) => {
             <div className="col-12 col-md-6 pm-0 bg-white mb-3 pt-3 pb-3">
                <Alert className="col-12 mb-2"
                   alert={errorAlert.alert}
-                  onClosed={() => { errorAlert.clear(); }} />
+                  onClosed={() => { errorAlert.clear(); setShowSuccess(false); }} />
                {!showSuccess &&
                   <>
                      <div className="col-12 mt-auto mb-auto text-center">

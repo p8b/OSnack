@@ -224,14 +224,12 @@ export const getBadgeByOrderStatusType = (type: OrderStatusType) => {
    switch (type) {
 
       case OrderStatusType.InProgress:
-      case OrderStatusType.RefundRequest:
          return "badge blue";
       case OrderStatusType.Confirmed:
       case OrderStatusType.FullyRefunded:
       case OrderStatusType.PartialyRefunded:
          return "badge light-blue";
       case OrderStatusType.Canceled:
-      case OrderStatusType.RefundRefused:
          return "badge red";
       case OrderStatusType.Delivered:
          return "badge green";

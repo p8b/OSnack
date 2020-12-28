@@ -1,16 +1,18 @@
-﻿import React, { useEffect, useState } from 'react';
-import { Order, OrderStatusType } from '../../_core/apiModels';
+﻿import React, { useContext, useEffect, useState } from 'react';
+import { ContactType, Order, OrderStatusType } from '../../_core/apiModels';
 import Modal from '../../components/Modals/Modal';
 import OrderDetails from '../../components/OrderDetails/OrderDetails';
 import PageHeader from '../../components/Texts/PageHeader';
 import { Button } from '../../components/Buttons/Button';
 import { ClientAppAccess } from '../../_core/constant.Variables';
 import OrderMessageModal, { OrderMessageType } from './OrderMessageModal';
+import { AuthContext } from '../../_core/authenticationContext';
 
 
 
 
 const OrderModal = (props: IProps) => {
+   const auth = useContext(AuthContext);
    const [selectedOrder, setSelectedOrder] = useState(new Order());
    const [isOpenMessageModal, setIsOpenMessageModal] = useState(false);
    const [openMessageModalType, setOpenMessageModalType] = useState(OrderMessageType.RefundMessage);
@@ -26,14 +28,11 @@ const OrderModal = (props: IProps) => {
 
          case OrderStatusType.InProgress:
             return [OrderStatusType.Confirmed, OrderStatusType.Canceled];
-         case OrderStatusType.RefundRequest:
-            return [OrderStatusType.RefundRefused, OrderStatusType.FullyRefunded, OrderStatusType.PartialyRefunded];
          case OrderStatusType.Confirmed:
             return [OrderStatusType.Delivered];
          case OrderStatusType.FullyRefunded:
          case OrderStatusType.PartialyRefunded:
          case OrderStatusType.Canceled:
-         case OrderStatusType.RefundRefused:
          case OrderStatusType.Delivered:
             return [];
          default:
@@ -45,7 +44,13 @@ const OrderModal = (props: IProps) => {
       setIsOpenMessageModal(false);
       switch (openMessageModalType) {
          case OrderMessageType.RefundMessage:
-            setSelectedOrder({ ...selectedOrder, message: message });
+            setSelectedOrder({
+               ...selectedOrder, dispute: {
+                  type: ContactType.Dispute,
+                  email: auth.state.user.email,
+                  isOpen: false, messages: [{ body: message, fullName: `${auth.state.user.firstName} ${auth.state.user.surname}` }]
+               }
+            });
             break;
          case OrderMessageType.ShippingReference:
             setSelectedOrder({ ...selectedOrder, shippingReference: message });
@@ -80,7 +85,8 @@ const OrderModal = (props: IProps) => {
             <div className="row  mt-1">
                <OrderDetails order={selectedOrder} access={props.access}
                   availabeType={getAvailabeType()}
-                  statusChanged={statusChange} />
+                  statusChanged={statusChange} onDispute={props.onDispute} />
+
                {/***** buttons ****/}
                <div className="row col-12 pm-0 pos-b-sticky bg-white pb-3">
                   {props.access == ClientAppAccess.Secret && getAvailabeType().length > 0 &&
@@ -112,5 +118,6 @@ declare type IProps = {
    modalRef?: any;
    access: ClientAppAccess;
    onSave?: (order: Order) => void;
+   onDispute?: (order: Order) => void;
 };
 export default OrderModal;
