@@ -5,33 +5,11 @@ const TerserPlugin = require("terser-webpack-plugin");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-
+const WorkboxPlugin = require('workbox-webpack-plugin');
 const isDevelopment = true;
 const appName = "osnack";
 const outputPublicPath = "./build/public/";
 
-const copyObjects = [
-   {
-      from: path.resolve(__dirname, "node_modules/osnack-frontend-shared/public/favicon.ico"),
-      to: path.resolve(__dirname, `${outputPublicPath}`)
-   },
-   {
-      from: path.resolve(__dirname, "node_modules/osnack-frontend-shared/public/manifest.json"),
-      to: path.resolve(__dirname, `${outputPublicPath}`)
-   },
-   {
-      from: path.resolve(__dirname, "node_modules/osnack-frontend-shared/public/images/"),
-      to: path.resolve(__dirname, `${outputPublicPath}images/`)
-   },
-   {
-      from: path.resolve(__dirname, "public/images/"),
-      to: path.resolve(__dirname, `${outputPublicPath}images/`)
-   },
-   {
-      from: path.resolve(__dirname, "node_modules/osnack-frontend-shared/public/fonts/"),
-      to: path.resolve(__dirname, `${outputPublicPath}fonts/`)
-   }
-];
 module.exports = {
    mode: isDevelopment ? "development" : "production",
    devtool: isDevelopment && "eval-source-map",
@@ -41,7 +19,7 @@ module.exports = {
       localStyles: "./src/styles/main.scss"
    },
    resolve: {
-      extensions: [".js", ".tsx", ".css"]
+      extensions: [".js", ".ts", ".tsx", ".css"]
    },
    output: {
       path: path.resolve(__dirname, "build"),
@@ -83,22 +61,6 @@ module.exports = {
       //   host: "192.168.1.11",
       historyApiFallback: true,
    },
-   plugins: [
-      // new CleanWebpackPlugin(),
-      new MiniCssExtractPlugin({
-         filename: "public/styles/[name].css",
-         chunkFilename: "[id].css",
-
-      }),
-      new HtmlWebPackPlugin({
-         template: "./public/index.html",
-         filename: "index.html",
-         scriptLoading: "async",
-      }),
-      new CopyPlugin({
-         patterns: copyObjects
-      })
-   ],
    externals: {
       "react": "React",
       "react-dom": "ReactDOM",
@@ -120,4 +82,50 @@ module.exports = {
          chunks: "all",
       },
    },
+   plugins: [
+      // new CleanWebpackPlugin(),
+      new MiniCssExtractPlugin({
+         filename: "public/styles/[name].css",
+         chunkFilename: "[id].css",
+
+      }),
+      new HtmlWebPackPlugin({
+         template: "./public/index.html",
+         filename: "index.html",
+         scriptLoading: "async",
+      }),
+      new CopyPlugin({
+         patterns: [
+            {
+               from: path.resolve(__dirname, "node_modules/osnack-frontend-shared/public/favicon.ico"),
+               to: path.resolve(__dirname, `${outputPublicPath}`)
+            },
+            {
+               from: path.resolve(__dirname, "node_modules/osnack-frontend-shared/public/manifest.json"),
+               to: path.resolve(__dirname, `${outputPublicPath}`)
+            },
+            {
+               from: path.resolve(__dirname, "node_modules/osnack-frontend-shared/public/images/"),
+               to: path.resolve(__dirname, `${outputPublicPath}images/`)
+            },
+            {
+               from: path.resolve(__dirname, "public/images/"),
+               to: path.resolve(__dirname, `${outputPublicPath}images/`)
+            },
+            {
+               from: path.resolve(__dirname, "node_modules/osnack-frontend-shared/public/fonts/"),
+               to: path.resolve(__dirname, `${outputPublicPath}fonts/`)
+            }
+         ]
+      }),
+      new WorkboxPlugin.GenerateSW({
+         clientsClaim: true,
+         skipWaiting: true,
+         navigateFallback: "/index.html",
+         additionalManifestEntries: ['https://localhost:44358/Category/Get/AllPublic'],
+         cleanupOutdatedCaches: true,
+         inlineWorkboxRuntime: true,
+         sourcemap: true,
+      }),
+   ],
 };

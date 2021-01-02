@@ -110,7 +110,7 @@ namespace OSnack.API.Extras
                   }
                }
 
-               using (FileStream fs1 = File.Create($"{zipFolder}\\apiModels.tsx"))
+               using (FileStream fs1 = File.Create($"{zipFolder}\\apiModels.ts"))
                {
 
                   byte[] info2 = new UTF8Encoding(true).GetBytes($"{enums }{simpleModels}{extendedModels}");
@@ -135,7 +135,7 @@ namespace OSnack.API.Extras
                   {
                      tempScrtip = tempScrtip.Replace("../../", modelsPath);
                   }
-                  using FileStream fs = File.Create($"{zipFolder}\\use{hook.TypeName}Hook.tsx");
+                  using FileStream fs = File.Create($"{zipFolder}\\use{hook.TypeName}Hook.ts");
                   byte[] info = new UTF8Encoding(true).GetBytes(tempScrtip.Replace("@@Models@@", hook.BaseTypeName.Replace("@", "")));
                   // Add some information to the file.
                   fs.Write(info, 0, info.Length);

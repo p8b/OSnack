@@ -1,4 +1,4 @@
-{
+﻿{
   "short_name": "OSnack",
   "name": "OSnack",
   "icons": [
@@ -7,12 +7,12 @@
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
-    //{
-    //  "src": "images/maskable_icon.png",
-    //  "sizes": "196x196",
-    //  "type": "image/png",
-    //  "purpose": "any maskable"
-    //},
+    {
+      "src": "images/icons-196.png",
+      "sizes": "196x196",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
     {
       "src": "images/icons-192.png",
       "type": "image/png",
@@ -24,7 +24,7 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": "../index.html",
+  "start_url": "../",
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#ffffff"

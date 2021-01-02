@@ -214,7 +214,7 @@
     <TypeScriptCompile Include="src\SecretHooks\useRoleHook.tsx" />
     <TypeScriptCompile Include="src\SecretHooks\useScoreHook.tsx" />
     <TypeScriptCompile Include="src\SecretHooks\useUserHook.tsx" />
-    <TypeScriptCompile Include="src\_core\appConstant.Variables.tsx" />
+    <TypeScriptCompile Include="src\_core\appConstant.Variables.ts" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
   <ProjectExtensions>

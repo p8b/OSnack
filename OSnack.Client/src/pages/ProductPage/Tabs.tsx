@@ -7,24 +7,23 @@ const Tabs = (props: IProps) => {
    const [showNutritionalInfo, setShowNutritionalInfo] = useState(false);
    useEffect(() => {
       // if no nutritional information is avilable
-      if (props.product.nutritionalInfo != null) {
-         if ((props.product.nutritionalInfo.energyKcal != null && props.product.nutritionalInfo.energyKJ != null)
+      if (props.product.nutritionalInfo != null
+         && ((props.product.nutritionalInfo.energyKcal != null && props.product.nutritionalInfo.energyKJ != null)
             || (props.product.nutritionalInfo.fat != null && props.product.nutritionalInfo.saturateFat != null)
             || (props.product.nutritionalInfo.carbohydrate != null && props.product.nutritionalInfo.carbohydrateSugar != null)
             || props.product.nutritionalInfo.fibre != null
             || props.product.nutritionalInfo.protein != null
             || props.product.nutritionalInfo.salt != null
-         ) {
-            setSelectedNav(productTabs.NutritionalInfo);
-            setShowNutritionalInfo(true);
-         }
-         else {
-            setShowNutritionalInfo(false);
-            setSelectedNav(productTabs.Comments);
-         }
+         )) {
+         setSelectedNav(productTabs.NutritionalInfo);
+         setShowNutritionalInfo(true);
+      }
+      else {
+         setSelectedNav(productTabs.Comments);
+         setShowNutritionalInfo(false);
       }
 
-   }, [props.product.nutritionalInfo]);
+   }, [props.product]);
    return (
       <>
          <ul className="nav nav-tabs">

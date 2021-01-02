@@ -11,7 +11,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>a164edd4-93c6-4015-88b9-6bc4280b58e3</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>server\server-development.js</StartupFile>
+    <StartupFile>
+    </StartupFile>
     <StartWebBrowser>False</StartWebBrowser>
     <SearchPath>
     </SearchPath>
@@ -210,7 +211,7 @@
     <TypeScriptCompile Include="src\pages\Shop\Shop.tsx" />
     <TypeScriptCompile Include="src\pages\Shop\ShopItem.tsx" />
     <TypeScriptCompile Include="src\pages\TermsAndConditions\TermsAndConditions.tsx" />
-    <TypeScriptCompile Include="src\_core\appConstant.Variables.tsx" />
+    <TypeScriptCompile Include="src\_core\appConstant.Variables.ts" />
     <TypeScriptCompile Include="src\_core\shopContext.tsx" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />

@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "osnack.frontend.shared",
   "version": "0.0.1",
   "description": "OSnack.Frontend.Shared",
@@ -23,6 +23,7 @@
   "dependencies": {
     "date-fns": "^2.16.1",
     "react-nice-dates": "^3.0.7",
+    "react-to-print": "^2.12.1",
     "whatwg-fetch": "^3.4.0"
   },
   "peerDependencies": {

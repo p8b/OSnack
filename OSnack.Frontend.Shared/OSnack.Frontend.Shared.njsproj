@@ -31,6 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="package.json" />
+    <Content Include="public\favicon.ico" />
     <Content Include="public\fonts\fa-brands-400.ttf" />
     <Content Include="public\fonts\fa-brands-400.woff" />
     <Content Include="public\fonts\fa-brands-400.woff2" />
@@ -353,12 +354,12 @@
     <TypeScriptCompile Include="src\components\Modals\ForgotPasswordModal.tsx" />
     <TypeScriptCompile Include="src\components\Login\Login.tsx" />
     <TypeScriptCompile Include="src\_core\apiModels.tsx" />
-    <TypeScriptCompile Include="src\_core\appClasses.tsx" />
-    <TypeScriptCompile Include="src\_core\appFunc.tsx" />
-    <TypeScriptCompile Include="src\_core\constant.Variables.tsx" />
+    <TypeScriptCompile Include="src\_core\appClasses.ts" />
+    <TypeScriptCompile Include="src\_core\appFunc.ts" />
+    <TypeScriptCompile Include="src\_core\constant.Variables.ts" />
     <TypeScriptCompile Include="src\_core\customRoute.tsx" />
     <TypeScriptCompile Include="src\_core\authenticationContext.tsx" />
-    <TypeScriptCompile Include="src\_core\type.Extensions.tsx" />
+    <TypeScriptCompile Include="src\_core\type.Extensions.ts" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
   <ProjectExtensions>
