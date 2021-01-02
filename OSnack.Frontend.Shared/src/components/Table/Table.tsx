@@ -33,10 +33,10 @@ const Table = (props: IProps) => {
    const sort = (sortName: string) => {
       if (selectedSortName === sortName) {
          setIsSortAsc(!isSortAsc);
-         props.onSortClick!(!isSortAsc, selectedSortName);
+         props.onSortChange!(!isSortAsc, selectedSortName);
       } else {
          setSelectedSortName(sortName);
-         props.onSortClick!(isSortAsc, sortName);
+         props.onSortChange!(isSortAsc, sortName);
       }
    };
 
@@ -49,20 +49,16 @@ const Table = (props: IProps) => {
    return (
       <>
          <div className="row col-12 pm-0  border-bottom-1 pt-1">
-
-
-            {currentView == TableView.CardView && props.data.headers != null && props.data.headers.length > 0 &&
-
+            {currentView == TableView.CardView && props.data.headers().length > 0 &&
                <InputDropdown dropdownTitle={`Sort By: ${selectedSortName}`}
                   className="col-12  col-md-auto pm-0 pb-0 "
                   titleClassName={`btn ${!isSortAsc ? "sort-numeric-down-icon" : "sort-numeric-up-icon"}`}>
-                  {props.data.headers.filter(h => h.sortName != undefined).map(header =>
+                  {props.data.headers().filter(h => h.sortName != undefined).map(header =>
                      <button key={Math.random()} className={`dropdown-item ${getSortedColCss(header.sortName!)}`} onClick={() => { sort(header.sortName!); }}>
                         {header.name}
                      </button>
                   )}
                </InputDropdown>
-
             }
 
             <div className="row col-12 col-md-auto ml-md-auto">
@@ -76,13 +72,13 @@ const Table = (props: IProps) => {
             <CardView className={props.className}
                defaultSortName={props.defaultSortName}
                data={props.data}
-               onSortClick={props.onSortClick}
+               onSortClick={props.onSortChange}
             />}
          {currentView == TableView.RowView &&
             <RowView className={props.className}
                defaultSortName={props.defaultSortName}
                data={props.data}
-               onSortClick={props.onSortClick}
+               onSortClick={props.onSortChange}
             />}
       </>
    );
@@ -91,7 +87,7 @@ const Table = (props: IProps) => {
 
 
 interface IProps {
-   onSortClick?: (isSortAsce: boolean, selectedSortName: string) => void;
+   onSortChange?: (isAsc: boolean, sortName: string) => void;
    className?: string;
    data: TableData;
    listCount?: number;
@@ -102,28 +98,26 @@ interface IProps {
 }
 export default Table;
 
-
-
-
 export enum TableView {
    RowView = 0,
    CardView = 1
 }
 
 export class TableData {
-   rows: TableRowData[] = [];
-   headers: TableHeaderData[] = [];
+   private datarows: TableRowData[] = [];
+   private dataheaders: TableHeaderData[] = [];
+   rows = () => this.datarows;
+   headers = () => this.dataheaders;
 
    AddHeader = (header: string, sortName?: string) => {
-      this.headers.push(new TableHeaderData(header, sortName));
+      this.dataheaders.push(new TableHeaderData(header, sortName));
       return this;
    };
    AddRow = (data: any[]) => {
-      if (data.length - this.headers.length != 0)
-         for (var i = 0; i <= data.length - this.headers.length; i++)
-            this.headers.push(new TableHeaderData(""));
-      this.rows.push(new TableRowData(data));
-
+      if (data.length - this.dataheaders.length != 0)
+         for (var i = 0; i <= data.length - this.dataheaders.length; i++)
+            this.dataheaders.push(new TableHeaderData(""));
+      this.datarows.push(new TableRowData(data));
    };
 }
 

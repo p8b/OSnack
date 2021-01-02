@@ -6,6 +6,6 @@
    constructor(id: string, name: string, value: any) {
       this.id = id;
       this.name = name;
-      this.value = value;
+      this.value = this.value;
    }
 }

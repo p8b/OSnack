@@ -10,7 +10,6 @@ import NewCustomer from './NewCustomerModal';
 const LoginPage = (props: IProps) => {
    const [newUser, setNewUser] = useState(new User());
    const [isOpenNewCustomer, setIsOpenNewCustomer] = useState(false);
-   console.log(props.location.state?.fromPath);
    const externalLoginFailed = (user: User) => {
       setIsOpenNewCustomer(true);
       setNewUser(user);

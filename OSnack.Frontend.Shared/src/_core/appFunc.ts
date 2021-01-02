@@ -224,12 +224,14 @@ export const getBadgeByOrderStatusType = (type: OrderStatusType) => {
    switch (type) {
 
       case OrderStatusType.InProgress:
+      case OrderStatusType.RefundRequest:
          return "badge blue";
       case OrderStatusType.Confirmed:
       case OrderStatusType.FullyRefunded:
       case OrderStatusType.PartialyRefunded:
          return "badge light-blue";
       case OrderStatusType.Canceled:
+      case OrderStatusType.RefundRefused:
          return "badge red";
       case OrderStatusType.Delivered:
          return "badge green";
@@ -264,6 +266,6 @@ export const checkUri = (patheName: string, defualtValues: any[]) => {
 
 export const generateUri = (patheName: string, values: any[]) => {
    let uri = `/${extractUri(patheName)[0]}`;
-   values.map(value => uri += `/${encodeURIComponent(value)}`);
+   values.map(value => uri += `/${value}`);
    return uri;
 };

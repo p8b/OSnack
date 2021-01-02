@@ -69,16 +69,30 @@
     line-height: 0;
 }
 
-input[type='file'].upload {
-    text-indent: -999em;
-    outline: none;
-    width: 100%;
-    height: 100%;
-    z-index: 2;
-}
+.file-input {
+    border-bottom: 0.15rem solid rgb(128, 128, 128);
+    // padding: 0 .2rem !important;
+    font-size: 1.2rem !important;
+    z-index: 1 !important;
+    @extend .radius-none;
 
-.custom-file-input {
-    cursor: pointer;
+    & span.float-right {
+        padding: .2rem !important;
+    }
+
+    &.danger {
+        border-bottom: 0.15rem solid rgb(189, 28, 28) !important;
+    }
+
+    &.valid {
+        border-bottom: 0.15rem solid rgb(34, 180, 53) !important;
+    }
+
+    &:focus {
+        background-color: white;
+        border-bottom-color: $input-border-botton-focus-color;
+        //border-bottom-color: rgb();
+    }
 }
 
 textarea {

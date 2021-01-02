@@ -46,4 +46,3 @@ String.prototype.ReplaceAll = function (searchValue: string | RegExp, replaceVal
    }
 };
 //#endregion
-

@@ -31,8 +31,8 @@ const RowView = (props: IProps) => {
             {props?.colGroup}
             <thead>
                <tr>
-                  {(props.data.headers != null && props.data.headers.length > 0) &&
-                     props.data.headers.map(header =>
+                  {props.data.headers().length > 0 &&
+                     props.data.headers().map(header =>
                         header.sortName != undefined ?
                            <th key={Math.random()}>
                               <span onClick={() => sort(header.sortName!)}
@@ -48,9 +48,9 @@ const RowView = (props: IProps) => {
                   }
                </tr>
             </thead>
-            {(props.data.rows && props.data.rows.length > 0) &&
+            {props.data.rows().length > 0 &&
                <tbody>
-                  {props.data.rows.map(row =>
+                  {props.data.rows().map(row =>
                      <tr key={Math.random()}>
                         {row.data.map(d =>
                            <td className="align-middle" key={Math.random()} >

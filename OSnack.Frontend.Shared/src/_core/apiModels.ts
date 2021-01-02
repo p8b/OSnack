@@ -630,7 +630,6 @@ export class Product extends OrderProductBase {
     stockQuantity!: number;
     category: Category = new Category();
     nutritionalInfo?: NutritionalInfo | undefined;
-    comments?: Comment[] | undefined;
     score?: string | undefined;
     averageScore?: number;
 

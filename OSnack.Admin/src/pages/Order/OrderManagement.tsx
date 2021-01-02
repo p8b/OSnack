@@ -207,7 +207,7 @@ const OrderManagement = (props: IProps) => {
                   <Table className="col-12 text-center table-striped"
                      defaultSortName={tblSortName}
                      data={tableData}
-                     onSortClick={(isSortAsce, sortName) => onSearch(undefined, undefined, undefined, isSortAsce, sortName)}
+                     onSortChange={(isSortAsce, sortName) => onSearch(undefined, undefined, undefined, isSortAsce, sortName)}
                      view={TableView.CardView}
                      listCount={tblTotalItemCount}
                   />

@@ -93,15 +93,16 @@ module.exports = {
             }
          ]
       }),
-      new WorkboxPlugin.GenerateSW({
-         clientsClaim: true,
-         skipWaiting: true,
-         navigateFallback: "/index.html",
-         additionalManifestEntries: ['https://localhost:44358/Category/Get/AllPublic'],
-         cleanupOutdatedCaches: true,
-         inlineWorkboxRuntime: true,
-         sourcemap: true,
-      }),
+      //new WorkboxPlugin.GenerateSW({
+      //   cacheId: "OSnackAppCacheV1",
+      //   clientsClaim: true,
+      //   skipWaiting: true,
+      //   navigateFallback: "/index.html",
+      //   additionalManifestEntries: [],
+      //   cleanupOutdatedCaches: true,
+      //   inlineWorkboxRuntime: true,
+      //   sourcemap: true,
+      //}),
    ],
    externals: {
       "react": "React",

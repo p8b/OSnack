@@ -138,7 +138,7 @@ const CategoryManagement = (props: IProps) => {
                   <Table className="col-12 text-center table-striped"
                      defaultSortName={tblSortName}
                      data={tableData}
-                     onSortClick={(isSortAsce, sortName) => onSearch(undefined, undefined, isSortAsce, sortName)}
+                     onSortChange={(isSortAsce, sortName) => onSearch(undefined, undefined, isSortAsce, sortName)}
                      listCount={tblTotalItemCount}
                   />
                   <Pagination

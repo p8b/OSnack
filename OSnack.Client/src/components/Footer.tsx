@@ -12,13 +12,22 @@ const Footer = () => {
                      <div className="h2" children="Follow Us!" />
                      <a className="col-12 facebook-icon-contact-page" href="https://www.facebook.com/OSNACK.CO.UK/" target="_blank" />
                      <a className="col-12 instagram-icon-contact-page" href="https://www.instagram.com/osnack.co.uk/" target="_blank" />
-                  </div>
-                  <div className="col-12 col-md-6 h5 pl-2 pr-2 m-0 mt-4 text-center">
-                     <div className="col-12 ">
-                        <Link to="/About">About</Link>
+                     <div className="col-12  mt-4">
+                        <Link to="/About">About Us</Link>
                      </div>
                      <div className="col-12 mt-4">
                         <Link to="/Contact">Contact Us</Link>
+                     </div>
+                  </div>
+                  <div className="col-12 col-md-6 h5 pl-2 pr-2 m-0 mt-4 text-center">
+                     <div className="col-12">
+                        <Link to="/TermsAndConditions">Terms And Conditions</Link>
+                     </div>
+                     <div className="col-12 mt-4">
+                        <Link to="/PrivacyPolicy">Privacy Policy</Link>
+                     </div>
+                     <div className="col-12 mt-4">
+                        <Link to="/RefundsPolicy">Refunds Policy</Link>
                      </div>
 
                      <p className="col-12 text-center pm-0 mt-5 cursor-default"
