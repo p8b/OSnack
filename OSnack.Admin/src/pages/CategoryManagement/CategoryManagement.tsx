@@ -1,7 +1,7 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
-import Table, { TableData, TableHeaderData, TableRowData } from 'osnack-frontend-shared/src/components/Table/Table';
+import Table, { TableData } from 'osnack-frontend-shared/src/components/Table/Table';
 import { Category } from 'osnack-frontend-shared/src/_core/apiModels';
 import CategoryModal from './CategoryModal';
 import Container from '../../components/Container';
@@ -78,25 +78,26 @@ const CategoryManagement = (props: IProps) => {
    };
 
    const populateCategoryTable = (categoryList?: Category[]) => {
+      if (categoryList?.length == 0) {
+         errorAlert.setSingleWarning("0", "No Result Found");
+         return;
+      }
+      errorAlert.clear();
+
       let tData = new TableData();
-      tData.headers.push(new TableHeaderData("Name", "Name", true));
-      tData.headers.push(new TableHeaderData("No. Products"));
-      tData.headers.push(new TableHeaderData("", "", false));
+      tData.AddHeader("Name", "Name")
+         .AddHeader("No. Products");
 
       categoryList?.map(category =>
-         tData.rows.push(new TableRowData([
+         tData.AddRow([
             category.name,
             category.totalProducts,
             <TableRowButtons
                btnClassName="btn-blue edit-icon"
                btnClick={() => { editCategory(category); }}
             />
-         ])));
-      if (categoryList?.length == 0) {
-         errorAlert.setSingleWarning("0", "No Result Found");
-      } else {
-         errorAlert.clear();
-      }
+         ]));
+
       setTableData(tData);
    };
 

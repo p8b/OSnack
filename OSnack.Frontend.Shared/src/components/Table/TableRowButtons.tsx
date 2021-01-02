@@ -43,33 +43,3 @@ interface IProps {
    btn2Click?: () => void;
 }
 export default TableRowButtons;
-
-
-
-export enum TableView {
-   RowView = 0,
-   CardView = 1
-}
-
-export class TableData {
-   rows: TableRowData[] = [];
-   headers: TableHeaderData[] = [];
-}
-
-export class TableHeaderData {
-   name = "";
-   sortName = "";
-   isSortable = false;
-   constructor(name: string, sortName: string = "", isSortable: boolean = false) {
-      this.name = name;
-      this.sortName = sortName;
-      this.isSortable = isSortable;
-   }
-}
-
-export class TableRowData {
-   data: any[] = [];
-   constructor(data: any[]) {
-      this.data = data;
-   }
-}

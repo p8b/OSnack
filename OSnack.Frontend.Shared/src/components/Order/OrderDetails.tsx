@@ -4,11 +4,10 @@ import { getBadgeByOrderStatusType, onImageError } from '../../_core/appFunc';
 import { API_URL, ClientAppAccess } from '../../_core/constant.Variables';
 import InputDropdown from '../Inputs/InputDropDown';
 import Alert, { AlertObj, useAlert } from '../Texts/Alert';
-import ReactToPrint from 'react-to-print';
 
 
 const OrderDetails = (props: IProps) => {
-   const [containerRef] = useState(React.createRef<HTMLDivElement>());
+
    const errorAlert = useAlert(new AlertObj());
    const [selectedStatus, SetSelectStatus] = useState(OrderStatusType.InProgress);
    useEffect(() => {
@@ -24,14 +23,14 @@ const OrderDetails = (props: IProps) => {
       return totalCount;
 
    };
+
    return (
-      <div className="row pm-0" ref={containerRef}>
+      <>
          {/***** OrderDetails ****/}
          <div className="col-12 col-sm-5">
             <Alert alert={errorAlert.alert}
                className="col-12 mb-2"
                onClosed={() => { errorAlert.clear(); }} />
-
             <div className=" pos-sticky t-0">
                {props.access == ClientAppAccess.Secret &&
                   <div className="col-12 p-0 font-weight-bold">
@@ -88,25 +87,22 @@ const OrderDetails = (props: IProps) => {
                      <div className="col-4 small-text p-0">£{props.order.totalDiscount}</div>
                   </div>
                }
+               {props.order.payment.refundAmount != 0 &&
+                  <div className="row col-12 pm-0">
+                     <div className="col-8 p-0 small-text text-gray">Refund Value:</div>
+                     <div className="col-4 small-text p-0">£{props.order.payment.refundAmount}</div>
+                  </div>
+               }
                <div className="row col-12 pm-0">
                   <div className="col-8 p-0 pm-0 font-weight-bold ">Total Price:</div>
                   <div className="col-4 p-0 font-weight-bold">£{props.order.totalPrice}</div>
                </div>
-               {props.access == ClientAppAccess.Official && props.order.dispute == undefined &&
-                  <div className="col-12 pm-0 cursor-pointer  small-text text-primary" onClick={() => props.onDispute!(props.order)}>I have issue with this order.</div>
+               {props.access == ClientAppAccess.Official && props.order.dispute == undefined && props.order.status != OrderStatusType.Canceled &&
+                  <div className="col-12 pm-0 cursor-pointer  small-text text-primary" onClick={props.onDispute}>I have issue with this order.</div>
                }
 
-               <div className="pm-0 mt-3 mb-3">
-                  <div className="row pm-0">
-                     <div className="col-9 p-0 font-weight-bold ">Shipping Address : </div>
-                     <ReactToPrint
-                        documentTitle={`Order Receipt`}
-                        bodyClass={"p-5"}
-                        pageStyle={"p-5 "}
-                        trigger={() => <button className="btn-sm col d-print-none">Print</button>}
-                        content={() => containerRef.current}
-                     />
-                  </div>
+               <div className="pm-0 mt-3">
+                  <div className="col-12 p-0 font-weight-bold ">Shipping Address :</div>
                   <div className="col-12 p-0 line-limit-1">{props.order.name}</div>
                   <div className="col-12 p-0 line-limit-2">{props.order.firstLine}</div>
                   <div className="col-12 p-0 line-limit-2">{props.order.secondLine}</div>
@@ -116,6 +112,8 @@ const OrderDetails = (props: IProps) => {
 
             </div>
          </div>
+
+
          {/***** OrderItem ****/}
          <div className="col-sm-7 mt-1">
             <div className="row pl-3 pr-3">
@@ -135,7 +133,8 @@ const OrderDetails = (props: IProps) => {
                )}
             </div>
          </div>
-      </div>
+
+      </>
    );
 };
 
@@ -144,6 +143,6 @@ declare type IProps = {
    access: ClientAppAccess;
    statusChanged?: (status: OrderStatusType) => void;
    availabeType?: OrderStatusType[];
-   onDispute?: (order: Order) => void;
+   onDispute?: () => void;
 };
 export default OrderDetails;

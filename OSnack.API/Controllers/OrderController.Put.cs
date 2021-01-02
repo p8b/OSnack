@@ -84,6 +84,7 @@ namespace OSnack.API.Controllers
          {
 
             Order originalOrder = await _DbContext.Orders.AsTracking()
+                     .Include(o => o.Dispute).ThenInclude(c => c.Messages)
                      .Include(o => o.Payment).AsTracking()
                      .Include(o => o.OrderItems)
                      .SingleOrDefaultAsync(o => o.Id == modifiedOrder.Id).ConfigureAwait(false);
@@ -100,31 +101,71 @@ namespace OSnack.API.Controllers
             {
                _LoggingService.Log(Request.Path, AppLogType.OrderException,
                         new { message = $"Order Status Mismatch.", originalOrder = originalOrder, modifiedOrder = modifiedOrder }, User);
-               CoreFunc.Error(ref ErrorsList, "Order Status Mismatch.");
+               CoreFunc.Error(ref ErrorsList, "Cannot procces you order.Try again or contact Administrator.");
                return StatusCode(412, ErrorsList);
             }
 
-            if (originalOrder.Status == OrderStatusType.Canceled)
+            if (originalOrder.Status == OrderStatusType.Canceled || originalOrder.Status == OrderStatusType.FullyRefunded
+               || originalOrder.Status == OrderStatusType.PartialyRefunded)
             {
                try
                {
+                  string refundValue;
+                  if (originalOrder.Status == OrderStatusType.PartialyRefunded)
+                  {
+                     if (modifiedOrder.RefundValue > originalOrder.TotalPrice)
+                     {
+                        _LoggingService.Log(Request.Path, AppLogType.OrderException,
+                     new { message = $"Refund value is more than Total Price.", originalOrder = originalOrder, modifiedOrder = modifiedOrder }, User);
+                        CoreFunc.Error(ref ErrorsList, "Cannot procces you order.Try again or contact Administrator.");
+                        return StatusCode(412, ErrorsList);
+                     }
+                     if (modifiedOrder.RefundValue == originalOrder.TotalPrice)
+                        originalOrder.Status = OrderStatusType.FullyRefunded;
+                     refundValue = modifiedOrder.RefundValue.ToString("0.00");
+                  }
+                  else
+                     refundValue = originalOrder.TotalPrice.ToString("0.00");
+
+
                   RefundRequest refundRequest = new RefundRequest()
                   {
                      Amount = new Money
                      {
                         CurrencyCode = AppConst.Settings.PayPal.CurrencyCode,
-                        Value = originalOrder.TotalPrice.ToString("0.00")
+                        Value = refundValue
                      },
 
-                     NoteToPayer = modifiedOrder.Dispute.Messages[0].Body
+                     NoteToPayer = modifiedOrder.Dispute.Messages.LastOrDefault().Body
                   };
                   var request = new CapturesRefundRequest(originalOrder.Payment.Reference);
                   request.Prefer("return=representation");
                   request.RequestBody(refundRequest);
                   var response = await PayPalClient.client().Execute(request);
-                  originalOrder.Payment.RefundAmount = originalOrder.TotalPrice;
-                  originalOrder.Payment.Type = PaymentType.FullyRefunded;
-                  originalOrder.Dispute = modifiedOrder.Dispute;
+                  originalOrder.Payment.RefundAmount = Convert.ToDecimal(refundValue);
+                  originalOrder.Payment.Type = originalOrder.Status == OrderStatusType.PartialyRefunded
+                                                                     ? PaymentType.PartialyRefunded : PaymentType.FullyRefunded;
+
+                  if (originalOrder.Dispute == null)
+                  {
+                     var user = await _DbContext.Users.SingleOrDefaultAsync(u => u.Id == AppFunc.GetUserId(User)).ConfigureAwait(false);
+                     originalOrder.Dispute = new Communication()
+                     {
+                        Id = await FindDisputeId(0).ConfigureAwait(false),
+                        Email = user.Email,
+                        FullName = user.FullName,
+                        Messages = new List<Message>(),
+                        Order = originalOrder
+                     };
+                  }
+                  originalOrder.Dispute.IsOpen = false;
+                  var newMessage = modifiedOrder.Dispute.Messages.Find(m => m.Id == 0);
+                  if (!string.IsNullOrEmpty(newMessage.Body))
+                  {
+                     newMessage.IsCustomer = false;
+                     originalOrder.Dispute.Messages.Add(newMessage);
+
+                  }
                   await RestoreItemToProductQuantity(originalOrder);
                }
                catch (Exception ex)
@@ -137,7 +178,12 @@ namespace OSnack.API.Controllers
             }
             if (originalOrder.Status == OrderStatusType.Confirmed)
                originalOrder.ShippingReference = modifiedOrder.ShippingReference;
+
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
+
+            if (originalOrder.Status == OrderStatusType.Canceled || originalOrder.Status == OrderStatusType.FullyRefunded
+                || originalOrder.Status == OrderStatusType.PartialyRefunded)
+               await _EmailService.OrderDisputeAsync(originalOrder, originalOrder.Dispute).ConfigureAwait(false);
             return Ok(originalOrder);
          }
          catch (Exception ex)
@@ -155,6 +201,21 @@ namespace OSnack.API.Controllers
          foreach (var product in productList)
          {
             product.StockQuantity += order.OrderItems.SingleOrDefault(o => o.ProductId == product.Id).Quantity;
+         }
+      }
+
+      async Task<string> FindDisputeId(int tryCount)
+      {
+         string DispuetId = $"{CoreFunc.StringGenerator(4, 4, 0, 4, 0)}-{CoreFunc.StringGenerator(4, 4, 0, 4, 0)}";
+         if (await _DbContext.Communications.SingleOrDefaultAsync(c => c.Id == DispuetId) == null)
+            return DispuetId;
+         else
+         {
+            if (tryCount > 4)
+            {
+               throw new Exception("Failed to generate id");
+            }
+            return await FindDisputeId(tryCount++).ConfigureAwait(false);
          }
       }
    }

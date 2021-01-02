@@ -16,13 +16,12 @@ const ContactUs = (props: IProps) => {
    const errorAlert = useAlert(new AlertObj());
    const [contact, setContact] = useState(new Communication());
    const [message, setMessage] = useState("");
-   const [fullName, setFullName] = useState("");
    const [showSuccess, setShowSuccess] = useState(false);
 
 
    const sendMessage = () => {
       errorAlert.PleaseWait(500, isUnmounted);
-      contact.messages = [{ body: message, fullName: fullName }];
+      contact.messages = [{ body: message }];
       usePostQuestionCommunication(contact)
          .then((result) => {
             if (isUnmounted.current) return;
@@ -55,7 +54,7 @@ const ContactUs = (props: IProps) => {
                      {!auth.state.isAuthenticated &&
                         <>
                            < Input className="col-12" label="Name*"
-                              value={fullName} onChange={(i) => { setFullName(i.target.value); }}
+                              value={contact.fullName} onChange={(i) => { setContact({ ...contact, fullName: i.target.value }); }}
                            />
                            <Input className="col-12" label="Email*"
                               value={contact.email} onChange={(i) => { setContact({ ...contact, email: i.target.value }); }}
@@ -63,7 +62,7 @@ const ContactUs = (props: IProps) => {
                            <Input label="Phone Number"
                               className="col-12"
                               type="text"
-                              value={contact.phoneNumber || undefined}
+                              value={contact.phoneNumber}
                               showDanger={errorAlert.checkExist("phoneNumber")}
                               validationPattern={CommonRegex.UkNumber}
                               onChange={i => setContact({ ...contact, phoneNumber: i.target.value })}

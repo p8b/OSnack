@@ -72,6 +72,9 @@ namespace OSnack.API.Database.Models
       [NotMapped]
       public bool HasOrder { get; set; }
 
+      [NotMapped]
+      public string FullName { get { return $"{FirstName} {Surname}"; } }
+
       #region **** JsonIgnore extra properties and sensitive properties ****
       [JsonIgnore]
       public override DateTimeOffset? LockoutEnd { get; set; }

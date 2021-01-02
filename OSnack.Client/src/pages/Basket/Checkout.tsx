@@ -174,7 +174,6 @@ const Checkout = (props: IProps) => {
       errorAlert.PleaseWait(500, isUnmounted);
       useVerifyOrderOrder(order).then(result => {
          if (isUnmounted.current) return;
-         console.log(result.data);
          setPaypalOrder(result.data);
          setIsOpenPayementModal(true);
          errorAlert.clear();

@@ -1,8 +1,8 @@
 import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/components/Texts/Alert";
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
-import { ContactListAndTotalCount } from "osnack-frontend-shared/src/_core/apiModels";
-export type IReturnUseSearchCommunication={ data:ContactListAndTotalCount , status?: number;};
+import { CommunicationListAndTotalCount, Communication } from "osnack-frontend-shared/src/_core/apiModels";
+export type IReturnUseSearchCommunication={ data:CommunicationListAndTotalCount , status?: number;};
 export const useSearchCommunication = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, isSortAsce: boolean, sortName: string | null): Promise<IReturnUseSearchCommunication> =>{
         let url_ = API_URL + "/Communication/Get/Search/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{isSortAsce}/{sortName}";
         if (selectedPage !== null && selectedPage !== undefined)
@@ -25,8 +25,46 @@ export const useSearchCommunication = async (selectedPage: number, maxNumberPerI
         switch(response?.status){
 
                 case 200: 
-                        var responseData: ContactListAndTotalCount = await response?.json();
+                        var responseData: CommunicationListAndTotalCount = await response?.json();
                         return { data: responseData, status: response?.status };
+
+                case 417: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
+
+                default:
+                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
+                        throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
+        }
+  
+}
+export type IReturnUseAddMessageSecretCommunication={ data:Communication , status?: number;};
+export const useAddMessageSecretCommunication = async (modifyCommunication: Communication): Promise<IReturnUseAddMessageSecretCommunication> =>{
+        let url_ = API_URL + "/Communication/Put/AddMessageSecret";
+        url_ = url_.replace(/[?&]$/, "");
+        const content_ = modifyCommunication;
+        let response = await httpCaller.PUT(url_, content_);
+        if( response?.status === 400){
+            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
+            response = await httpCaller.PUT(url_, content_);
+        }
+
+        switch(response?.status){
+
+                case 200: 
+                        var responseData: Communication = await response?.json();
+                        return { data: responseData, status: response?.status };
+
+                case 422: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
+
+                case 412: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
 
                 case 417: 
                         return response?.json().then((data: ErrorDto[]) => {

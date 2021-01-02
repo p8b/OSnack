@@ -153,5 +153,30 @@ namespace P8B.UK.API.Services
             return false;
          }
       }
+
+      public async Task<bool> OrderDisputeAsync(Order order, Communication dispute)
+      {
+         try
+         {
+            await SetUserTemplate(EmailTemplateTypes.OrderReceipt).ConfigureAwait(false);
+            foreach (var serverClass in Template.ServerClasses)
+            {
+               SetTemplateServerPropValue(serverClass, order);
+               SetTemplateServerPropValue(serverClass, order.Payment);
+            }
+
+            var email = order.Payment.Email;
+
+            if (order.User != null)
+               email = order.User.Email;
+            await SendEmailAsync($"{order.Name}", email).ConfigureAwait(false);
+            return true;
+         }
+         catch (Exception ex)
+         {
+            _LoggingService.LogEmailFailure(ex.Message, new { ex });
+            return false;
+         }
+      }
    }
 }

@@ -1,19 +1,21 @@
 ﻿import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
 import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
 import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
-import Table from 'osnack-frontend-shared/src/components/Table/Table';
-import TableRowButtons, { TableData, TableHeaderData, TableRowData, TableView } from 'osnack-frontend-shared/src/components/Table/TableRowButtons';
+import Table, { TableData, TableView } from 'osnack-frontend-shared/src/components/Table/Table';
+import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRowButtons';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
-import OrderModal from 'osnack-frontend-shared/src/pages/Order/OrderModal';
-import { Order, OrderStatusType, OrderStatusTypeList, PaymentTypeList } from 'osnack-frontend-shared/src/_core/apiModels';
+import OrderModal from 'osnack-frontend-shared/src/components/Modals/OrderModal';
+import { Communication, Order, OrderStatusType, OrderStatusTypeList, PaymentTypeList } from 'osnack-frontend-shared/src/_core/apiModels';
 import { checkUri, generateUri, getBadgeByOrderStatusType } from 'osnack-frontend-shared/src/_core/appFunc';
 import { ConstMaxNumberOfPerItemsPage, GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Container from '../../components/Container';
 import { useAllOrder, usePutOrderStatusOrder } from '../../SecretHooks/useOrderHook';
+import { useAddMessageSecretCommunication } from '../../SecretHooks/useCommunicationHook';
 import { Access } from '../../_core/appConstant.Variables';
+import DisputeModal from 'osnack-frontend-shared/src/components/Modals/DisputeModal';
 
 
 
@@ -25,7 +27,9 @@ const OrderManagement = (props: IProps) => {
    const [selectOrder, setSelectOrder] = useState(new Order());
    const [selectType, setSelectType] = useState(OrderStatusTypeList.find(o => o.Value == OrderStatusType.InProgress)?.Id.toString() || "");
    const [isOpenOrderModal, setIsOpenOrderModal] = useState(false);
+   const [isOpenDisputeModal, setIsOpenDisputeModal] = useState(false);
    const [availableStatusTypeList, setAvailableStatusTypeList] = useState<OrderStatusType[]>([]);
+   const [selectedDispute, setSelectedDispute] = useState(new Communication());
 
    const [tableData, setTableData] = useState(new TableData());
    const [tblSortName, setTblsortName] = useState("Date");
@@ -96,35 +100,49 @@ const OrderManagement = (props: IProps) => {
       });
    };
    const populateOrderTable = (orderList: Order[]) => {
+      if (orderList.length == 0) {
+         errorAlert.setSingleWarning("0", "No Result Found");
+         return;
+      }
+      errorAlert.clear();
       let tData = new TableData();
-      tData.headers.push(new TableHeaderData("Status", "Status", true));
-      tData.headers.push(new TableHeaderData("UserName", "UserName", false));
-      tData.headers.push(new TableHeaderData("Total Price", "TotalPrice", true));
-      tData.headers.push(new TableHeaderData("Date", "Date", true));
-      tData.headers.push(new TableHeaderData("Payment", "", false));
-      tData.headers.push(new TableHeaderData("", "", false));
+      tData.AddHeader("Status", "Status")
+         .AddHeader("UserName")
+         .AddHeader("Total Price", "TotalPrice")
+         .AddHeader("Payment")
+         .AddHeader("Date", "Date");
 
       orderList.map(order =>
-         tData.rows.push(new TableRowData([
+         tData.AddRow([
             <span>  <span className={`${getBadgeByOrderStatusType(order.status)} font-weight-bold pm-0  h6 mt-auto mb-auto `}
                children={OrderStatusTypeList.find(t => t.Value == order.status)?.Name} /></span>,
             getFullNameOrEmail(order),
             `£${order.totalPrice}`,
             new Date(order.date!).ToShortDate(),
             PaymentTypeList.find(t => t.Value == order.payment.type)?.Name,
-            <TableRowButtons
-               btnClassName="btn-blue edit-icon"
-               btnClick={() => {
-                  setSelectOrder(order);
-                  setIsOpenOrderModal(true);
-               }}
-            />
-         ])));
-      if (orderList.length == 0) {
-         errorAlert.setSingleWarning("0", "No Result Found");
-      } else {
-         errorAlert.clear();
-      }
+            <>
+               {order.dispute == undefined &&
+                  <TableRowButtons
+                     btnClassName="btn-blue edit-icon"
+                     btnClick={() => {
+                        setSelectOrder(order);
+                        setIsOpenOrderModal(true);
+                     }}
+                  />}
+               {order.dispute != undefined &&
+                  <TableRowButtons
+                     btn1ClassName="col-12 col-lg-6 btn-blue edit-icon"
+                     btn1Click={() => {
+                        setSelectOrder(order);
+                        setIsOpenOrderModal(true);
+                     }}
+                     btnClassName="col-12 col-lg-6 btn-white dispute-icon small-text"
+                     btnChildren="Dispute"
+                     btnClick={() => { setSelectedDispute(order.dispute!); setIsOpenDisputeModal(true); }}
+                  />}
+            </>
+         ]));
+
       setTableData(tData);
    };
 
@@ -189,7 +207,7 @@ const OrderManagement = (props: IProps) => {
                   <Table className="col-12 text-center table-striped"
                      defaultSortName={tblSortName}
                      data={tableData}
-                     onSortClick={(isSortAsce, sortName) => onSearch(undefined, undefined, undefined, isSortAsce)}
+                     onSortClick={(isSortAsce, sortName) => onSearch(undefined, undefined, undefined, isSortAsce, sortName)}
                      view={TableView.CardView}
                      listCount={tblTotalItemCount}
                   />
@@ -207,6 +225,12 @@ const OrderManagement = (props: IProps) => {
                access={Access}
                onClose={() => setIsOpenOrderModal(false)}
                onSave={UpdateOrder} />
+            <DisputeModal isOpen={isOpenDisputeModal}
+               dispute={selectedDispute}
+               access={Access}
+               onClose={() => { setIsOpenDisputeModal(false); onSearch(); }}
+               useAddMessageSecretCommunication={useAddMessageSecretCommunication}
+            />
          </Container>
       </Container>
    );

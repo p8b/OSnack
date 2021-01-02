@@ -19,14 +19,29 @@ namespace OSnack.API.Controllers
    {
       #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(Communication), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test
       [HttpPut("Put/[action]")]
-      public async Task<IActionResult> AddMessage([FromBody] Communication modifyCommunication)
+      public async Task<IActionResult> AddMessageOfficial([FromBody] Communication modifyCommunication)
+         => await Addmessage(modifyCommunication, true);
+
+      #region *** ***
+      [Consumes(MediaTypeNames.Application.Json)]
+      [ProducesResponseType(typeof(Communication), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
+      #endregion
+      [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
+      [HttpPut("Put/[action]")]
+      public async Task<IActionResult> AddMessageSecret([FromBody] Communication modifyCommunication)
+         => await Addmessage(modifyCommunication, false);
+
+      private async Task<IActionResult> Addmessage(Communication modifyCommunication, bool IsCustomer)
       {
          try
          {
@@ -37,10 +52,17 @@ namespace OSnack.API.Controllers
                return StatusCode(412, ErrorsList);
             }
 
-            var newMessage = modifyCommunication.Messages.Find(m => m.Id == 0);
-            newMessage.IsCustomer = true;
-            originalCommunication.Messages.Add(newMessage);
+            if (!IsCustomer)
+               originalCommunication.IsOpen = modifyCommunication.IsOpen;
 
+            var newMessage = modifyCommunication.Messages.Find(m => m.Id == 0);
+            if (!string.IsNullOrEmpty(newMessage.Body))
+            {
+
+               newMessage.IsCustomer = IsCustomer;
+               originalCommunication.Messages.Add(newMessage);
+
+            }
             TryValidateModel(originalCommunication);
 
             foreach (var key in ModelState.Keys)
@@ -48,19 +70,17 @@ namespace OSnack.API.Controllers
                if (key.StartsWith("User") || key.StartsWith("Messages") || key.StartsWith("Order") || key.StartsWith("OrderItem"))
                   ModelState.Remove(key);
             }
-
             if (!ModelState.IsValid)
             {
                CoreFunc.ExtractErrors(ModelState, ref ErrorsList);
                return UnprocessableEntity(ErrorsList);
             }
 
-
             _DbContext.Communications.Update(originalCommunication);
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
             /// return 201 created status with the new object
             /// and success message
-            return Ok($"Your message submitted.");
+            return Ok(originalCommunication);
          }
          catch (Exception ex)
          {

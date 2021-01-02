@@ -56,8 +56,8 @@ const Table = (props: IProps) => {
                <InputDropdown dropdownTitle={`Sort By: ${selectedSortName}`}
                   className="col-12  col-md-auto pm-0 pb-0 "
                   titleClassName={`btn ${!isSortAsc ? "sort-numeric-down-icon" : "sort-numeric-up-icon"}`}>
-                  {props.data.headers.filter(h => h.isSortable).map(header =>
-                     <button key={Math.random()} className={`dropdown-item ${getSortedColCss(header.sortName)}`} onClick={() => { sort(header.sortName); }}>
+                  {props.data.headers.filter(h => h.sortName != undefined).map(header =>
+                     <button key={Math.random()} className={`dropdown-item ${getSortedColCss(header.sortName!)}`} onClick={() => { sort(header.sortName!); }}>
                         {header.name}
                      </button>
                   )}
@@ -104,6 +104,7 @@ export default Table;
 
 
 
+
 export enum TableView {
    RowView = 0,
    CardView = 1
@@ -112,17 +113,28 @@ export enum TableView {
 export class TableData {
    rows: TableRowData[] = [];
    headers: TableHeaderData[] = [];
+
+   AddHeader = (header: string, sortName?: string) => {
+      this.headers.push(new TableHeaderData(header, sortName));
+      return this;
+   };
+   AddRow = (data: any[]) => {
+      if (data.length - this.headers.length != 0)
+         for (var i = 0; i <= data.length - this.headers.length; i++)
+            this.headers.push(new TableHeaderData(""));
+      this.rows.push(new TableRowData(data));
+
+   };
 }
 
 export class TableHeaderData {
-   name = "";
-   sortName = "";
-   isSortable = false;
-   constructor(name: string, sortName: string = "", isSortable: boolean = false) {
+   name: string;
+   sortName?: string;
+   constructor(name: string, sortName?: string) {
       this.name = name;
       this.sortName = sortName;
-      this.isSortable = isSortable;
    }
+
 }
 
 export class TableRowData {

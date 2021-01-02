@@ -32,6 +32,11 @@ export const LoginNav = [
    },
    {
       id: 6,
+      path: "/ContactUsMessage",
+      displayName: "Contact Us Message",
+   },
+   {
+      id: 7,
       path: "/EmailTemplate",
       displayName: "Email Template",
    }

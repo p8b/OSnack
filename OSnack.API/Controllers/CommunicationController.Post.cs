@@ -18,35 +18,35 @@ namespace OSnack.API.Controllers
    {
       #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(typeof(string), StatusCodes.Status201Created)]
+      [ProducesResponseType(typeof(Communication), StatusCodes.Status201Created)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test
       [HttpPost("Post/[action]")]
-      public async Task<IActionResult> PostDispute([FromBody] Communication newContact)
+      public async Task<IActionResult> PostDispute([FromBody] Communication newDispute)
       {
          try
          {
 
-            if (!string.IsNullOrEmpty(newContact.Order_Id) &&
-               (await _DbContext.Orders.SingleOrDefaultAsync(o => o.Id == newContact.Order_Id) == null))
+            if (!string.IsNullOrEmpty(newDispute.Order_Id) &&
+               (await _DbContext.Orders.SingleOrDefaultAsync(o => o.Id == newDispute.Order_Id) == null))
             {
                CoreFunc.Error(ref ErrorsList, "Cannot find your order.");
                return UnprocessableEntity(ErrorsList);
             }
 
             var user = await _DbContext.Users.SingleOrDefaultAsync(u => u.Id == AppFunc.GetUserId(User));
-            newContact.Email = user.Email;
-            newContact.FullName = $"{user.FirstName} {user.Surname}";
-            newContact.PhoneNumber = user.PhoneNumber;
-            newContact.IsOpen = true;
-            newContact.Order = await _DbContext.Orders.SingleOrDefaultAsync(o => o.Id == newContact.Order_Id);
-            newContact.Type = ContactType.Dispute;
-            newContact.Messages[0].IsCustomer = true;
+            newDispute.Email = user.Email;
+            newDispute.FullName = $"{user.FirstName} {user.Surname}";
+            newDispute.PhoneNumber = user.PhoneNumber;
+            newDispute.IsOpen = true;
+            newDispute.Order = await _DbContext.Orders.SingleOrDefaultAsync(o => o.Id == newDispute.Order_Id);
+            newDispute.Type = ContactType.Dispute;
+            newDispute.Messages[0].IsCustomer = true;
 
-            TryValidateModel(newContact);
+            TryValidateModel(newDispute);
 
             foreach (var key in ModelState.Keys)
             {
@@ -59,12 +59,8 @@ namespace OSnack.API.Controllers
                CoreFunc.ExtractErrors(ModelState, ref ErrorsList);
                return UnprocessableEntity(ErrorsList);
             }
-
-
-            await TryToSave(newContact, 0);
-            /// return 201 created status with the new object
-            /// and success message
-            return Created("", $"Your message submitted.Contact Referense : {newContact.Id }");
+            await _EmailService.OrderDisputeAsync(newDispute.Order, newDispute).ConfigureAwait(false);
+            return Created("", await TryToSave(newDispute, 0).ConfigureAwait(false));
          }
          catch (Exception ex)
          {
@@ -72,8 +68,6 @@ namespace OSnack.API.Controllers
             return StatusCode(417, ErrorsList);
          }
       }
-
-
 
       #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
@@ -115,9 +109,9 @@ namespace OSnack.API.Controllers
             }
 
 
-            await TryToSave(newContact, 0);
-            /// return 201 created status with the new object
-            /// and success message
+            await TryToSave(newContact, 0).ConfigureAwait(false);
+
+            //   await _EmailService.EmailConfirmationAsync(orderData).ConfigureAwait(false);
             return Created("", $"Your message submitted.Contact Referense : {newContact.Id }");
          }
          catch (Exception ex)
@@ -148,7 +142,7 @@ namespace OSnack.API.Controllers
             {
                throw ex;
             }
-            return await TryToSave(contactData, tryCount++);
+            return await TryToSave(contactData, tryCount++).ConfigureAwait(false);
 
          }
       }

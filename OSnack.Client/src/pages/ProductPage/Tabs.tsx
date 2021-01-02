@@ -1,10 +1,18 @@
 ﻿
-import { Product } from 'osnack-frontend-shared/src/_core/apiModels';
+import { Product, Comment } from 'osnack-frontend-shared/src/_core/apiModels';
 import React, { useEffect, useState } from 'react';
 import Container from '../../components/Container';
+import { useGetComment } from 'osnack-frontend-shared/src/hooks/PublicHooks/useCommentHook';
+import { usePostComment } from 'osnack-frontend-shared/src/hooks/OfficialHooks/useCommentHook';
+import { AddComment } from '../../components/AddComment';
+
+
 const Tabs = (props: IProps) => {
    const [selectedNav, setSelectedNav] = useState(productTabs.NutritionalInfo);
    const [showNutritionalInfo, setShowNutritionalInfo] = useState(false);
+   const [allowAddComment, setAllowAddComment] = useState(false);
+   const [commentList, setCommentList] = useState<Comment[]>([]);
+
    useEffect(() => {
       // if no nutritional information is avilable
       if (props.product.nutritionalInfo != null
@@ -24,6 +32,26 @@ const Tabs = (props: IProps) => {
       }
 
    }, [props.product]);
+
+   useEffect(() => {
+      useGetComment(props.product.id!).then(result => {
+         console.log(result);
+         setCommentList(result.data.commentList!);
+         setAllowAddComment(result.data.allowComment || false);
+      });
+   }, []);
+
+   const sentComment = (description: string, rate: number) => {
+      usePostComment({
+         description: description,
+         rate: rate,
+         product: props.product,
+         name: ""
+      }).then(result => {
+
+      });
+   };
+
    return (
       <>
          <ul className="nav nav-tabs">
@@ -38,7 +66,7 @@ const Tabs = (props: IProps) => {
             <li className="nav-item">
                <a onClick={() => { setSelectedNav(productTabs.Comments); }}
                   className={`nav-link ${selectedNav === productTabs.Comments ? "active" : ""} `}>
-                  Comments ({props.product.comments?.length || 0})
+                  Comments ({commentList?.length || 0})
                </a>
             </li>
          </ul>
@@ -74,9 +102,18 @@ const Tabs = (props: IProps) => {
                   </>
                }
                {selectedNav === productTabs.Comments &&
-                  <div>
-                     Only logged in customers who have purchased this product may leave a comment.
-                  </div>
+                  <>
+                     {allowAddComment &&
+                        <AddComment onSend={sentComment} />
+                     }
+                     {commentList.map(comment =>
+                        <div>
+                           <div>{comment.name}</div>
+                           <div>{comment.description}</div>
+                        </div>
+                     )
+                     }
+                  </>
                }
             </Container>
          </div>

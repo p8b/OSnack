@@ -1,7 +1,7 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
-import Table, { TableData, TableHeaderData, TableRowData } from 'osnack-frontend-shared/src/components/Table/Table';
+import Table, { TableData } from 'osnack-frontend-shared/src/components/Table/Table';
 import { Coupon, CouponTypeList } from 'osnack-frontend-shared/src/_core/apiModels';
 import CouponModel from './CouponModel';
 import Container from '../../components/Container';
@@ -92,25 +92,24 @@ const CouponManagement = (props: IProps) => {
    };
 
    const populateCategoryTable = (couponList?: Coupon[]) => {
+      if (couponList?.length == 0) {
+         errorAlert.setSingleWarning("0", "No Result Found");
+         return;
+      }
+      errorAlert.clear();
+
       let tData = new TableData();
-      tData.headers.push(new TableHeaderData("Code", "Code", true));
-      tData.headers.push(new TableHeaderData("Type"));
-      tData.headers.push(new TableHeaderData("", "", false));
+      tData.AddHeader("Code", "Code").AddHeader("Type");
 
       couponList?.map(coupon =>
-         tData.rows.push(new TableRowData([
+         tData.AddRow([
             <div>{coupon.code} <small className="text-danger" children={isExpire(coupon.expiryDate)} /></div>,
             CouponTypeList.find(c => c.Value == coupon.type)?.Name,
             <TableRowButtons
                btnClassName="btn-blue edit-icon"
                btnClick={() => { editCoupon(coupon); }}
             />
-         ])));
-      if (couponList?.length == 0) {
-         errorAlert.setSingleWarning("0", "No Result Found");
-      } else {
-         errorAlert.clear();
-      }
+         ]));
       setTableData(tData);
    };
 

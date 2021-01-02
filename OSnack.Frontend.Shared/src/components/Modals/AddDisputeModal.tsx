@@ -1,12 +1,12 @@
 ﻿import React, { useContext, useRef, useState } from 'react';
-import { ContactType, Order } from 'osnack-frontend-shared/src/_core/apiModels';
-import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
-import { usePostDisputeCommunication } from 'osnack-frontend-shared/src/hooks/OfficialHooks/useCommunicationHook';
-import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
-import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
-import { AuthContext } from 'osnack-frontend-shared/src/_core/authenticationContext';
-import { TextArea } from 'osnack-frontend-shared/src/components/Inputs/TextArea';
-import { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import { Communication, ContactType, Order } from '../../_core/apiModels';
+import Modal from '../../components/Modals/Modal';
+import { usePostDisputeCommunication } from '../../hooks/OfficialHooks/useCommunicationHook';
+import PageHeader from '../../components/Texts/PageHeader';
+import { Button } from '../../components/Buttons/Button';
+import { AuthContext } from '../../_core/authenticationContext';
+import { TextArea } from '../../components/Inputs/TextArea';
+import { AlertObj, useAlert } from '../../components/Texts/Alert';
 
 
 
@@ -29,8 +29,7 @@ const AddDisputeModal = (props: IProps) => {
          .then((result) => {
             if (isUnmounted.current) return;
             setMessage("");
-            errorAlert.setSingleSuccess("submit", result.data);
-            props.onClose();
+            props.onClose(result.data);
 
          }).catch(alert => {
             if (isUnmounted.current) return;
@@ -43,7 +42,7 @@ const AddDisputeModal = (props: IProps) => {
          bodyRef={props.modalRef}
          isOpen={props.isOpen}>
          <>
-            <PageHeader title="Dispute Order" />
+            <PageHeader title="Dispute" />
             <div className="row  mt-1">
                <TextArea className="col-12" label="Message*" rows={3} value={message}
                   onChange={(i) => { setMessage(i.target.value); }} />
@@ -68,8 +67,7 @@ const AddDisputeModal = (props: IProps) => {
 declare type IProps = {
    order: Order;
    isOpen: boolean;
-   onClose: () => void;
+   onClose: (dispute?: Communication) => void;
    modalRef?: any;
-   onDispute?: (order: Order) => void;
 };
 export default AddDisputeModal;

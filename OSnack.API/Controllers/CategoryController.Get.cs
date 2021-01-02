@@ -45,8 +45,8 @@ namespace OSnack.API.Controllers
                 .ConfigureAwait(false);
 
             List<Category> list = await _DbContext.Categories
-                .OrderByDynamic(sortName, isSortAsce)
                 .Where(c => searchValue.Equals(CoreConst.GetAllRecords) ? true : c.Name.Contains(searchValue))
+                .OrderByDynamic(sortName, isSortAsce)
                 .Skip((selectedPage - 1) * maxNumberPerItemsPage)
                 .Take(maxNumberPerItemsPage)
                 .ToListAsync()

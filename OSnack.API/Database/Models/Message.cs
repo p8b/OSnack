@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using OSnack.API.Extras.Attributes;
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -16,14 +17,17 @@ namespace OSnack.API.Database.Models
 
       [Column(TypeName = "nvarchar(100)")]
       [DataType(DataType.Date)]
+      [EmailTemplateVariable(Name = "Date")]
       public DateTime Date { get; set; } = DateTime.UtcNow;
 
       [Required(ErrorMessage = "Communication is Required \n")]
       [JsonIgnore, ForeignKey("CommunicationId")]
       public Communication Communication { get; set; }
 
+
       public bool IsCustomer { get; set; }
 
+      [EmailTemplateVariable(Name = "MessageBody")]
       public string Body { get; set; }
    }
 }

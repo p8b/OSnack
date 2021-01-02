@@ -1,5 +1,4 @@
-﻿/// <reference path="../../../../OSnack.Client/src/pages/Basket/PaymentModal.tsx" />
-import React from 'react';
+﻿import React from 'react';
 
 export const TextArea = (props: IProps) => {
    const id: string = Math.random().toString();

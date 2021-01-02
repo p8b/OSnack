@@ -101,50 +101,5 @@ namespace OSnack.API.Controllers
          }
       }
 
-
-      /// <summary>
-      ///     Create/ update a new Score
-      /// </summary>
-      #region *** 201 Created, 400 BadRequest, 422 UnprocessableEntity, 412 PreconditionFailed, 417 ExpectationFailed ***
-      [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(StatusCodes.Status201Created)]
-
-      #endregion
-      [HttpPost("Post/[action]/Score")]
-      [Authorize(AppConst.AccessPolicies.Official)]
-      [ProducesResponseType(typeof(Score), StatusCodes.Status201Created)]
-      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
-      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
-      [ProducesDefaultResponseType]
-      /// Ready For Test 
-      public async Task<IActionResult> Score([FromBody] Score newScore)
-      {
-         try
-         {
-            /// if model validation failed
-            if (!TryValidateModel(newScore))
-            {
-               CoreFunc.ExtractErrors(ModelState, ref ErrorsList);
-               /// return Unprocessable Entity with all the errors
-               return UnprocessableEntity(ErrorsList);
-            }
-
-            /// else score object is made without any errors
-            /// Add the new score to the EF context
-            await _DbContext.Scores.AddAsync(newScore).ConfigureAwait(false);
-
-            /// save the changes to the data base
-            await _DbContext.SaveChangesAsync().ConfigureAwait(false);
-
-            /// return 201 created status with the new object
-            /// and success message
-            return Created("Success", newScore);
-         }
-         catch (Exception ex)
-         {
-            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
-            return StatusCode(417, ErrorsList);
-         }
-      }
    }
 }

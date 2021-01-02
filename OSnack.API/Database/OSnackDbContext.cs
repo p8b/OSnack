@@ -25,7 +25,6 @@ namespace OSnack.API.Database
       public DbSet<Coupon> Coupons { get; set; }
       public DbSet<AppLog> AppLogs { get; set; }
       public DbSet<Comment> Comments { get; set; }
-      public DbSet<Score> Scores { get; set; }
       public DbSet<RegistrationMethod> RegistrationMethods { get; set; }
       public DbSet<Newsletter> Newsletters { get; set; }
       public DbSet<Role> Roles { get; set; }
@@ -60,8 +59,6 @@ namespace OSnack.API.Database
 
 
          builder.Entity<Comment>().HasIndex(u => u.OrderItemId).IsUnique();
-
-         builder.Entity<Score>().HasIndex(u => u.OrderItemId).IsUnique();
 
          builder.Entity<User>().HasIndex(u => u.Email).IsUnique();
          builder.Entity<User>().Ignore(u => u.UserName);

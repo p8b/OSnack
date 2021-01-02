@@ -264,6 +264,6 @@ export const checkUri = (patheName: string, defualtValues: any[]) => {
 
 export const generateUri = (patheName: string, values: any[]) => {
    let uri = `/${extractUri(patheName)[0]}`;
-   values.map(value => uri += `/${value}`);
+   values.map(value => uri += `/${encodeURIComponent(value)}`);
    return uri;
 };

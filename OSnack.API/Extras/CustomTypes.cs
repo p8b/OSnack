@@ -49,6 +49,9 @@ namespace OSnack.API.Extras.CustomTypes
 
       [EmailTemplateTypeServerClasses(typeof(Order), typeof(Payment))]
       OrderCancellation = 8,
+
+      [EmailTemplateTypeServerClasses(typeof(Order), typeof(Communication))]
+      OrderDispute = 9,
    }
 
    public enum TokenTypes

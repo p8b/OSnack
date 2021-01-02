@@ -62,6 +62,10 @@ export const useAlert = (init: AlertObj) => {
       isWaitCanceled.current = true;
       setAlert({ ...alert, List: [new ErrorDto(key, value)], Type: AlertTypes.Warning });
    };
+   const setSingleError = (key: string, value: string) => {
+      isWaitCanceled.current = true;
+      setAlert({ ...alert, List: [new ErrorDto(key, value)], Type: AlertTypes.Error });
+   };
    const setSingleDefault = (key: string, value: string) => {
       isWaitCanceled.current = true;
       setAlert({ ...alert, List: [new ErrorDto(key, value)], Type: AlertTypes.default });
@@ -90,7 +94,7 @@ export const useAlert = (init: AlertObj) => {
       }
       return returnVal;
    };
-   return { alert, set, PleaseWait, clear, setSingleSuccess, setSingleWarning, setSingleDefault, checkExist, checkExistFilterRequired };
+   return { alert, set, PleaseWait, clear, setSingleSuccess, setSingleWarning, setSingleError, setSingleDefault, checkExist, checkExistFilterRequired };
 };
 
 interface IProps {

@@ -241,6 +241,7 @@
     <Content Include="src\styles\modules\_label.scss" />
     <Content Include="src\styles\modules\_modal.scss" />
     <Content Include="src\styles\modules\_radius.scss" />
+    <Content Include="src\styles\modules\_rate.scss" />
     <Content Include="src\styles\modules\_scrollbar.scss" />
     <Content Include="src\styles\modules\_shop-card.scss" />
     <Content Include="src\styles\modules\_table.scss" />
@@ -259,7 +260,7 @@
     <Folder Include="src\components\Inputs\" />
     <Folder Include="src\components\Loading\" />
     <Folder Include="src\components\Modals\" />
-    <Folder Include="src\components\OrderDetails\" />
+    <Folder Include="src\components\Order\" />
     <Folder Include="src\components\Pagination\" />
     <Folder Include="src\components\Table\" />
     <Folder Include="src\components\UserAccount\" />
@@ -270,7 +271,6 @@
     <Folder Include="src\hooks\OfficialHooks\" />
     <Folder Include="src\hooks\PublicHooks\" />
     <Folder Include="src\pages\" />
-    <Folder Include="src\pages\Order\" />
     <Folder Include="src\styles\" />
     <Folder Include="src\components\Login\" />
     <Folder Include="src\styles\animation\" />
@@ -308,7 +308,10 @@
     <TypeScriptCompile Include="src\components\Inputs\InputDropDown.tsx" />
     <TypeScriptCompile Include="src\components\Inputs\QuantityInput.tsx" />
     <TypeScriptCompile Include="src\components\Inputs\SeachInput.tsx" />
+    <TypeScriptCompile Include="src\components\Inputs\StarRating.tsx" />
+    <TypeScriptCompile Include="src\components\Modals\AddDisputeModal.tsx" />
     <TypeScriptCompile Include="src\components\Modals\ConfirmPasswordModal.tsx" />
+    <TypeScriptCompile Include="src\components\Modals\DisputeModal.tsx" />
     <TypeScriptCompile Include="src\components\Modals\Modal.tsx" />
     <TypeScriptCompile Include="src\components\Inputs\CheckBox.tsx" />
     <TypeScriptCompile Include="src\components\Inputs\Input.tsx" />
@@ -317,7 +320,7 @@
     <TypeScriptCompile Include="src\components\Inputs\Toggler.tsx" />
     <TypeScriptCompile Include="src\components\Loading\Loading.tsx" />
     <TypeScriptCompile Include="src\components\Modals\ModalFooter.tsx" />
-    <TypeScriptCompile Include="src\components\OrderDetails\OrderDetails.tsx" />
+    <TypeScriptCompile Include="src\components\Order\OrderDetails.tsx" />
     <TypeScriptCompile Include="src\components\Pagination\Pagination.tsx" />
     <TypeScriptCompile Include="src\components\Table\CardView.tsx" />
     <TypeScriptCompile Include="src\components\Table\RowView.tsx" />
@@ -327,12 +330,13 @@
     <TypeScriptCompile Include="src\hooks\function\useScript.tsx" />
     <TypeScriptCompile Include="src\hooks\OfficialHooks\useAddressHook.tsx" />
     <TypeScriptCompile Include="src\hooks\OfficialHooks\useAuthenticationHook.tsx" />
+    <TypeScriptCompile Include="src\hooks\OfficialHooks\useCommentHook.tsx" />
     <TypeScriptCompile Include="src\hooks\OfficialHooks\useCommunicationHook.tsx" />
     <TypeScriptCompile Include="src\hooks\OfficialHooks\useOrderHook.tsx" />
-    <TypeScriptCompile Include="src\hooks\OfficialHooks\useProductHook.tsx" />
     <TypeScriptCompile Include="src\hooks\OfficialHooks\useUserHook.tsx" />
     <TypeScriptCompile Include="src\hooks\PublicHooks\useAuthenticationHook.tsx" />
     <TypeScriptCompile Include="src\hooks\PublicHooks\useCategoryHook.tsx" />
+    <TypeScriptCompile Include="src\hooks\PublicHooks\useCommentHook.tsx" />
     <TypeScriptCompile Include="src\hooks\PublicHooks\useCommunicationHook.tsx" />
     <TypeScriptCompile Include="src\hooks\PublicHooks\useCouponHook.tsx" />
     <TypeScriptCompile Include="src\hooks\PublicHooks\useDeliveryOptionHook.tsx" />
@@ -340,9 +344,9 @@
     <TypeScriptCompile Include="src\hooks\PublicHooks\useOrderHook.tsx" />
     <TypeScriptCompile Include="src\hooks\PublicHooks\useProductHook.tsx" />
     <TypeScriptCompile Include="src\hooks\PublicHooks\useUserHook.tsx" />
-    <TypeScriptCompile Include="src\pages\Order\OrderMessageModal.tsx" />
-    <TypeScriptCompile Include="src\pages\Order\ViewOrders.tsx" />
-    <TypeScriptCompile Include="src\pages\Order\OrderModal.tsx" />
+    <TypeScriptCompile Include="src\components\Modals\OrderMessageModal.tsx" />
+    <TypeScriptCompile Include="src\components\Order\ViewOrders.tsx" />
+    <TypeScriptCompile Include="src\components\Modals\OrderModal.tsx" />
     <TypeScriptCompile Include="src\pages\PasswordReset.tsx" />
     <TypeScriptCompile Include="src\pages\ConfirmEmail.tsx" />
     <TypeScriptCompile Include="src\pages\PageNotFound.tsx" />

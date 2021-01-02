@@ -96,6 +96,9 @@ namespace OSnack.API.Database.Models
       [Required]
       public decimal TotalDiscount { get; set; }
 
+      [NotMapped]
+      public decimal RefundValue { get; set; }
+
 
       [EmailTemplateVariable(Name = "OrderStatus")]
       [JsonIgnore, NotMapped]

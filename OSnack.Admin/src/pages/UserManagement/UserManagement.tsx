@@ -1,7 +1,7 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
-import Table, { TableData, TableHeaderData, TableRowData, TableView } from 'osnack-frontend-shared/src/components/Table/Table';
+import Table, { TableData, TableView } from 'osnack-frontend-shared/src/components/Table/Table';
 import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRowButtons';
 import { Role, User } from 'osnack-frontend-shared/src/_core/apiModels';
 import Container from '../../components/Container';
@@ -101,15 +101,20 @@ const UserManagement = (props: IProps) => {
    };
 
    const populateUserTable = (userList: User[]) => {
+      if (userList.length == 0) {
+         errorAlert.setSingleWarning("0", "No Result Found");
+         return;
+      }
+      errorAlert.clear();
+
       let tData = new TableData();
-      tData.headers.push(new TableHeaderData("Name", "FirstName", true));
-      tData.headers.push(new TableHeaderData("Surname", "Surname", true));
-      tData.headers.push(new TableHeaderData("Email", "Email", true));
-      tData.headers.push(new TableHeaderData("Role", "Role.Name", false));
-      tData.headers.push(new TableHeaderData("", "", false));
+      tData.AddHeader("Name", "FirstName")
+         .AddHeader("Surname", "Surname")
+         .AddHeader("Email", "Email")
+         .AddHeader("Role", "Role.Name");
 
       userList.map(user =>
-         tData.rows.push(new TableRowData([
+         tData.AddRow([
             user.firstName,
             user.surname,
             user.email,
@@ -132,12 +137,8 @@ const UserManagement = (props: IProps) => {
                   />
                }
             </>
-         ])));
-      if (userList.length == 0) {
-         errorAlert.setSingleWarning("0", "No Result Found");
-      } else {
-         errorAlert.clear();
-      }
+         ]));
+
       setTableData(tData);
    };
 

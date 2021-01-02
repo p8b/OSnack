@@ -1,5 +1,5 @@
 ﻿
-import OrderDetails from 'osnack-frontend-shared/src/components/OrderDetails/OrderDetails';
+import OrderDetails from 'osnack-frontend-shared/src/components/Order/OrderDetails';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import React, { useContext, useEffect } from 'react';
 import { Redirect } from 'react-router';

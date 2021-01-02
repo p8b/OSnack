@@ -2,7 +2,7 @@
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
-import Table, { TableData, TableHeaderData, TableRowData, TableView } from 'osnack-frontend-shared/src/components/Table/Table';
+import Table, { TableData, TableView } from 'osnack-frontend-shared/src/components/Table/Table';
 import { Category, Product, ProductUnitTypeList } from 'osnack-frontend-shared/src/_core/apiModels';
 import ProductModal from './ProductModal';
 import Container from '../../components/Container';
@@ -108,16 +108,21 @@ const ProductManagement = (props: IProps) => {
    };
 
    const populateProductTable = (productList: Product[]) => {
-      let tData = new TableData();
-      tData.headers.push(new TableHeaderData("Name", "Name", true));
-      tData.headers.push(new TableHeaderData("Category", "Category.Name", true));
-      tData.headers.push(new TableHeaderData("Price", "Price", true));
-      tData.headers.push(new TableHeaderData("Unit Quantity", "UnitQuantity", false));
-      tData.headers.push(new TableHeaderData("Status", "Status", true));
-      tData.headers.push(new TableHeaderData("", "", false));
+      if (productList.length == 0) {
+         errorAlert.setSingleWarning("0", "No Result Found");
+         return;
+      }
+      errorAlert.clear();
 
-      productList.map(product => {
-         tData.rows.push(new TableRowData([
+      let tData = new TableData();
+      tData.AddHeader("Name", "Name")
+         .AddHeader("Category", "Category.Name")
+         .AddHeader("Price", "Price")
+         .AddHeader("Unit Quantity", "UnitQuantity")
+         .AddHeader("Status", "Status");
+
+      productList.map(product =>
+         tData.AddRow([
             product.name,
             product.category.name,
             `£${product.price}`,
@@ -128,12 +133,7 @@ const ProductManagement = (props: IProps) => {
                btnClick={() => { editProduct(product); }}
             />
          ]));
-      });
-      if (productList.length == 0) {
-         errorAlert.setSingleWarning("0", "No Result Found");
-      } else {
-         errorAlert.clear();
-      }
+
       setTableData(tData);
    };
    const editProduct = (product: Product) => {

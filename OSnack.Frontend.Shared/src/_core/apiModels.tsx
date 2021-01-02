@@ -34,6 +34,18 @@ export const PaymentTypeList=[
 {Id:2,Name:"PartialyRefunded".replace(/([A-Z])/g, ' $1').trim(),Value:PaymentType.PartialyRefunded},
 {Id:3,Name:"FullyRefunded".replace(/([A-Z])/g, ' $1').trim(),Value:PaymentType.FullyRefunded},
 ]
+export enum ProductUnitType {
+
+    Kg = 0,
+    Grams = 1,
+    PerItem = 2,
+}
+
+export const ProductUnitTypeList=[
+{Id:0,Name:"Kg".replace(/([A-Z])/g, ' $1').trim(),Value:ProductUnitType.Kg},
+{Id:1,Name:"Grams".replace(/([A-Z])/g, ' $1').trim(),Value:ProductUnitType.Grams},
+{Id:2,Name:"PerItem".replace(/([A-Z])/g, ' $1').trim(),Value:ProductUnitType.PerItem},
+]
 export enum OrderStatusType {
 
     InProgress = 0,
@@ -51,18 +63,6 @@ export const OrderStatusTypeList=[
 {Id:3,Name:"Delivered".replace(/([A-Z])/g, ' $1').trim(),Value:OrderStatusType.Delivered},
 {Id:4,Name:"PartialyRefunded".replace(/([A-Z])/g, ' $1').trim(),Value:OrderStatusType.PartialyRefunded},
 {Id:5,Name:"FullyRefunded".replace(/([A-Z])/g, ' $1').trim(),Value:OrderStatusType.FullyRefunded},
-]
-export enum ProductUnitType {
-
-    Kg = 0,
-    Grams = 1,
-    PerItem = 2,
-}
-
-export const ProductUnitTypeList=[
-{Id:0,Name:"Kg".replace(/([A-Z])/g, ' $1').trim(),Value:ProductUnitType.Kg},
-{Id:1,Name:"Grams".replace(/([A-Z])/g, ' $1').trim(),Value:ProductUnitType.Grams},
-{Id:2,Name:"PerItem".replace(/([A-Z])/g, ' $1').trim(),Value:ProductUnitType.PerItem},
 ]
 export enum RegistrationTypes {
 
@@ -89,6 +89,7 @@ export enum EmailTemplateTypes {
     ContactUsMessage = 6,
     OrderReceipt = 7,
     OrderCancellation = 8,
+    OrderDispute = 9,
 }
 
 export const EmailTemplateTypesList=[
@@ -101,6 +102,7 @@ export const EmailTemplateTypesList=[
 {Id:6,Name:"ContactUsMessage".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.ContactUsMessage},
 {Id:7,Name:"OrderReceipt".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.OrderReceipt},
 {Id:8,Name:"OrderCancellation".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.OrderCancellation},
+{Id:9,Name:"OrderDispute".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.OrderDispute},
 ]
 export enum EmailTemplateClassNames {
 
@@ -178,14 +180,6 @@ export class Payee {
     display_data?: PayeeDisplayable | undefined;
 
 }
-export class Score {
-    id?: number = 0;
-    rate?: number;
-    orderItem?: OrderItem | undefined;
-    orderItemId?: number;
-    product?: Product | undefined;
-
-}
 export class Coupon {
     code!: string;
     pendigCode?: string | undefined;
@@ -219,6 +213,18 @@ export class Refund {
     seller_payable_breakdown?: MerchantPayableBreakdown | undefined;
     status?: string | undefined;
     update_time?: string | undefined;
+
+}
+export class Comment {
+    id?: number = 0;
+    description!: string;
+    orderItem?: OrderItem | undefined;
+    orderItemId?: number;
+    name!: string;
+    show?: boolean;
+    date?: Date;
+    rate?: number;
+    product?: Product | undefined;
 
 }
 export class Message {
@@ -256,14 +262,6 @@ export class Capture {
     seller_receivable_breakdown?: MerchantReceivableBreakdown | undefined;
     status?: string | undefined;
     update_time?: string | undefined;
-
-}
-export class Comment {
-    id?: number = 0;
-    description!: string;
-    orderItem?: OrderItem | undefined;
-    orderItemId?: number;
-    product?: Product | undefined;
 
 }
 export class Category {
@@ -318,6 +316,7 @@ export class Communication {
     phoneNumber?: string | undefined;
     order_Id?: string | undefined;
     messages?: Message[] | undefined;
+    date?: Date;
 
 }
 export class EmailTemplate {
@@ -386,6 +385,20 @@ export class ShippingOption {
     type?: string | undefined;
 
 }
+export class NutritionalInfo {
+    id?: number = 0;
+    perGram?: number;
+    energyKJ?: number | undefined;
+    energyKcal?: number | undefined;
+    fat?: number | undefined;
+    saturateFat?: number | undefined;
+    carbohydrate?: number | undefined;
+    carbohydrateSugar?: number | undefined;
+    fibre?: number | undefined;
+    protein?: number | undefined;
+    salt?: number | undefined;
+
+}
 export class LinkDescription {
     encType?: string | undefined;
     href?: string | undefined;
@@ -416,20 +429,6 @@ export class AmountBreakdown {
     shipping?: Money | undefined;
     shipping_discount?: Money | undefined;
     tax_total?: Money | undefined;
-
-}
-export class NutritionalInfo {
-    id?: number = 0;
-    perGram?: number;
-    energyKJ?: number | undefined;
-    energyKcal?: number | undefined;
-    fat?: number | undefined;
-    saturateFat?: number | undefined;
-    carbohydrate?: number | undefined;
-    carbohydrateSugar?: number | undefined;
-    fibre?: number | undefined;
-    protein?: number | undefined;
-    salt?: number | undefined;
 
 }
 export abstract class OrderAddressBase {
@@ -517,11 +516,6 @@ export class CouponListAndTotalCount {
     totalCount?: number;
 
 }
-export class ContactListAndTotalCount {
-    contactList?: Communication[] | undefined;
-    totalCount?: number;
-
-}
 export class EmailTemplateServerClass {
     value?: EmailTemplateClassNames;
     classProperties?: ClassProperty[] | undefined;
@@ -546,6 +540,11 @@ export class CategoryListAndTotalCount {
     totalCount?: number;
 
 }
+export class CommentListAndAllowComment {
+    commentList?: Comment[] | undefined;
+    allowComment?: boolean;
+
+}
 export class OrderListAndAvailableTypes {
     orderList?: Order[] | undefined;
     availableTypes?: OrderStatusType[] | undefined;
@@ -567,6 +566,11 @@ export class ProductAndRelatedProductList {
     relatedProductList?: Product[] | undefined;
 
 }
+export class CommunicationListAndTotalCount {
+    communicationList?: Communication[] | undefined;
+    totalCount?: number;
+
+}
 export class EmailTemplateAndDefaultEmailTemplate {
     emailTemplate?: EmailTemplate | undefined;
     defaultEmailTemplate?: EmailTemplate | undefined;
@@ -585,6 +589,7 @@ export class User extends UserBase {
     subscribeNewsLetter?: boolean;
     orderLength?: number;
     hasOrder?: boolean;
+    fullName?: string | undefined;
 
 }
 export class Order extends OrderAddressBase {
@@ -605,6 +610,7 @@ export class Order extends OrderAddressBase {
     totalItemPrice!: number;
     shippingPrice!: number;
     totalDiscount!: number;
+    refundValue?: number;
 
 }
 export class Address extends OrderAddressBase {
@@ -625,7 +631,7 @@ export class Product extends OrderProductBase {
     category: Category = new Category();
     nutritionalInfo?: NutritionalInfo | undefined;
     comments?: Comment[] | undefined;
-    scores?: Score[] | undefined;
+    score?: string | undefined;
     averageScore?: number;
 
 }

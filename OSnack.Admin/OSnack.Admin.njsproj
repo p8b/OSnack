@@ -145,7 +145,7 @@
     <Folder Include="src\components\NavMenu\" />
     <Folder Include="src\components\ImageUpload\" />
     <Folder Include="src\pages\" />
-    <Folder Include="src\pages\ContactManagement\" />
+    <Folder Include="src\pages\ContactUsMessage\" />
     <Folder Include="src\pages\Dashboard\" />
     <Folder Include="src\pages\LoginPage\" />
     <Folder Include="src\pages\MyAccount\" />
@@ -189,6 +189,7 @@
     <TypeScriptCompile Include="src\index.tsx" />
     <TypeScriptCompile Include="src\pages\CategoryManagement\CategoryManagement.tsx" />
     <TypeScriptCompile Include="src\pages\CategoryManagement\CategoryModal.tsx" />
+    <TypeScriptCompile Include="src\pages\ContactUsMessage\ContactUsMessage.tsx" />
     <TypeScriptCompile Include="src\pages\CouponManagement\CouponManagement.tsx" />
     <TypeScriptCompile Include="src\pages\CouponManagement\CouponModel.tsx" />
     <TypeScriptCompile Include="src\pages\Dashboard\Dashboard.tsx" />

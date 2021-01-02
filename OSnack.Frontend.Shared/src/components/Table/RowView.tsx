@@ -33,9 +33,9 @@ const RowView = (props: IProps) => {
                <tr>
                   {(props.data.headers != null && props.data.headers.length > 0) &&
                      props.data.headers.map(header =>
-                        header.isSortable ?
+                        header.sortName != undefined ?
                            <th key={Math.random()}>
-                              <span onClick={() => sort(header.sortName)}
+                              <span onClick={() => sort(header.sortName!)}
                                  className={`col ${getSortedColCss(header.sortName)}`}>
                                  <span className="table-header-sort">{header.name}</span>
                               </span>

@@ -1,14 +1,10 @@
 ﻿using Newtonsoft.Json;
-
+using OSnack.API.Database.ModelsDependencies;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
-using P8B.Core.CSharp.Attributes;
-using OSnack.API.Extras.CustomTypes;
-using Microsoft.AspNetCore.Authentication;
-using OSnack.API.Database.ModelsDependencies;
-using System.ComponentModel;
+using System.Linq;
 
 namespace OSnack.API.Database.Models
 {
@@ -47,10 +43,12 @@ namespace OSnack.API.Database.Models
       public NutritionalInfo NutritionalInfo { get; set; }
 
       [InverseProperty("Product")]
+      [JsonIgnore]
+
       public ICollection<Comment> Comments { get; set; }
 
-      [InverseProperty("Product")]
-      public ICollection<Score> Scores { get; set; }
+      [NotMapped]
+      public string Score { get { return Comments == null ? "" : Comments.ToList().Select(t => t.Rate).Average().ToString("0.00"); } }
 
       [NotMapped]
       public int AverageScore { get; set; }

@@ -1,6 +1,5 @@
 ﻿.chat {
     border: 2px solid #dedede;
-    background-color: #f1f1f1;
     border-radius: 5px;
     padding: 10px;
     margin: 10px 0;
@@ -11,13 +10,28 @@
         display: table;
     }
 
-    &.darker {
-        border-color: #ccc;
-        background-color: #ddd;
+    &.send {
+        background-color: #f1f1f1;
+
+        .sender {
+            font-size: small;
+            text-align: right;
+        }
     }
 
-    .time-right {
-        float: right;
+
+    &.receive {
+        border-color: #f1f1f1;
+        margin-left: auto;
+        background-color: white;
+
+        .sender {
+            font-size: small;
+        }
+    }
+
+    .time {
+        font-size: small;
         color: #aaa;
     }
 }
