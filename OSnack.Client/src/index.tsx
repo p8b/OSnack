@@ -2,6 +2,7 @@
 import { render } from "react-dom";
 import App from "./app";
 import "osnack-frontend-shared/src/_core/type.Extensions";
+import "osnack-frontend-shared/src/index";
 
 if (('serviceWorker' in navigator)) {
    navigator.serviceWorker.register('service-worker.js').then(swRegistration => {

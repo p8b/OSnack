@@ -71,9 +71,9 @@ const DeliveryOptionManagement = (props: IProps) => {
             errorAlert.clear();
             setTblTotalItemCount(result.data.totalCount || 0);
             populateTable(result.data.deliveryOptionList);
-         }).catch((alert) => {
+         }).catch((errors) => {
             if (isUnmounted.current) return;
-            errorAlert.set(alert);
+            errorAlert.set(errors);
          });
    };
 

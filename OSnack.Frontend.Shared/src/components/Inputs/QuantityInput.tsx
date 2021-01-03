@@ -5,7 +5,6 @@ import { Input } from './Input';
 const QuantityInput = (props: IProps) => {
    const [id] = useState(Math.random().toString());
    const PlusOne = async () => {
-      console.log(props.value);
       if (!props.disabled)
          props.onChange((props.value || 0) * 1 + 1);
    };

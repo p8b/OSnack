@@ -104,7 +104,7 @@ export const useConfirmEmailUser = async (pathName: string): Promise<IReturnUseC
         }
   
 }
-export type IReturnUseUpdatePasswordWithTokenUser={ data:User , status?: number;};
+export type IReturnUseUpdatePasswordWithTokenUser={ data:string , status?: number;};
 export const useUpdatePasswordWithTokenUser = async (data: any): Promise<IReturnUseUpdatePasswordWithTokenUser> =>{
         let url_ = API_URL + "/User/Put/UpdatePasswordWithToken";
         url_ = url_.replace(/[?&]$/, "");
@@ -118,7 +118,7 @@ export const useUpdatePasswordWithTokenUser = async (data: any): Promise<IReturn
         switch(response?.status){
 
                 case 200: 
-                        var responseData: User = await response?.json();
+                        var responseData: string = await response?.json();
                         return { data: responseData, status: response?.status };
 
                 case 412: 

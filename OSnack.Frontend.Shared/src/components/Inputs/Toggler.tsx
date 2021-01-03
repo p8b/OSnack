@@ -13,7 +13,6 @@ export const Toggler = (props: IProps) => {
 
 
    const onKeyUp = (keyCode: number) => {
-      console.log(keyCode);
       if (keyCode === 32 || keyCode === 13)
          onClick();
    };

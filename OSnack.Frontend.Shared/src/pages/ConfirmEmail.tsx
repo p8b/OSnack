@@ -14,9 +14,9 @@ const ConfrimEmail = (props: IProps) => {
       useConfirmEmailUser(window.location.pathname).then(() => {
          if (isUnmounted.current) return;
          errorAlert.setSingleSuccess("", "Success");
-      }).catch((alert) => {
+      }).catch((errors) => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
       return () => { isUnmounted.current = true; };
    }, []);

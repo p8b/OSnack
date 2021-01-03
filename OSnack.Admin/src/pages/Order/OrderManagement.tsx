@@ -94,9 +94,9 @@ const OrderManagement = (props: IProps) => {
          setAvailableStatusTypeList(result.data.availableTypes!);
          errorAlert.clear();
          populateOrderTable(result.data.orderList!);
-      }).catch(alert => {
+      }).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
    };
    const populateOrderTable = (orderList: Order[]) => {
@@ -163,9 +163,9 @@ const OrderManagement = (props: IProps) => {
          errorAlert.clear();
          errorAlert.setSingleSuccess("updated", "Order Updated.");
          onSearch();
-      }).catch(alert => {
+      }).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
 
    };

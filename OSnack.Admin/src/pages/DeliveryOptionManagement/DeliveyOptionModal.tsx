@@ -16,7 +16,6 @@ const DeliveyOptionModal = (props: IProps) => {
 
    useEffect(() => {
       setDeliveyOption(props.deliveryOption);
-      console.log(props.deliveryOption);
    }, [props.deliveryOption]);
 
    const createDeliveryOption = async () => {
@@ -27,9 +26,9 @@ const DeliveyOptionModal = (props: IProps) => {
          props.onSuccess();
          errorAlert.clear();
          errorAlert.setSingleSuccess("", "Delivery Option Created.");
-      }).catch(alert => {
+      }).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
    };
    const updateDeliveryOption = async () => {
@@ -41,9 +40,9 @@ const DeliveyOptionModal = (props: IProps) => {
          props.onSuccess();
          errorAlert.clear();
          errorAlert.setSingleSuccess("", "Delivery Option Updated.");
-      }).catch(alert => {
+      }).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
 
    };
@@ -54,9 +53,9 @@ const DeliveyOptionModal = (props: IProps) => {
          if (isUnmounted.current) return;
          errorAlert.clear();
          props.onClose();
-      }).catch(alert => {
+      }).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
 
    };
@@ -100,12 +99,11 @@ const DeliveyOptionModal = (props: IProps) => {
             onClosed={() => { errorAlert.clear(); }}
          />
 
-         <ModalFooter IsNew={deliveryOption.id == 0}
-            onCreate={createDeliveryOption}
-            onUpdate={updateDeliveryOption}
-            onDelete={deleteDeliveryOption}
-            hasDelete={!deliveryOption.isPremitive}
-            onClose={() => { errorAlert.clear(); props.onClose(); }} />
+         <ModalFooter
+            onCreate={deliveryOption.id != 0 ? undefined : createDeliveryOption}
+            onUpdate={deliveryOption.id === 0 ? undefined : updateDeliveryOption}
+            onDelete={(deliveryOption.id === 0 || deliveryOption.isPremitive) ? undefined : deleteDeliveryOption}
+            onCancel={() => { errorAlert.clear(); props.onClose(); }} />
 
       </Modal >
    );

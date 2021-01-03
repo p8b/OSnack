@@ -17,19 +17,20 @@ const ConfrimEmail = (props: IProps) => {
    const [confirmPassword, setConfirmPassword] = useState("");
 
    useEffect(() => {
+
       errorAlert.PleaseWait(500, isUnmounted);
       useUpdatePasswordWithTokenUser({
          pathName: window.location.pathname,
          email: email,
          password: password,
          justCheckToken: true
-      }).then((user) => {
+      }).then((result) => {
          if (isUnmounted.current) return;
          errorAlert.clear();
          setIsDone(false);
-      }).catch((alert) => {
+      }).catch((errors) => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
    }, []);
 
@@ -58,9 +59,9 @@ const ConfrimEmail = (props: IProps) => {
             if (isUnmounted.current) return;
             errorAlert.setSingleSuccess("", "Password Updated");
             setIsDone(true);
-         }).catch((alert) => {
+         }).catch((errors) => {
             if (isUnmounted.current) return;
-            errorAlert.set(alert);
+            errorAlert.set(errors);
          });
       };
    };

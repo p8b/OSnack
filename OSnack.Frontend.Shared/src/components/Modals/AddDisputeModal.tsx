@@ -31,9 +31,9 @@ const AddDisputeModal = (props: IProps) => {
             setMessage("");
             props.onClose(result.data);
 
-         }).catch(alert => {
+         }).catch(errors => {
             if (isUnmounted.current) return;
-            errorAlert.set(alert);
+            errorAlert.set(errors);
          });
    };
 

@@ -41,9 +41,9 @@ const ProductManagement = (props: IProps) => {
       useAllSecretCategory().then(result => {
          if (isUnmounted.current) return;
          setCategoryList(result.data);
-      }).catch(alert => {
+      }).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
       onSearch(...checkUri(window.location.pathname,
          [tblSelectedPage, tblMaxItemsPerPage, selectedStatusFilter, selectedCategoryFilter, tblIsSortAsc, tblSortName, GetAllRecords]));
@@ -99,13 +99,12 @@ const ProductManagement = (props: IProps) => {
       useSearchSecretProduct(selectedPage, maxItemsPerPage, categoryFilter, searchString, statusFilter, isSortAsc, sortName)
          .then(result => {
             if (isUnmounted.current) return;
-            console.log(result.data);
             setTblTotalItemCount(result.data.totalCount || 0);
             errorAlert.clear();
             populateProductTable(result.data.productList!);
-         }).catch(alert => {
+         }).catch(errors => {
             if (isUnmounted.current) return;
-            errorAlert.set(alert);
+            errorAlert.set(errors);
          });
    };
 

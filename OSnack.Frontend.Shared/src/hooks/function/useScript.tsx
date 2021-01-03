@@ -3,15 +3,10 @@
 const useScript = (url: string) => {
    const [isLoaded, setIsLoaded] = useState(false);
    useEffect(() => {
-      //return () => {
-      //   document.body.removeChild(script);
-      //};
-   }, []);
-   useEffect(() => {
       const script = document.createElement('script');
       script.src = url;
       script.async = true;
-      script.onload = () => { setIsLoaded(true); /*console.log(`script is loaded: \n ${url}`);*/ };
+      script.onload = () => { setIsLoaded(true); };
       document.body.appendChild(script);
       return () => {
          document.body.removeChild(script);

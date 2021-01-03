@@ -59,9 +59,9 @@ const DisputeModal = (props: IProps) => {
       setDispute(result.data);
    };
 
-   const onError = (alert: AlertObj) => {
+   const onError = (errors: AlertObj) => {
       if (isUnmounted.current) return;
-      errorAlert.set(alert);
+      errorAlert.set(errors);
    };
 
    const getChatCss = (isCustomer: boolean | undefined) => {

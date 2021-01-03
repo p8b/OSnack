@@ -177,9 +177,9 @@ const Checkout = (props: IProps) => {
          setPaypalOrder(result.data);
          setIsOpenPayementModal(true);
          errorAlert.clear();
-      }).catch(alert => {
+      }).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
    };
 
@@ -188,9 +188,9 @@ const Checkout = (props: IProps) => {
       usePostOrder(paypalOrderId, order).then(result => {
          setOrder(result.data);
          setIsOrderCompleted(true);
-      }).catch(alert => {
+      }).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
          setIsOpenPayementModal(false);
       });
    };
@@ -208,7 +208,7 @@ const Checkout = (props: IProps) => {
                      totalPrice={order.totalItemPrice}
                      acceptFreeCoupon={(order.deliveryOption?.price! > 0 && order.deliveryOption?.isPremitive) || false}
                      setCoupon={(val) => { recalculateBasket(deliveryOptionList, order.deliveryOption, val); errorAlert.clear(); }}
-                     setAlert={(alert) => { errorAlert.set(alert); recalculateBasket(deliveryOptionList, order.deliveryOption, new Coupon()); }} />
+                     setAlert={(errors) => { errorAlert.set(errors); recalculateBasket(deliveryOptionList, order.deliveryOption, new Coupon()); }} />
                }
 
                <div className="col-12 pm-0 small-text"> Subtotal : <b>£{order.totalItemPrice?.toFixed(2)}</b></div>

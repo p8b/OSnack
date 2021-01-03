@@ -45,14 +45,14 @@ const EmailTemplatesEdit = (props: IProps) => {
                setTemplate(result.data.emailTemplate != undefined ? result.data.emailTemplate : new EmailTemplate());
                setInitialLockedStatus(result.data.emailTemplate?.templateType != EmailTemplateTypes.Others);
                setDefaultTemplate(result.data.defaultEmailTemplate ? result.data.defaultEmailTemplate : new EmailTemplate());
-            }).catch(alert => {
-               errorAlert.set(alert);
+            }).catch(errors => {
+               errorAlert.set(errors);
             });
       else
          useGetAllAvailableTemplateTypesEmail().then(result => {
             setTemplateTypes(result.data);
-         }).catch(alert => {
-            errorAlert.set(alert);
+         }).catch(errors => {
+            errorAlert.set(errors);
          });
 
       if (props.location.state.emailTemplate.id == 0)
@@ -79,20 +79,19 @@ const EmailTemplatesEdit = (props: IProps) => {
          let emailTemp = template;
          emailTemp.html = data.html;
          emailTemp.design = data.design;
-         console.log(template);
          var resultTemplate: EmailTemplate | undefined;
          if (template.id == 0)
             await usePostTemplateEmail(template).then((result) => {
                resultTemplate = result.data;
-            }).catch((alert) => {
-               errorAlert.set(alert);
+            }).catch((errors) => {
+               errorAlert.set(errors);
                setIsOpenDetailsModal(true);
             });
          else if (template.id != null)
             await usePutTemplateEmail(template).then((result) => {
                resultTemplate = result.data;
-            }).catch((alert) => {
-               errorAlert.set(alert);
+            }).catch((errors) => {
+               errorAlert.set(errors);
                setIsOpenDetailsModal(true);
             });
 

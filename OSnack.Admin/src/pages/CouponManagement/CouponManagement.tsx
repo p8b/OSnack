@@ -78,9 +78,9 @@ const CouponManagement = (props: IProps) => {
             errorAlert.clear();
             setTblTotalItemCount(result.data.totalCount || 0);
             populateCategoryTable(result.data.couponList!);
-         }).catch((alert) => {
+         }).catch((errors) => {
             if (isUnmounted.current) return;
-            errorAlert.set(alert);
+            errorAlert.set(errors);
          });
    };
 
@@ -114,7 +114,6 @@ const CouponManagement = (props: IProps) => {
    };
 
    const editCoupon = (coupon: Coupon) => {
-      console.log(coupon);
       setSelectedCoupon(coupon);
       setIsOpenCouponModal(true);
    };

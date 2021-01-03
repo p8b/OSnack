@@ -31,9 +31,9 @@ const MyAddresses = (props: IProps) => {
 
          setAddressList(result.data);
          errorAlert.clear();
-      }).catch(alert => {
+      }).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
    };
 
@@ -46,9 +46,9 @@ const MyAddresses = (props: IProps) => {
       errorAlert.PleaseWait(500, isUnmounted);
       useSetDefaultAddress(addressId).then(() => {
          reloadAddressList();
-      }).catch(alert => {
+      }).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
    };
 

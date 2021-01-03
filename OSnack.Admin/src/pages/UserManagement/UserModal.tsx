@@ -26,22 +26,21 @@ const UserModal = (props: IProps) => {
          errorAlert.clear();
          setUser(result.data);
          props.onSuccess();
-      }).catch(alert => {
+      }).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
    };
    const updateUser = async () => {
       errorAlert.PleaseWait(500, isUnmounted);
-      console.log(user);
       useUpdateUserUser(user).then(result => {
          if (isUnmounted.current) return;
          errorAlert.clear();
          setUser(result.data);
          props.onSuccess();
-      }).catch(alert => {
+      }).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
    };
    const deleteUser = async () => {
@@ -51,9 +50,9 @@ const UserModal = (props: IProps) => {
          errorAlert.setSingleSuccess("", "confirm");
          setUser(user);
          props.onSuccess();
-      }).catch(alert => {
+      }).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
    };
 
@@ -115,11 +114,11 @@ const UserModal = (props: IProps) => {
             className="col-12 mb-2"
             onClosed={() => { errorAlert.clear(); }}
          />
-         <ModalFooter IsNew={user.id === 0}
-            onCreate={createUser}
-            onUpdate={updateUser}
-            onDelete={deleteUser}
-            onClose={() => { errorAlert.clear(); props.onClose(); }} />
+         <ModalFooter
+            onCreate={user.id != 0 ? undefined : createUser}
+            onUpdate={user.id === 0 ? undefined : updateUser}
+            onDelete={user.id === 0 ? undefined : deleteUser}
+            onCancel={() => { errorAlert.clear(); props.onClose(); }} />
       </Modal >
    );
 };

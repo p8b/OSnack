@@ -23,9 +23,9 @@ const ForgotPasswordModal = (props: IProps) => {
             if (isUnmounted.current) return;
             setIsTokenSent(true);
             errorAlert.setSingleSuccess("", "The Link to reset your password was sent to your email. Please check your Spam folder.");
-         }).catch((alert) => {
+         }).catch((errors) => {
             if (isUnmounted.current) return;
-            errorAlert.set(alert);
+            errorAlert.set(errors);
          });
       }
    };

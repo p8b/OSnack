@@ -23,7 +23,7 @@ export const DatePicker = (props: IProps) => {
                inputRightLable={props.inputRightLable}
                value={new Date(value).ToShortDate()}
                className="col m-0 p-0"
-               onChange={e => console.log(value)}
+               onChange={e => { setValue(new Date(e.target.value) || new Date()); }}
                disabled={props.disabled || false}
             />
             <div className="col-2 m-0 p-0 mt-auto mb-3">

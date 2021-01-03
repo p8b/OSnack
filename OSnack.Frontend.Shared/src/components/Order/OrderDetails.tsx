@@ -11,7 +11,6 @@ const OrderDetails = (props: IProps) => {
    const errorAlert = useAlert(new AlertObj());
    const [selectedStatus, SetSelectStatus] = useState(OrderStatusType.InProgress);
    useEffect(() => {
-      console.log(props.order);
       SetSelectStatus(props.order.status);
    }, [props.order]);
 

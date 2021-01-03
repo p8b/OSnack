@@ -34,7 +34,7 @@ const ContactUsMessage = (props: IProps) => {
    useEffect(() => {
       onSearch(...checkUri(window.location.pathname,
          [tblSelectedPage, tblMaxItemsPerPage, tblIsSortAsc, tblSortName, GetAllRecords]));
-
+      return () => { isUnmounted.current = true; };
    }, []);
 
 
@@ -72,15 +72,14 @@ const ContactUsMessage = (props: IProps) => {
             maxItemsPerPage, Number(isSortAsc), sortName, searchString != GetAllRecords ? searchString : ""]));
 
       errorAlert.PleaseWait(500, isUnmounted);
-
       useSearchCommunication(selectedPage, maxItemsPerPage, searchString, isSortAsc, sortName).then(result => {
          if (isUnmounted.current) return;
          setTblTotalItemCount(result.data.totalCount || 0);
          errorAlert.clear();
          populateOrderTable(result.data.communicationList!);
-      }).catch(alert => {
+      }).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
    };
    const populateOrderTable = (communicationList: Communication[]) => {

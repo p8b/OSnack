@@ -39,9 +39,9 @@ const UserManagement = (props: IProps) => {
       useGetRole().then(result => {
          if (isUnmounted.current) return;
          setRoleList(result.data);
-      }).catch(alert => {
+      }).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
       onSearch(...checkUri(window.location.pathname,
          [tblSelectedPage, tblMaxItemsPerPage, selectedRoleFilter, tblIsSortAsc, tblSortName, GetAllRecords]));
@@ -93,9 +93,9 @@ const UserManagement = (props: IProps) => {
             errorAlert.clear();
             populateUserTable(result.data.userList!);
          }
-      ).catch(alert => {
+      ).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
 
    };

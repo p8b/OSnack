@@ -36,7 +36,6 @@ const Tabs = (props: IProps) => {
 
    useEffect(() => {
       useGetComment(props.product.id!).then(result => {
-         console.log(result);
          setCommentList(result.data.commentList!);
          setAllowAddComment(result.data.allowComment || false);
       });

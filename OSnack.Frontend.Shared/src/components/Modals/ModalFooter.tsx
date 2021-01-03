@@ -4,32 +4,32 @@ import ButtonPopupConfirm from '../Buttons/ButtonPopupConfirm';
 const ModalFooter = (props: IProps) => {
    return (
       <div className="row col-12 pm-0 ">
-         {props.IsNew ?
+         { props.onCreate &&
             <Button children={props.createText || "Create"}
-               className="col-12 mt-2 btn-green col-sm-6 btn-lg"
+               className="col-12 col-md mt-2 btn-green btn-lg"
                onClick={props.onCreate} />
-            :
-            <div className={`row col-12  ${props.hasDelete ? "col-sm-8" : "col-sm-6"} pm-0`}>
-               <ButtonPopupConfirm title={props.upatedText || "Update"}
-                  popupMessage={props.confirmText || "Are you sure?"}
-                  className={`col-12 mt-2 ${props.hasDelete && "col-sm-6"}`}
-                  btnClassName="btn-green"
-                  onConfirmClick={props.onUpdate}
-               />
-               {props.hasDelete &&
-                  <ButtonPopupConfirm title={props.deleteText || "Delete"}
-                     popupMessage={props.confirmText || "Are you sure?"}
-                     className="col-12 col-sm-6 mt-2"
-                     btnClassName="btn-red"
-                     onConfirmClick={props.onDelete}
-                  />
-               }
-
-            </div>
          }
-         <Button children={props.deleteText || "Cancel"}
-            className={`col-12 mt-2 btn-white btn-lg ${props.IsNew ? "col-sm-6" : props.hasDelete ? "col-sm-4" : "col-sm-6"}`}
-            onClick={props.onClose} />
+         { props.onUpdate &&
+            <ButtonPopupConfirm title={props.upatedText || "Update"}
+               popupMessage={props.confirmText || "Are you sure?"}
+               className={`col-12 col-md mt-2 `}
+               btnClassName="btn-green"
+               onConfirmClick={props.onUpdate}
+            />
+         }
+         { props.onDelete &&
+            <ButtonPopupConfirm title={props.deleteText || "Delete"}
+               popupMessage={props.confirmText || "Are you sure?"}
+               className="col-12 col-md mt-2"
+               btnClassName="btn-red"
+               onConfirmClick={props.onDelete}
+            />
+         }
+         { props.onCancel &&
+            <Button children={props.deleteText || "Cancel"}
+               className={`col-12 col-md mt-2 btn-white btn-lg`}
+               onClick={props.onCancel} />
+         }
       </div>
    );
 };
@@ -40,11 +40,9 @@ interface IProps {
    deleteText?: string;
    cancelText?: string;
    confirmText?: string;
-   IsNew: boolean;
-   hasDelete?: boolean;
-   onCreate: () => void;
-   onUpdate: () => void;
-   onDelete: () => void;
-   onClose: () => void;
+   onCreate?: () => void;
+   onUpdate?: () => void;
+   onDelete?: () => void;
+   onCancel?: () => void;
 }
 export default ModalFooter;

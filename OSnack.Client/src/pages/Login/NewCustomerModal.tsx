@@ -49,9 +49,9 @@ const NewCustomerModal = (props: IProps) => {
             if (isUnmounted.current) return;
             setRedirectToMain(true);
             errorAlert.clear();
-         }).catch(alert => {
+         }).catch(errors => {
             if (isUnmounted.current) return;
-            errorAlert.set(alert);
+            errorAlert.set(errors);
          });
       };
    };

@@ -31,7 +31,7 @@ const Alert = (props: IProps) => {
       'padding': '5px',
    };
    return (
-      <div style={style} className={`row col-12 m-0 mt-2 mb-2 ${props?.className ?? ""} ${(props.alert!.List.length === 0) ? "d-none" : ""}`}>
+      <div style={style} className={`row col-12 m-0 mt-2 mb-2 ${props?.className ?? ""} ${(props.alert?.List.length === 0) ? "d-none" : ""}`}>
          <div className="col-11"
             children={props.alert!.List.map((error: ErrorDto) => <div key={error.key || Math.random()} children={error.value} />)}
          />
@@ -103,29 +103,24 @@ interface IProps {
    onClosed?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
 }
 
-export enum AlertTypes {
-   default = 0,
-   Success = 1,
-   Error = 2,
-   Warning = 3,
-};
+export enum AlertTypes { default, Success, Error, Warning };
 export class ErrorDto {
-   key?: string | undefined;
-   value?: string | undefined;
-   constructor(key: string = "", value: string = "") {
-      this.key = key;
-      this.value = value;
+   key: string;
+   value: string;
+   constructor(key?: string, value?: string) {
+      this.key = key ?? "";
+      this.value = value ?? "";
    }
 }
 export class AlertObj {
-   List: ErrorDto[] = [];
-   Type?: AlertTypes;
-   httpStatus?: number | string;
+   List: ErrorDto[];
+   Type: AlertTypes;
+   httpStatus: number | string;
    isCleared = false;
 
    constructor(list?: ErrorDto[], type?: AlertTypes, status?: number | string) {
       this.List = list ?? [];
-      this.Type = type;
-      this.httpStatus = status;
+      this.Type = type ?? AlertTypes.default;
+      this.httpStatus = status ?? 0;
    }
 }

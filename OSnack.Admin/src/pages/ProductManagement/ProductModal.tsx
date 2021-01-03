@@ -46,7 +46,6 @@ const ProductModal = (props: IProps) => {
                errorAlert.setSingleWarning("", "Image Not Found!");
             });
       }
-      console.log(props.product);
    }, [props.product]);
    useEffect(() => {
       if (!props.isOpen)
@@ -61,9 +60,9 @@ const ProductModal = (props: IProps) => {
          resetImageUpload();
          props.onSuccess();
          errorAlert.clear();
-      }).catch(alert => {
+      }).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
    };
    const updateProduct = async () => {
@@ -81,9 +80,9 @@ const ProductModal = (props: IProps) => {
          resetImageUpload();
          props.onSuccess();
          errorAlert.clear();
-      }).catch(alert => {
+      }).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
 
    };
@@ -95,9 +94,9 @@ const ProductModal = (props: IProps) => {
          resetImageUpload();
          errorAlert.clear();
          props.onSuccess();
-      }).catch(alert => {
+      }).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
 
    };
@@ -242,11 +241,11 @@ const ProductModal = (props: IProps) => {
             className="col-12 mb-2"
             onClosed={() => { errorAlert.clear(); }}
          />
-         <ModalFooter IsNew={product.id === 0}
-            onCreate={createProduct}
-            onUpdate={updateProduct}
-            onDelete={deleteProduct}
-            onClose={() => { errorAlert.clear(); resetImageUpload(); props.onClose(); }} />
+         <ModalFooter
+            onCreate={product.id != 0 ? undefined : createProduct}
+            onUpdate={product.id === 0 ? undefined : updateProduct}
+            onDelete={product.id === 0 ? undefined : deleteProduct}
+            onCancel={() => { errorAlert.clear(); resetImageUpload(); props.onClose(); }} />
       </Modal >
    );
 };

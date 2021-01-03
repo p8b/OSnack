@@ -5,7 +5,6 @@ import ViewOrders from 'osnack-frontend-shared/src/components/Order/ViewOrders';
 import { useAllUserOrder, usePutOrderStatusOrder } from '../../SecretHooks/useOrderHook';
 
 const ViewUserOrders = (props: IProps) => {
-   console.log(props.location.state);
    return (
       <Container>
          <ViewOrders

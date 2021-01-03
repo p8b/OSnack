@@ -325,7 +325,7 @@ namespace OSnack.API.Controllers
 
       #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
@@ -369,7 +369,7 @@ namespace OSnack.API.Controllers
             }
 
             if (justCheckToken)
-               return Ok();
+               return Ok("👌");
 
 
             if (!token.User.NormalizedEmail.Equals(email.ToUpper().Trim()))
@@ -401,7 +401,7 @@ namespace OSnack.API.Controllers
 
             await _SignInManager.SignInAsync(result, false).ConfigureAwait(false);
 
-            return Ok(result);
+            return Ok("😜");
          }
          catch (Exception ex)
          {

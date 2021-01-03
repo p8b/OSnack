@@ -29,9 +29,9 @@ const ContactUs = (props: IProps) => {
             errorAlert.setSingleSuccess("submit", result.data);
             setShowSuccess(true);
 
-         }).catch(alert => {
+         }).catch(errors => {
             if (isUnmounted.current) return;
-            errorAlert.set(alert);
+            errorAlert.set(errors);
          });
    };
 

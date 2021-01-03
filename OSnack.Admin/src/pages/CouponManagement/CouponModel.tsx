@@ -16,12 +16,19 @@ const CouponModel = (props: IProps) => {
    const errorAlert = useAlert(new AlertObj());
    const [coupon, setCoupon] = useState(new Coupon());
 
+   useEffect(() => {
+
+      return () => {
+         isUnmounted.current = true;
+      };
+   }, []);
 
    useEffect(() => {
       if (props.coupon.code == undefined)
          setCoupon({ ...props.coupon, expiryDate: getNextDate(31) });
       else
          setCoupon(props.coupon);
+
    }, [props.coupon]);
 
    const createCoupon = async () => {
@@ -31,9 +38,9 @@ const CouponModel = (props: IProps) => {
          setCoupon(result.data);
          props.onSuccess();
          errorAlert.clear();
-      }).catch(alert => {
+      }).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
    };
    const updateCoupon = async () => {
@@ -44,9 +51,9 @@ const CouponModel = (props: IProps) => {
          setCoupon(result.data);
          props.onSuccess();
          errorAlert.clear();
-      }).catch(alert => {
+      }).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
 
    };
@@ -57,9 +64,9 @@ const CouponModel = (props: IProps) => {
          if (isUnmounted.current) return;
          errorAlert.clear();
          props.onSuccess();
-      }).catch(alert => {
+      }).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
 
    };
@@ -130,11 +137,11 @@ const CouponModel = (props: IProps) => {
             onClosed={() => { errorAlert.clear(); }}
          />
 
-         <ModalFooter IsNew={coupon.code == undefined}
-            onCreate={createCoupon}
-            onUpdate={updateCoupon}
-            onDelete={deleteCoupon}
-            onClose={() => { errorAlert.clear(); props.onClose(); }} />
+         <ModalFooter
+            onCreate={coupon.code != undefined ? undefined : createCoupon}
+            onUpdate={coupon.code == undefined ? undefined : updateCoupon}
+            onDelete={coupon.code == undefined ? undefined : deleteCoupon}
+            onCancel={() => { errorAlert.clear(); props.onClose(); }} />
 
       </Modal >
    );

@@ -29,6 +29,11 @@ export const useDeleteDeliveryOption = async (deliveyOption: DeliveryOption): Pr
                                 throw new AlertObj(data, AlertTypes.Error, response?.status);
                         });
 
+                case 412: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
+
                 default:
                         CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
                         throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);

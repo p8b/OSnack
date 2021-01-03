@@ -113,9 +113,9 @@ const ViewOrders = (props: IProps) => {
       populateOrderTable(result.data.orderList!);
       setFullName(result.data.fullName!);
    };
-   const onGetUserOrderFailed = (alert: any) => {
+   const onGetUserOrderFailed = (errors: AlertObj) => {
       if (isUnmounted.current) return;
-      errorAlert.set(alert);
+      errorAlert.set(errors);
    };
    const populateOrderTable = (orderList: Order[]) => {
 

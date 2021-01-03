@@ -46,9 +46,9 @@ const AddressModal = (props: IProps) => {
          setAddress(result.data);
          props.onClose();
          props.onSuccess(result.data);
-      }).catch(alert => {
+      }).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
    };
    const updateAddress = async () => {
@@ -76,9 +76,9 @@ const AddressModal = (props: IProps) => {
          errorAlert.clear();
          props.onClose();
          props.onSuccess(result.data);
-      }).catch(alert => {
+      }).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
 
    };
@@ -90,9 +90,9 @@ const AddressModal = (props: IProps) => {
          errorAlert.setSingleSuccess("Deleted", result.data);
          props.onClose();
          props.onSuccess(address);
-      }).catch(alert => {
+      }).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
 
    };
@@ -140,7 +140,7 @@ const AddressModal = (props: IProps) => {
             onCreate={createAddress}
             onUpdate={updateAddress}
             onDelete={deleteAddress}
-            onClose={() => { errorAlert.clear(); props.onClose(); }} />
+            onCancel={() => { errorAlert.clear(); props.onClose(); }} />
       </Modal >
    );
 };

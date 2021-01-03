@@ -23,9 +23,9 @@ const ConfirmPasswordModal = (props: IProps) => {
          errorAlert.clear();
          props.onSuccess(password);
          setPassword("");
-      }).catch(alert => {
+      }).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
    };
    return (

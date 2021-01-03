@@ -26,9 +26,9 @@ const CommentModal = (props: IProps) => {
          if (isUnmounted.current) return;
          setCommentList(result.data);
       }
-      ).catch(alert => {
+      ).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
    };
 
@@ -38,9 +38,9 @@ const CommentModal = (props: IProps) => {
          errorAlert.clear();
          reload();
          errorAlert.setSingleSuccess("success", result.data);
-      }).catch(alert => {
+      }).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
    };
    return (

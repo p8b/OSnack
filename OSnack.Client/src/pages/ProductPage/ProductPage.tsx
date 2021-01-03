@@ -36,9 +36,9 @@ const ProductPage = (props: IProps) => {
                window.scrollTo(0, 0);
                setCarousel(<Carousel items={getCarouselItems(result.data.relatedProductList!)} />);
                errorAlert.clear();
-            }).catch(alert => {
+            }).catch(errors => {
                if (isUnmounted.current) return;
-               errorAlert.set(alert);
+               errorAlert.set(errors);
             });
       } else {
          setRedirectToShop(true);

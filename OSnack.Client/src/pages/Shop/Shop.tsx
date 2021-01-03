@@ -43,9 +43,9 @@ const Shop = (props: IProps) => {
             onSearch();
          }
       }
-      ).catch(alert => {
+      ).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
       return () => { isUnmounted.current = true; };
    }, []);
@@ -66,7 +66,6 @@ const Shop = (props: IProps) => {
       if (searchVal != "")
          searchString = searchVal;
 
-      console.log(encodeURIComponent("" + searchVal));
       if (isSortAsc != tblIsSortAsc) {
          setTblIsSortAsc(isSortAsc);
          selectedPage = 1;
@@ -106,9 +105,9 @@ const Shop = (props: IProps) => {
             else
                errorAlert.clear();
          }
-         ).catch(alert => {
+         ).catch(errors => {
             if (isUnmounted.current) return;
-            errorAlert.set(alert);
+            errorAlert.set(errors);
          });
    };
 

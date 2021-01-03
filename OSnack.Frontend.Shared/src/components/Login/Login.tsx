@@ -139,7 +139,7 @@ const Login = (props: IProps) => {
                   onClick={externalLoginWait}
                   onClosedWithoutAction={() => errorAlert.clear()}
                /> ****/}
-               <GoogleLogin clientId="78803002607-eqki0ohr9viovu2e5q0arpg8on9p8huq.apps.googleusercontent.com"
+               <GoogleLogin clientId="398928888654-flaamd0frl6g0e6l7cilvmhcrm46umpa.apps.googleusercontent.com"
                   children="Sign in with Google"
                   className="btn-lg btn-g col-12 mt-2 "
                   redirectURI={window.location.href}

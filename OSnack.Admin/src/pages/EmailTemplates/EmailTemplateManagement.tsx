@@ -29,9 +29,9 @@ const EmailTemplatePanel = (props: IProps) => {
          errorAlert.clear();
          setTempList(result.data);
          setDefaultEmailTemplate(result.data.find(tl => tl.templateType == EmailTemplateTypes.DefaultTemplate) || new EmailTemplate());
-      }).catch(alert => {
+      }).catch(errors => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
    };
    const newTemplate = () => {

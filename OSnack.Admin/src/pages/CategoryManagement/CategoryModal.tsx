@@ -62,9 +62,9 @@ const CategoryModal = (props: IProps) => {
          errorAlert.clear();
          resetImageUpload();
          props.onSuccess();
-      }).catch((alert) => {
+      }).catch((errors) => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
    };
    const updateCategory = async () => {
@@ -93,9 +93,9 @@ const CategoryModal = (props: IProps) => {
          errorAlert.clear();
          resetImageUpload();
          props.onSuccess();
-      }).catch((alert) => {
+      }).catch((errors) => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
    };
    const deleteCategory = async () => {
@@ -105,9 +105,9 @@ const CategoryModal = (props: IProps) => {
          errorAlert.clear();
          resetImageUpload();
          props.onSuccess();
-      }).catch((alert) => {
+      }).catch((errors) => {
          if (isUnmounted.current) return;
-         errorAlert.set(alert);
+         errorAlert.set(errors);
       });
    };
 
@@ -160,11 +160,11 @@ const CategoryModal = (props: IProps) => {
             className="col-12 mb-2"
             onClosed={() => { errorAlert.clear(); }}
          />
-         <ModalFooter IsNew={category.id === 0}
-            onCreate={createCategory}
-            onUpdate={updateCategory}
-            onDelete={deleteCategory}
-            onClose={() => { errorAlert.clear(); resetImageUpload(); props.onClose(); }} />
+         <ModalFooter
+            onCreate={category.id != 0 ? undefined : createCategory}
+            onUpdate={category.id === 0 ? undefined : updateCategory}
+            onDelete={category.id === 0 ? undefined : deleteCategory}
+            onCancel={() => { errorAlert.clear(); resetImageUpload(); props.onClose(); }} />
       </Modal >
    );
 };

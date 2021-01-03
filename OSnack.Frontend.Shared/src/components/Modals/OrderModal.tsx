@@ -64,7 +64,6 @@ const OrderModal = (props: IProps) => {
             else
                selectedOrder.dispute.messages?.push({ body: message, isCustomer: false });
             selectedOrder.refundValue = refundValue;
-            console.log(refundValue);
             setSelectedOrder(selectedOrder);
             break;
          case OrderStatusType.Confirmed:
@@ -103,7 +102,7 @@ const OrderModal = (props: IProps) => {
             <div className="row  mt-1">
                <OrderDetails order={selectedOrder} access={props.access}
                   availabeType={getAvailabeType()}
-                  statusChanged={statusChange} onDispute={() => {setIsOpenAddDisputeModalModal(true); }} />
+                  statusChanged={statusChange} onDispute={() => { setIsOpenAddDisputeModalModal(true); }} />
 
                {/***** buttons ****/}
                <div className="row col-12 pm-0 pos-b-sticky bg-white pb-3">
