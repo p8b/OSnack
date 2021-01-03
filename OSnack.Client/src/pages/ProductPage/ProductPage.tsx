@@ -12,6 +12,7 @@ import Tabs from './Tabs';
 import ShopItem from '../Shop/ShopItem';
 import { ShopContext } from '../../_core/shopContext';
 import Carousel from '../../components/Carousel';
+import { StarRating } from 'osnack-frontend-shared/src/components/Inputs/StarRating';
 
 const ProductPage = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -69,6 +70,9 @@ const ProductPage = (props: IProps) => {
                   </nav>
                   <div className="row ">
                      <div className="col-12 col-sm-4 pb-4 p-sm-4 justify-text-center">
+                        {product.score != -1 &&
+                           <StarRating className="col-auto pm-0 ml-auto" rate={product.score} />
+                        }
                         <img className="shop-card-img" src={`${API_URL}/${product.imagePath}`} alt={name} />
                      </div>
                      <div className="col-12 col-sm-8 p-sm-4 pl-md-5">

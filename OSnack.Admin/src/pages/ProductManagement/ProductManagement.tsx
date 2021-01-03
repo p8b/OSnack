@@ -15,6 +15,7 @@ import { useAllSecretCategory } from '../../SecretHooks/useCategoryHook';
 import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRowButtons';
 import { checkUri, generateUri } from 'osnack-frontend-shared/src/_core/appFunc';
 import { useHistory } from 'react-router-dom';
+import CommentModal from './CommentModal';
 
 const ProductManagement = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -26,6 +27,7 @@ const ProductManagement = (props: IProps) => {
    const [selectedCategoryFilter, setSelectedCategoryFilter] = useState(GetAllRecords);
    const [selectedStatusFilter, setSelectedStatusFilter] = useState(GetAllRecords);
    const [isOpenProductModal, setIsOpenProductModal] = useState(false);
+   const [isOpenCommentModal, setIsOpenCommentModal] = useState(false);
    const [productUnitTypeList] = useState(ProductUnitTypeList);
 
    const [tableData, setTableData] = useState(new TableData());
@@ -128,10 +130,23 @@ const ProductManagement = (props: IProps) => {
             `£${product.price}`,
             `${product.unitQuantity} ${productUnitTypeList.find(pu => pu.Value == product.unitType)?.Name}`,
             product.status ? "Active" : "Disabled",
-            <TableRowButtons
-               btnClassName="btn-blue edit-icon"
-               btnClick={() => { editProduct(product); }}
-            />
+            <>
+               {!product.hasComment &&
+                  <TableRowButtons
+                     btnClassName="btn-blue edit-icon"
+                     btnClick={() => editProduct(product)} />
+               }
+               {product.hasComment &&
+                  <TableRowButtons
+                     btn1ClassName="col-12 col-lg-6 btn-blue edit-icon"
+                     btn1Click={() => {
+                        editProduct(product);
+                     }}
+                     btnClassName={`col-12 col-lg-6 btn-white ${product.commentReview ? "comment-review-icon" : "comment-icon"} small-text`}
+                     btnClick={() => { setSelectedProduct(product); setIsOpenCommentModal(true); }}
+                  />
+               }
+            </>
          ]));
 
       setTableData(tData);
@@ -142,7 +157,9 @@ const ProductManagement = (props: IProps) => {
    };
    const resetProductModal = () => {
       setIsOpenProductModal(false);
+      setIsOpenCommentModal(false);
       setSelectedProduct(new Product());
+      onSearch();
    };
    const getStatusDisplayValue = () => {
       switch (selectedStatusFilter) {
@@ -234,6 +251,8 @@ const ProductManagement = (props: IProps) => {
             <ProductModal isOpen={isOpenProductModal} categoryList={categoryList}
                onSuccess={() => { resetProductModal(); onSearch(); }}
                product={selectedProduct}
+               onClose={resetProductModal} />
+            <CommentModal isOpen={isOpenCommentModal} productId={selectedProduct.id!}
                onClose={resetProductModal} />
          </div>
       </Container>

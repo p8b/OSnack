@@ -432,3 +432,24 @@
         font-family: "FA5 Solid" !important;
     }
 }
+
+.comment-icon {
+    &:before {
+        text-decoration: none;
+        padding: 0.2rem .3rem;
+        content: "\f075";
+        display: inline;
+        font-family: "FA5 Solid" !important;
+    }
+}
+
+.comment-review-icon {
+    &:before {
+        text-decoration: none;
+        padding: 0.2rem .3rem;
+        content: "\f075";
+        color: forestgreen;
+        display: inline;
+        font-family: "FA5 Solid" !important;
+    }
+}

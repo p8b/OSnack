@@ -571,6 +571,11 @@ export class CommunicationListAndTotalCount {
     totalCount?: number;
 
 }
+export class DeliveryOptionListAndTotalCount {
+    deliveryOptionList?: DeliveryOption[] | undefined;
+    totalCount?: number;
+
+}
 export class EmailTemplateAndDefaultEmailTemplate {
     emailTemplate?: EmailTemplate | undefined;
     defaultEmailTemplate?: EmailTemplate | undefined;
@@ -630,8 +635,9 @@ export class Product extends OrderProductBase {
     stockQuantity!: number;
     category: Category = new Category();
     nutritionalInfo?: NutritionalInfo | undefined;
-    score?: string | undefined;
-    averageScore?: number;
+    score?: number;
+    commentReview?: boolean;
+    hasComment?: boolean;
 
 }
 export class OrderItem extends OrderProductBase {

@@ -118,17 +118,21 @@ const ViewOrders = (props: IProps) => {
       errorAlert.set(alert);
    };
    const populateOrderTable = (orderList: Order[]) => {
-      let tData = new TableData();
 
       if (orderList.length == 0) {
+         if (selectType == OrderStatusTypeList.find(o => o.Value == OrderStatusType.InProgress)?.Id.toString()) {
+            onSearch(undefined, 1, undefined, GetAllRecords);
+            return;
+         }
          errorAlert.setSingleWarning("0", "No Result Found");
          return;
       }
       errorAlert.clear();
+      let tData = new TableData();
       tData.AddHeader("Status", "Status")
          .AddHeader("Total Price", "TotalPrice")
-         .AddHeader("Payment",)
-         .AddHeader("Date", "Date");
+         .AddHeader("Date", "Date")
+         .AddHeader("Payment");
 
       orderList.map(order =>
          tData.AddRow([

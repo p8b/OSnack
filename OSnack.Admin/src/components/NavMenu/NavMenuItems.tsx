@@ -37,6 +37,11 @@ export const LoginNav = [
    },
    {
       id: 7,
+      path: "/DeliveryOptions",
+      displayName: "Delivery Options",
+   },
+   {
+      id: 8,
       path: "/EmailTemplate",
       displayName: "Email Template",
    }

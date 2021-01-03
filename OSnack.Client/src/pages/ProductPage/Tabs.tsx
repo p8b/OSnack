@@ -5,6 +5,7 @@ import Container from '../../components/Container';
 import { useGetComment } from 'osnack-frontend-shared/src/hooks/PublicHooks/useCommentHook';
 import { usePostComment } from 'osnack-frontend-shared/src/hooks/OfficialHooks/useCommentHook';
 import { AddComment } from '../../components/AddComment';
+import { StarRating } from 'osnack-frontend-shared/src/components/Inputs/StarRating';
 
 
 const Tabs = (props: IProps) => {
@@ -39,7 +40,7 @@ const Tabs = (props: IProps) => {
          setCommentList(result.data.commentList!);
          setAllowAddComment(result.data.allowComment || false);
       });
-   }, []);
+   }, [props.product]);
 
    const sentComment = (description: string, rate: number) => {
       usePostComment({
@@ -107,9 +108,12 @@ const Tabs = (props: IProps) => {
                         <AddComment onSend={sentComment} />
                      }
                      {commentList.map(comment =>
-                        <div>
-                           <div>{comment.name}</div>
-                           <div>{comment.description}</div>
+                        <div key={comment.id} className="comment">
+                           <div className="row">
+                              <div className="col-12 col-sm-6">{comment.name}</div>
+                              <StarRating className="col-auto ml-auto" rate={comment.rate} />
+                           </div>
+                           <div className="col-12">{comment.description}</div>
                         </div>
                      )
                      }

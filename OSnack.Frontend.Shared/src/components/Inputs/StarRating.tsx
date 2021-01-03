@@ -1,24 +1,33 @@
 ﻿import React from 'react';
 
 export const StarRating = (props: IProps) => {
-
+   var style = { "--rating": props.rate } as React.CSSProperties;
    return (
-      <div className="rate">
-         <input type="radio" id="star5" name="rate" disabled onChange={() => props.onRateChanged(5)} />
-         <label htmlFor="star5" title="5 stars" />
-         <input type="radio" id="star4" name="rate" disabled checked onChange={() => props.onRateChanged(4)} />
-         <label htmlFor="star4" title="4 stars" />
-         <input type="radio" id="star3" name="rate" disabled onChange={() => props.onRateChanged(3)} />
-         <label htmlFor="star3" title="3 stars" />
-         <input type="radio" id="star2" name="rate" disabled onChange={() => props.onRateChanged(2)} />
-         <label htmlFor="star2" title="2 stars" />
-         <input type="radio" id="star1" name="rate" disabled onChange={() => props.onRateChanged(1)} />
-         <label htmlFor="star1" title="1 stars" />
-      </div>
+      <>
+         {props.rate == undefined &&
+            <div className="rate">
+               <input type="radio" id="star5" name="rate" onChange={() => props.onRateChanged!(5)} />
+               <label htmlFor="star5" title="5 stars" />
+               <input type="radio" id="star4" name="rate" onChange={() => props.onRateChanged!(4)} />
+               <label htmlFor="star4" title="4 stars" />
+               <input type="radio" id="star3" name="rate" onChange={() => props.onRateChanged!(3)} />
+               <label htmlFor="star3" title="3 stars" />
+               <input type="radio" id="star2" name="rate" onChange={() => props.onRateChanged!(2)} />
+               <label htmlFor="star2" title="2 stars" />
+               <input type="radio" id="star1" name="rate" onChange={() => props.onRateChanged!(1)} />
+               <label htmlFor="star1" title="1 stars" />
+            </div>
+         }
+         {props.rate != undefined &&
+            <div className={`stars ${props.className!}`} style={style} />
+         }
+      </>
    );
 };
 
 declare type IProps = {
-   onRateChanged: (rate: number) => void;
+   onRateChanged?: (rate: number) => void;
+   rate?: number;
+   className?: string;
 
 };

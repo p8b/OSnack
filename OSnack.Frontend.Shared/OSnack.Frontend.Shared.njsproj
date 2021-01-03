@@ -147,6 +147,7 @@
     <Content Include="src\styles\bootstrap\mixins\_clearfix.scss" />
     <Content Include="src\styles\modules\_border.scss" />
     <Content Include="src\styles\modules\_chat.scss" />
+    <Content Include="src\styles\modules\_comment.scss" />
     <Content Include="src\styles\modules\_datepicker.scss" />
     <Content Include="src\styles\bootstrap\mixins\_deprecate.scss" />
     <Content Include="src\styles\bootstrap\mixins\_float.scss" />
@@ -305,6 +306,7 @@
     <TypeScriptCompile Include="src\components\Buttons\GoogleLogin.tsx" />
     <TypeScriptCompile Include="src\components\Buttons\NavLink.tsx" />
     <TypeScriptCompile Include="src\components\Card.tsx" />
+    <TypeScriptCompile Include="src\components\Inputs\DatePicker.tsx" />
     <TypeScriptCompile Include="src\components\Inputs\InputDropDown.tsx" />
     <TypeScriptCompile Include="src\components\Inputs\QuantityInput.tsx" />
     <TypeScriptCompile Include="src\components\Inputs\SeachInput.tsx" />

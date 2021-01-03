@@ -26,7 +26,7 @@ const ContactUsMessage = (props: IProps) => {
 
    const [tableData, setTableData] = useState(new TableData());
    const [tblSortName, setTblsortName] = useState("Date");
-   const [tblIsSortAsc, setTblIsSortAsc] = useState(true);
+   const [tblIsSortAsc, setTblIsSortAsc] = useState(false);
    const [tblTotalItemCount, setTblTotalItemCount] = useState(0);
    const [tblSelectedPage, setTblSelectedPage] = useState(1);
    const [tblMaxItemsPerPage, setTblMaxItemsPerPage] = useState(ConstMaxNumberOfPerItemsPage);

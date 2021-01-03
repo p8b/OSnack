@@ -101,6 +101,10 @@ const OrderManagement = (props: IProps) => {
    };
    const populateOrderTable = (orderList: Order[]) => {
       if (orderList.length == 0) {
+         if (selectType == OrderStatusTypeList.find(o => o.Value == OrderStatusType.InProgress)?.Id.toString()) {
+            onSearch(1, undefined, GetAllRecords);
+            return;
+         }
          errorAlert.setSingleWarning("0", "No Result Found");
          return;
       }

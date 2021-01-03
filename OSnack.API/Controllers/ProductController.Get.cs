@@ -71,6 +71,7 @@ namespace OSnack.API.Controllers
                 .Where(p => filterStatus.Equals(CoreConst.GetAllRecords) || p.Status == boolFilterStatus)
                 .Include(p => p.Category)
                 .Include(p => p.NutritionalInfo)
+                .Include(p => p.Comments)
                 .Where(p => filterCategory.Equals(CoreConst.GetAllRecords) || p.Category.Id == filterProductCategoryId)
                 .Where(p => searchValue.Equals(CoreConst.GetAllRecords) || (p.Name.Contains(searchValue) || p.Id.ToString().Contains(searchValue)))
                 .OrderByDynamic(sortName, isSortAsce)
@@ -105,6 +106,7 @@ namespace OSnack.API.Controllers
          {
             Product product = await _DbContext.Products
                 .Include(p => p.Category)
+                .Include(p => p.Comments)
                 .Include(p => p.NutritionalInfo)
                 .SingleOrDefaultAsync(p => p.Category.Name.Equals(categoryName)
                                         && p.Name.Equals(productName)

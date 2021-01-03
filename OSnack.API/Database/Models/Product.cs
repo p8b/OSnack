@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using OSnack.API.Database.ModelsDependencies;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -48,9 +49,20 @@ namespace OSnack.API.Database.Models
       public ICollection<Comment> Comments { get; set; }
 
       [NotMapped]
-      public string Score { get { return Comments == null ? "" : Comments.ToList().Select(t => t.Rate).Average().ToString("0.00"); } }
+      public double Score
+      {
+         get { return (Comments == null || Comments.Count(c => c.Show) == 0) ? -1 : Math.Round(Comments.Where(c => c.Show).ToList().Select(t => t.Rate).Average(), 2); }
+      }
 
       [NotMapped]
-      public int AverageScore { get; set; }
+      public bool CommentReview
+      {
+         get { return (Comments == null || Comments.Count == 0) ? false : Comments.Any(c => !c.Show); }
+      }
+      [NotMapped]
+      public bool HasComment
+      {
+         get { return (Comments == null || Comments.Count == 0) ? false : true; }
+      }
    }
 }

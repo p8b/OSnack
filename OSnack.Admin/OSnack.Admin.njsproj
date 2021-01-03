@@ -39,6 +39,7 @@
     <Content Include="server\cert\exported-cert.cer" />
     <Content Include="server\cert\key.pem" />
     <Content Include="server\server-development.js" />
+    <Content Include="src\pages\DeliveryOptionManagement\DeliveyOptionModal.tsx" />
     <Content Include="src\styles\animation\animations\attention_seekers\_bounce.scss" />
     <Content Include="src\styles\animation\animations\attention_seekers\_flash.scss" />
     <Content Include="src\styles\animation\animations\attention_seekers\_headShake.scss" />
@@ -152,6 +153,7 @@
     <Folder Include="src\pages\EmailTemplates\" />
     <Folder Include="src\pages\CategoryManagement\" />
     <Folder Include="src\pages\CouponManagement\" />
+    <Folder Include="src\pages\DeliveryOptionManagement\" />
     <Folder Include="src\pages\Order\" />
     <Folder Include="src\pages\UserManagement\" />
     <Folder Include="src\pages\ProductManagement\" />
@@ -193,6 +195,7 @@
     <TypeScriptCompile Include="src\pages\CouponManagement\CouponManagement.tsx" />
     <TypeScriptCompile Include="src\pages\CouponManagement\CouponModel.tsx" />
     <TypeScriptCompile Include="src\pages\Dashboard\Dashboard.tsx" />
+    <TypeScriptCompile Include="src\pages\DeliveryOptionManagement\DeliveryOptionManagement.tsx" />
     <TypeScriptCompile Include="src\pages\EmailTemplates\EmailTemplateManagement.tsx" />
     <TypeScriptCompile Include="src\pages\EmailTemplates\EmailTemplateEditDetailsModal.tsx" />
     <TypeScriptCompile Include="src\pages\EmailTemplates\EmailTemplateEdit.tsx" />
@@ -200,21 +203,23 @@
     <TypeScriptCompile Include="src\pages\MyAccount\MyAccount.tsx" />
     <TypeScriptCompile Include="src\pages\Order\OrderManagement.tsx" />
     <TypeScriptCompile Include="src\pages\Order\ViewUserOrders.tsx" />
+    <TypeScriptCompile Include="src\pages\ProductManagement\CommentModal.tsx" />
     <TypeScriptCompile Include="src\pages\ProductManagement\ProductManagement.tsx" />
     <TypeScriptCompile Include="src\pages\ProductManagement\ProductNutritionalInfoModal.tsx" />
     <TypeScriptCompile Include="src\pages\ProductManagement\ProductModal.tsx" />
     <TypeScriptCompile Include="src\pages\UserManagement\UserModal.tsx" />
     <TypeScriptCompile Include="src\pages\UserManagement\UserManagement.tsx" />
-    <TypeScriptCompile Include="src\SecretHooks\useAuthenticationHook.tsx" />
-    <TypeScriptCompile Include="src\SecretHooks\useCategoryHook.tsx" />
-    <TypeScriptCompile Include="src\SecretHooks\useCommunicationHook.tsx" />
-    <TypeScriptCompile Include="src\SecretHooks\useCouponHook.tsx" />
-    <TypeScriptCompile Include="src\SecretHooks\useEmailHook.tsx" />
-    <TypeScriptCompile Include="src\SecretHooks\useOrderHook.tsx" />
-    <TypeScriptCompile Include="src\SecretHooks\useProductHook.tsx" />
-    <TypeScriptCompile Include="src\SecretHooks\useRoleHook.tsx" />
-    <TypeScriptCompile Include="src\SecretHooks\useScoreHook.tsx" />
-    <TypeScriptCompile Include="src\SecretHooks\useUserHook.tsx" />
+    <TypeScriptCompile Include="src\SecretHooks\useAuthenticationHook.ts" />
+    <TypeScriptCompile Include="src\SecretHooks\useCategoryHook.ts" />
+    <TypeScriptCompile Include="src\SecretHooks\useCommentHook.ts" />
+    <TypeScriptCompile Include="src\SecretHooks\useCommunicationHook.ts" />
+    <TypeScriptCompile Include="src\SecretHooks\useCouponHook.ts" />
+    <TypeScriptCompile Include="src\SecretHooks\useDeliveryOptionHook.ts" />
+    <TypeScriptCompile Include="src\SecretHooks\useEmailHook.ts" />
+    <TypeScriptCompile Include="src\SecretHooks\useOrderHook.ts" />
+    <TypeScriptCompile Include="src\SecretHooks\useProductHook.ts" />
+    <TypeScriptCompile Include="src\SecretHooks\useRoleHook.ts" />
+    <TypeScriptCompile Include="src\SecretHooks\useUserHook.ts" />
     <TypeScriptCompile Include="src\_core\appConstant.Variables.ts" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />

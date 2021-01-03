@@ -87,16 +87,18 @@ const OrderDetails = (props: IProps) => {
                      <div className="col-4 small-text p-0">£{props.order.totalDiscount}</div>
                   </div>
                }
-               {props.order.payment.refundAmount != 0 &&
-                  <div className="row col-12 pm-0">
-                     <div className="col-8 p-0 small-text text-gray">Refund Value:</div>
-                     <div className="col-4 small-text p-0">£{props.order.payment.refundAmount}</div>
-                  </div>
-               }
+
                <div className="row col-12 pm-0">
                   <div className="col-8 p-0 pm-0 font-weight-bold ">Total Price:</div>
                   <div className="col-4 p-0 font-weight-bold">£{props.order.totalPrice}</div>
                </div>
+
+               {props.order.payment.refundAmount != 0 &&
+                  <div className="row col-12 pm-0">
+                     <div className="col-8 p-0 pm-0 font-weight-bold ">Refund Value:</div>
+                     <div className="col-4 p-0 font-weight-bold">£{props.order.payment.refundAmount}</div>
+                  </div>
+               }
                {props.access == ClientAppAccess.Official && props.order.dispute == undefined && props.order.status != OrderStatusType.Canceled &&
                   <div className="col-12 pm-0 cursor-pointer  small-text text-primary" onClick={props.onDispute}>I have issue with this order.</div>
                }

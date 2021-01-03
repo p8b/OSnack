@@ -23,6 +23,7 @@ const EmailTemplateManagement = lazy(() => import("./pages/EmailTemplates/EmailT
 const EmailTemplateEdit = lazy(() => import("./pages/EmailTemplates/EmailTemplateEdit"));
 const ViewUserOrders = lazy(() => import("./pages/Order/ViewUserOrders"));
 const ContactUsMessage = lazy(() => import("./pages/ContactUsMessage/ContactUsMessage"));
+const DeliveryOptionManagement = lazy(() => import("./pages/DeliveryOptionManagement/DeliveryOptionManagement"));
 
 const App = () => {
    const [isOpenMainContainer, setIsOpenMainContainer] = useState(true);
@@ -51,6 +52,7 @@ const App = () => {
                      <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="/ViewUserOrders" Render={(props: any) => <ViewUserOrders {...props} />} />
                      <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="/ContactUsMessage" Render={(props: any) => <ContactUsMessage {...props} />} />
                      <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="/Orders" Render={(props: any) => <OrderManagement {...props} />} />
+                     <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="/DeliveryOptions" Render={(props: any) => <DeliveryOptionManagement {...props} />} />
 
                      {/***** Route Not Found  ****/}
                      <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="*" Render={(props: any) => <PageNotFound {...props} />} />

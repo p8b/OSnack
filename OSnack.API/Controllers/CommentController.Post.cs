@@ -43,10 +43,10 @@ namespace OSnack.API.Controllers
                User user = await _DbContext.Users.Include(u => u.Orders)
                   .ThenInclude(o => o.OrderItems).SingleOrDefaultAsync(u => u.Id == AppFunc.GetUserId(User)).ConfigureAwait(false);
                List<int> orderItemIdList = new List<int>();
-               foreach (var order in user.Orders)
+               foreach (var order in user.Orders.Where(o => o.Status != OrderStatusType.Canceled &&
+                                   o.OrderItems.SingleOrDefault(oi => oi.ProductId == newComment.Product.Id) != null))
                {
-                  if (order.OrderItems.SingleOrDefault(oi => oi.ProductId == newComment.Product.Id) != null)
-                     orderItemIdList.Add(order.OrderItems.SingleOrDefault(oi => oi.ProductId == newComment.Product.Id).Id);
+                  orderItemIdList.Add(order.OrderItems.SingleOrDefault(oi => oi.ProductId == newComment.Product.Id).Id);
                }
                if (list.Count(c => orderItemIdList.Contains(c.OrderItem.Id)) != orderItemIdList.Count)
                {
