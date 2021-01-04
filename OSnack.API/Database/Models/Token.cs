@@ -66,8 +66,6 @@ namespace OSnack.API.Database.Models
             throw new Exception("Domain URL Required");
          if (string.IsNullOrWhiteSpace(UrlPath))
             throw new Exception("Template Token URL Path Required");
-         if (ExpiaryDate == null)
-            throw new Exception("Expiry Date Required.");
 
          /// First check if the user has a token for the requested token type
          IEnumerable<Token> tokenValues = dbContext.Tokens

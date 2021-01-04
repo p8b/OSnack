@@ -2,11 +2,14 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 using OSnack.API.Extras.CustomTypes;
+
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Models;
+
 using System;
 using System.Collections.Generic;
 using System.Net.Mime;
@@ -140,7 +143,7 @@ namespace OSnack.API.Controllers
             _LoggingService.Log(Request.Path, AppLogType.Exception, new { contactData, exception = ex }, User);
             if (tryCount > 4)
             {
-               throw ex;
+               throw;
             }
             return await TryToSave(contactData, tryCount++).ConfigureAwait(false);
 

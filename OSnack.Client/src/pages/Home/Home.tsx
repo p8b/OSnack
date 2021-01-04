@@ -56,7 +56,7 @@ const Home = (props: IProps) => {
    return (
       <Container className="wide-container pl-0 pr-0">
          <div className={`hero-container ${heroImgLoaded ? "imgLoaded" : ""} row`}>
-            <h1 className="text-white col-12 text-center">Ready to snack?</h1>
+            <h1 className="text-white col-12 text-center">Ready to osnack?</h1>
             <h3 className="text-white col-12 text-center">
                We provide quality mediterranean products for you to enjoy.
             </h3>
@@ -84,7 +84,7 @@ const Home = (props: IProps) => {
             </div>
             <div className="row  mt-5 mb-5 pt-3 pb-3 justify-content-center">
                <div><img className="ml-auto mr-auto" src="public/images/QualityFood.png" /></div>
-               <div style={{ fontFamily: "'Righteous', cursive" }} className="col-12 text-center h1">Quality snacks is our mission</div>
+               <div style={{ fontFamily: "'Courgette', cursive" }} className="col-12 text-center h1">Quality snacks is our mission</div>
             </div>
          </Container>
          <div className="col-12 sign-up-bg pt-4 pb-4 mt-4 mb-4">

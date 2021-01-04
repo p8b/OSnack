@@ -84,12 +84,12 @@ namespace OSnack.API.Controllers
                _DbContext.Entry(newProduct.Category).State = EntityState.Unchanged;
                await _DbContext.SaveChangesAsync().ConfigureAwait(false);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                CoreFunc.DeleteFromWWWRoot(newProduct.ImagePath, _WebHost.WebRootPath);
                CoreFunc.DeleteFromWWWRoot(newProduct.OriginalImagePath, _WebHost.WebRootPath);
                CoreFunc.ClearEmptyImageFolders(_WebHost.WebRootPath);
-               throw ex;
+               throw;
             }
 
             return Created("", newProduct);

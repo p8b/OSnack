@@ -23,19 +23,11 @@ namespace P8B.UK.API.Services
 
       internal AppLog Log(string message, AppLogType type, dynamic obj = null, ClaimsPrincipal userClaimsPrincipal = null)
       {
-         try
-         {
-
-            AppLog log = new AppLog(message, type, obj, GetUser(userClaimsPrincipal));
-            _DbContext.AppLogs.Add(log);
-            _DbContext.Entry(log.User).State = Microsoft.EntityFrameworkCore.EntityState.Unchanged;
-            _DbContext.SaveChanges();
-            return log;
-         }
-         catch (Exception ex)
-         {
-            throw ex;
-         }
+         AppLog log = new AppLog(message, type, obj, GetUser(userClaimsPrincipal));
+         _DbContext.AppLogs.Add(log);
+         _DbContext.Entry(log.User).State = Microsoft.EntityFrameworkCore.EntityState.Unchanged;
+         _DbContext.SaveChanges();
+         return log;
       }
       internal string LogException(string message, dynamic obj = null, ClaimsPrincipal userClaimsPrincipal = null, AppLogType type = AppLogType.Exception)
       {

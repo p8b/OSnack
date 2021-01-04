@@ -19,18 +19,18 @@ export class CommonRegex {
 export class CommonErrors {
    public static PersistentErrorMsg: string = "(If the issue persists please contact the administrator on majid.joveini@gmail.com)";
    public static TryAgain: ErrorDto = {
-      Key: "TryAgain", Value: `Please refresh the page and try again. ${CommonErrors.PersistentErrorMsg}`
+      key: "TryAgain", value: `Please refresh the page and try again. ${CommonErrors.PersistentErrorMsg}`
    } as ErrorDto;
    public static BadServerResponse: ErrorDto = {
-      Key: "ServerError", Value: `Bad Server Response. ${CommonErrors.PersistentErrorMsg}`
+      key: "ServerError", value: `Bad Server Response. ${CommonErrors.PersistentErrorMsg}`
    } as ErrorDto;
    public static BadServerResponseCode: ErrorDto = {
-      Key: "ServerError", Value: `Server Error Code: 000 ${CommonErrors.PersistentErrorMsg}`
+      key: "ServerError", value: `Server Error Code: 000 ${CommonErrors.PersistentErrorMsg}`
    } as ErrorDto;
    public static BadServerConnection: ErrorDto = {
-      Key: "ConnectionError", Value: `Cannot connect to server. ${CommonErrors.PersistentErrorMsg}`
+      key: "ConnectionError", value: `Cannot connect to server. ${CommonErrors.PersistentErrorMsg}`
    } as ErrorDto;
    public static AccessPermissionFailed: ErrorDto = {
-      Key: "PermissionError", Value: "You do not have the correct permission to access the resource requested."
+      key: "PermissionError", value: "You do not have the correct permission to access the resource requested."
    } as ErrorDto;
 }; 

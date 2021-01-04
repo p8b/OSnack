@@ -55,7 +55,7 @@ namespace OSnack.API.Controllers
                _LoggingService.Log(Request.Path, AppLogType.OrderException, new { orderData, exception = ex }, User);
                if (tryCount > 4)
                {
-                  throw ex;
+                  throw;
                }
                return await TryToSave(orderData, tryCount++);
 

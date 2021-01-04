@@ -23,6 +23,7 @@ module.exports = {
    },
    output: {
       path: path.resolve(__dirname, "build"),
+      // filename: `public/js/${appName}.[name].[fullhash].bundle.js`,
       filename: `public/js/${appName}.[name].[hash].bundle.js`,
       publicPath: "/",
    },
@@ -37,9 +38,10 @@ module.exports = {
             test: /\.s[ac]ss$/i,
             use: [
                isDevelopment ? "style-loader" : MiniCssExtractPlugin.loader,
-               "css-loader",
-               "sass-loader",
+               { loader: 'css-loader', options: { url: false } },
+               { loader: 'sass-loader' }
             ],
+
          },
          {
             test: /\.css$/i,
@@ -50,15 +52,20 @@ module.exports = {
    devServer: {
       contentBase: path.join(__dirname, "build"),
       contentBasePublicPath: "public",
+      //static: [{
+      //   directory: path.join(__dirname, "build"),
+      //   publicPath: "/public",
+      //}],
       compress: true,
       https: {
          key: fs.readFileSync('server/cert/key.pem'),
          cert: fs.readFileSync('server/cert/cert.pem')
       },
+      //firewall: false,
       port: 8081,
       open: true,
       openPage: "",
-      //   host: "192.168.1.11",
+      host: "localhost",
       historyApiFallback: true,
    },
    plugins: [
@@ -71,7 +78,7 @@ module.exports = {
       new HtmlWebPackPlugin({
          template: "./public/index.html",
          filename: "index.html",
-         scriptLoading: "async",
+         scriptLoading: "defer",
       }),
       new CopyPlugin({
          patterns: [
@@ -113,7 +120,6 @@ module.exports = {
    optimization: {
       minimize: true,
       minimizer: [new TerserPlugin({
-         cache: true,
          parallel: true,
          terserOptions: {
             compress: {

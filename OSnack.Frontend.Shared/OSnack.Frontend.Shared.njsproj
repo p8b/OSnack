@@ -305,7 +305,6 @@
     <TypeScriptCompile Include="src\components\Buttons\FacebookLogin.tsx" />
     <TypeScriptCompile Include="src\components\Buttons\GoogleLogin.tsx" />
     <TypeScriptCompile Include="src\components\Buttons\NavLink.tsx" />
-    <TypeScriptCompile Include="src\components\Card.tsx" />
     <TypeScriptCompile Include="src\components\Inputs\DatePicker.tsx" />
     <TypeScriptCompile Include="src\components\Inputs\InputDropDown.tsx" />
     <TypeScriptCompile Include="src\components\Inputs\QuantityInput.tsx" />

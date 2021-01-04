@@ -31,9 +31,9 @@ const Alert = (props: IProps) => {
       'padding': '5px',
    };
    return (
-      <div style={style} className={`row col-12 m-0 mt-2 mb-2 ${props?.className ?? ""} ${(props.alert?.List.length === 0) ? "d-none" : ""}`}>
+      <div style={style} className={`row col-12 m-0 mt-2 mb-2 ${props?.className ?? ""} ${(props.alert?.List && props.alert?.List.length === 0) ? "d-none" : ""}`}>
          <div className="col-11"
-            children={props.alert!.List.map((error: ErrorDto) => <div key={error.key || Math.random()} children={error.value} />)}
+            children={props.alert?.List && props.alert!.List.map((error: ErrorDto) => <div key={error.key || Math.random()} children={error.value} />)}
          />
          <div className="col-1 p-0 pr-2 text-right"
             children={<a onClick={props.onClosed} children="✘" />}
@@ -80,7 +80,9 @@ export const useAlert = (init: AlertObj) => {
    };
 
    const checkExist = (inputName: string = "") => {
-      return !!alert.List!.find(t => t.key?.toLowerCase() === inputName?.toLowerCase());
+      if (alert.List != undefined)
+         return !!alert.List!.find(t => t.key?.toLowerCase() === inputName?.toLowerCase());
+      return false;
    };
    const checkExistFilterRequired = (inputName: string = "") => {
 

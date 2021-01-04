@@ -123,7 +123,7 @@ const OrderDetails = (props: IProps) => {
                   <div key={orderItem.productId} className="row col-12">
                      <div className="col-2 pm-0 mb-3">
                         <img className="shop-card-img" onError={onImageError.Product}
-                           src={`${API_URL}/${orderItem.imagePath}`} alt={name} />
+                           src={`${API_URL}/${orderItem.imagePath}`} alt={orderItem.name} />
                      </div>
                      <div className="row col-10 mb-3 ">
                         <div className="col-12 "><span className="h5">{orderItem.name}</span> ({orderItem.productCategoryName})</div>

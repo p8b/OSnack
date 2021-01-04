@@ -97,7 +97,7 @@ namespace OSnack.API.Controllers
                _DbContext.Products.Update(modifiedProduct);
                await _DbContext.SaveChangesAsync().ConfigureAwait(false);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                if (containsNewImages)
                {
@@ -105,7 +105,7 @@ namespace OSnack.API.Controllers
                   CoreFunc.DeleteFromWWWRoot(modifiedProduct.OriginalImagePath, _WebHost.WebRootPath);
                   CoreFunc.ClearEmptyImageFolders(_WebHost.WebRootPath);
                }
-               throw ex;
+               throw;
             }
 
             if (containsNewImages)
