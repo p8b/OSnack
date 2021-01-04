@@ -31,13 +31,13 @@ export const useAllComment = async (productId: number): Promise<IReturnUseAllCom
         }
   
 }
-export type IReturnUsePutComment={ data:string , status?: number;};
-export const usePutComment = async (commentId: number, show: boolean): Promise<IReturnUsePutComment> =>{
-        let url_ = API_URL + "/Comment/Put/{commentId}/{show}";
+export type IReturnUseAddReplyComment={ data:Comment , status?: number;};
+export const useAddReplyComment = async (commentId: number, reply: string | null): Promise<IReturnUseAddReplyComment> =>{
+        let url_ = API_URL + "/Comment/Put/AddReply/{commentId}/{reply}";
         if (commentId !== null && commentId !== undefined)
         url_ = url_.replace("{commentId}", encodeURIComponent("" + commentId));
-        if (show !== null && show !== undefined)
-        url_ = url_.replace("{show}", encodeURIComponent("" + show));
+        if (reply !== null && reply !== undefined)
+        url_ = url_.replace("{reply}", encodeURIComponent("" + reply));
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.PUT(url_);
         if( response?.status === 400){
@@ -48,7 +48,7 @@ export const usePutComment = async (commentId: number, show: boolean): Promise<I
         switch(response?.status){
 
                 case 200: 
-                        var responseData: string = await response?.json();
+                        var responseData: Comment = await response?.json();
                         return { data: responseData, status: response?.status };
 
                 case 412: 

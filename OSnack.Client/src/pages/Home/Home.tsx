@@ -6,13 +6,16 @@ import { Category } from 'osnack-frontend-shared/src/_core/apiModels';
 import Carousel from '../../components/Carousel';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { useAllPublicCategory } from 'osnack-frontend-shared/src/hooks/PublicHooks/useCategoryHook';
+import { usePostNewsletter } from 'osnack-frontend-shared/src/hooks/PublicHooks/useNewsletterHook';
 import { onImageError } from 'osnack-frontend-shared/src/_core/appFunc';
 import { Input } from 'osnack-frontend-shared/src/components/Inputs/Input';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
+import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 
 const Home = (props: IProps) => {
    const isUnmounted = useRef(false);
    const [email, setEmail] = useState("");
+   const errorAlert = useAlert(new AlertObj());
    const [heroImgLoaded, setHeroImgLoaded] = useState(false);
    const [carouselItems, setCarouselItems] = useState<any[]>([]);
    const history = useHistory();
@@ -51,6 +54,10 @@ const Home = (props: IProps) => {
          );
       }
       setCarouselItems(arr);
+   };
+
+   const onSubscribe = () => {
+      usePostNewsletter({ email: email }).then(result => errorAlert.setSingleSuccess("", result.data)).catch(alert => errorAlert.set(alert));
    };
 
    return (
@@ -92,12 +99,16 @@ const Home = (props: IProps) => {
                <div className="row pt-5 pb-5">
                   <div className="col-12 col-md-6 h5 text-center mt-auto mb-auto">Stay up to date with our latest promotions and products</div>
                   <div className="col-12 col-md-6">
+                     <Alert alert={errorAlert.alert}
+                        className="col-12"
+                        onClosed={() => { errorAlert.clear(); }}
+                     />
                      <Input className="col-12 pm-0"
                         label="Email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                      />
-                     <Button className="col-12 btn-white" children="Sign up" />
+                     <Button className="col-12 btn-white" children="Sign up" onClick={onSubscribe} />
                   </div>
                </div>
             </Container>

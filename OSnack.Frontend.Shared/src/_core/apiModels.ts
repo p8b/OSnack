@@ -218,10 +218,10 @@ export class Refund {
 export class Comment {
     id?: number = 0;
     description!: string;
+    reply?: string | undefined;
     orderItem?: OrderItem | undefined;
     orderItemId?: number;
     name!: string;
-    show?: boolean;
     date?: Date;
     rate?: number;
     product?: Product | undefined;
@@ -288,8 +288,8 @@ export class LoginInfo {
 
 }
 export class Newsletter {
+    id?: string | undefined;
     email!: string;
-    displayName?: string | undefined;
 
 }
 export class PurchaseUnit {
@@ -636,7 +636,6 @@ export class Product extends OrderProductBase {
     category: Category = new Category();
     nutritionalInfo?: NutritionalInfo | undefined;
     score?: number;
-    commentReview?: boolean;
     hasComment?: boolean;
 
 }

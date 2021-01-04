@@ -158,5 +158,16 @@ namespace OSnack.API.Extras
       }
 
 
+      public static string GetCencoredWord(int length)
+      {
+         string cencoredWord = "";
+         for (int i = 0; i < length; i++)
+         {
+            cencoredWord += "*";
+         }
+         return cencoredWord;
+      }
+
+
    }
 }

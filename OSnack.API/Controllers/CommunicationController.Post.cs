@@ -32,6 +32,12 @@ namespace OSnack.API.Controllers
       {
          try
          {
+            if (newDispute.Messages.Count != 1)
+            {
+               /// extract the errors and return bad request containing the errors
+               CoreFunc.Error(ref ErrorsList, "The message is empty.");
+               return StatusCode(412, ErrorsList);
+            }
 
             if (!string.IsNullOrEmpty(newDispute.Order_Id) &&
                (await _DbContext.Orders.SingleOrDefaultAsync(o => o.Id == newDispute.Order_Id) == null))
@@ -86,6 +92,12 @@ namespace OSnack.API.Controllers
 
          try
          {
+            if (newContact.Messages.Count != 1)
+            {
+               /// extract the errors and return bad request containing the errors
+               CoreFunc.Error(ref ErrorsList, "The message is empty.");
+               return StatusCode(412, ErrorsList);
+            }
 
             if (AppFunc.GetUserId(User) != 0)
             {
@@ -96,6 +108,7 @@ namespace OSnack.API.Controllers
             }
             newContact.IsOpen = true;
             newContact.Type = ContactType.Question;
+            newContact.Messages[0].IsCustomer = true;
             ModelState.Clear();
             TryValidateModel(newContact);
 

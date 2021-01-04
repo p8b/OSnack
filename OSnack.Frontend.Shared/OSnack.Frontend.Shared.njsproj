@@ -312,7 +312,7 @@
     <TypeScriptCompile Include="src\components\Inputs\StarRating.tsx" />
     <TypeScriptCompile Include="src\components\Modals\AddDisputeModal.tsx" />
     <TypeScriptCompile Include="src\components\Modals\ConfirmPasswordModal.tsx" />
-    <TypeScriptCompile Include="src\components\Modals\DisputeModal.tsx" />
+    <TypeScriptCompile Include="src\components\Modals\CommunicationModal.tsx" />
     <TypeScriptCompile Include="src\components\Modals\Modal.tsx" />
     <TypeScriptCompile Include="src\components\Inputs\CheckBox.tsx" />
     <TypeScriptCompile Include="src\components\Inputs\Input.tsx" />

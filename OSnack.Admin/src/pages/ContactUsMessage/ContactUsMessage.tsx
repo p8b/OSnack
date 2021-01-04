@@ -9,9 +9,9 @@ import { ConstMaxNumberOfPerItemsPage, GetAllRecords } from 'osnack-frontend-sha
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Container from '../../components/Container';
-import { useAddMessageSecretCommunication, useSearchCommunication } from '../../SecretHooks/useCommunicationHook';
+import { useAddMessageSecretCommunication, useSearchCommunication, useDeleteCommunication } from '../../SecretHooks/useCommunicationHook';
 import { Access } from '../../_core/appConstant.Variables';
-import DisputeModal from 'osnack-frontend-shared/src/components/Modals/DisputeModal';
+import CommunicationModal from 'osnack-frontend-shared/src/components/Modals/CommunicationModal';
 import { Communication } from 'osnack-frontend-shared/src/_core/apiModels';
 
 
@@ -149,11 +149,12 @@ const ContactUsMessage = (props: IProps) => {
                      listCount={tblTotalItemCount} />
                </div>
             }
-            <DisputeModal isOpen={isOpenMessageModal}
+            <CommunicationModal isOpen={isOpenMessageModal}
                dispute={selectMessage}
                access={Access}
                onClose={() => { setIsOpenMessageModal(false); onSearch(); }}
                useAddMessageSecretCommunication={useAddMessageSecretCommunication}
+               useDeleteCommunication={useDeleteCommunication}
             />
          </Container>
       </Container>

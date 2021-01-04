@@ -23,11 +23,13 @@ const ProductManagement = (props: IProps) => {
    const errorAlert = useAlert(new AlertObj());
    const [searchValue, setSearchValue] = useState("");
    const [selectedProduct, setSelectedProduct] = useState(new Product());
+
    const [categoryList, setCategoryList] = useState<Category[]>([]);
    const [selectedCategoryFilter, setSelectedCategoryFilter] = useState(GetAllRecords);
    const [selectedStatusFilter, setSelectedStatusFilter] = useState(GetAllRecords);
    const [isOpenProductModal, setIsOpenProductModal] = useState(false);
    const [isOpenCommentModal, setIsOpenCommentModal] = useState(false);
+
    const [productUnitTypeList] = useState(ProductUnitTypeList);
 
    const [tableData, setTableData] = useState(new TableData());
@@ -141,7 +143,7 @@ const ProductManagement = (props: IProps) => {
                      btn1Click={() => {
                         editProduct(product);
                      }}
-                     btnClassName={`col-12 col-lg-6 btn-white ${product.commentReview ? "comment-review-icon" : "comment-icon"} small-text`}
+                     btnClassName="col-12 col-lg-6 btn-white comment-icon small-text"
                      btnClick={() => { setSelectedProduct(product); setIsOpenCommentModal(true); }}
                   />
                }
@@ -157,7 +159,9 @@ const ProductManagement = (props: IProps) => {
    const resetProductModal = () => {
       setIsOpenProductModal(false);
       setIsOpenCommentModal(false);
+
       setSelectedProduct(new Product());
+
       onSearch();
    };
    const getStatusDisplayValue = () => {
@@ -253,6 +257,10 @@ const ProductManagement = (props: IProps) => {
                onClose={resetProductModal} />
             <CommentModal isOpen={isOpenCommentModal} productId={selectedProduct.id!}
                onClose={resetProductModal} />
+
+
+
+
          </div>
       </Container>
    );

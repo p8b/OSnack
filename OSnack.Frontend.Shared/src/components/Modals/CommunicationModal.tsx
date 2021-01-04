@@ -1,18 +1,18 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
-import { Communication } from '../../_core/apiModels';
+import { Communication, ContactType } from '../../_core/apiModels';
 import Modal from '../../components/Modals/Modal';
 import { IReturnUseAddMessageOfficialCommunication, useAddMessageOfficialCommunication } from '../../hooks/OfficialHooks/useCommunicationHook';
 import PageHeader from '../../components/Texts/PageHeader';
-import { Button } from '../../components/Buttons/Button';
 import { TextArea } from '../../components/Inputs/TextArea';
-import { AlertObj, useAlert } from '../../components/Texts/Alert';
+import Alert, { AlertObj, useAlert } from '../../components/Texts/Alert';
 import { ClientAppAccess } from '../../_core/constant.Variables';
 import { Toggler } from '../Inputs/Toggler';
+import ModalFooter from './ModalFooter';
 
 
 
 
-const DisputeModal = (props: IProps) => {
+const CommunicationModal = (props: IProps) => {
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
    const [message, setMessage] = useState("");
@@ -53,10 +53,19 @@ const DisputeModal = (props: IProps) => {
       }
    };
 
+   const deleteQuestion = () => {
+      errorAlert.PleaseWait(500, isUnmounted);
+      props.useDeleteCommunication!(dispute).then(() => {
+         if (isUnmounted.current) return;
+         props.onClose();
+      }).catch(onError);
+   };
+
    const onSuccess = (result: IReturnUseAddMessageOfficialCommunication) => {
       if (isUnmounted.current) return;
       setMessage("");
       setDispute(result.data);
+      errorAlert.setSingleSuccess("updated", `${result.data.type == ContactType.Dispute ? "Dispute" : "Question"} is Updated`);
    };
 
    const onError = (errors: AlertObj) => {
@@ -78,54 +87,56 @@ const DisputeModal = (props: IProps) => {
    };
 
    return (
-      <Modal className="col-11 col-sm-10 col-lg-6 pm-0 pl-4 pr-4 pb-0"
+      <Modal className="col-11 col-sm-10 col-lg-6 pl-4 pr-4 pb-0 pt-0 "
          bodyRef={props.modalRef}
          isOpen={props.isOpen}>
          <>
-            <PageHeader title={`Dispute ${props.dispute.isOpen ? "" : "Closed"}`} />
-            <div className=" mt-1">
-               <div className="col-12 pm-0">
-                  {dispute.id != undefined && dispute.messages!.map(message => {
-                     return (
-                        <div key={message.id} className={`col-10 chat ${getChatCss(message.isCustomer)}`}>
-                           <div className="col-12">{message.body}</div>
-                           <span className="col-12 time">{new Date(message.date!).ToShortDateTime()}</span>
-                        </div>
-
-
-                     );
-                  })
-                  }
-                  <div ref={messagesEndRef} />
-               </div>
-               {/***** buttons ****/}
-               <div className="col-12 pm-0 pos-b-sticky bg-white pb-3">
+            <div className="col-12 pos-t-sticky bg-white pt-3">
+               <PageHeader title={`${props.dispute.type == ContactType.Dispute ? "Dispute" : "Question"} ${props.dispute.isOpen ? "" : "Closed"}`} />
+               <div className="row">
+                  <div className="col">Name : {props.dispute.fullName}</div>
                   {props.access == ClientAppAccess.Secret &&
                      <Toggler
-                        className="toggler-xlg circle col-12 pb-3"
+                        className="toggler-xlg circle col pb-3"
                         lblValueTrue="Dispute Open"
                         lblValueFalse="Dispute Closed"
                         value={disputeStatus}
                         onChange={i => { setDisputeStatus(i); }}
                      />
                   }
-                  {dispute.isOpen &&
-                     <TextArea className="col-12 " label="Message*" rows={3} value={message}
-                        onChange={(i) => { setMessage(i.target.value); }} />
-                  }
-                  <div className="row col-12 pm-0">
-                     {(dispute.isOpen || props.access == ClientAppAccess.Secret) &&
-                        <Button children="Submit"
-                           className={`col-12 col-md-6 mt-2 btn-green btn-lg"}`}
-                           onClick={sendMessage} />
-
-                     }
-                     <Button children="Close"
-                        className={`col-12 ${(dispute.isOpen || props.access == ClientAppAccess.Secret) ? "col-md-6" : ""}  mt-2 btn-white btn-lg`}
-                        onClick={() => { props.onClose(); }} />
-                  </div>
                </div>
-            </div >
+            </div>
+            <div className="col-12 pm-0 bg-light-gray">
+               {dispute.id != undefined && dispute.messages!.map(message => {
+                  return (
+                     <div key={message.id} className={`col-10 chat ${getChatCss(message.isCustomer)}`}>
+                        <div className="col-12">{message.body}</div>
+                        <span className="col-12 time">{new Date(message.date!).ToShortDateTime()}</span>
+                     </div>
+
+
+                  );
+               })
+               }
+               <div ref={messagesEndRef} />
+            </div>
+            {/***** buttons ****/}
+            <div className="col-12 pm-0 pos-b-sticky bg-white pb-3">
+
+               {disputeStatus &&
+                  <TextArea className="col-12 " label="Message*" rows={3} value={message}
+                     onChange={(i) => { setMessage(i.target.value); }} />
+               }
+               <Alert alert={errorAlert.alert}
+                  className="col-12 mb-2"
+                  onClosed={() => { errorAlert.clear(); }}
+               />
+               <ModalFooter
+                  upatedText="Submit"
+                  onUpdate={(dispute.isOpen || props.access == ClientAppAccess.Secret) ? sendMessage : undefined}
+                  onDelete={(props.dispute.type === ContactType.Dispute || props.access != ClientAppAccess.Secret) ? undefined : deleteQuestion}
+                  onCancel={() => { errorAlert.clear(); props.onClose(); }} />
+            </div>
          </>
       </Modal >
 
@@ -135,6 +146,7 @@ const DisputeModal = (props: IProps) => {
 
 declare type IProps = {
    useAddMessageSecretCommunication?: (modifyCommunication: Communication) => Promise<IReturnUseAddMessageOfficialCommunication>;
+   useDeleteCommunication?: (communication: Communication) => Promise<{ data: string, status?: number; }>;
    access: ClientAppAccess;
    dispute: Communication;
    isOpen: boolean;
@@ -142,4 +154,4 @@ declare type IProps = {
    modalRef?: any;
 
 };
-export default DisputeModal;
+export default CommunicationModal;

@@ -51,14 +51,10 @@ namespace OSnack.API.Database.Models
       [NotMapped]
       public double Score
       {
-         get { return (Comments == null || Comments.Count(c => c.Show) == 0) ? -1 : Math.Round(Comments.Where(c => c.Show).ToList().Select(t => t.Rate).Average(), 2); }
+         get { return (Comments == null || Comments.Count == 0) ? -1 : Math.Round(Comments.Select(t => t.Rate).Average(), 2); }
       }
 
-      [NotMapped]
-      public bool CommentReview
-      {
-         get { return (Comments == null || Comments.Count == 0) ? false : Comments.Any(c => !c.Show); }
-      }
+
       [NotMapped]
       public bool HasComment
       {

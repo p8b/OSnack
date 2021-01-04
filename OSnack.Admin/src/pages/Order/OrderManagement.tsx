@@ -15,7 +15,7 @@ import Container from '../../components/Container';
 import { useAllOrder, usePutOrderStatusOrder } from '../../SecretHooks/useOrderHook';
 import { useAddMessageSecretCommunication } from '../../SecretHooks/useCommunicationHook';
 import { Access } from '../../_core/appConstant.Variables';
-import DisputeModal from 'osnack-frontend-shared/src/components/Modals/DisputeModal';
+import CommunicationModal from 'osnack-frontend-shared/src/components/Modals/CommunicationModal';
 
 
 
@@ -111,7 +111,7 @@ const OrderManagement = (props: IProps) => {
       errorAlert.clear();
       let tData = new TableData();
       tData.AddHeader("Status", "Status")
-         .AddHeader("UserName")
+         .AddHeader("Name")
          .AddHeader("Total Price", "TotalPrice")
          .AddHeader("Payment")
          .AddHeader("Date", "Date");
@@ -122,8 +122,8 @@ const OrderManagement = (props: IProps) => {
                children={OrderStatusTypeList.find(t => t.Value == order.status)?.Name} /></span>,
             getFullNameOrEmail(order),
             `£${order.totalPrice}`,
-            new Date(order.date!).ToShortDate(),
             PaymentTypeList.find(t => t.Value == order.payment.type)?.Name,
+            new Date(order.date!).ToShortDate(),
             <>
                {order.dispute == undefined &&
                   <TableRowButtons
@@ -140,7 +140,7 @@ const OrderManagement = (props: IProps) => {
                         setSelectOrder(order);
                         setIsOpenOrderModal(true);
                      }}
-                     btnClassName="col-12 col-lg-6 btn-white dispute-icon small-text"
+                     btnClassName="col-12 col-lg-6 btn-white small-text"
                      btnChildren="Dispute"
                      btnClick={() => { setSelectedDispute(order.dispute!); setIsOpenDisputeModal(true); }}
                   />}
@@ -229,7 +229,7 @@ const OrderManagement = (props: IProps) => {
                access={Access}
                onClose={() => setIsOpenOrderModal(false)}
                onSave={UpdateOrder} />
-            <DisputeModal isOpen={isOpenDisputeModal}
+            <CommunicationModal isOpen={isOpenDisputeModal}
                dispute={selectedDispute}
                access={Access}
                onClose={() => { setIsOpenDisputeModal(false); onSearch(); }}

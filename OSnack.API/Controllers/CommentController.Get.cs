@@ -31,7 +31,7 @@ namespace OSnack.API.Controllers
          {
 
             List<Comment> list = await _DbContext.Comments.Include(c => c.Product)
-               .Where(c => c.Product.Id == productId && c.Show)
+               .Where(c => c.Product.Id == productId)
                .OrderBy(c => c.Date)
                .ToListAsync()
                .ConfigureAwait(false);
@@ -79,8 +79,7 @@ namespace OSnack.API.Controllers
 
             List<Comment> list = await _DbContext.Comments.Include(c => c.Product)
                .Where(c => c.Product.Id == productId)
-               .OrderBy(c => c.Show)
-               .ThenBy(c => c.Date)
+               .OrderBy(c => c.Date)
                .ToListAsync()
                .ConfigureAwait(false);
 

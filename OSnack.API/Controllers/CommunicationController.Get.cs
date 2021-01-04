@@ -18,10 +18,6 @@ namespace OSnack.API.Controllers
 {
    public partial class CommunicationController
    {
-      /// <summary>
-      /// Search or get all the categories.
-      /// search by name or filter by unit or status
-      /// </summary>
       #region *** ***
       [MultiResultPropertyNames("communicationList", "totalCount")]
       [ProducesResponseType(typeof(MultiResult<List<Communication>, int>), StatusCodes.Status200OK)]
@@ -67,6 +63,7 @@ namespace OSnack.API.Controllers
             return StatusCode(417, ErrorsList);
          }
       }
+
 
    }
 }

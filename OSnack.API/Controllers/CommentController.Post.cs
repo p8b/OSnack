@@ -70,7 +70,6 @@ namespace OSnack.API.Controllers
                return StatusCode(412, ErrorsList);
             }
 
-            newComment.Show = false;
             newComment.Product = _DbContext.Products.SingleOrDefault(p => p.Id == newComment.OrderItem.ProductId);
 
 
@@ -87,6 +86,9 @@ namespace OSnack.API.Controllers
                CoreFunc.ExtractErrors(ModelState, ref ErrorsList);
                return UnprocessableEntity(ErrorsList);
             }
+
+
+            await newComment.CencoredDescription();
             await _DbContext.Comments.AddAsync(newComment).ConfigureAwait(false);
             _DbContext.Entry(newComment.OrderItem).State = EntityState.Unchanged;
             _DbContext.Entry(newComment.Product).State = EntityState.Unchanged;

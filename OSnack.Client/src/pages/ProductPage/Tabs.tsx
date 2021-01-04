@@ -35,10 +35,7 @@ const Tabs = (props: IProps) => {
    }, [props.product]);
 
    useEffect(() => {
-      useGetComment(props.product.id!).then(result => {
-         setCommentList(result.data.commentList!);
-         setAllowAddComment(result.data.allowComment || false);
-      });
+      reloadComments();
    }, [props.product]);
 
    const sentComment = (description: string, rate: number) => {
@@ -48,7 +45,14 @@ const Tabs = (props: IProps) => {
          product: props.product,
          name: ""
       }).then(result => {
+         reloadComments();
+      });
+   };
 
+   const reloadComments = () => {
+      useGetComment(props.product.id!).then(result => {
+         setCommentList(result.data.commentList!);
+         setAllowAddComment(result.data.allowComment || false);
       });
    };
 
@@ -113,6 +117,12 @@ const Tabs = (props: IProps) => {
                               <StarRating className="col-auto ml-auto" rate={comment.rate} />
                            </div>
                            <div className="col-12">{comment.description}</div>
+                           {comment.reply != undefined &&
+                              <div className="reply">
+                                 <div className="col-12 row" children="Customer Support" />
+                                 <div className="col-12">{comment.reply}</div>
+                              </div>
+                           }
                         </div>
                      )
                      }

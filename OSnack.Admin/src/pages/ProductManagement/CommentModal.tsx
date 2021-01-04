@@ -4,9 +4,9 @@ import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { StarRating } from 'osnack-frontend-shared/src/components/Inputs/StarRating';
-import { Toggler } from 'osnack-frontend-shared/src/components/Inputs/Toggler';
 import { Comment } from 'osnack-frontend-shared/src/_core/apiModels';
-import { useAllComment, usePutComment } from '../../SecretHooks/useCommentHook';
+import { useAllComment } from '../../SecretHooks/useCommentHook';
+import AddReplyModal from './AddReplyModal';
 
 
 
@@ -15,6 +15,8 @@ const CommentModal = (props: IProps) => {
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
    const [commentList, setCommentList] = useState<Comment[]>([]);
+   const [isOpenReplyModal, setIsOpenReplyModal] = useState(false);
+   const [selectedComment, setSelectedComment] = useState(new Comment());
 
 
    useEffect(() => {
@@ -32,17 +34,12 @@ const CommentModal = (props: IProps) => {
       });
    };
 
-   const changeShow = (commenId: number, show: boolean) => {
-      usePutComment(commenId, show).then(result => {
-         if (isUnmounted.current) return;
-         errorAlert.clear();
-         reload();
-         errorAlert.setSingleSuccess("success", result.data);
-      }).catch(errors => {
-         if (isUnmounted.current) return;
-         errorAlert.set(errors);
-      });
+
+   const addReply = (comment: Comment) => {
+      setSelectedComment(comment);
+      setIsOpenReplyModal(true);
    };
+
    return (
       <Modal className="col-11 col-sm-10 col-lg-6 pm-0 pl-4 pr-4 pb-0"
          bodyRef={props.modalRef}
@@ -54,18 +51,13 @@ const CommentModal = (props: IProps) => {
                   {commentList!.map(comment => {
                      return (
                         <div key={comment.id} className="comment">
-                           <Toggler
-                              className="toggler-xlg circle col-12 pb-3"
-                              lblValueTrue="Comment Show"
-                              lblValueFalse="Comment Hide"
-                              value={comment.show!}
-                              onChange={(i) => changeShow(comment.id!, i)}
-                           />
                            <div className="row">
                               <div className="col-12 col-sm-6">{comment.name}</div>
                               <StarRating className="col-auto ml-auto" rate={comment.rate} />
                            </div>
                            <div className="col-12">{comment.description}</div>
+                           <Button children={`${comment.reply == undefined ? "Add Reply" : "Edit Reply"}`} className="btn-white"
+                              onClick={() => addReply(comment)} />
                         </div>
                      );
                   })
@@ -79,6 +71,9 @@ const CommentModal = (props: IProps) => {
                      onClick={() => { props.onClose(); }} />
                </div>
             </div>
+
+            <AddReplyModal isOpen={isOpenReplyModal} comment={selectedComment}
+               onClose={() => { setSelectedComment(new Comment()); setIsOpenReplyModal(false); reload(); }} />
          </>
       </Modal >
 
@@ -91,6 +86,5 @@ declare type IProps = {
    isOpen: boolean;
    onClose: () => void;
    modalRef?: any;
-
 };
 export default CommentModal;

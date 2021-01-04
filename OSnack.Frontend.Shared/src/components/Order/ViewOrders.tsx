@@ -4,13 +4,13 @@ import Alert, { AlertObj, useAlert } from '../Texts/Alert';
 import { Communication, Order, OrderStatusType, OrderStatusTypeList, PaymentTypeList } from '../../_core/apiModels';
 import { ClientAppAccess, ConstMaxNumberOfPerItemsPage, GetAllRecords } from '../../_core/constant.Variables';
 import { useHistory } from 'react-router-dom';
-import { checkUri, generateUri, getBadgeByOrderStatusType } from '../../_core/appFunc';
+import { checkUri, generateUri, getBadgeByOrderStatusType, extractUri } from '../../_core/appFunc';
 import Table, { TableData, TableView } from '../Table/Table';
 import TableRowButtons from '../Table/TableRowButtons';
 import PageHeader from '../Texts/PageHeader';
 import Pagination from '../Pagination/Pagination';
 import OrderModal from '../Modals/OrderModal';
-import DisputeModal from '../Modals/DisputeModal';
+import CommunicationModal from '../Modals/CommunicationModal';
 import { Button } from '../Buttons/Button';
 import DropDown from '../Buttons/DropDown';
 import SearchInput from '../Inputs/SeachInput';
@@ -20,7 +20,7 @@ const ViewOrders = (props: IProps) => {
    const isUnmounted = useRef(false);
    const history = useHistory();
    const errorAlert = useAlert(new AlertObj());
-   const [selectUserId, setSelectUserId] = useState(0);
+   const [selectUserId, setSelectUserId] = useState(Number(extractUri(window.location.pathname)[1]));
    const [searchValue, setSearchValue] = useState("");
    const [selectedDispute, setSelectedDispute] = useState(new Communication());
    const [isOpenDisputeModalModal, setIsOpenDisputeModalModal] = useState(false);
@@ -38,9 +38,18 @@ const ViewOrders = (props: IProps) => {
    const [tblMaxItemsPerPage, setTblMaxItemsPerPage] = useState(ConstMaxNumberOfPerItemsPage);
 
    useEffect(() => {
-      onSearch(...checkUri(window.location.pathname,
-         [selectUserId, tblSelectedPage, tblMaxItemsPerPage, selectType, tblIsSortAsc, tblSortName, GetAllRecords]));
-
+      switch (props.access) {
+         case ClientAppAccess.Official:
+            onSearch(...checkUri(window.location.pathname,
+               [0, tblSelectedPage, tblMaxItemsPerPage, selectType, tblIsSortAsc, tblSortName, GetAllRecords]));
+            break;
+         case ClientAppAccess.Secret:
+            onSearch(...checkUri(window.location.pathname,
+               [selectUserId, tblSelectedPage, tblMaxItemsPerPage, selectType, tblIsSortAsc, tblSortName, GetAllRecords]));
+            break;
+         default:
+            break;
+      }
    }, [props.refresh]);
 
 
@@ -58,7 +67,6 @@ const ViewOrders = (props: IProps) => {
          searchString = searchValue;
       if (searchString != GetAllRecords)
          setSearchValue(searchString);
-
       setSelectUserId(userId);
       if (selectedPage != tblSelectedPage)
          setTblSelectedPage(selectedPage);
@@ -81,10 +89,24 @@ const ViewOrders = (props: IProps) => {
       if (maxItemsPerPage != tblMaxItemsPerPage)
          setTblMaxItemsPerPage(maxItemsPerPage);
 
-      history.push(generateUri(window.location.pathname,
-         [userId, selectedPage || tblSelectedPage,
-            maxItemsPerPage, filterType == GetAllRecords ? -1 : filterType,
-            Number(isSortAsc), sortName, searchString != GetAllRecords ? searchString : ""]), props.location?.state);
+      switch (props.access) {
+         case ClientAppAccess.Official:
+            history.push(generateUri(window.location.pathname,
+               [selectedPage || tblSelectedPage,
+                  maxItemsPerPage, filterType == GetAllRecords ? -1 : filterType,
+               Number(isSortAsc), sortName, searchString != GetAllRecords ? searchString : ""]), props.location?.state);
+            break;
+         case ClientAppAccess.Secret:
+            history.push(generateUri(window.location.pathname,
+               [userId, selectedPage || tblSelectedPage,
+                  maxItemsPerPage, filterType == GetAllRecords ? -1 : filterType,
+                  Number(isSortAsc), sortName, searchString != GetAllRecords ? searchString : ""]), props.location?.state);
+            break;
+         default:
+            break;
+      }
+
+
 
       errorAlert.PleaseWait(500, isUnmounted);
       switch (props.access) {
@@ -157,7 +179,7 @@ const ViewOrders = (props: IProps) => {
                         setSelectOrder(order);
                         setIsOpenOrderModal(true);
                      }}
-                     btnClassName="col-12 col-lg-6 btn-white dispute-icon small-text"
+                     btnClassName="col-12 col-lg-6 btn-white small-text"
                      btnChildren="Dispute"
                      btnClick={() => { setSelectedDispute(order.dispute!); setIsOpenDisputeModalModal(true); }}
                   />}
@@ -244,7 +266,7 @@ const ViewOrders = (props: IProps) => {
             onSave={UpdateOrder}
             onDispute={props.onDispute}
          />
-         <DisputeModal isOpen={isOpenDisputeModalModal}
+         <CommunicationModal isOpen={isOpenDisputeModalModal}
             dispute={selectedDispute}
             access={props.access}
             onClose={() => { setIsOpenDisputeModalModal(false); }}

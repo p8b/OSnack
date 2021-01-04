@@ -203,6 +203,7 @@
     <TypeScriptCompile Include="src\pages\MyAccount\MyAccount.tsx" />
     <TypeScriptCompile Include="src\pages\Order\OrderManagement.tsx" />
     <TypeScriptCompile Include="src\pages\Order\ViewUserOrders.tsx" />
+    <TypeScriptCompile Include="src\pages\ProductManagement\AddReplyModal.tsx" />
     <TypeScriptCompile Include="src\pages\ProductManagement\CommentModal.tsx" />
     <TypeScriptCompile Include="src\pages\ProductManagement\ProductManagement.tsx" />
     <TypeScriptCompile Include="src\pages\ProductManagement\ProductNutritionalInfoModal.tsx" />
