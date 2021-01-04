@@ -48,8 +48,8 @@ const ContactUs = (props: IProps) => {
                   <>
                      <div className="col-12 mt-auto mb-auto text-center">
                         <div className="h2" children="Contact Us!" />
-                        <a className="col-12 phone-icon" children=" 07865690055" href="tel:07865690055" />
-                        <a className="col-12 email-icon" children=" osnack.cs@gmail.com" href="mailto:osnack.cs@gmail.com" />
+                        <a className="col-12 phone-icon" children=" 078 6569 0055" href="tel:07865690055" />
+                        <a className="col-12 email-icon" children=" support@osnack.co.uk" href="mailto:support@osnack.co.uk" />
                      </div>
                      {!auth.state.isAuthenticated &&
                         <>

@@ -34,7 +34,13 @@
     <Content Include="package.json" />
     <Content Include="public\images\hero-img-low-res.png" />
     <Content Include="public\images\hero-img.png" />
+    <Content Include="public\images\QualityFood.png" />
+    <Content Include="public\images\Satisfactionpng.png" />
+    <Content Include="public\images\stand.png" />
     <Content Include="public\index.html" />
+    <Content Include="public\markdowns\AboutUs.md" />
+    <Content Include="public\markdowns\TermsAndConditions.md" />
+    <Content Include="public\markdowns\PrivacyPolicy.md" />
     <Content Include="public\robots.txt" />
     <Content Include="README.md" />
     <Content Include="server\cert\cert.pem" />
@@ -143,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="public\images\" />
+    <Folder Include="public\markdowns\" />
     <Folder Include="server\cert\" />
     <Folder Include="src\" />
     <Folder Include="server\" />
@@ -155,6 +162,7 @@
     <Folder Include="src\pages\About\" />
     <Folder Include="src\pages\ContactUs\" />
     <Folder Include="src\pages\Basket\" />
+    <Folder Include="src\pages\PrivacyPolicy\" />
     <Folder Include="src\pages\ProductPage\" />
     <Folder Include="src\pages\TermsAndConditions\" />
     <Folder Include="src\pages\Shop\" />
@@ -205,6 +213,7 @@
     <TypeScriptCompile Include="src\pages\MyAccount\MyAccount.tsx" />
     <TypeScriptCompile Include="src\pages\MyAccount\MyAddresses.tsx" />
     <TypeScriptCompile Include="src\pages\MyAccount\MyOrders.tsx" />
+    <TypeScriptCompile Include="src\pages\PrivacyPolicy\PrivacyPolicy.tsx" />
     <TypeScriptCompile Include="src\pages\ProductPage\ProductPage.tsx" />
     <TypeScriptCompile Include="src\pages\ProductPage\Tabs.tsx" />
     <TypeScriptCompile Include="src\pages\Shop\Shop.tsx" />

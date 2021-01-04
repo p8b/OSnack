@@ -1,29 +1,28 @@
 ﻿import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import React, { useEffect, useState } from 'react';
-import Container from '../../components/Container';
 import ReactMarkdown from 'react-markdown';
+import Container from '../../components/Container';
 
-const TermsAndConditions = (props: IProps) => {
-   const [terms, setTerms] = useState("");
-
+const PrivacyPolicy = (props: IProps) => {
+   const [policy, setPolicy] = useState("");
    useEffect(() => {
-      fetch(`${window.location.origin}/public/markdowns/TermsAndConditions.md`).then((result) => {
+      fetch(`${window.location.origin}/public/markdowns/PrivacyPolicy.md`).then((result) => {
          if (result.status == 200)
             result.text().then(termsAndCondition => {
-               setTerms(termsAndCondition);
+               setPolicy(termsAndCondition);
             });
       });
    }, []);
    return (
       <Container>
-         <PageHeader title="Terms and Conditions" />
+         <PageHeader title="Privacy Policy" />
          <div className="col-12 p-3 mb-3 bg-white ml-auto mr-auto">
-            <ReactMarkdown>{terms}</ReactMarkdown>
-         </div>
+            <ReactMarkdown>{policy}</ReactMarkdown>
+         </div >
       </Container>
    );
 };
 
 declare type IProps = {
 };
-export default TermsAndConditions;
+export default PrivacyPolicy;

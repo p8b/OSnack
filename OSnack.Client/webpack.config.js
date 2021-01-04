@@ -109,13 +109,21 @@ module.exports = {
                to: path.resolve(__dirname, `${outputPublicPath}images/`)
             },
             {
+               from: path.resolve(__dirname, "node_modules/osnack-frontend-shared/public/fonts/"),
+               to: path.resolve(__dirname, `${outputPublicPath}fonts/`)
+            },
+            {
                from: path.resolve(__dirname, "public/images/"),
                to: path.resolve(__dirname, `${outputPublicPath}images/`)
             },
             {
-               from: path.resolve(__dirname, "node_modules/osnack-frontend-shared/public/fonts/"),
-               to: path.resolve(__dirname, `${outputPublicPath}fonts/`)
-            }
+               from: path.resolve(__dirname, "public/markdowns/"),
+               to: path.resolve(__dirname, `${outputPublicPath}markdowns/`)
+            },
+            {
+               from: path.resolve(__dirname, "public/robots.txt"),
+               to: path.resolve(__dirname, `${outputPublicPath}`)
+            },
          ]
       }),
       //new WorkboxPlugin.GenerateSW({

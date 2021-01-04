@@ -128,7 +128,7 @@ const Shop = (props: IProps) => {
    return (
       <Container className="wide-container pm-0">
          <PageHeader title="Shop" className="hr-section-sm" />
-         <Container className="bg-white ">
+         <Container className="bg-white pb-5">
             <div className="row p-3 ">
                <SearchInput key="searchInput"
                   value={searchValue}

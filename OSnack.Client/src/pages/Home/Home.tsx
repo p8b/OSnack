@@ -7,9 +7,12 @@ import Carousel from '../../components/Carousel';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { useAllPublicCategory } from 'osnack-frontend-shared/src/hooks/PublicHooks/useCategoryHook';
 import { onImageError } from 'osnack-frontend-shared/src/_core/appFunc';
+import { Input } from 'osnack-frontend-shared/src/components/Inputs/Input';
+import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 
 const Home = (props: IProps) => {
    const isUnmounted = useRef(false);
+   const [email, setEmail] = useState("");
    const [heroImgLoaded, setHeroImgLoaded] = useState(false);
    const [carouselItems, setCarouselItems] = useState<any[]>([]);
    const history = useHistory();
@@ -58,21 +61,46 @@ const Home = (props: IProps) => {
                We provide quality mediterranean products for you to enjoy.
             </h3>
             <div className="col-12 text-center">
-               <Link to="/Shop" className='btn btn-orange'>Shop</Link>
+               <Link to="/Shop" className='btn btn-orange'>Shop now</Link>
             </div>
          </div>
-         <div className="col-12 mt-4 msg-section">
-            <h3>
-               Treat yourself with <i> delicious </i> and <i> healthy </i> snacks.
-            </h3>
-            <div className="h5">
+         <div className="col-12 mt-5 mb-5 pt-5 pb-5">
+            <div className="h2 text-center">
+               Treat yourself with <i style={{ fontFamily: "'Courgette', cursive" }}> delicious </i> and <i style={{ fontFamily: "'Courgette', cursive" }}> healthy </i> snacks.
+            </div>
+            <div className="mt-3 text-center">
                Here at OSnack, we aim to select and provide the best quality snack
                so you can just enjoy the wonderful taste.
             </div>
          </div>
-         <div className="col-12 categories-section">
+         <div className="col-12 categories-section bg-white">
             <PageHeader className="line-header-lg" title="Categories" />
             <Carousel items={carouselItems} />
+         </div>
+         <Container >
+            <div className="row mt-5 mb-5 pt-3 pb-3 justify-content-center">
+               <div><img src="public/images/Satisfactionpng.png" /></div>
+               <div style={{ fontFamily: "'Righteous', cursive" }} className="col-12 text-center h1">Your Satisfation is our piority</div>
+            </div>
+            <div className="row  mt-5 mb-5 pt-3 pb-3 justify-content-center">
+               <div><img className="ml-auto mr-auto" src="public/images/QualityFood.png" /></div>
+               <div style={{ fontFamily: "'Righteous', cursive" }} className="col-12 text-center h1">Quality snacks is our mission</div>
+            </div>
+         </Container>
+         <div className="col-12 sign-up-bg pt-4 pb-4 mt-4 mb-4">
+            <Container >
+               <div className="row pt-5 pb-5">
+                  <div className="col-12 col-md-6 h5 text-center mt-auto mb-auto">Stay up to date with our latest promotions and products</div>
+                  <div className="col-12 col-md-6">
+                     <Input className="col-12 pm-0"
+                        label="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                     />
+                     <Button className="col-12 btn-white" children="Sign up" />
+                  </div>
+               </div>
+            </Container>
          </div>
       </Container >
    );
