@@ -98,31 +98,47 @@
 .nav-cart {
     position: absolute;
     z-index: 100;
-    right: 4rem;
-    top: .8rem;
+    top: 2rem;
+    right: 3rem;
 
+    @media(min-width:1440px) {
+        right: 50%;
+        left: 50%;
+        margin-left: 35rem;
+    }
 
-    @media(max-width:768px) {
+    @media(max-width:767px) {
         top: .1rem;
+        right: 5rem;
     }
 
     & button {
         font-size: 2.5rem;
         background-color: transparent;
         outline: none !important;
-        border: 0 !important;
         color: rgb(61, 95, 8) !important;
     }
 
     & span {
-        cursor: pointer;
-        user-select: none;
-        position: relative !important;
-        padding: .2rem;
-        font-size: 1rem !important;
-        border-radius: 50%;
-        left: -1.4rem;
-        bottom: -.2rem;
-        background-color: white;
+        display: flex;
+        position: absolute !important;
+
+        & span {
+            justify-content: center;
+            align-items: center;
+            border-radius: 100%;
+            text-align: center;
+            font-size: .8rem;
+            padding: .2rem;
+            display: flex;
+            height: 1.4rem;
+            min-width: 1.4rem;
+            color: white;
+            cursor: pointer;
+            user-select: none;
+            right: -4rem;
+            bottom: .5rem;
+            background-color: rgb(75, 117, 10);
+        }
     }
 }

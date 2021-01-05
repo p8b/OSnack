@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using OSnack.API.Database.Models;
 using OSnack.API.Extras.ClassOverrides;
 
+using System.Linq;
+
 namespace OSnack.API.Database
 {
 
@@ -79,7 +81,17 @@ namespace OSnack.API.Database
 
          builder.Entity<Token>().HasOne(t => t.User).WithMany().OnDelete(DeleteBehavior.Cascade);
       }
+      internal void DetachAllEntities()
+      {
+         var changedEntriesCopy = this.ChangeTracker.Entries()
+             .Where(e => e.State == EntityState.Added ||
+                         e.State == EntityState.Modified ||
+                         e.State == EntityState.Deleted)
+             .ToList();
 
+         foreach (var entry in changedEntriesCopy)
+            entry.State = EntityState.Detached;
+      }
       public OSnackDbContext(DbContextOptions<OSnackDbContext> options)
           : base(options)
       {

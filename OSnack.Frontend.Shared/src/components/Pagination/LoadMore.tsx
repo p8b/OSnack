@@ -5,6 +5,19 @@ const LoadMore = (props: IProps) => {
    const [isLoadingMoreInView, setIsLoadingMoreInView] = useState(false);
    const [btnLoadMore] = useState(React.createRef<HTMLButtonElement>());
 
+   useEffect(() => {
+      if (props.auto)
+         window.addEventListener("scroll", onScrollChange);
+      return () => {
+         window.removeEventListener("scroll", onScrollChange);
+      };
+   }, []);
+   useEffect(() => {
+      CalculateVisibleButtons();
+   }, [props.listCount]);
+   useEffect(() => {
+      CalculateVisibleButtons();
+   }, [props.maxItemsPerPage]);
 
    const onPageAdd = () => {
       let pendingSelectedPage = props.selectedPage + 1;
@@ -12,8 +25,6 @@ const LoadMore = (props: IProps) => {
          props.onChange(pendingSelectedPage, props.maxItemsPerPage);
       }
    };
-
-
    const CalculateVisibleButtons = async () => {
 
       let selectedPage = props.selectedPage; /// currently selected page
@@ -49,26 +60,7 @@ const LoadMore = (props: IProps) => {
          setIsLoadingMoreInView(false);
    };
 
-   useEffect(() => {
-      CalculateVisibleButtons();
-   }, [props.listCount]);
-
-   useEffect(() => {
-      window.addEventListener("scroll", onScrollChange);
-
-      return () => {
-         window.removeEventListener("scroll", onScrollChange);
-      };
-   }, []);
-
-   useEffect(() => {
-      CalculateVisibleButtons();
-   }, [props.maxItemsPerPage]);
-   useEffect(() => {
-   }, [isLoadingMoreInView]);
    if (isLoadingMoreInView) onPageAdd();
-
-
    return (
       <>
          { totalPages <= props.selectedPage && <></>}
@@ -85,5 +77,6 @@ interface IProps {
    maxItemsPerPage: number;
    onChange: (selectedPage: number, MaxItemsPerPage: number) => void;
    listCount: number;
+   auto?: boolean;
 }
 export default LoadMore;

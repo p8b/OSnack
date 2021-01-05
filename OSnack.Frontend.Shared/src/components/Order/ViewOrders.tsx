@@ -223,46 +223,53 @@ const ViewOrders = (props: IProps) => {
                <Button onClick={() => history.push(props.location.state?.backUrl!)} children="Back" className="mr-auto btn-lg back-icon" />
             }
          </div>
-         <div className="row pm-0">
-
-            <SearchInput key="searchInput"
-               value={searchValue}
-               onChange={i => setSearchValue(i.target.value)}
-               className="col-12 col-md-8 pr-md-4"
-               onSearch={() => { onSearch(undefined, 1); }}
-            />
-            <DropDown title={`Status Type: ${OrderStatusTypeList.find((s) => s.Id?.toString() == selectType)?.Name || "All"}`}
-               className="col-12 col-md-4 ml-auto m-0"
-               titleClassName="btn btn-white filter-icon">
-               <button className="dropdown-item"
-                  onClick={() => { onSearch(undefined, 1, undefined, GetAllRecords); }} >
-                  All
-                  </button>
-               {OrderStatusTypeList.filter(o => availableStatusTypeList!.includes(o.Value))?.map(statusType =>
-                  <button className="dropdown-item" key={statusType.Id}
-                     onClick={() => { onSearch(undefined, 1, undefined, statusType.Id?.toString()); }} >
-                     {statusType.Name}
-                  </button>
-               )}
-            </DropDown>
-         </div>
-         {tblTotalItemCount > 0 &&
-            <div className="row col-12 pm-0  bg-white pb-2">
-               <Table className="col-12 text-center table-striped"
-                  defaultSortName={tblSortName}
-                  data={tableData}
-                  onSortChange={(isSortAsce, sortName) => { onSearch(undefined, undefined, undefined, undefined, isSortAsce, sortName); }}
-                  view={TableView.CardView}
-                  listCount={tblTotalItemCount}
-               />
-               <Pagination
-                  maxItemsPerPage={tblMaxItemsPerPage}
-                  selectedPage={tblSelectedPage}
-                  onChange={(selectedPage, maxItemsPerPage) => {
-                     onSearch(undefined, selectedPage, maxItemsPerPage);
-                  }}
-                  listCount={tblTotalItemCount} />
+         {props.location?.state?.backUrl == undefined && tblTotalItemCount == 0 &&
+            <div className="row col-12 justify-content-center">
+               <div className="col-12 text-center mt-4">You do not have any orders. <br /> Let's do something about it.</div>
+               <Button className="btn btn-green col-auto mt-4" children="Shop now" onClick={() => { history.push("/Shop"); }} />
             </div>
+         }
+         {tblTotalItemCount > 0 &&
+            <>
+               <div className="row pm-0">
+                  <SearchInput key="searchInput"
+                     value={searchValue}
+                     onChange={i => setSearchValue(i.target.value)}
+                     className="col-12 col-md-8 pr-md-4"
+                     onSearch={() => { onSearch(undefined, 1); }}
+                  />
+                  <DropDown title={`Status Type: ${OrderStatusTypeList.find((s) => s.Id?.toString() == selectType)?.Name || "All"}`}
+                     className="col-12 col-md-4 ml-auto m-0"
+                     titleClassName="btn btn-white filter-icon">
+                     <button className="dropdown-item"
+                        onClick={() => { onSearch(undefined, 1, undefined, GetAllRecords); }} >
+                        All
+                  </button>
+                     {OrderStatusTypeList.filter(o => availableStatusTypeList!.includes(o.Value))?.map(statusType =>
+                        <button className="dropdown-item" key={statusType.Id}
+                           onClick={() => { onSearch(undefined, 1, undefined, statusType.Id?.toString()); }} >
+                           {statusType.Name}
+                        </button>
+                     )}
+                  </DropDown>
+               </div>
+               <div className="row col-12 pm-0  bg-white pb-2">
+                  <Table className="col-12 text-center table-striped"
+                     defaultSortName={tblSortName}
+                     data={tableData}
+                     onSortChange={(isSortAsce, sortName) => { onSearch(undefined, undefined, undefined, undefined, isSortAsce, sortName); }}
+                     view={TableView.CardView}
+                     listCount={tblTotalItemCount}
+                  />
+                  <Pagination
+                     maxItemsPerPage={tblMaxItemsPerPage}
+                     selectedPage={tblSelectedPage}
+                     onChange={(selectedPage, maxItemsPerPage) => {
+                        onSearch(undefined, selectedPage, maxItemsPerPage);
+                     }}
+                     listCount={tblTotalItemCount} />
+               </div>
+            </>
          }
          <OrderModal isOpen={isOpenOrderModal}
             order={selectOrder}

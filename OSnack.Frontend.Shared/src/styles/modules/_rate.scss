@@ -5,7 +5,7 @@
 
 .rate:not(:checked) > input {
     position: absolute;
-    top: -9999px;
+    left: -9999px;
 }
 
 .rate:not(:checked) > label {
@@ -19,7 +19,8 @@
 }
 
 .rate:not(:checked) > label:before {
-    content: '★ ';
+    font-family: Times; // make sure ★ appears correctly
+    content: '★';
 }
 
 .rate > input:checked ~ label {

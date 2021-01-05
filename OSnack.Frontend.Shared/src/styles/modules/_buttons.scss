@@ -48,6 +48,8 @@
     }
 }
 
+
+/// *** social buttons
 .btn-fb {
     color: #fff;
     background-color: rgb(24, 119, 242);
@@ -136,6 +138,7 @@
         }
     }
 }
+
 /// *** Button Colors
 .btn-dark-green {
     color: #fff;
@@ -157,12 +160,30 @@
     }
 }
 
+.btn-green-light {
+    color: black;
+    background-color: rgb(240, 248, 240);
+
+    &:hover, &:focus {
+        background-color: rgb(226, 243, 226);
+    }
+}
+
 .btn-red {
     color: white !important;
     background-color: rgba(156, 10, 9);
 
     &:hover, &:focus {
         background-color: rgb(116, 7, 7);
+    }
+}
+
+.btn-red-light {
+    color: black !important;
+    background-color: rgb(248, 240, 240);
+
+    &:hover, &:focus {
+        background-color: rgb(243, 226, 226);
     }
 }
 
@@ -239,6 +260,7 @@
 }
 
 
+/// *** others
 .text-nav {
     padding-bottom: 0;
     color: rgba(40, 62, 8,1) !important;

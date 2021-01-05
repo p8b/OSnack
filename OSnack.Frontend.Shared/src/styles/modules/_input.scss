@@ -8,23 +8,14 @@
     box-sizing: border-box !important;
     padding: .2rem !important;
     margin: 0 !important;
-    border-bottom: 0.15rem solid rgb(128, 128, 128);
     font-size: 1.2rem !important;
     z-index: 1 !important;
     @extend .radius-none;
+    @extend .common-boarder-bottom;
 
-    &.danger {
-        border-bottom: 0.15rem solid rgb(189, 28, 28) !important;
-    }
-
-    &.valid {
-        border-bottom: 0.15rem solid rgb(34, 180, 53) !important;
-    }
 
     &:focus {
         background-color: white;
-        border-bottom-color: $input-border-botton-focus-color;
-        //border-bottom-color: rgb();
     }
 
     &:disabled {
@@ -32,8 +23,14 @@
         color: black;
     }
 
-    &[type=number]::-webkit-inner-spin-button {
-        opacity: 0;
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    &[type=number] {
+        -moz-appearance: textfield; /* Firefox */
     }
 }
 
@@ -70,28 +67,17 @@
 }
 
 .file-input {
-    border-bottom: 0.15rem solid rgb(128, 128, 128);
-    // padding: 0 .2rem !important;
     font-size: 1.2rem !important;
     z-index: 1 !important;
     @extend .radius-none;
+    @extend .common-boarder-bottom;
 
     & span.float-right {
         padding: .2rem !important;
     }
 
-    &.danger {
-        border-bottom: 0.15rem solid rgb(189, 28, 28) !important;
-    }
-
-    &.valid {
-        border-bottom: 0.15rem solid rgb(34, 180, 53) !important;
-    }
-
     &:focus {
         background-color: white;
-        border-bottom-color: $input-border-botton-focus-color;
-        //border-bottom-color: rgb();
     }
 }
 

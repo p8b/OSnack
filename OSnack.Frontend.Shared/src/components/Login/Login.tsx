@@ -2,7 +2,6 @@
 import { Redirect } from "react-router-dom";
 
 import { ClientAppAccess, CommonRegex } from "../../_core/constant.Variables";
-import PageHeader from "../../components/Texts/PageHeader";
 import { Input } from "../../components/Inputs/Input";
 import { CheckBox } from "../../components/Inputs/CheckBox";
 import { Button } from "../../components/Buttons/Button";
@@ -94,8 +93,6 @@ const Login = (props: IProps) => {
 
    return (
       <>
-         <PageHeader title="Login" className="row pt-0 " />
-
          <Input label="Email"
             type="email"
             id="email"

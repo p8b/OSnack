@@ -35,15 +35,12 @@ const Tabs = (props: IProps) => {
          setSelectedNav(productTabs.Comments);
          setShowNutritionalInfo(false);
       }
-
-   }, [props.product]);
-
-   useEffect(() => {
       reloadComments();
-   }, [props.product]);
+   }, [props.product.id]);
+
 
    const sentComment = (description: string, rate: number) => {
-      props.alert.PleaseWait(500, isUnmounted);
+      props.errorAlert.PleaseWait(500, isUnmounted);
       usePostComment({
          description: description,
          rate: rate,
@@ -52,16 +49,16 @@ const Tabs = (props: IProps) => {
       }).then(result => {
          if (isUnmounted.current) return;
          reloadComments();
-      }).catch(errors => { if (isUnmounted.current) return; props.alert.set(errors); });;
+      }).catch(errors => { if (isUnmounted.current) return; props.errorAlert.set(errors); });;
    };
 
    const reloadComments = () => {
-      props.alert.PleaseWait(500, isUnmounted);
+      props.errorAlert.PleaseWait(500, isUnmounted);
       useGetComment(props.product.id!).then(result => {
          if (isUnmounted.current) return;
          setCommentList(result.data.commentList!);
          setAllowAddComment(result.data.allowComment || false);
-      }).catch(errors => { if (isUnmounted.current) return; props.alert.set(errors); });
+      }).catch(errors => { if (isUnmounted.current) return; props.errorAlert.set(errors); });
    };
 
    return (
@@ -144,7 +141,7 @@ const Tabs = (props: IProps) => {
 
 declare type IProps = {
    product: Product;
-   alert: IUseAlertReturn;
+   errorAlert: IUseAlertReturn;
 };
 export default Tabs;
 

@@ -40,7 +40,7 @@ const Checkout = (props: IProps) => {
    const [paypalOrder, setPaypalOrder] = useState(new Order2());
 
    useEffect(() => {
-      getDeliveryOptionAndAddresses();
+      getDeliveryOptionAndAddresses;
       return () => { isUnmounted.current = true; };
    }, []);
    useEffect(() => { getDeliveryOptionAndAddresses(); }, [auth.state.isAuthenticated]);
@@ -62,12 +62,20 @@ const Checkout = (props: IProps) => {
             if (isUnmounted.current) return;
             setAddressList(result.data);
             setSelectAddress(result.data.find(t => t.isDefault == true) || new Address());
-         }).catch(errors => { if (isUnmounted.current) return; errorAlert.set(errors); });
+            errorAlert.clear();
+         }).catch(errors => {
+            if (isUnmounted.current) return;
+            errorAlert.set(errors);
+         });
       }
       useAllDeliveryOption().then(result => {
          if (isUnmounted.current) return;
          recalculateBasket(result.data);
-      }).catch(errors => { if (isUnmounted.current) return; errorAlert.set(errors); });
+         errorAlert.clear();
+      }).catch(errors => {
+         if (isUnmounted.current) return;
+         errorAlert.set(errors);
+      });
    };
    const recalculateBasket = (deliveryOptionList: DeliveryOption[],
       selectDeliveryOption?: DeliveryOption, selectCoupon?: Coupon) => {
@@ -82,7 +90,7 @@ const Checkout = (props: IProps) => {
          selectCoupon = order.coupon;
       }
 
-      /// Decide the effect of the coupn on checkout
+      /// Decide the effect of the coupon on checkout
       switch (selectCoupon?.type) {
          case CouponType.FreeDelivery:
             if (selectDeliveryOption?.isPremitive) {
@@ -179,7 +187,6 @@ const Checkout = (props: IProps) => {
    };
 
    const onComplete = (paypalOrderId: string) => {
-
       usePostOrder(paypalOrderId, order).then(result => {
          setOrder(result.data);
          setIsOrderCompleted(true);
@@ -277,7 +284,7 @@ const Checkout = (props: IProps) => {
                onSuccess={(address) => {
                   useAllAddress().then(result => {
                      setAddressList(result.data);
-                  }).catch(alert => errorAlert.set(alert));
+                  }).catch(errors => errorAlert.set(errors));
                   setSelectAddress(address);
                }}
                address={selectAddress}

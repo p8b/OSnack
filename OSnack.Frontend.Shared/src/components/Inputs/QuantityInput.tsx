@@ -26,7 +26,7 @@ const QuantityInput = (props: IProps) => {
             {!props.isDisabled && (props.value && props.value > 0 || document.activeElement?.id === id) &&
                <>
                   {!props.disabled &&
-                     <Button className={`col-3 btn-sm btn-danger minus-icon radius-none-r  ${props.btnMinusClassName}`}
+                     <Button className={`col btn-sm btn-red-light minus-icon mr-n1 common-boarder-bottom ${props.btnMinusClassName}`}
                         onClick={MinusOne} />
                   }
                   <Input id={id} type="number" positiveNumbersOnly value={props.value}
@@ -36,7 +36,7 @@ const QuantityInput = (props: IProps) => {
                      onChange={(i) => { props.onChange(i.target.value as unknown as number); }}
                   />
                   {!props.disabled &&
-                     <Button className={`col-3 btn-sm btn-success plus-icon radius-none-l ${props.btnPlusClassName}`}
+                     <Button className={`col btn-sm btn-green-light plus-icon ml-n1 common-boarder-bottom ${props.btnPlusClassName}`}
                         onClick={PlusOne}
                      />
                   }

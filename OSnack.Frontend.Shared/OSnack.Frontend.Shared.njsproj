@@ -145,6 +145,7 @@
     <Content Include="src\styles\bootstrap\mixins\_buttons.scss" />
     <Content Include="src\styles\bootstrap\mixins\_caret.scss" />
     <Content Include="src\styles\bootstrap\mixins\_clearfix.scss" />
+    <Content Include="src\styles\modules\_background-colors.scss" />
     <Content Include="src\styles\modules\_border.scss" />
     <Content Include="src\styles\modules\_chat.scss" />
     <Content Include="src\styles\modules\_comment.scss" />
@@ -241,10 +242,12 @@
     <Content Include="src\styles\modules\_input.scss" />
     <Content Include="src\styles\modules\_label.scss" />
     <Content Include="src\styles\modules\_modal.scss" />
+    <Content Include="src\styles\modules\_position.scss" />
     <Content Include="src\styles\modules\_radius.scss" />
     <Content Include="src\styles\modules\_rate.scss" />
     <Content Include="src\styles\modules\_scrollbar.scss" />
     <Content Include="src\styles\modules\_shop-card.scss" />
+    <Content Include="src\styles\modules\_spacing.scss" />
     <Content Include="src\styles\modules\_table.scss" />
     <Content Include="src\styles\modules\_text-styles.scss" />
     <Content Include="src\styles\modules\_toggler.scss" />
@@ -322,6 +325,7 @@
     <TypeScriptCompile Include="src\components\Loading\Loading.tsx" />
     <TypeScriptCompile Include="src\components\Modals\ModalFooter.tsx" />
     <TypeScriptCompile Include="src\components\Order\OrderDetails.tsx" />
+    <TypeScriptCompile Include="src\components\Pagination\LoadMore.tsx" />
     <TypeScriptCompile Include="src\components\Pagination\Pagination.tsx" />
     <TypeScriptCompile Include="src\components\Table\CardView.tsx" />
     <TypeScriptCompile Include="src\components\Table\RowView.tsx" />

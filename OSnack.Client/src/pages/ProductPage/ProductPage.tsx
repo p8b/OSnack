@@ -94,7 +94,7 @@ const ProductPage = (props: IProps) => {
                      </div>
                   </div>
                   <div className="row">
-                     <Tabs product={product} />
+                     <Tabs product={product} errorAlert={errorAlert} />
                   </div>
                   <div className="row justify-content-center">
                      <PageHeader title="Related Products" className="line-header-lg col-12" />

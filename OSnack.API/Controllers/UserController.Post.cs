@@ -87,9 +87,9 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
-      [HttpPost("Post/[action]")]
+      [HttpPost("Post/[action]/{subscribeNewsLetter}")]
       [Authorize(AppConst.AccessPolicies.Public)]
-      public async Task<IActionResult> CreateCustomer([FromBody] User newCustomer)
+      public async Task<IActionResult> CreateCustomer([FromBody] User newCustomer, bool subscribeNewsLetter)
       {
          try
          {
@@ -121,6 +121,14 @@ namespace OSnack.API.Controllers
                         .ConfigureAwait(false);
                      break;
                }
+
+               if (subscribeNewsLetter)
+               {
+                  _DbContext.DetachAllEntities();
+                  _DbContext.Newsletters.Add(new Newsletter { Email = newCustomer.Email });
+                  await _DbContext.SaveChangesAsync().ConfigureAwait(false);
+               }
+
                await _SignInManager.SignInAsync(newCustomer, false).ConfigureAwait(false);
             }
             else

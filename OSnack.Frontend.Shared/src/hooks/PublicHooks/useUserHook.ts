@@ -3,8 +3,10 @@ import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { User } from "../../_core/apiModels";
 export type IReturnUseCreateCustomerUser={ data:User , status?: number;};
-export const useCreateCustomerUser = async (newCustomer: User): Promise<IReturnUseCreateCustomerUser> =>{
-        let url_ = API_URL + "/User/Post/CreateCustomer";
+export const useCreateCustomerUser = async (newCustomer: User, subscribeNewsLetter: boolean): Promise<IReturnUseCreateCustomerUser> =>{
+        let url_ = API_URL + "/User/Post/CreateCustomer/{subscribeNewsLetter}";
+        if (subscribeNewsLetter !== null && subscribeNewsLetter !== undefined)
+        url_ = url_.replace("{subscribeNewsLetter}", encodeURIComponent("" + subscribeNewsLetter));
         url_ = url_.replace(/[?&]$/, "");
         const content_ = newCustomer;
         let response = await httpCaller.POST(url_, content_);

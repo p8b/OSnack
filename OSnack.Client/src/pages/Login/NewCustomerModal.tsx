@@ -15,6 +15,7 @@ const NewCustomerModal = (props: IProps) => {
    const errorAlert = useAlert(new AlertObj());
    const [user, setUser] = useState(new User());
    const [termsAndCondition, setTermsAndCondition] = useState(false);
+   const [subscribeNewsLetter, setSubscribeNewsLetter] = useState(false);
    const [confirmPassword, setConfirmPassword] = useState("");
    const [redirectToMain, setRedirectToMain] = useState(false);
    const history = useHistory();
@@ -43,9 +44,8 @@ const NewCustomerModal = (props: IProps) => {
       if (errors.length > 0)
          errorAlert.set(new AlertObj(errors, AlertTypes.Error));
       else {
-
          errorAlert.PleaseWait(500, isUnmounted);
-         useCreateCustomerUser(user).then(result => {
+         useCreateCustomerUser(user, subscribeNewsLetter).then(result => {
             if (isUnmounted.current) return;
             setRedirectToMain(true);
             errorAlert.clear();
@@ -66,7 +66,6 @@ const NewCustomerModal = (props: IProps) => {
    };
 
    if (redirectToMain) return <Redirect to="/" />;
-
 
    return (
       <Modal className="col-11 col-sm-10 col-md-8 col-lg-6 pl-4 pr-4"
@@ -120,7 +119,13 @@ const NewCustomerModal = (props: IProps) => {
                </>
             }
             <div className="col-12">
-               <CheckBox key="tAndc" className="mt-1 color-style"
+               <CheckBox className="mt-1 color-style-checked"
+                  onChange={checked => setSubscribeNewsLetter(checked)}
+                  label="Subscribe to our news letter to receive latest promotions"
+               />
+            </div>
+            <div className="col-12">
+               <CheckBox className="mt-1 color-style"
                   onChange={checked => setTermsAndCondition(checked)}
                   label={<>
                      I Agree to <a className="hover-gray text-underline" onClick={() => { history.push("/termsandconditions"); }} target="_blank" > terms and conditions</a>.*

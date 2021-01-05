@@ -104,7 +104,7 @@ const ShopContextContainer = ({ children }: Props): JSX.Element => {
    const getTotalItems = () => {
       let totalItem = 0;
       state.List.map((orderItem) => {
-         totalItem += orderItem.quantity;
+         totalItem += orderItem.quantity * 1;
       });
       return totalItem;
    };

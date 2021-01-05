@@ -172,11 +172,10 @@ const Shop = (props: IProps) => {
                   onClosed={() => { errorAlert.clear(); }}
                />
             </div>
-            <div className="row p-3 justify-content-center">
+            <div className="row  p-3 justify-content-center">
                {productList.map((product) => <ShopItem className="col-12 col-sm-6 col-md-4 p-0 pb-2" product={product} />)}
-               <div className="col-12 col-sm-6 col-md-4 mr-auto" />
             </div>
-            <LoadMore
+            <LoadMore auto
                maxItemsPerPage={tblMaxItemsPerPage}
                selectedPage={tblSelectedPage}
                onChange={(selectedPage, maxItemsPerPage) => { onSearch(undefined, tblIsSortAsc, tblSortName, selectedPage, maxItemsPerPage); }}
