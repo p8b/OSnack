@@ -41,7 +41,7 @@ const OrderManagement = (props: IProps) => {
    useEffect(() => {
       onSearch(...checkUri(window.location.pathname,
          [tblSelectedPage, tblMaxItemsPerPage, selectType, tblIsSortAsc, tblSortName, GetAllRecords]));
-
+      return () => { isUnmounted.current = true; };
    }, []);
 
 

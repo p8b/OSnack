@@ -3,37 +3,32 @@ import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import { Input } from 'osnack-frontend-shared/src/components/Inputs/Input';
 import { Coupon, CouponType } from 'osnack-frontend-shared/src/_core/apiModels';
 import { useValidateCoupon } from 'osnack-frontend-shared/src/hooks/PublicHooks/useCouponHook';
-import React, { useEffect, useState } from 'react';
-import { AlertObj, AlertTypes, ErrorDto } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import React, { useEffect, useRef, useState } from 'react';
+import { IUseAlertReturn } from 'osnack-frontend-shared/src/components/Texts/Alert';
 const BasketCoupon = (props: IProps) => {
+   const isUnmounted = useRef(false);
    const [code, setCode] = useState("");
-   useEffect(() => { setCode(props.coupon.code); }, []);
+   useEffect(() => { setCode(props.coupon.code); return () => { isUnmounted.current = true; }; }, []);
    const couponCheck = () => {
-      if (code == undefined) {
-         props.setAlert(new AlertObj(
-            [new ErrorDto("Access Denied", "Coupon code required.")],
-            AlertTypes.Error));
+      if (code == undefined || code == "") {
+         props.alert.setSingleError("Access Denied", "Coupon code required.");
          setCode("");
          return;
       }
+      props.alert.PleaseWait(500, isUnmounted);
       useValidateCoupon(code).then(result => {
+         if (isUnmounted.current) return;
          if (result.data.type == CouponType.FreeDelivery && !props.acceptFreeCoupon) {
-            props.setAlert(new AlertObj(
-               [new ErrorDto("Access Denied", "Only apply to \"standard\" delivery.")],
-               AlertTypes.Error));
+            props.alert.setSingleError("Access Denied", "Only apply to \"standard\" delivery.");
             return;
          }
          if (props.totalPrice < result.data.minimumOrderPrice!) {
-            props.setAlert(new AlertObj(
-               [new ErrorDto("Access Denied", `Minimum total price must be higher than £${result.data.minimumOrderPrice!}`)],
-               AlertTypes.Error));
+            props.alert.setSingleError("Access Denied", `Minimum total price must be higher than £${result.data.minimumOrderPrice!}`);
             setCode(result.data.code);
             return;
          }
          props.setCoupon(result.data);
-
-      })
-         .catch(alert => props.setAlert(alert));
+      }).catch(errors => { if (isUnmounted.current) return; props.alert.set(errors); });
    };
    return (
       <div className="row col-12 pm-0 pb-2">
@@ -55,6 +50,6 @@ declare type IProps = {
    acceptFreeCoupon: boolean;
    totalPrice: number;
    setCoupon: (coupon: Coupon) => void;
-   setAlert: (alert: AlertObj) => void;
+   alert: IUseAlertReturn;
 };
 export default BasketCoupon;

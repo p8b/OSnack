@@ -18,12 +18,16 @@ const CommentModal = (props: IProps) => {
    const [isOpenReplyModal, setIsOpenReplyModal] = useState(false);
    const [selectedComment, setSelectedComment] = useState(new Comment());
 
+   useEffect(() => {
+      return () => { isUnmounted.current = true; };
+   }, []);
 
    useEffect(() => {
       reload();
    }, [props.productId]);
 
    const reload = () => {
+      errorAlert.PleaseWait(500, isUnmounted);
       useAllComment(props.productId).then(result => {
          if (isUnmounted.current) return;
          setCommentList(result.data);

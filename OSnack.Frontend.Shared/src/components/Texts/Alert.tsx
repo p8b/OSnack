@@ -42,7 +42,7 @@ const Alert = (props: IProps) => {
    );
 };
 export default Alert;
-export const useAlert = (init: AlertObj) => {
+export const useAlert: IUseAlert = (init) => {
    const [alert, setAlert] = useState(init);
    const isWaitCanceled = useRef(false);
 
@@ -99,6 +99,19 @@ export const useAlert = (init: AlertObj) => {
    return { alert, set, PleaseWait, clear, setSingleSuccess, setSingleWarning, setSingleError, setSingleDefault, checkExist, checkExistFilterRequired };
 };
 
+export type IUseAlert = (init: AlertObj) => IUseAlertReturn;
+export interface IUseAlertReturn {
+   alert: AlertObj;
+   set: (value: AlertObj) => void;
+   PleaseWait: (ms: number, isCanceled: React.MutableRefObject<boolean>) => void;
+   clear: () => void;
+   setSingleSuccess: (key: string, value: string) => void;
+   setSingleWarning: (key: string, value: string) => void;
+   setSingleError: (key: string, value: string) => void;
+   setSingleDefault: (key: string, value: string) => void;
+   checkExist: (inputName: string) => boolean;
+   checkExistFilterRequired: (inputName: string) => boolean;
+};
 interface IProps {
    className?: string;
    alert?: AlertObj;

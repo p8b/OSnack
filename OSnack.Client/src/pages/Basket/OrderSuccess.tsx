@@ -18,7 +18,7 @@ const OrderSuccess = (props: IProps) => {
                <PageHeader className="h1" title="Thank you for your order." />
             </div>
             <div className="row col-12">
-               <OrderDetails order={props.location.state.order} access={Access} />
+               <OrderDetails order={props.location.state.order} access={Access} disableDispute />
             </div>
          </Container>
       );

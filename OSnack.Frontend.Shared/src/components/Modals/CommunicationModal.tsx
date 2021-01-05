@@ -9,9 +9,6 @@ import { ClientAppAccess } from '../../_core/constant.Variables';
 import { Toggler } from '../Inputs/Toggler';
 import ModalFooter from './ModalFooter';
 
-
-
-
 const CommunicationModal = (props: IProps) => {
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
@@ -20,24 +17,24 @@ const CommunicationModal = (props: IProps) => {
    const [dispute, setDispute] = useState(new Communication());
    const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
+   useEffect(() => () => { isUnmounted.current = true; }, []);
+
    useEffect(() => {
       setDispute(props.dispute);
       setDisputeStatus(props.dispute.isOpen!);
    }, [props.dispute]);
+
    useEffect(() => {
       scrollToBottom();
    }, [dispute]);
 
    const scrollToBottom = () => {
-
       messagesEndRef!.current != null && messagesEndRef!.current!.scrollIntoView();
    };
 
    const sendMessage = () => {
       errorAlert.PleaseWait(500, isUnmounted);
-
       switch (props.access) {
-
          case ClientAppAccess.Official:
             useAddMessageOfficialCommunication({
                ...dispute,

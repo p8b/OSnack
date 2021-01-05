@@ -1,4 +1,4 @@
-﻿import React, { useContext, useRef, useState } from 'react';
+﻿import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Communication, ContactType, Order } from '../../_core/apiModels';
 import Modal from '../../components/Modals/Modal';
 import { usePostDisputeCommunication } from '../../hooks/OfficialHooks/useCommunicationHook';
@@ -17,6 +17,8 @@ const AddDisputeModal = (props: IProps) => {
    const auth = useContext(AuthContext);
    const [message, setMessage] = useState("");
 
+   useEffect(() => () => { isUnmounted.current = true; }, []);
+
    const sendMessage = () => {
       errorAlert.PleaseWait(500, isUnmounted);
       usePostDisputeCommunication({
@@ -25,16 +27,14 @@ const AddDisputeModal = (props: IProps) => {
          order_Id: props.order.id,
          isOpen: true,
          messages: [{ body: message }]
-      })
-         .then((result) => {
-            if (isUnmounted.current) return;
-            setMessage("");
-            props.onClose(result.data);
-
-         }).catch(errors => {
-            if (isUnmounted.current) return;
-            errorAlert.set(errors);
-         });
+      }).then((result) => {
+         if (isUnmounted.current) return;
+         setMessage("");
+         props.onClose(result.data);
+      }).catch(errors => {
+         if (isUnmounted.current) return;
+         errorAlert.set(errors);
+      });
    };
 
    return (

@@ -50,7 +50,7 @@ const Table = (props: IProps) => {
       <>
          <div className="row col-12 pm-0  border-bottom-1 pt-1">
             {currentView == TableView.CardView && props.data.headers().length > 0 &&
-               <InputDropdown dropdownTitle={`Sort By: ${selectedSortName}`}
+               <InputDropdown dropdownTitle={`Sort By: ${props.data.headers().find(t => t.sortName == selectedSortName)?.name}`}
                   className="col-12  col-md-auto pm-0 pb-0 "
                   titleClassName={`btn ${!isSortAsc ? "sort-numeric-down-icon" : "sort-numeric-up-icon"}`}>
                   {props.data.headers().filter(h => h.sortName != undefined).map(header =>

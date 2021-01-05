@@ -17,10 +17,7 @@ const CouponModel = (props: IProps) => {
    const [coupon, setCoupon] = useState(new Coupon());
 
    useEffect(() => {
-
-      return () => {
-         isUnmounted.current = true;
-      };
+      return () => { isUnmounted.current = true; };
    }, []);
 
    useEffect(() => {

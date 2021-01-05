@@ -14,6 +14,12 @@ const AddressModal = (props: IProps) => {
    const Auth = useContext(AuthContext);
    const errorAlert = useAlert(new AlertObj());
    const [address, setAddress] = useState(new Address());
+
+
+   useEffect(() => {
+      return () => { isUnmounted.current = true; };
+   }, []);
+
    useEffect(() => {
       if (props.address.id === undefined)
          props.address.id = 0;
@@ -23,13 +29,12 @@ const AddressModal = (props: IProps) => {
    const createAddress = async () => {
       let errors = new AlertObj([], AlertTypes.Error);
 
-      //Ask
       if (address.name == "")
          errors.List.push(new ErrorDto("0", "Address name is required."));
       if (address.firstLine == "")
-         errors.List.push(new ErrorDto("0", "FirstLin is required"));
+         errors.List.push(new ErrorDto("0", "First Line is required"));
       if (address.postcode == "")
-         errors.List.push(new ErrorDto("0", "Post Code is required."));
+         errors.List.push(new ErrorDto("0", "Postcode is required."));
       if (address.city == "")
          errors.List.push(new ErrorDto("0", "City is required."));
 
@@ -58,7 +63,7 @@ const AddressModal = (props: IProps) => {
       if (address.name == "")
          errors.List.push(new ErrorDto("0", "Address name is required."));
       if (address.firstLine == "")
-         errors.List.push(new ErrorDto("0", "FirstLine is required"));
+         errors.List.push(new ErrorDto("0", "First Line is required"));
       if (address.postcode == "")
          errors.List.push(new ErrorDto("0", "Postcode is required."));
       if (address.city == "")
@@ -136,10 +141,10 @@ const AddressModal = (props: IProps) => {
             className="col-12 mb-2"
             onClosed={() => { errorAlert.clear(); }}
          />
-         <ModalFooter IsNew={address.id === 0}
-            onCreate={createAddress}
-            onUpdate={updateAddress}
-            onDelete={deleteAddress}
+         <ModalFooter
+            onCreate={address.id != 0 ? undefined : createAddress}
+            onUpdate={address.id === 0 ? undefined : updateAddress}
+            onDelete={address.id === 0 ? undefined : deleteAddress}
             onCancel={() => { errorAlert.clear(); props.onClose(); }} />
       </Modal >
    );

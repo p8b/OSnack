@@ -1,18 +1,22 @@
 ﻿
 import { Product, Comment } from 'osnack-frontend-shared/src/_core/apiModels';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Container from '../../components/Container';
 import { useGetComment } from 'osnack-frontend-shared/src/hooks/PublicHooks/useCommentHook';
 import { usePostComment } from 'osnack-frontend-shared/src/hooks/OfficialHooks/useCommentHook';
 import { AddComment } from '../../components/AddComment';
 import { StarRating } from 'osnack-frontend-shared/src/components/Inputs/StarRating';
+import { IUseAlertReturn } from 'osnack-frontend-shared/src/components/Texts/Alert';
 
 
 const Tabs = (props: IProps) => {
+   const isUnmounted = useRef(false);
    const [selectedNav, setSelectedNav] = useState(productTabs.NutritionalInfo);
    const [showNutritionalInfo, setShowNutritionalInfo] = useState(false);
    const [allowAddComment, setAllowAddComment] = useState(false);
    const [commentList, setCommentList] = useState<Comment[]>([]);
+
+   useEffect(() => () => { isUnmounted.current = true; }, []);
 
    useEffect(() => {
       // if no nutritional information is avilable
@@ -39,21 +43,25 @@ const Tabs = (props: IProps) => {
    }, [props.product]);
 
    const sentComment = (description: string, rate: number) => {
+      props.alert.PleaseWait(500, isUnmounted);
       usePostComment({
          description: description,
          rate: rate,
          product: props.product,
          name: ""
       }).then(result => {
+         if (isUnmounted.current) return;
          reloadComments();
-      });
+      }).catch(errors => { if (isUnmounted.current) return; props.alert.set(errors); });;
    };
 
    const reloadComments = () => {
+      props.alert.PleaseWait(500, isUnmounted);
       useGetComment(props.product.id!).then(result => {
+         if (isUnmounted.current) return;
          setCommentList(result.data.commentList!);
          setAllowAddComment(result.data.allowComment || false);
-      });
+      }).catch(errors => { if (isUnmounted.current) return; props.alert.set(errors); });
    };
 
    return (
@@ -113,13 +121,13 @@ const Tabs = (props: IProps) => {
                      {commentList.map(comment =>
                         <div key={comment.id} className="comment">
                            <div className="row">
-                              <div className="col-12 col-sm-6">{comment.name}</div>
+                              <div className="col-12 col-sm-6 small-text">{comment.name}</div>
                               <StarRating className="col-auto ml-auto" rate={comment.rate} />
                            </div>
                            <div className="col-12">{comment.description}</div>
                            {comment.reply != undefined &&
                               <div className="reply">
-                                 <div className="col-12 row" children="Customer Support" />
+                                 <div className="col-12 row small-text" children="Customer Support" />
                                  <div className="col-12">{comment.reply}</div>
                               </div>
                            }
@@ -136,6 +144,7 @@ const Tabs = (props: IProps) => {
 
 declare type IProps = {
    product: Product;
+   alert: IUseAlertReturn;
 };
 export default Tabs;
 

@@ -5,7 +5,7 @@ import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Communication } from 'osnack-frontend-shared/src/_core/apiModels';
 import { AuthContext } from 'osnack-frontend-shared/src/_core/authenticationContext';
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import Container from '../../components/Container';
 import { usePostQuestionCommunication } from "osnack-frontend-shared/src/hooks/PublicHooks/useCommunicationHook";
 import { CommonRegex } from 'osnack-frontend-shared/src/_core/constant.Variables';
@@ -17,7 +17,7 @@ const ContactUs = (props: IProps) => {
    const [contact, setContact] = useState(new Communication());
    const [message, setMessage] = useState("");
    const [showSuccess, setShowSuccess] = useState(false);
-
+   useEffect(() => () => { isUnmounted.current = true; }, []);
 
    const sendMessage = () => {
       errorAlert.PleaseWait(500, isUnmounted);

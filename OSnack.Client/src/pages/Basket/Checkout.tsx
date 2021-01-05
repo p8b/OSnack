@@ -41,9 +41,7 @@ const Checkout = (props: IProps) => {
 
    useEffect(() => {
       getDeliveryOptionAndAddresses();
-      return () => {
-         isUnmounted.current = true;
-      };
+      return () => { isUnmounted.current = true; };
    }, []);
    useEffect(() => { getDeliveryOptionAndAddresses(); }, [auth.state.isAuthenticated]);
    useEffect(() => {
@@ -57,17 +55,19 @@ const Checkout = (props: IProps) => {
    }, [selectAddress]);
 
    const getDeliveryOptionAndAddresses = () => {
+
+      errorAlert.PleaseWait(500, isUnmounted);
       if (auth.state.isAuthenticated) {
          useAllAddress().then(result => {
             if (isUnmounted.current) return;
             setAddressList(result.data);
             setSelectAddress(result.data.find(t => t.isDefault == true) || new Address());
-         }).catch();
+         }).catch(errors => { if (isUnmounted.current) return; errorAlert.set(errors); });
       }
       useAllDeliveryOption().then(result => {
          if (isUnmounted.current) return;
          recalculateBasket(result.data);
-      }).catch();
+      }).catch(errors => { if (isUnmounted.current) return; errorAlert.set(errors); });
    };
    const recalculateBasket = (deliveryOptionList: DeliveryOption[],
       selectDeliveryOption?: DeliveryOption, selectCoupon?: Coupon) => {
@@ -81,11 +81,7 @@ const Checkout = (props: IProps) => {
       if (selectCoupon == undefined) {
          selectCoupon = order.coupon;
       }
-      //if (selectCoupon != undefined && selectCoupon.type != CouponType.FreeDelivery && totalItemPriceTemp < selectCoupon?.minimumOrderPrice!) {
-      //   removeCoupon = true;
-      //   setTotalDiscount(0);
-      //   selectCoupon = undefined;
-      //}
+
       /// Decide the effect of the coupn on checkout
       switch (selectCoupon?.type) {
          case CouponType.FreeDelivery:
@@ -116,7 +112,6 @@ const Checkout = (props: IProps) => {
             totalDiscount = 0;
             break;
       }
-      //if (totalPriceTemp < 0) totalPriceTemp = 0;
 
       let availableDeliveryOptionList: DeliveryOption[] = [];
       let shippingPrice = 0;
@@ -208,7 +203,7 @@ const Checkout = (props: IProps) => {
                      totalPrice={order.totalItemPrice}
                      acceptFreeCoupon={(order.deliveryOption?.price! > 0 && order.deliveryOption?.isPremitive) || false}
                      setCoupon={(val) => { recalculateBasket(deliveryOptionList, order.deliveryOption, val); errorAlert.clear(); }}
-                     setAlert={(errors) => { errorAlert.set(errors); recalculateBasket(deliveryOptionList, order.deliveryOption, new Coupon()); }} />
+                     alert={errorAlert} />
                }
 
                <div className="col-12 pm-0 small-text"> Subtotal : <b>£{order.totalItemPrice?.toFixed(2)}</b></div>

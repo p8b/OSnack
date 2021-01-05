@@ -13,6 +13,9 @@ const DeliveyOptionModal = (props: IProps) => {
    const errorAlert = useAlert(new AlertObj());
    const [deliveryOption, setDeliveyOption] = useState(new DeliveryOption());
 
+   useEffect(() => {
+      return () => { isUnmounted.current = true; };
+   }, []);
 
    useEffect(() => {
       setDeliveyOption(props.deliveryOption);

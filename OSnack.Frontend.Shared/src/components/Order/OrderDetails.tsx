@@ -98,7 +98,7 @@ const OrderDetails = (props: IProps) => {
                      <div className="col-4 p-0 font-weight-bold">£{props.order.payment.refundAmount}</div>
                   </div>
                }
-               {props.access == ClientAppAccess.Official && props.order.dispute == undefined && props.order.status != OrderStatusType.Canceled &&
+               {!props.disableDispute && props.access == ClientAppAccess.Official && props.order.dispute == undefined && props.order.status != OrderStatusType.Canceled &&
                   <div className="col-12 pm-0 cursor-pointer  small-text text-primary" onClick={props.onDispute}>I have issue with this order.</div>
                }
 
@@ -144,6 +144,7 @@ declare type IProps = {
    access: ClientAppAccess;
    statusChanged?: (status: OrderStatusType) => void;
    availabeType?: OrderStatusType[];
+   disableDispute?: boolean;
    onDispute?: () => void;
 };
 export default OrderDetails;

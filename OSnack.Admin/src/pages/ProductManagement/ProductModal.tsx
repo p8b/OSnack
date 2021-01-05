@@ -26,8 +26,11 @@ const ProductModal = (props: IProps) => {
    const [isNewImageSet, setIsNewImageSet] = useState(false);
 
    useEffect(() => {
+      return () => { isUnmounted.current = true; };
+   }, []);
+
+   useEffect(() => {
       setProduct(props.product);
-      /// if the category already exists get the image and convert it to string base64
       if (props.product.id && props.product.id > 0) {
          setIsNewImageSet(false);
          errorAlert.PleaseWait(500, isUnmounted);
