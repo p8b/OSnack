@@ -214,7 +214,7 @@
     <TypeScriptCompile Include="src\pages\MyAccount\MyAccount.tsx" />
     <TypeScriptCompile Include="src\pages\MyAccount\MyAddresses.tsx" />
     <TypeScriptCompile Include="src\pages\MyAccount\MyOrders.tsx" />
-    <TypeScriptCompile Include="src\pages\Newsletter\Unsubscibe.tsx" />
+    <TypeScriptCompile Include="src\pages\Newsletter\Unsubscribe.tsx" />
     <TypeScriptCompile Include="src\pages\PrivacyPolicy\PrivacyPolicy.tsx" />
     <TypeScriptCompile Include="src\pages\ProductPage\ProductPage.tsx" />
     <TypeScriptCompile Include="src\pages\ProductPage\Tabs.tsx" />

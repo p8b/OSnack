@@ -1,7 +1,6 @@
 ﻿import React from 'react';
 
 export const StarRating = (props: IProps) => {
-   var style = { "--rating": props.rate } as React.CSSProperties;
    return (
       <>
          {props.rate == undefined &&
@@ -15,11 +14,11 @@ export const StarRating = (props: IProps) => {
                <input type="radio" id="star2" name="rate" onChange={() => props.onRateChanged!(2)} />
                <label htmlFor="star2" title="2 stars" />
                <input type="radio" id="star1" name="rate" onChange={() => props.onRateChanged!(1)} />
-               <label htmlFor="star1" title="1 stars" />
+               <label htmlFor="star1" title="1 star" />
             </div>
          }
          {props.rate != undefined &&
-            <div className={`stars ${props.className!}`} style={style} />
+            <div className={`stars ${props.className!}`} style={{ "--rating": props.rate } as React.CSSProperties} />
          }
       </>
    );

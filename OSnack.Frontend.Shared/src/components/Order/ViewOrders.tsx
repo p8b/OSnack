@@ -15,7 +15,6 @@ import { Button } from '../Buttons/Button';
 import DropDown from '../Buttons/DropDown';
 import SearchInput from '../Inputs/SeachInput';
 
-
 const ViewOrders = (props: IProps) => {
    const isUnmounted = useRef(false);
    const history = useHistory();
@@ -25,7 +24,7 @@ const ViewOrders = (props: IProps) => {
    const [selectedDispute, setSelectedDispute] = useState(new Communication());
    const [isOpenDisputeModalModal, setIsOpenDisputeModalModal] = useState(false);
    const [selectOrder, setSelectOrder] = useState(new Order());
-   const [selectType, setSelectType] = useState(OrderStatusTypeList.find(o => o.Value == OrderStatusType.InProgress)?.Id.toString() || "");
+   const [selectType, setSelectType] = useState(GetAllRecords);
    const [isOpenOrderModal, setIsOpenOrderModal] = useState(false);
    const [fullName, setFullName] = useState("");
    const [availableStatusTypeList, setavailableStatusTypeList] = useState<OrderStatusType[]>([]);
@@ -40,8 +39,8 @@ const ViewOrders = (props: IProps) => {
    useEffect(() => {
       switch (props.access) {
          case ClientAppAccess.Official:
-            onSearch(...checkUri(window.location.pathname,
-               [0, tblSelectedPage, tblMaxItemsPerPage, selectType, tblIsSortAsc, tblSortName, GetAllRecords]));
+            onSearch(undefined, ...checkUri(window.location.pathname,
+               [tblSelectedPage, tblMaxItemsPerPage, selectType, tblIsSortAsc, tblSortName, GetAllRecords]));
             break;
          case ClientAppAccess.Secret:
             onSearch(...checkUri(window.location.pathname,
@@ -50,9 +49,8 @@ const ViewOrders = (props: IProps) => {
          default:
             break;
       }
-   }, [props.refresh]);
-
-
+      return () => { isUnmounted.current = true; };
+   }, []);
 
    const onSearch = (
       userId = selectUserId,
@@ -65,14 +63,18 @@ const ViewOrders = (props: IProps) => {
    ) => {
       if (searchValue != null && searchValue != "")
          searchString = searchValue;
+
       if (searchString != GetAllRecords)
          setSearchValue(searchString);
+
       setSelectUserId(userId);
+
       if (selectedPage != tblSelectedPage)
          setTblSelectedPage(selectedPage);
 
       if (Number(filterType) == -1)
          filterType = GetAllRecords;
+
       if (filterType != selectType) {
          setSelectType(filterType);
       }
@@ -88,25 +90,30 @@ const ViewOrders = (props: IProps) => {
 
       if (maxItemsPerPage != tblMaxItemsPerPage)
          setTblMaxItemsPerPage(maxItemsPerPage);
-
       switch (props.access) {
          case ClientAppAccess.Official:
             history.push(generateUri(window.location.pathname,
-               [selectedPage || tblSelectedPage,
-                  maxItemsPerPage, filterType == GetAllRecords ? -1 : filterType,
-               Number(isSortAsc), sortName, searchString != GetAllRecords ? searchString : ""]), props.location?.state);
+               [selectedPage,
+                  maxItemsPerPage,
+                  filterType === GetAllRecords ? -1 : filterType,
+                  Number(isSortAsc),
+                  sortName,
+                  searchString != GetAllRecords ? searchString : ""]),
+               props.location?.state);
             break;
          case ClientAppAccess.Secret:
             history.push(generateUri(window.location.pathname,
-               [userId, selectedPage || tblSelectedPage,
-                  maxItemsPerPage, filterType == GetAllRecords ? -1 : filterType,
-                  Number(isSortAsc), sortName, searchString != GetAllRecords ? searchString : ""]), props.location?.state);
+               [selectUserId, selectedPage,
+                  maxItemsPerPage,
+                  filterType === GetAllRecords ? -1 : filterType,
+                  Number(isSortAsc),
+                  sortName,
+                  searchString != GetAllRecords ? searchString : ""]),
+               props.location?.state);
             break;
          default:
             break;
       }
-
-
 
       errorAlert.PleaseWait(500, isUnmounted);
       switch (props.access) {
@@ -131,9 +138,11 @@ const ViewOrders = (props: IProps) => {
       if (isUnmounted.current) return;
       setTblTotalItemCount(result.data.totalCount || 0);
       setavailableStatusTypeList(result.data.availableTypes!);
-      errorAlert.clear();
       populateOrderTable(result.data.orderList!);
       setFullName(result.data.fullName!);
+      errorAlert.clear();
+
+
    };
    const onGetUserOrderFailed = (errors: AlertObj) => {
       if (isUnmounted.current) return;
@@ -142,10 +151,6 @@ const ViewOrders = (props: IProps) => {
    const populateOrderTable = (orderList: Order[]) => {
 
       if (orderList.length == 0) {
-         if (selectType == OrderStatusTypeList.find(o => o.Value == OrderStatusType.InProgress)?.Id.toString()) {
-            onSearch(undefined, 1, undefined, GetAllRecords);
-            return;
-         }
          errorAlert.setSingleWarning("0", "No Result Found");
          return;
       }
@@ -246,7 +251,7 @@ const ViewOrders = (props: IProps) => {
                <Table className="col-12 text-center table-striped"
                   defaultSortName={tblSortName}
                   data={tableData}
-                  onSortChange={(isSortAsce, sortName) => onSearch(undefined, undefined, undefined, undefined, isSortAsce, sortName)}
+                  onSortChange={(isSortAsce, sortName) => { onSearch(undefined, undefined, undefined, undefined, isSortAsce, sortName); }}
                   view={TableView.CardView}
                   listCount={tblTotalItemCount}
                />
@@ -283,6 +288,5 @@ declare type IProps = {
    usePutOrderStatusOrder?: (modifiedOrder: Order) => Promise<{ data: Order, status?: number; }>;
    location?: any;
    onDispute?: (order: Order) => void;
-   refresh?: boolean;
 };
 export default ViewOrders;

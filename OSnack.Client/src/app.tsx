@@ -27,7 +27,7 @@ const ConfirmEmail = lazy(() => import("osnack-frontend-shared/src/pages/Confirm
 const PasswordReset = lazy(() => import("osnack-frontend-shared/src/pages/PasswordReset"));
 const TermsAndConditions = lazy(() => import("./pages/TermsAndConditions/TermsAndConditions"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy/PrivacyPolicy"));
-const Unsubscibe = lazy(() => import("./pages/Newsletter/Unsubscibe"));
+const Unsubscribe = lazy(() => import("./pages/Newsletter/Unsubscribe"));
 
 const App = () => {
    return (
@@ -51,7 +51,7 @@ const App = () => {
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/OrderSuccessful" Render={(props: any) => <OrderSuccess {...props} />} />
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/PrivacyPolicy" Render={(props: any) => <PrivacyPolicy {...props} />} />
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/TermsAndConditions" Render={(props: any) => <TermsAndConditions {...props} />} />
-                        <CustomRoute authenticate={useSilentOfficialAuthentication} path="/Unsubscibe" Render={(props: any) => <Unsubscibe {...props} />} />
+                        <CustomRoute authenticate={useSilentOfficialAuthentication} path="/Unsubscribe" Render={(props: any) => <Unsubscribe {...props} />} />
 
                         {/***** Protected Routes  ****/}
                         <CustomRoute authenticate={useSilentOfficialAuthentication} exact AuthRequired path="/MyAccount" Render={(props: any) => <MyAccount {...props} />} />

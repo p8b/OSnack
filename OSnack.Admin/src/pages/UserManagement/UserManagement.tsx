@@ -155,7 +155,7 @@ const UserManagement = (props: IProps) => {
       setSelectedUser(user);
       setRedirectToOrders(true);
    };
-   if (redirectToOrders == true)
+   if (redirectToOrders)
       return <Redirect to={{ pathname: `/ViewUserOrders/${selectedUser.id}`, state: { backUrl: window.location.pathname } }} />;
    return (
       <Container className="container-fluid" >

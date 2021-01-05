@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
+
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Models;
+
 using System;
 using System.Collections.Generic;
 using System.Net.Mime;
@@ -30,9 +33,7 @@ namespace OSnack.API.Controllers
          try
          {
             if (_DbContext.Newsletters.Find(newsletter.Email) != null)
-            {
                return Created("Success", "Your email added to Newsletter");
-            }
             TryValidateModel(newsletter);
             if (!ModelState.IsValid)
             {

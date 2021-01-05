@@ -5,7 +5,7 @@ import { useDeleteNewsletter } from 'osnack-frontend-shared/src/hooks/PublicHook
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { useHistory } from 'react-router-dom';
 
-const Unsubscibe = (props: IProps) => {
+const Unsubscribe = (props: IProps) => {
    const [key, setKey] = useState(extractUri(window.location.pathname)[1]);
    const errorAlert = useAlert(new AlertObj());
    const history = useHistory();
@@ -25,4 +25,4 @@ const Unsubscibe = (props: IProps) => {
 
 declare type IProps = {
 };
-export default Unsubscibe;
+export default Unsubscribe;
