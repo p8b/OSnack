@@ -19,7 +19,7 @@ namespace OSnack.API.Controllers
    {
       #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(typeof(string), StatusCodes.Status201Created)]
+      [ProducesResponseType(typeof(Comment), StatusCodes.Status201Created)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
@@ -31,53 +31,44 @@ namespace OSnack.API.Controllers
 
          try
          {
-            List<Comment> list = await _DbContext.Comments.Include(c => c.Product)
-               .Include(c => c.OrderItem)
-               .Where(c => c.Product.Id == newComment.Product.Id)
-               .ToListAsync()
+            User user = await _DbContext.Users
+               .Include(u => u.Orders)
+               .ThenInclude(o => o.OrderItems)
+               .SingleOrDefaultAsync(u => u.Id == AppFunc.GetUserId(User))
                .ConfigureAwait(false);
 
-            bool isAllowForComment = false;
-            if (AppFunc.GetUserId(User) != 0)
+            if (user.Orders.Any(o => o.Status == OrderStatusType.Delivered &&
+                                     o.OrderItems.Any(oi => oi.ProductId == newComment.Product.Id)))
             {
-               User user = await _DbContext.Users.Include(u => u.Orders)
-                  .ThenInclude(o => o.OrderItems).SingleOrDefaultAsync(u => u.Id == AppFunc.GetUserId(User)).ConfigureAwait(false);
-               List<int> orderItemIdList = new List<int>();
-               foreach (var order in user.Orders.Where(o => o.Status != OrderStatusType.Canceled &&
-                                   o.OrderItems.SingleOrDefault(oi => oi.ProductId == newComment.Product.Id) != null))
+               Comment selectComment = await _DbContext.Comments
+                  .Include(c => c.User)
+                  .SingleOrDefaultAsync(c => c.Product.Id == newComment.Product.Id
+                                          && c.User.Id == AppFunc.GetUserId(User));
+               if (selectComment != null)
                {
-                  orderItemIdList.Add(order.OrderItems.SingleOrDefault(oi => oi.ProductId == newComment.Product.Id).Id);
-               }
-               if (list.Count(c => orderItemIdList.Contains(c.OrderItem.Id)) != orderItemIdList.Count)
-               {
-                  isAllowForComment = true;
-                  foreach (var orderItemId in orderItemIdList)
-                  {
-                     if (list.Count(c => c.OrderItem.Id == orderItemId) == 0)
-                     {
-                        newComment.OrderItem = _DbContext.OrdersItems.SingleOrDefault(oi => oi.Id == orderItemId);
-                        newComment.Name = $"{user.FirstName} {user.Surname.ToUpper().First()}";
-                        break;
-                     }
-                  }
+                  _LoggingService.Log(Request.Path, AppLogType.OrderException,
+                  new { message = $"Try to add duplicate comment.", newContact = newComment }, User);
+                  CoreFunc.Error(ref ErrorsList, "You Can't add review for this product.Try again or Contact Admin.");
+                  return StatusCode(412, ErrorsList);
                }
             }
-            if (!isAllowForComment)
+            else
             {
                _LoggingService.Log(Request.Path, AppLogType.OrderException,
-                                 new { message = $"Try to add comment without order.", newContact = newComment }, User);
-               CoreFunc.Error(ref ErrorsList, "You Can't post for this product.Try again or Contact Admin.");
+                   new { message = $"Try to add comment without order.", newContact = newComment }, User);
+               CoreFunc.Error(ref ErrorsList, "You Can't add review for this product.Try again or Contact Admin.");
                return StatusCode(412, ErrorsList);
             }
 
-            newComment.Product = _DbContext.Products.SingleOrDefault(p => p.Id == newComment.OrderItem.ProductId);
+            newComment.User = user;
 
+            newComment.User.Orders = null;
 
             ModelState.Clear();
             TryValidateModel(newComment);
             foreach (var key in ModelState.Keys)
             {
-               if (key.StartsWith("OrderItem") || key.StartsWith("Product"))
+               if (key.StartsWith("User") || key.StartsWith("Product"))
                   ModelState.Remove(key);
             }
 
@@ -87,13 +78,11 @@ namespace OSnack.API.Controllers
                return UnprocessableEntity(ErrorsList);
             }
 
-
-            await newComment.CencoredDescription();
             await _DbContext.Comments.AddAsync(newComment).ConfigureAwait(false);
-            _DbContext.Entry(newComment.OrderItem).State = EntityState.Unchanged;
+            _DbContext.Entry(newComment.User).State = EntityState.Unchanged;
             _DbContext.Entry(newComment.Product).State = EntityState.Unchanged;
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
-            return Created("", "Your comment submitted.");
+            return Created("", newComment);
          }
          catch (Exception ex)
          {

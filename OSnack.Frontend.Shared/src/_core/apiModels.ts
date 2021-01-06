@@ -217,11 +217,9 @@ export class Refund {
 }
 export class Comment {
     id?: number = 0;
-    description!: string;
+    description?: string | undefined;
     reply?: string | undefined;
-    orderItem?: OrderItem | undefined;
-    orderItemId?: number;
-    name!: string;
+    name?: string | undefined;
     date?: Date;
     rate?: number;
     product?: Product | undefined;
@@ -496,6 +494,11 @@ export class CaptureStatusDetails {
     reason?: string | undefined;
 
 }
+export class CommentListAndComment {
+    commentList?: Comment[] | undefined;
+    comment?: Comment | undefined;
+
+}
 export class UserListAndTotalCount {
     userList?: User[] | undefined;
     totalCount?: number;
@@ -538,11 +541,6 @@ export class ProductListAndTotalCount {
 export class CategoryListAndTotalCount {
     categoryList?: Category[] | undefined;
     totalCount?: number;
-
-}
-export class CommentListAndAllowComment {
-    commentList?: Comment[] | undefined;
-    allowComment?: boolean;
 
 }
 export class OrderListAndAvailableTypes {

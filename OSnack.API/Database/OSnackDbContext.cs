@@ -60,8 +60,6 @@ namespace OSnack.API.Database
          builder.Entity<Category>().HasIndex(c => c.Name).IsUnique();
 
 
-         builder.Entity<Comment>().HasIndex(u => u.OrderItemId).IsUnique();
-
          builder.Entity<User>().HasIndex(u => u.Email).IsUnique();
          builder.Entity<User>().Ignore(u => u.UserName);
          builder.Entity<User>().Ignore(u => u.NormalizedUserName);

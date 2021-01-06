@@ -1,8 +1,8 @@
 import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
-import { CommentListAndAllowComment } from "../../_core/apiModels";
-export type IReturnUseGetComment={ data:CommentListAndAllowComment , status?: number;};
+import { CommentListAndComment } from "../../_core/apiModels";
+export type IReturnUseGetComment={ data:CommentListAndComment , status?: number;};
 export const useGetComment = async (productId: number): Promise<IReturnUseGetComment> =>{
         let url_ = API_URL + "/Comment/Get/{productId}";
         if (productId !== null && productId !== undefined)
@@ -17,7 +17,7 @@ export const useGetComment = async (productId: number): Promise<IReturnUseGetCom
         switch(response?.status){
 
                 case 200: 
-                        var responseData: CommentListAndAllowComment = await response?.json();
+                        var responseData: CommentListAndComment = await response?.json();
                         return { data: responseData, status: response?.status };
 
                 case 417: 

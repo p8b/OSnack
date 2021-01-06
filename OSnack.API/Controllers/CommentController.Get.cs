@@ -19,44 +19,45 @@ namespace OSnack.API.Controllers
    {
 
       #region *** 200 OK, 417 ExpectationFailed ***
-      [MultiResultPropertyNames(new string[] { "commentList", "allowComment" })]
-      [ProducesResponseType(typeof(MultiResult<List<Comment>, bool>), StatusCodes.Status200OK)]
+      [MultiResultPropertyNames(new string[] { "commentList", "comment" })]
+      [ProducesResponseType(typeof(MultiResult<List<Comment>, Comment, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("[action]/{productId}")]
-      [Authorize(AppConst.AccessPolicies.Public)] /// To be implemented
+      [Authorize(AppConst.AccessPolicies.Public)]
       public async Task<IActionResult> Get(int productId)
       {
          try
          {
 
-            List<Comment> list = await _DbContext.Comments.Include(c => c.Product)
+            List<Comment> list = await _DbContext.Comments
+               .Include(c => c.User)
+               .Include(c => c.Product)
                .Where(c => c.Product.Id == productId)
                .OrderBy(c => c.Date)
                .ToListAsync()
                .ConfigureAwait(false);
 
-            bool isAllowForComment = false;
+            Comment selectComment = null;
             if (AppFunc.GetUserId(User) != 0)
             {
                User user = await _DbContext.Users.Include(u => u.Orders)
                   .ThenInclude(o => o.OrderItems).SingleOrDefaultAsync(u => u.Id == AppFunc.GetUserId(User)).ConfigureAwait(false);
-               List<int> orderItemIdList = new List<int>();
-               foreach (var order in user.Orders.Where(o => o.Status != OrderStatusType.Canceled && o.Status != OrderStatusType.InProgress &&
-                                    o.OrderItems.SingleOrDefault(oi => oi.ProductId == productId) != null))
+               if (user.Orders.Any(o => o.Status == OrderStatusType.Delivered &&
+                                   o.OrderItems.Any(oi => oi.ProductId == productId)))
                {
-                  orderItemIdList.Add(order.OrderItems.SingleOrDefault(oi => oi.ProductId == productId).Id);
+                  selectComment = await _DbContext.Comments.Include(c => c.User)
+             .SingleOrDefaultAsync(c => c.Product.Id == productId && c.User.Id == AppFunc.GetUserId(User));
+                  if (selectComment == null)
+                     selectComment = new Comment()
+                     {
+                        Id = 0,
+                        Product = await _DbContext.Products.SingleOrDefaultAsync(p => p.Id == productId),
+                        User = user
+                     };
                }
-               List<Comment> commentsList = await _DbContext.Comments.Include(c => c.OrderItem)
-               .Where(c => c.Product.Id == productId)
-               .ToListAsync()
-               .ConfigureAwait(false);
-               if (commentsList.Count(c => orderItemIdList.Contains(c.OrderItem.Id)) != orderItemIdList.Count)
-                  isAllowForComment = true;
             }
-
-
-            return Ok(new MultiResult<List<Comment>, bool>(list, isAllowForComment, CoreFunc.GetCustomAttributeTypedArgument(ControllerContext)));
+            return Ok(new MultiResult<List<Comment>, Comment>(list, selectComment, CoreFunc.GetCustomAttributeTypedArgument(ControllerContext)));
          }
          catch (Exception ex)
          {
@@ -71,13 +72,13 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]/{productId}")]
-      [Authorize(AppConst.AccessPolicies.Secret)] /// To be implemented
+      [Authorize(AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> All(int productId)
       {
          try
          {
 
-            List<Comment> list = await _DbContext.Comments.Include(c => c.Product)
+            List<Comment> list = await _DbContext.Comments.Include(c => c.Product).Include(c => c.User)
                .Where(c => c.Product.Id == productId)
                .OrderBy(c => c.Date)
                .ToListAsync()

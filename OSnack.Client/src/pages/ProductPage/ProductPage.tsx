@@ -26,6 +26,10 @@ const ProductPage = (props: IProps) => {
    useEffect(() => () => { isUnmounted.current = true; }, []);
 
    useEffect(() => {
+      loadProduct(true);
+   }, [window.location.pathname]);
+
+   const loadProduct = (scrollToTop?: boolean) => {
       errorAlert.PleaseWait(500, isUnmounted);
       const uriPathNameArr = window.location.pathname.split('/').filter(val => val.length > 0);
       if (uriPathNameArr.length === 4 && uriPathNameArr[1].toLowerCase() == "product") {
@@ -33,7 +37,8 @@ const ProductPage = (props: IProps) => {
             .then(result => {
                if (isUnmounted.current) return;
                setProduct(result.data.product!);
-               window.scrollTo(0, 0);
+               if (scrollToTop)
+                  window.scrollTo(0, 0);
                setCarousel(<Carousel items={getCarouselItems(result.data.relatedProductList!)} />);
                errorAlert.clear();
             }).catch(errors => {
@@ -43,7 +48,8 @@ const ProductPage = (props: IProps) => {
       } else {
          setRedirectToShop(true);
       }
-   }, [window.location.pathname]);
+   };
+
    const getCarouselItems = (productList: Product[]) => {
       let arr: any[] = [];
       productList.map((product => {
@@ -70,10 +76,10 @@ const ProductPage = (props: IProps) => {
                   </nav>
                   <div className="row ">
                      <div className="col-12 col-sm-4 pb-4 p-sm-4 justify-text-center">
-                        {product.score != -1 &&
-                           <StarRating className="col-auto pm-0 ml-auto" rate={product.score} />
-                        }
                         <img className="shop-card-img" src={`${API_URL}/${product.imagePath}`} alt={name} />
+                        {product.score != -1 &&
+                           <StarRating className="col-auto pm-0 ml-auto" rate={product.score} readonly />
+                        }
                      </div>
                      <div className="col-12 col-sm-8 p-sm-4 pl-md-5">
                         <h1>{product.name}</h1>
@@ -94,7 +100,7 @@ const ProductPage = (props: IProps) => {
                      </div>
                   </div>
                   <div className="row">
-                     <Tabs product={product} errorAlert={errorAlert} />
+                     <Tabs product={product} refreshProduct={loadProduct} />
                   </div>
                   <div className="row justify-content-center">
                      <PageHeader title="Related Products" className="line-header-lg col-12" />

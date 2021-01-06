@@ -1,6 +1,6 @@
 ﻿.rate {
-    height: 46px;
     padding: 0 10px;
+    display: inline-block;
 }
 
 .rate:not(:checked) > input {
@@ -14,7 +14,8 @@
     overflow: hidden;
     white-space: nowrap;
     cursor: pointer;
-    font-size: 30px;
+    font-size: 1.5rem;
+    line-height: 1;
     color: #ccc;
 }
 

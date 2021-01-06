@@ -31,13 +31,11 @@ namespace OSnack.API.Controllers
          {
             Comment comment = await _DbContext.Comments
                .SingleOrDefaultAsync(c => c.Id == commentId).ConfigureAwait(false);
-
             if (comment == null)
             {
                CoreFunc.Error(ref ErrorsList, "Comment not exist.");
                return StatusCode(412, ErrorsList);
             }
-
             comment.Reply = reply;
 
             _DbContext.Comments.Update(comment);
@@ -50,5 +48,42 @@ namespace OSnack.API.Controllers
             return StatusCode(417, ErrorsList);
          }
       }
+
+      #region *** ***
+      [Consumes(MediaTypeNames.Application.Json)]
+      [ProducesResponseType(typeof(Comment), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
+
+      #endregion
+      [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test
+      [HttpPut("[action]")]
+      public async Task<IActionResult> Put([FromBody] Comment modifiedComment)
+      {
+
+         try
+         {
+            Comment comment = await _DbContext.Comments
+               .Include(c => c.User)
+               .SingleOrDefaultAsync(c => c.Id == modifiedComment.Id && c.User.Id == AppFunc.GetUserId(User)).ConfigureAwait(false);
+            if (comment == null)
+            {
+               CoreFunc.Error(ref ErrorsList, "Comment not exist.");
+               return StatusCode(412, ErrorsList);
+            }
+            comment.Description = modifiedComment.Description;
+            comment.Rate = modifiedComment.Rate;
+            await comment.CencoredDescription();
+            _DbContext.Comments.Update(comment);
+            await _DbContext.SaveChangesAsync().ConfigureAwait(false);
+            return Ok(comment);
+         }
+         catch (Exception ex)
+         {
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
+            return StatusCode(417, ErrorsList);
+         }
+      }
+
    }
 }

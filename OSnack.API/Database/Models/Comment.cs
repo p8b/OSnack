@@ -1,4 +1,5 @@
-﻿using OSnack.API.Extras;
+﻿using Newtonsoft.Json;
+using OSnack.API.Extras;
 using P8B.Core.CSharp.Attributes;
 using System;
 using System.Collections.Generic;
@@ -19,25 +20,23 @@ namespace OSnack.API.Database.Models
       public int Id { get; set; }
 
       [Column(TypeName = "nvarchar(500)")]
-      [Required(ErrorMessage = "Description is Required")]
       public string Description { get; set; }
 
       [Column(TypeName = "nvarchar(500)")]
       public string Reply { get; set; }
 
-      [ForeignKey("OrderItemId")]
-      public OrderItem OrderItem { get; set; }
-      [Column(Order = 0)]
-      public int OrderItemId { get; set; }
+      [ForeignKey("UserId")]
+      [JsonIgnore]
+      public User User { get; set; }
 
-      [Column(TypeName = "nvarchar(200)")]
-      [Required(ErrorMessage = "Name is Required")]
-      public string Name { get; set; }
+      [NotMapped]
+      public string Name { get { return User != null ? $"{User.FirstName} {User.Surname.ToUpper().First()}" : ""; } }
 
       public DateTime Date { get; set; } = DateTime.UtcNow;
 
       [IntRange(ErrorMessage = "", MinValue = 0, MaxValue = 5)]
       public int Rate { get; set; }
+
 
       [ForeignKey("ProductId")]
       public Product Product { get; set; }
