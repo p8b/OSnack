@@ -66,7 +66,7 @@ const LoadMore = (props: IProps) => {
          { totalPages <= props.selectedPage && <></>}
          { totalPages > props.selectedPage &&
             <div className="row col-12 p-0 m-0">
-               <button ref={btnLoadMore} className="btn col-auto pl-4 pr-4 ml-auto mr-auto loading" children="Loading..." onClick={() => onPageAdd()} />
+               <button ref={btnLoadMore} className="btn col-auto pl-4 pr-4 ml-auto mr-auto" children="Load More" onClick={() => onPageAdd()} />
             </div>
          }
       </>

@@ -11,7 +11,6 @@ import { TextArea } from 'osnack-frontend-shared/src/components/Inputs/TextArea'
 const AddReplyModal = (props: IProps) => {
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
-   const [reply, setReply] = useState("");
    const [comment, setComment] = useState(new Comment());
 
    useEffect(() => {
@@ -20,15 +19,14 @@ const AddReplyModal = (props: IProps) => {
 
    useEffect(() => {
       setComment(props.comment);
-      setReply(props.comment.reply!);
    }, [props.comment]);
 
    const addReply = () => {
       errorAlert.PleaseWait(500, isUnmounted);
-      useAddReplyComment(comment.id!, reply).then((result) => {
+      useAddReplyComment(comment).then((result) => {
          if (isUnmounted.current) return;
          setComment(result.data);
-         errorAlert.setSingleSuccess("Updated", "Your reply Updated");
+         props.onClose();
       }
       ).catch(errors => {
          if (isUnmounted.current) return;
@@ -46,12 +44,14 @@ const AddReplyModal = (props: IProps) => {
                <div className="col-12 pm-0">
                   <div key={props.comment.id} className="comment">
                      <div className="row">
-                        <div className="col-12 col-sm-6">{props.comment.name}</div>
-                        <StarRating className="col-auto ml-auto" rate={props.comment.rate} />
+                        <div className="col-6 small-text text-gray">{comment.name}</div>
+                        <div className="col-6">
+                           <StarRating className="float-right" rate={comment.rate} readonly />
+                        </div>
                      </div>
                      <div className="col-12">{props.comment.description}</div>
                   </div>
-                  <TextArea rows={4} value={reply} onChange={i => setReply(i.target.value)} label="Reply Message" />
+                  <TextArea rows={4} value={comment.reply} onChange={i => setComment({ ...comment, reply: i.target.value })} label="Reply Message" />
                </div>
                {/***** buttons ****/}
                <div className="col-12 pm-0 pos-b-sticky bg-white pb-3">

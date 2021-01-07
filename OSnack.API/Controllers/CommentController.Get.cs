@@ -19,22 +19,29 @@ namespace OSnack.API.Controllers
    {
 
       #region *** 200 OK, 417 ExpectationFailed ***
-      [MultiResultPropertyNames(new string[] { "commentList", "comment" })]
+      [MultiResultPropertyNames(new string[] { "commentList", "comment", "totalCount" })]
       [ProducesResponseType(typeof(MultiResult<List<Comment>, Comment, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
-      [HttpGet("[action]/{productId}")]
+      [HttpGet("[action]/{productId}/{selectedPage}/{maxItemsPerPage}")]
       [Authorize(AppConst.AccessPolicies.Public)]
-      public async Task<IActionResult> Get(int productId)
+      public async Task<IActionResult> Get(int productId,
+          int selectedPage,
+          int maxItemsPerPage)
       {
          try
          {
+            int totalCount = await _DbContext.Comments.CountAsync()
+                .ConfigureAwait(false);
+
 
             List<Comment> list = await _DbContext.Comments
                .Include(c => c.User)
                .Include(c => c.Product)
                .Where(c => c.Product.Id == productId)
                .OrderBy(c => c.Date)
+               .Skip((selectedPage - 1) * maxItemsPerPage)
+               .Take(maxItemsPerPage)
                .ToListAsync()
                .ConfigureAwait(false);
 
@@ -57,7 +64,7 @@ namespace OSnack.API.Controllers
                      };
                }
             }
-            return Ok(new MultiResult<List<Comment>, Comment>(list, selectComment, CoreFunc.GetCustomAttributeTypedArgument(ControllerContext)));
+            return Ok(new MultiResult<List<Comment>, Comment, int>(list, selectComment, totalCount, CoreFunc.GetCustomAttributeTypedArgument(ControllerContext)));
          }
          catch (Exception ex)
          {
@@ -68,23 +75,30 @@ namespace OSnack.API.Controllers
       }
 
       #region *** 200 OK, 417 ExpectationFailed ***
-      [ProducesResponseType(typeof(List<Comment>), StatusCodes.Status200OK)]
+      [MultiResultPropertyNames(new string[] { "commentList", "totalCount" })]
+      [ProducesResponseType(typeof(MultiResult<List<Comment>, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
-      [HttpGet("Get/[action]/{productId}")]
+      [HttpGet("Get/[action]/{productId}/{selectedPage}/{maxItemsPerPage}")]
       [Authorize(AppConst.AccessPolicies.Secret)]
-      public async Task<IActionResult> All(int productId)
+      public async Task<IActionResult> All(int productId,
+          int selectedPage,
+          int maxItemsPerPage)
       {
          try
          {
+            int totalCount = await _DbContext.Comments.CountAsync()
+                .ConfigureAwait(false);
 
             List<Comment> list = await _DbContext.Comments.Include(c => c.Product).Include(c => c.User)
                .Where(c => c.Product.Id == productId)
                .OrderBy(c => c.Date)
+               .Skip((selectedPage - 1) * maxItemsPerPage)
+               .Take(maxItemsPerPage)
                .ToListAsync()
                .ConfigureAwait(false);
 
-            return Ok(list);
+            return Ok(new MultiResult<List<Comment>, int>(list, totalCount, CoreFunc.GetCustomAttributeTypedArgument(ControllerContext)));
          }
          catch (Exception ex)
          {

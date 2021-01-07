@@ -7,6 +7,7 @@ import { StarRating } from 'osnack-frontend-shared/src/components/Inputs/StarRat
 import { Comment } from 'osnack-frontend-shared/src/_core/apiModels';
 import { useAllComment } from '../../SecretHooks/useCommentHook';
 import AddReplyModal from './AddReplyModal';
+import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
 
 
 
@@ -16,6 +17,9 @@ const CommentModal = (props: IProps) => {
    const errorAlert = useAlert(new AlertObj());
    const [commentList, setCommentList] = useState<Comment[]>([]);
    const [isOpenReplyModal, setIsOpenReplyModal] = useState(false);
+   const [tblTotalItemCount, setTblTotalItemCount] = useState(0);
+   const [tblSelectedPage, setTblSelectedPage] = useState(1);
+   const [tblMaxItemsPerPage, setTblMaxItemsPerPage] = useState(5);
    const [selectedComment, setSelectedComment] = useState(new Comment());
 
    useEffect(() => {
@@ -26,11 +30,23 @@ const CommentModal = (props: IProps) => {
       reload();
    }, [props.productId]);
 
-   const reload = () => {
+   const reload = (selectedPage = tblSelectedPage,
+      maxItemsPerPage = tblMaxItemsPerPage) => {
+
+      if (selectedPage != tblSelectedPage)
+         setTblSelectedPage(selectedPage);
+
+      if (maxItemsPerPage != tblMaxItemsPerPage) {
+         setTblMaxItemsPerPage(maxItemsPerPage);
+         selectedPage = 1;
+      }
+
+
       errorAlert.PleaseWait(500, isUnmounted);
-      useAllComment(props.productId).then(result => {
+      useAllComment(props.productId, selectedPage, maxItemsPerPage).then(result => {
          if (isUnmounted.current) return;
-         setCommentList(result.data);
+         setCommentList(result.data.commentList!);
+         setTblTotalItemCount(result.data.totalCount!);
       }
       ).catch(errors => {
          if (isUnmounted.current) return;
@@ -45,7 +61,7 @@ const CommentModal = (props: IProps) => {
    };
 
    return (
-      <Modal className="col-11 col-sm-10 col-lg-6 pm-0 pl-4 pr-4 pb-0"
+      <Modal className="col-11 col-sm-10 col-lg-8 pm-0 pl-4 pr-4 pb-0"
          bodyRef={props.modalRef}
          isOpen={props.isOpen}>
          <>
@@ -56,20 +72,34 @@ const CommentModal = (props: IProps) => {
                      return (
                         <div key={comment.id} className="comment">
                            <div className="row">
-                              <div className="col-12 col-sm-6">{comment.name}</div>
-                              <StarRating className="col-auto ml-auto" rate={comment.rate} />
+                              <div className="col-6 small-text text-gray">{comment.name}</div>
+                              <div className="col-6">
+                                 <StarRating className="float-right" rate={comment.rate} readonly />
+                              </div>
                            </div>
                            <div className="col-12">{comment.description}</div>
-                           <Button children={`${comment.reply == undefined ? "Add Reply" : "Edit Reply"}`} className="btn-white"
+                           {comment.reply &&
+                              <div className="reply">
+                                 <div className="col-12 row small-text text-gray" children="Customer Support" />
+                                 <div className="col-12">{comment.reply}</div>
+                              </div>
+                           }
+                           <Button children={`${comment.reply ? "Edit Reply" : "Add Reply"}`} className="btn-sm"
                               onClick={() => addReply(comment)} />
                         </div>
+
                      );
                   })
                   }
                </div>
                {/***** buttons ****/}
                <div className="col-12 pm-0 pos-b-sticky bg-white pb-3">
-
+                  <Pagination
+                     maxItemsPerPage={tblMaxItemsPerPage}
+                     selectedPage={tblSelectedPage}
+                     listCount={tblTotalItemCount}
+                     onChange={(selectedPage, maxItemsPerPage) => { reload(selectedPage, maxItemsPerPage); }}
+                  />
                   <Button children="Close"
                      className="col-12  mt-2 btn-white btn-lg"
                      onClick={() => { props.onClose(); }} />

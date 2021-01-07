@@ -1,12 +1,16 @@
 import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
-import { CommentListAndComment } from "../../_core/apiModels";
-export type IReturnUseGetComment={ data:CommentListAndComment , status?: number;};
-export const useGetComment = async (productId: number): Promise<IReturnUseGetComment> =>{
-        let url_ = API_URL + "/Comment/Get/{productId}";
+import { CommentListAndCommentAndTotalCount } from "../../_core/apiModels";
+export type IReturnUseGetComment={ data:CommentListAndCommentAndTotalCount , status?: number;};
+export const useGetComment = async (productId: number, selectedPage: number, maxItemsPerPage: number): Promise<IReturnUseGetComment> =>{
+        let url_ = API_URL + "/Comment/Get/{productId}/{selectedPage}/{maxItemsPerPage}";
         if (productId !== null && productId !== undefined)
         url_ = url_.replace("{productId}", encodeURIComponent("" + productId));
+        if (selectedPage !== null && selectedPage !== undefined)
+        url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
+        if (maxItemsPerPage !== null && maxItemsPerPage !== undefined)
+        url_ = url_.replace("{maxItemsPerPage}", encodeURIComponent("" + maxItemsPerPage));
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);
         if( response?.status === 400){
@@ -17,7 +21,7 @@ export const useGetComment = async (productId: number): Promise<IReturnUseGetCom
         switch(response?.status){
 
                 case 200: 
-                        var responseData: CommentListAndComment = await response?.json();
+                        var responseData: CommentListAndCommentAndTotalCount = await response?.json();
                         return { data: responseData, status: response?.status };
 
                 case 417: 

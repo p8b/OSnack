@@ -23,20 +23,20 @@ namespace OSnack.API.Controllers
 
       #endregion
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
-      [HttpPut("Put/[action]/{commentId}/{reply}")]
-      public async Task<IActionResult> AddReply(int commentId, string reply)
+      [HttpPut("Put/[action]")]
+      public async Task<IActionResult> AddReply([FromBody] Comment modifiedComment)
       {
 
          try
          {
             Comment comment = await _DbContext.Comments
-               .SingleOrDefaultAsync(c => c.Id == commentId).ConfigureAwait(false);
+               .SingleOrDefaultAsync(c => c.Id == modifiedComment.Id).ConfigureAwait(false);
             if (comment == null)
             {
                CoreFunc.Error(ref ErrorsList, "Comment not exist.");
                return StatusCode(412, ErrorsList);
             }
-            comment.Reply = reply;
+            comment.Reply = modifiedComment.Reply;
 
             _DbContext.Comments.Update(comment);
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
@@ -71,6 +71,7 @@ namespace OSnack.API.Controllers
                CoreFunc.Error(ref ErrorsList, "Comment not exist.");
                return StatusCode(412, ErrorsList);
             }
+
             comment.Description = modifiedComment.Description;
             comment.Rate = modifiedComment.Rate;
             await comment.CencoredDescription();

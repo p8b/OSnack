@@ -519,6 +519,11 @@ export class CouponListAndTotalCount {
     totalCount?: number;
 
 }
+export class CommentListAndTotalCount {
+    commentList?: Comment[] | undefined;
+    totalCount?: number;
+
+}
 export class EmailTemplateServerClass {
     value?: EmailTemplateClassNames;
     classProperties?: ClassProperty[] | undefined;
@@ -642,6 +647,10 @@ export class OrderItem extends OrderProductBase {
     productCategoryName!: string;
     productId?: number | undefined;
     quantity!: number;
+
+}
+export class CommentListAndCommentAndTotalCount extends CommentListAndComment {
+    totalCount?: number;
 
 }
 export class OrderListAndAvailableTypesAndFullName extends OrderListAndAvailableTypes {

@@ -40,10 +40,6 @@ export const ReviewModal = (props: IProps) => {
          errorAlert.setSingleError("rate", "Rating is required");
          return;
       }
-      if (comment.description == undefined || comment.description == "") {
-         errorAlert.setSingleError("description", "description is required");
-         return;
-      }
       errorAlert.PleaseWait(500, isUnmounted);
       usePutComment(comment).then(result => {
          if (isUnmounted.current) return;

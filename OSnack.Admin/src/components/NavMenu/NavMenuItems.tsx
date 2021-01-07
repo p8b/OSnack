@@ -32,8 +32,8 @@ export const LoginNav = [
    },
    {
       id: 6,
-      path: "/ContactUsMessage",
-      displayName: "Contact Us Message",
+      path: "/ContactUsMessages",
+      displayName: "Contact Us Messages",
    },
    {
       id: 7,

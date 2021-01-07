@@ -50,7 +50,7 @@ const App = () => {
                      <CustomRoute authenticate={useSilentSecretAuthentication} exact AuthRequired path="/EmailTemplate/Edit" Render={(props: any) => <EmailTemplateEdit {...props} />} />
                      <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="/Users" Render={(props: any) => <UserManagement {...props} />} />
                      <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="/ViewUserOrders" Render={(props: any) => <ViewUserOrders {...props} />} />
-                     <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="/ContactUsMessage" Render={(props: any) => <ContactUsMessage {...props} />} />
+                     <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="/ContactUsMessages" Render={(props: any) => <ContactUsMessage {...props} />} />
                      <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="/Orders" Render={(props: any) => <OrderManagement {...props} />} />
                      <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="/DeliveryOptions" Render={(props: any) => <DeliveryOptionManagement {...props} />} />
 

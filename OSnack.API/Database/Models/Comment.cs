@@ -43,12 +43,15 @@ namespace OSnack.API.Database.Models
 
       public async Task CencoredDescription()
       {
-         string fileList = await File.ReadAllTextAsync(Path.Combine(@$"{Directory.GetCurrentDirectory()}\StaticFiles\list.txt")).ConfigureAwait(false);
-         List<string> badWord = fileList.Split("\r\n").ToList();
-         foreach (var word in Description.Split(" "))
+         if (!string.IsNullOrEmpty(Description))
          {
-            if (badWord.Contains(word))
-               Description = Description.Replace(word, AppFunc.GetCencoredWord(word.Length));
+            string fileList = await File.ReadAllTextAsync(Path.Combine(@$"{Directory.GetCurrentDirectory()}\StaticFiles\list.txt")).ConfigureAwait(false);
+            List<string> badWord = fileList.Split("\r\n").ToList();
+            foreach (var word in Description.Split(" "))
+            {
+               if (badWord.Contains(word))
+                  Description = Description.Replace(word, AppFunc.GetCencoredWord(word.Length));
+            }
          }
       }
    }
