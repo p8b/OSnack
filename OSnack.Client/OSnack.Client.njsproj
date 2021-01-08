@@ -138,7 +138,6 @@
     <Content Include="src\styles\modules\_buttons.scss" />
     <Content Include="src\styles\modules\_container.scss" />
     <Content Include="src\styles\modules\_fonts.scss" />
-    <Content Include="src\styles\modules\_body.scss" />
     <Content Include="src\styles\modules\_html.scss" />
     <Content Include="src\styles\pages\_home.scss" />
     <Content Include="src\styles\modules\_footer.scss" />

@@ -156,7 +156,7 @@ namespace P8B.UK.API.Services
          Template.SetServerClasses();
       }
 
-      private string HtmlToPlainText(string html)
+      private static string HtmlToPlainText(string html)
       {
          Regex[] _htmlReplaces = new[] {
             new Regex(@"<script\b[^<]*(?:(?!</script>)<[^<]*)*</script>", RegexOptions.Compiled | RegexOptions.Singleline, TimeSpan.FromSeconds(1)),
@@ -178,7 +178,7 @@ namespace P8B.UK.API.Services
          return string.Join("\n", lines);
       }
 
-      private void SetTemplateServerPropValue(EmailTemplateServerClass serverClass, object obj)
+      private void SetTemplateServerPropValue(EmailTemplateRequiredClass serverClass, object obj)
       {
          try
          {
@@ -188,7 +188,6 @@ namespace P8B.UK.API.Services
                {
                   if (!prop.IsIgnored)
                   {
-
                      Type objType = obj.GetType();
                      var propValue = objType.GetProperty(prop.Name).GetValue(obj, null);
                      Type propType = null;
@@ -203,16 +202,15 @@ namespace P8B.UK.API.Services
                            var closingHolder = serverClass.ClassProperties.Where(cp => cp.Name.Equals(prop.Name)).LastOrDefault();
                            string closingTemplateName = prop.TemplateName;
                            if (closingHolder != null)
-                           {
                               closingTemplateName = closingHolder.TemplateName;
-                           }
+
                            int fromSection = Template.HTML.IndexOf(prop.TemplateName);
                            int toSection = Template.HTML.IndexOf(closingTemplateName) + closingTemplateName.Length;
                            repeatSection = Template.HTML.Substring(fromSection, toSection - fromSection);
                            foreach (var item in propValue as IEnumerable)
                            {
                               Type itemType = item.GetType();
-                              var temp = Template.ServerClasses.FirstOrDefault(sc => sc.Value.ToString().Equals(item.GetType().Name));
+                              var temp = Template.RequiredClasses.FirstOrDefault(sc => sc.Value.ToString().Equals(item.GetType().Name));
                               if (temp != null)
                               {
                                  string repeatSectionCopy = repeatSection;
@@ -239,6 +237,7 @@ namespace P8B.UK.API.Services
                         if (propValue != null && !string.IsNullOrWhiteSpace(propValue.ToString()))
                            tempVal = propValue.ToString();
                         Template.HTML = Template.HTML.Replace(prop.TemplateName, tempVal);
+                        Template.Subject = Template.Subject.Replace(prop.TemplateName, tempVal);
                      }
                   }
                }

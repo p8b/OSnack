@@ -62,7 +62,6 @@ namespace OSnack.API.Controllers
             }
             _DbContext.EmailTemplates.Update(emailTemplate);
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
-            /// return Ok with the object
             return Ok(emailTemplate);
          }
          catch (Exception ex)

@@ -1,7 +1,7 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import ButtonCard from 'osnack-frontend-shared/src/components/Buttons/ButtonCard';
-import { EmailTemplate, EmailTemplateTypes } from 'osnack-frontend-shared/src/_core/apiModels';
+import { EmailTemplate, EmailTemplateTypes, EmailTemplateTypesList } from 'osnack-frontend-shared/src/_core/apiModels';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Redirect } from 'react-router-dom';
 import { useAllTemplateEmail } from '../../SecretHooks/useEmailHook';
@@ -65,7 +65,7 @@ const EmailTemplatePanel = (props: IProps) => {
 
                         <div className={`col-12`}>
                            <div className={`col-12 ${temp.templateType != EmailTemplateTypes.Others ? "lock-icon" : "unlock-icon"}`} />
-                           {temp.name?.replace(/([A-Z])/g, ' $1')}
+                           {EmailTemplateTypesList.find(t => t.Value === temp.templateType)?.Name}
                         </div>
                      </ButtonCard>
                   );

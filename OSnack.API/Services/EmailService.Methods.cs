@@ -27,7 +27,7 @@ namespace P8B.UK.API.Services
          try
          {
             await SetUserTemplate(EmailTemplateTypes.WelcomeExternalRegistration).ConfigureAwait(false);
-            foreach (var serverClass in Template.ServerClasses)
+            foreach (var serverClass in Template.RequiredClasses)
             {
                SetTemplateServerPropValue(serverClass, user);
                SetTemplateServerPropValue(serverClass, user.RegistrationMethod);
@@ -55,7 +55,7 @@ namespace P8B.UK.API.Services
                UrlDomain = DomainUrl,
             };
             token.GenerateToken(user, DateTime.UtcNow.AddYears(1), _DbContext, Template.TokenUrlPath);
-            foreach (var serverClass in Template.ServerClasses)
+            foreach (var serverClass in Template.RequiredClasses)
             {
                SetTemplateServerPropValue(serverClass, user);
                SetTemplateServerPropValue(serverClass, token);
@@ -84,7 +84,7 @@ namespace P8B.UK.API.Services
                UrlDomain = DomainUrl,
             };
             token.GenerateToken(user, DateTime.UtcNow.AddDays(2), _DbContext, Template.TokenUrlPath);
-            foreach (var serverClass in Template.ServerClasses)
+            foreach (var serverClass in Template.RequiredClasses)
             {
                SetTemplateServerPropValue(serverClass, user);
                SetTemplateServerPropValue(serverClass, user.Role);
@@ -113,7 +113,7 @@ namespace P8B.UK.API.Services
                UrlDomain = DomainUrl,
             };
             token.GenerateToken(user, DateTime.UtcNow.AddHours(5), _DbContext, Template.TokenUrlPath);
-            foreach (var serverClass in Template.ServerClasses)
+            foreach (var serverClass in Template.RequiredClasses)
             {
                SetTemplateServerPropValue(serverClass, user);
                SetTemplateServerPropValue(serverClass, token);
@@ -134,7 +134,7 @@ namespace P8B.UK.API.Services
          try
          {
             await SetUserTemplate(EmailTemplateTypes.OrderReceipt).ConfigureAwait(false);
-            foreach (var serverClass in Template.ServerClasses)
+            foreach (var serverClass in Template.RequiredClasses)
             {
                SetTemplateServerPropValue(serverClass, order);
                SetTemplateServerPropValue(serverClass, order.Payment);
@@ -154,12 +154,35 @@ namespace P8B.UK.API.Services
          }
       }
 
-      public async Task<bool> OrderDisputeAsync(Order order, Communication dispute)
+      public async Task<bool> OrderDisputeAsync(Order order)
+      {
+         try
+         {
+            await SetUserTemplate(EmailTemplateTypes.OrderDispute).ConfigureAwait(false);
+            foreach (var serverClass in Template.RequiredClasses)
+            {
+               SetTemplateServerPropValue(serverClass, order);
+            }
+
+            var email = order.Payment.Email;
+
+            if (order.User != null)
+               email = order.User.Email;
+            await SendEmailAsync($"{order.Name}", email).ConfigureAwait(false);
+            return true;
+         }
+         catch (Exception ex)
+         {
+            _LoggingService.LogEmailFailure(ex.Message, new { ex });
+            return false;
+         }
+      }
+      public async Task<bool> OrderCancelationAsync(Order order, Communication dispute)
       {
          try
          {
             await SetUserTemplate(EmailTemplateTypes.OrderReceipt).ConfigureAwait(false);
-            foreach (var serverClass in Template.ServerClasses)
+            foreach (var serverClass in Template.RequiredClasses)
             {
                SetTemplateServerPropValue(serverClass, order);
                SetTemplateServerPropValue(serverClass, order.Payment);

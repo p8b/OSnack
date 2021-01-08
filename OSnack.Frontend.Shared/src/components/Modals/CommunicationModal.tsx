@@ -70,10 +70,8 @@ const CommunicationModal = (props: IProps) => {
       errorAlert.set(errors);
    };
 
-   const getChatCss = (isCustomer: boolean | undefined) => {
-
+   const getChatCss = (isCustomer?: boolean) => {
       switch (props.access) {
-
          case ClientAppAccess.Secret:
             return isCustomer ? "send" : "receive";
          case ClientAppAccess.Official:
@@ -82,36 +80,30 @@ const CommunicationModal = (props: IProps) => {
             return "";
       }
    };
-
    return (
-      <Modal className="col-11 col-sm-10 col-lg-6 pl-4 pr-4 pb-0 pt-0 "
+      <Modal className="col-11 col-sm-10 col-lg-6  pt-0 pb-0"
          bodyRef={props.modalRef}
          isOpen={props.isOpen}>
          <>
-            <div className="col-12 pos-t-sticky bg-white pt-3">
+            <div className="col-12 pm-0 pos-t-sticky pt-3 bg-white">
                <PageHeader title={`${props.dispute.type == ContactType.Dispute ? "Dispute" : "Question"} ${props.dispute.isOpen ? "" : "Closed"}`} />
-               <div className="row">
-                  <div className="col">Name : {props.dispute.fullName}</div>
-                  {props.access == ClientAppAccess.Secret &&
-                     <Toggler
-                        className="toggler-xlg circle col pb-3"
-                        lblValueTrue="Dispute Open"
-                        lblValueFalse="Dispute Closed"
-                        value={disputeStatus}
-                        onChange={i => { setDisputeStatus(i); }}
-                     />
-                  }
-               </div>
+               {props.access == ClientAppAccess.Secret &&
+                  <Toggler
+                     className="toggler-lg circle col pb-3"
+                     lblValueTrue="Dispute Open"
+                     lblValueFalse="Dispute Closed"
+                     value={disputeStatus}
+                     onChange={i => { setDisputeStatus(i); }}
+                  />
+               }
             </div>
-            <div className="col-12 pm-0 bg-light-gray">
+            <div className="col-12 m-0 pt-1 pb-1 bg-light-gray overflow-y-auto">
                {dispute.id != undefined && dispute.messages!.map(message => {
                   return (
                      <div key={message.id} className={`col-10 chat ${getChatCss(message.isCustomer)}`}>
                         <div className="col-12">{message.body}</div>
-                        <span className="col-12 time">{new Date(message.date!).ToShortDateTime()}</span>
+                        <span className="col-12 text-gray small-text">{new Date(message.date!).ToShortDateTime()} - {message.isCustomer ? props.dispute.fullName : "Customer Support"}</span>
                      </div>
-
-
                   );
                })
                }
@@ -119,9 +111,8 @@ const CommunicationModal = (props: IProps) => {
             </div>
             {/***** buttons ****/}
             <div className="col-12 pm-0 pos-b-sticky bg-white pb-3">
-
                {disputeStatus &&
-                  <TextArea className="col-12 " label="Message*" rows={3} value={message}
+                  <TextArea className="col-12 mt-4 p-0" label="Message*" rows={3} value={message}
                      onChange={(i) => { setMessage(i.target.value); }} />
                }
                <Alert alert={errorAlert.alert}
@@ -129,8 +120,8 @@ const CommunicationModal = (props: IProps) => {
                   onClosed={() => { errorAlert.clear(); }}
                />
                <ModalFooter
-                  upatedText="Submit"
-                  onUpdate={(dispute.isOpen || props.access == ClientAppAccess.Secret) ? sendMessage : undefined}
+                  createText="Submit"
+                  onCreate={(dispute.isOpen) ? sendMessage : undefined}
                   onDelete={(props.dispute.type === ContactType.Dispute || props.access != ClientAppAccess.Secret) ? undefined : deleteQuestion}
                   onCancel={() => { errorAlert.clear(); props.onClose(); }} />
             </div>

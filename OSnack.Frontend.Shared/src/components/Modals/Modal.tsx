@@ -8,6 +8,18 @@ const Modal = (props: IProps) => {
    //   document.getElementsByTagName("footer")[0]?.classList.remove("footer-behind");
 
    useEffect(() => {
+      if (props.isOpen) {
+         document.body.classList.add("remove-scroll");
+         document.body.classList.add("scrollbar-y-width");
+         document.getElementById("navbar")?.classList.add("scrollbar-y-width");
+         document.getElementById("footer")?.classList.add("scrollbar-y-width");
+      }
+      else {
+         document.body.classList.remove("remove-scroll");
+         document.body.classList.remove("scrollbar-y-width");
+         document.getElementById("navbar")?.classList.remove("scrollbar-y-width");
+         document.getElementById("footer")?.classList.remove("scrollbar-y-width");
+      }
       document.addEventListener("keyup", keydownHander);
       setfocusToFirstElement();
       return () => {

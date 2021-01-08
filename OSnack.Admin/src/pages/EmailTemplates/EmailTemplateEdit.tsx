@@ -3,8 +3,8 @@ import EmailEditor from 'react-email-editor';
 import ButtonPopupConfirm from 'osnack-frontend-shared/src/components/Buttons/ButtonPopupConfirm';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
-import { EmailTemplate, EmailTemplateClassNames, EmailTemplateServerClass, EmailTemplateTypes } from 'osnack-frontend-shared/src/_core/apiModels';
-import { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';;
+import { EmailTemplate, EmailTemplateRequiredClass, EmailTemplateTypes } from 'osnack-frontend-shared/src/_core/apiModels';
+import { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import CopyText from 'osnack-frontend-shared/src/components/Texts/CopyText';
 import { sleep } from 'osnack-frontend-shared/src/_core/appFunc';
 import EmailTemplateEditDetailsModal from './EmailTemplateEditDetailsModal';
@@ -21,7 +21,7 @@ const EmailTemplatesEdit = (props: IProps) => {
    const [template, setTemplate] = useState(new EmailTemplate());
    const [defaultTemplate, setDefaultTemplate] = useState(new EmailTemplate());
    const [templateTypes, setTemplateTypes] = useState<EmailTemplateTypes[]>([]);
-   const [selectedServerClass, setSelectedServerClass] = useState<EmailTemplateServerClass>();
+   const [selectedServerClass, setSelectedServerClass] = useState<EmailTemplateRequiredClass>();
    const [isSaved, setIsSaved] = useState(false);
    const [isEditorLoaded, setIsEditorLoaded] = useState(false);
    const [isOpenDetailsModal, setIsOpenDetailsModal] = useState(false);
@@ -179,12 +179,12 @@ const EmailTemplatesEdit = (props: IProps) => {
          </div>
          <div className="row pm-0 pl-3 pr-3">
             {template.serverClasses != undefined && template.serverClasses!.length > 0 &&
-               <InputDropdown dropdownTitle={`Server Model${selectedServerClass == undefined ? "s" : ": " + EmailTemplateClassNames[selectedServerClass.value || 0].replace(/([A-Z])/g, ' $1')}`}
+               <InputDropdown dropdownTitle={`Server Model${selectedServerClass == undefined ? "s" : ": " + selectedServerClass.value}`}
                   className="col-auto pb-0">
                   {template.serverClasses?.map(sc =>
                      <div className="dropdown-item cursor-pointer pl-0 pr-0" key={Math.random()}
                         onClick={() => { setSelectedServerClass(sc); }}>
-                        {EmailTemplateClassNames[sc.value || 0].replace(/([A-Z])/g, ' $1')}
+                        {sc.value}
                      </div>
                   )}
                </InputDropdown>

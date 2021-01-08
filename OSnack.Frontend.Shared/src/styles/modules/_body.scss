@@ -4,4 +4,8 @@
     overflow-x: hidden !important;
     overflow-y: scroll;
     min-height: 100%;
+
+    &.remove-scroll {
+        overflow-y: hidden;
+    }
 }

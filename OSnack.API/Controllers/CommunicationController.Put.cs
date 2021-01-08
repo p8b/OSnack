@@ -8,6 +8,7 @@ using OSnack.API.Extras;
 
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Models;
+
 using System;
 using System.Collections.Generic;
 using System.Net.Mime;
@@ -56,6 +57,14 @@ namespace OSnack.API.Controllers
                originalCommunication.IsOpen = modifyCommunication.IsOpen;
 
             var newMessage = modifyCommunication.Messages.Find(m => m.Id == 0);
+
+            if (string.IsNullOrWhiteSpace(newMessage.Body))
+            {
+               /// extract the errors and return bad request containing the errors
+               CoreFunc.Error(ref ErrorsList, "Message is required.");
+               return StatusCode(412, ErrorsList);
+            }
+
             if (!string.IsNullOrEmpty(newMessage.Body))
             {
 

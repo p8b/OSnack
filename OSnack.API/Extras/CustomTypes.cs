@@ -5,100 +5,90 @@ namespace OSnack.API.Extras.CustomTypes
 {
    public enum CouponType
    {
-      FreeDelivery,
-      DiscountPrice,
-      PercentageOfTotal
+      FreeDelivery = 0,
+      DiscountPrice = 1,
+      PercentageOfTotal = 2
    }
 
-   public enum EmailTemplateClassNames
-   {
-      User,
-      Order,
-      ContactUsMessage,
-      Token,
-      RegistrationMethod,
-      Role,
-      Payment,
-      OrderItem,
-   }
    public enum EmailTemplateTypes
    {
-      [EmailTemplateTypeServerClasses]
+      [EmailTemplateTypeRequiredClasses]
       DefaultTemplate = 0,
 
-      [EmailTemplateTypeServerClasses]
+      [EmailTemplateTypeRequiredClasses]
       Others = 1,
 
-      [EmailTemplateTypeServerClasses(typeof(User), typeof(Token))]
+      [EmailTemplateTypeRequiredClasses(typeof(User), typeof(Token))]
       EmailConfirmation = 2,
 
-      [EmailTemplateTypeServerClasses(typeof(User), typeof(RegistrationMethod))]
+      [EmailTemplateTypeRequiredClasses(typeof(User), typeof(RegistrationMethod))]
       WelcomeExternalRegistration = 3,
 
-      [EmailTemplateTypeServerClasses(typeof(User), typeof(Token), typeof(Role))]
+      [EmailTemplateTypeRequiredClasses(typeof(User), typeof(Token), typeof(Role))]
       WelcomeNewEmployee = 4,
 
-      [EmailTemplateTypeServerClasses(typeof(User), typeof(Token))]
+      [EmailTemplateTypeRequiredClasses(typeof(User), typeof(Token))]
       PasswordReset = 5,
 
-      [EmailTemplateTypeServerClasses()]
-      ContactUsMessage = 6,
+      [EmailTemplateTypeRequiredClasses(typeof(Message))]
+      ReplayContactUsMessage = 6,
 
-      [EmailTemplateTypeServerClasses(typeof(Order), typeof(Payment), typeof(OrderItem))]
+      [EmailTemplateTypeRequiredClasses(typeof(Order), typeof(Payment), typeof(OrderItem))]
       OrderReceipt = 7,
 
-      [EmailTemplateTypeServerClasses(typeof(Order), typeof(Payment))]
+      [EmailTemplateTypeRequiredClasses(typeof(Order), typeof(Payment), typeof(Message))]
       OrderCancellation = 8,
 
-      [EmailTemplateTypeServerClasses(typeof(Order), typeof(Communication))]
+      [EmailTemplateTypeRequiredClasses(typeof(Order))]
       OrderDispute = 9,
+
    }
 
    public enum TokenTypes
    {
-      ChangePassword,
-      ConfirmEmail,
-      EndSubscription
+      ChangePassword = 0,
+      ConfirmEmail = 1,
+      EndSubscription = 2
    }
 
    public enum OrderStatusType
    {
-      InProgress,
-      Confirmed,
-      Canceled,
-      Delivered,
-      PartialyRefunded,
-      FullyRefunded
+      InProgress = 0,
+      Confirmed = 1,
+      Canceled = 2,
+      Delivered = 3,
+      PartialyRefunded = 4,
+      FullyRefunded = 5
    }
 
    public enum PaymentType
    {
-      Complete,
-      Failed,
-      PartialyRefunded,
-      FullyRefunded
+      Complete = 0,
+      Failed = 1,
+      PartialyRefunded = 2,
+      FullyRefunded = 3
    }
 
    public enum ProductUnitType
    {
-      Kg,
-      Grams,
-      PerItem
+      Kg = 0,
+      Grams = 1,
+      PerItem = 3
    }
 
    public enum AppLogType
    {
-      Exception,
-      Information,
-      FileModification,
-      EmailFailure,
-      OrderException,
-      PaymentException
+      Exception = 0,
+      Information = 1,
+      FileModification = 2,
+      EmailFailure = 3,
+      OrderException = 4,
+      PaymentException = 5
    }
 
    public enum ContactType
    {
-      Dispute,
-      Question
+      Dispute = 0,
+      Question = 1
    }
 }

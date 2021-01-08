@@ -35,7 +35,7 @@ namespace OSnack.API.Database.Models
       public string TokenUrlPath { get; set; }
 
       [NotMapped]
-      public List<EmailTemplateServerClass> ServerClasses { get; set; }
+      public List<EmailTemplateRequiredClass> RequiredClasses { get; set; }
 
       [JsonIgnore]
       public string HtmlPath { get; set; }
@@ -105,29 +105,46 @@ namespace OSnack.API.Database.Models
 
       internal void SetServerClasses()
       {
-         ServerClasses = new List<EmailTemplateServerClass>();
-         var CurrentTypeCustomAttributes = typeof(EmailTemplateTypes).GetMember(TemplateType.ToString()).FirstOrDefault().CustomAttributes.FirstOrDefault(c => c.AttributeType.Name.Equals("EmailTemplateTypeServerClassesAttribute") || c.AttributeType.Name.Equals("EmailTemplateTypeServerClasses"));
-         if (CurrentTypeCustomAttributes != null)
+         RequiredClasses = new List<EmailTemplateRequiredClass>();
+         // Get the required class types for the selected email template type enum
+         CustomAttributeData CurrentRequiredClasses = typeof(EmailTemplateTypes)
+            .GetMember(TemplateType.ToString())
+            .FirstOrDefault()
+            .CustomAttributes
+            .FirstOrDefault(c => c.AttributeType.Name.Equals("EmailTemplateTypeRequiredClassesAttribute")
+                              || c.AttributeType.Name.Equals("EmailTemplateTypeRequiredClasses"));
+
+         if (CurrentRequiredClasses != null)
          {
-            foreach (var itemClass in (IReadOnlyCollection<CustomAttributeTypedArgument>)CurrentTypeCustomAttributes.ConstructorArguments.FirstOrDefault().Value)
+            foreach (var itemClass in (IReadOnlyCollection<CustomAttributeTypedArgument>)CurrentRequiredClasses.ConstructorArguments.FirstOrDefault().Value)
             {
-               var selectedClass = (Type)itemClass.Value;
-               var properties = selectedClass.GetProperties().Where(p => p.CustomAttributes.Any(c => c.AttributeType.Name.Equals("EmailTemplateVariableAttribute")));
-               if (properties.Count() > 0)
+               Type selectedClass = (Type)itemClass.Value;
+               // Try to get the properties set as email template variable in the selected class
+               IEnumerable<PropertyInfo> properties = selectedClass.GetProperties()
+                  .Where(p => p.CustomAttributes.Any(c => c.AttributeType.Name.Equals("EmailTemplateVariableAttribute")
+                                                       || c.AttributeType.Name.Equals("EmailTemplateVariable")));
+
+               if (properties.Any())
                {
-                  var serverClass = new EmailTemplateServerClass()
+                  EmailTemplateRequiredClass serverClass = new EmailTemplateRequiredClass()
                   {
-                     Value = Enum.Parse<EmailTemplateClassNames>(selectedClass.Name),
+
+                     Value = string.Join(" ", Regex.Split(selectedClass.Name, @"(?<!^)(?=[A-Z])")),
                      ClassProperties = new List<ClassProperty>()
                   };
-                  foreach (var prop in properties)
+                  foreach (PropertyInfo prop in properties)
                   {
-                     var attributeArguments = prop.CustomAttributes
-                        .FirstOrDefault(c => c.AttributeType.Name.Equals("EmailTemplateVariableAttribute")).NamedArguments;
+                     IList<CustomAttributeNamedArgument> attributeArguments = prop.CustomAttributes
+                        .FirstOrDefault(c => c.AttributeType.Name.Equals("EmailTemplateVariableAttribute")
+                                          || c.AttributeType.Name.Equals("EmailTemplateVariable"))
+                        .NamedArguments;
 
                      if (attributeArguments.Any(a => a.MemberName.Equals("ListNames")))
                      {
-                        var values = (IReadOnlyCollection<CustomAttributeTypedArgument>)attributeArguments.FirstOrDefault(a => a.MemberName.Equals("ListNames")).TypedValue.Value;
+                        IReadOnlyCollection<CustomAttributeTypedArgument> values = (IReadOnlyCollection<CustomAttributeTypedArgument>)attributeArguments
+                           .FirstOrDefault(a => a.MemberName.Equals("ListNames"))
+                           .TypedValue.Value;
+
                         for (int i = 0; i < values.Count; i++)
                         {
                            serverClass.ClassProperties.Add(new ClassProperty()
@@ -157,21 +174,20 @@ namespace OSnack.API.Database.Models
                      }
 
                   }
-                  ServerClasses.Add(serverClass);
+                  RequiredClasses.Add(serverClass);
                }
             }
          }
-
       }
    }
 
-   public class EmailTemplateServerClass
+   public class EmailTemplateRequiredClass
    {
-      public EmailTemplateClassNames Value { get; set; }
+      public string Value { get; set; }
 
       public List<ClassProperty> ClassProperties { get; set; }
 
-      public EmailTemplate EmailTemplate { get; set; }
+      //public EmailTemplate EmailTemplate { get; set; }
    }
 
    public class ClassProperty

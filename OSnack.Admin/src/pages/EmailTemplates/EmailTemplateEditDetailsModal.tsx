@@ -4,7 +4,7 @@ import Modal from "osnack-frontend-shared/src/components/Modals/Modal";
 import { Input } from "osnack-frontend-shared/src/components/Inputs/Input";
 import { Button } from "osnack-frontend-shared/src/components/Buttons/Button";
 
-import { EmailTemplate, EmailTemplateClassNames, EmailTemplateTypes, EmailTemplateTypesList } from "osnack-frontend-shared/src/_core/apiModels";
+import { EmailTemplate, EmailTemplateTypes, EmailTemplateTypesList } from "osnack-frontend-shared/src/_core/apiModels";
 import Alert, { AlertObj, useAlert } from "osnack-frontend-shared/src/components/Texts/Alert";
 import InputDropdown from "osnack-frontend-shared/src/components/Inputs/InputDropDown";
 
@@ -67,10 +67,10 @@ const EmailTemplateEditDetailsModal = (props: IProps) => {
                   onChange={i => setTemplate({ ...template, name: i.target?.value })}
                />
             }
-            {template.serverClasses?.find(sc => sc.value == EmailTemplateClassNames.Token) &&
+            {template.serverClasses?.find(sc => sc.value == "Token") &&
                <Input label="Token URL Path*" className="col-12 col-sm-6"
                   value={template.tokenUrlPath}
-                  disabled={template.serverClasses?.find(c => c.value == EmailTemplateClassNames.Token) == undefined}
+                  disabled={template.serverClasses?.find(c => c.value == "Token") == undefined}
                   showDanger={errorAlert.checkExist("TokenUrlPath")}
                   onChange={i => setTemplate({ ...template, tokenUrlPath: i.target?.value })}
                />

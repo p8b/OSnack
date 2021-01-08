@@ -146,6 +146,7 @@
     <Content Include="src\styles\bootstrap\mixins\_caret.scss" />
     <Content Include="src\styles\bootstrap\mixins\_clearfix.scss" />
     <Content Include="src\styles\modules\_background-colors.scss" />
+    <Content Include="src\styles\modules\_body.scss" />
     <Content Include="src\styles\modules\_border.scss" />
     <Content Include="src\styles\modules\_chat.scss" />
     <Content Include="src\styles\modules\_comment.scss" />

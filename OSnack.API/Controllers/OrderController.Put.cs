@@ -183,7 +183,7 @@ namespace OSnack.API.Controllers
 
             if (originalOrder.Status == OrderStatusType.Canceled || originalOrder.Status == OrderStatusType.FullyRefunded
                 || originalOrder.Status == OrderStatusType.PartialyRefunded)
-               await _EmailService.OrderDisputeAsync(originalOrder, originalOrder.Dispute).ConfigureAwait(false);
+               await _EmailService.OrderCancelationAsync(originalOrder, originalOrder.Dispute).ConfigureAwait(false);
             return Ok(originalOrder);
          }
          catch (Exception ex)

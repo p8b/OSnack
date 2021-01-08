@@ -76,9 +76,7 @@ namespace OSnack.API.Controllers
             defaultTemplate.PrepareDesign(WebHost.WebRootPath);
             template.PrepareDesign(WebHost.WebRootPath);
 
-
             template.SetServerClasses();
-
 
             return Ok(new MultiResult<EmailTemplate, EmailTemplate>
                (template, defaultTemplate, CoreFunc.GetCustomAttributeTypedArgument(this.ControllerContext)));

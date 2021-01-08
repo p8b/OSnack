@@ -46,7 +46,7 @@ const NavMenu = (props: IProps) => {
          }
          {auth.state.isAuthenticated &&
             <>
-               <div className={`bg-white top-navbar row pm-0 pb-1  ${isOpenSideBar ? "show" : "hide"}`}>
+               <div id="navbar" className={`bg-white top-navbar row pm-0 pb-1  ${isOpenSideBar ? "show" : "hide"}`}>
                   <button type="button"
                      className={`fas toggler-icon pl-4`}
                      onClick={() => { setIsOpenSideBar((prevVal) => !prevVal); }} />

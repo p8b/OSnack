@@ -12,6 +12,7 @@ using P8B.Core.CSharp.Models;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Mime;
 using System.Threading.Tasks;
 
@@ -32,10 +33,10 @@ namespace OSnack.API.Controllers
       {
          try
          {
-            if (newDispute.Messages.Count != 1)
+            if (string.IsNullOrWhiteSpace(newDispute.Messages.FirstOrDefault().Body))
             {
                /// extract the errors and return bad request containing the errors
-               CoreFunc.Error(ref ErrorsList, "The message is empty.");
+               CoreFunc.Error(ref ErrorsList, "Message is required.");
                return StatusCode(412, ErrorsList);
             }
 
@@ -68,7 +69,7 @@ namespace OSnack.API.Controllers
                CoreFunc.ExtractErrors(ModelState, ref ErrorsList);
                return UnprocessableEntity(ErrorsList);
             }
-            await _EmailService.OrderDisputeAsync(newDispute.Order, newDispute).ConfigureAwait(false);
+            await _EmailService.OrderDisputeAsync(newDispute.Order).ConfigureAwait(false);
             return Created("", await TryToSave(newDispute, 0).ConfigureAwait(false));
          }
          catch (Exception ex)
