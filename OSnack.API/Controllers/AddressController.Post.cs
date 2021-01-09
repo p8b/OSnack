@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 using P8B.Core.CSharp;
-using P8B.Core.CSharp.Attributes;
 using P8B.Core.CSharp.Models;
 using System;
 using System.Collections.Generic;
@@ -17,7 +16,6 @@ namespace OSnack.API.Controllers
    public partial class AddressController
    {
       #region *** ***
-      [PramaterNotNull]
       [Consumes(MediaTypeNames.Application.Json)]
       [ProducesResponseType(typeof(Address), StatusCodes.Status201Created)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
