@@ -2,7 +2,7 @@
 
 using OSnack.API.Database.ModelsDependencies;
 using OSnack.API.Extras.Attributes;
-
+using P8B.Core.CSharp.JsonConvertor;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -45,6 +45,7 @@ namespace OSnack.API.Database.Models
 
       [Required(ErrorMessage = "Quantity is Required")]
       [EmailTemplateVariable(Name = "OrderItemQuantity")]
+      [JsonConverter(typeof(StrictIntConverter))]
       public int Quantity { get; set; }
 
 

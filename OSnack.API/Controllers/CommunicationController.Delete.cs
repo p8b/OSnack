@@ -23,16 +23,16 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status404NotFound)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
       #endregion
-      [HttpDelete("[action]")]
+      [HttpDelete("[action]/{communicationId}")]
       [Authorize(AppConst.AccessPolicies.Secret)]
       /// Ready For Test
-      public async Task<IActionResult> Delete([FromBody] Communication communication)
+      public async Task<IActionResult> Delete(string communicationId)
       {
          try
          {
-            Communication currentDeliveryOption = await _DbContext.Communications.SingleOrDefaultAsync(d => d.Id == communication.Id)
+            Communication currentDeliveryOption = await _DbContext.Communications.SingleOrDefaultAsync(d => d.Id == communicationId)
                            .ConfigureAwait(false);
-            if (currentDeliveryOption == null)
+            if (currentDeliveryOption is null)
             {
                CoreFunc.Error(ref ErrorsList, "Communication not found");
                return NotFound(ErrorsList);
@@ -45,7 +45,7 @@ namespace OSnack.API.Controllers
                return StatusCode(412, ErrorsList);
             }
 
-            _DbContext.Communications.Remove(communication);
+            _DbContext.Communications.Remove(currentDeliveryOption);
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
 
             return Ok("Communication was deleted");

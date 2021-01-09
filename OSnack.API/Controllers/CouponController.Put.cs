@@ -30,7 +30,7 @@ namespace OSnack.API.Controllers
       {
          try
          {
-            if (!TryValidateModel(modifiedCoupon))
+            if (!ModelState.IsValid)
             {
                CoreFunc.ExtractErrors(ModelState, ref ErrorsList);
                return UnprocessableEntity(ErrorsList);

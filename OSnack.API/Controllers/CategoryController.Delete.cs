@@ -26,16 +26,16 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status404NotFound)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
       #endregion
-      [HttpDelete("[action]")]
+      [HttpDelete("[action]/{categoryId}")]
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test 
-      public async Task<IActionResult> Delete([FromBody] Category category)
+      public async Task<IActionResult> Delete(int categoryId)
       {
          try
          {
-            /// if the Category record with the same id is not found
-            if (!await _DbContext.Categories
-                .AnyAsync(c => c.Id == category.Id)
-                .ConfigureAwait(false))
+            Category category = await _DbContext.Categories
+                 .SingleOrDefaultAsync(c => c.Id == categoryId)
+                 .ConfigureAwait(false);
+            if (category is null)
             {
                CoreFunc.Error(ref ErrorsList, "Category not found");
                return NotFound(ErrorsList);

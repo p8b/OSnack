@@ -1,8 +1,9 @@
-﻿using OSnack.API.Extras.Attributes;
+﻿using Newtonsoft.Json;
+using OSnack.API.Extras.Attributes;
 using OSnack.API.Extras.CustomTypes;
 
 using P8B.Core.CSharp.Attributes;
-
+using P8B.Core.CSharp.JsonConvertor;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -21,13 +22,15 @@ namespace OSnack.API.Database.ModelsDependencies
       [DataType(DataType.Currency, ErrorMessage = "Invalid Currency \n")]
       [Required(ErrorMessage = "Price is Required \n")]
       [PositiveDecimalIncludingZero(ErrorMessage = "Price should not be negative. \n")]
+      [Range(0, 99999, ErrorMessage = "Price Must be less than 99999")]
       public decimal? Price { get; set; }
 
       [Required(ErrorMessage = "Unit Quantity is Required \n")]
+      [JsonConverter(typeof(StrictIntConverter))]
       public int? UnitQuantity { get; set; }
 
       [Required(ErrorMessage = "Unit Type is Required \n")]
-      public ProductUnitType UnitType { get; set; }
+      public ProductUnitType? UnitType { get; set; }
 
       [Display(Name = "Display Image")]
       [StringLength(50, ErrorMessage = "Must be less than 50 Characters \n")]

@@ -1,16 +1,17 @@
 import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/components/Texts/Alert";
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
-import { Product, ProductListAndTotalCount } from "osnack-frontend-shared/src/_core/apiModels";
+import { ProductListAndTotalCount, Product } from "osnack-frontend-shared/src/_core/apiModels";
 export type IReturnUseDeleteProduct={ data:string , status?: number;};
-export const useDeleteProduct = async (product: Product): Promise<IReturnUseDeleteProduct> =>{
-        let url_ = API_URL + "/Product/Delete";
+export const useDeleteProduct = async (productId: number): Promise<IReturnUseDeleteProduct> =>{
+        let url_ = API_URL + "/Product/Delete/{productId}";
+        if (productId !== null && productId !== undefined)
+        url_ = url_.replace("{productId}", encodeURIComponent("" + productId));
         url_ = url_.replace(/[?&]$/, "");
-        const content_ = product;
-        let response = await httpCaller.DELETE(url_, content_);
+        let response = await httpCaller.DELETE(url_);
         if( response?.status === 400){
             await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
-            response = await httpCaller.DELETE(url_, content_);
+            response = await httpCaller.DELETE(url_);
         }
 
         switch(response?.status){

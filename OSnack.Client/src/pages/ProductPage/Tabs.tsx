@@ -125,7 +125,7 @@ const Tabs = (props: IProps) => {
             {selectedNav === productTabs.Comments &&
                <>
                   {comment &&
-                     <Button className="btn-white" children={comment.id == 0 ? "Write a review" : "Edit a review"} onClick={() => setIsOpenReviewModal(true)} />
+                     <Button className="btn-white mt-1" children={comment.id == 0 ? "Write a review" : "Edit a review"} onClick={() => setIsOpenReviewModal(true)} />
                   }
                   {commentList.map(comment =>
                      <div key={comment.id} className="comment">

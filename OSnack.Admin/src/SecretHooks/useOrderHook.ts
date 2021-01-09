@@ -1,40 +1,7 @@
 import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/components/Texts/Alert";
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
-import { Order, OrderListAndAvailableTypesAndTotalCount, OrderListAndAvailableTypesAndFullNameAndTotalCount } from "osnack-frontend-shared/src/_core/apiModels";
-export type IReturnUseDeleteOrder={ data:string , status?: number;};
-export const useDeleteOrder = async (order: Order): Promise<IReturnUseDeleteOrder> =>{
-        let url_ = API_URL + "/Order/Delete";
-        url_ = url_.replace(/[?&]$/, "");
-        const content_ = order;
-        let response = await httpCaller.DELETE(url_, content_);
-        if( response?.status === 400){
-            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
-            response = await httpCaller.DELETE(url_, content_);
-        }
-
-        switch(response?.status){
-
-                case 200: 
-                        var responseData: string = await response?.json();
-                        return { data: responseData, status: response?.status };
-
-                case 404: 
-                        return response?.json().then((data: ErrorDto[]) => {
-                                throw new AlertObj(data, AlertTypes.Error, response?.status);
-                        });
-
-                case 417: 
-                        return response?.json().then((data: ErrorDto[]) => {
-                                throw new AlertObj(data, AlertTypes.Error, response?.status);
-                        });
-
-                default:
-                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
-                        throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
-        }
-  
-}
+import { OrderListAndAvailableTypesAndTotalCount, OrderListAndAvailableTypesAndFullNameAndTotalCount, Order } from "osnack-frontend-shared/src/_core/apiModels";
 export type IReturnUseAllOrder={ data:OrderListAndAvailableTypesAndTotalCount , status?: number;};
 export const useAllOrder = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, filterStatus: string | null, isSortAsce: boolean, sortName: string | null): Promise<IReturnUseAllOrder> =>{
         let url_ = API_URL + "/Order/Get/All/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}";

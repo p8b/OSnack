@@ -70,7 +70,14 @@ namespace OSnack.API.Controllers
                return UnprocessableEntity(ErrorsList);
             }
             await _EmailService.OrderDisputeAsync(newDispute.Order).ConfigureAwait(false);
-            return Created("", await TryToSave(newDispute, 0).ConfigureAwait(false));
+
+            await _DbContext.Communications.AddAsync(newDispute).ConfigureAwait(false);
+            if (newDispute.Order != null)
+            {
+               _DbContext.Entry(newDispute.Order).State = EntityState.Unchanged;
+            }
+            await _DbContext.SaveChangesAsync().ConfigureAwait(false);
+            return Created("", newDispute);
          }
          catch (Exception ex)
          {
@@ -125,8 +132,9 @@ namespace OSnack.API.Controllers
                return UnprocessableEntity(ErrorsList);
             }
 
+            await _DbContext.Communications.AddAsync(newContact).ConfigureAwait(false);
 
-            await TryToSave(newContact, 0).ConfigureAwait(false);
+            await _DbContext.SaveChangesAsync().ConfigureAwait(false);
 
             //   await _EmailService.EmailConfirmationAsync(orderData).ConfigureAwait(false);
             return Created("", $"Your message submitted.Contact Referense : {newContact.Id }");
@@ -138,30 +146,5 @@ namespace OSnack.API.Controllers
          }
       }
 
-      async Task<Communication> TryToSave(Communication contactData, int tryCount)
-      {
-         try
-         {
-            contactData.Id = $"{CoreFunc.StringGenerator(4, 4, 0, 4, 0)}-{CoreFunc.StringGenerator(4, 4, 0, 4, 0)}";
-            await _DbContext.Communications.AddAsync(contactData).ConfigureAwait(false);
-            if (contactData.Order != null)
-            {
-               _DbContext.Entry(contactData.Order).State = EntityState.Unchanged;
-            }
-            await _DbContext.SaveChangesAsync().ConfigureAwait(false);
-
-            return contactData;
-         }
-         catch (Exception ex)
-         {
-            _LoggingService.Log(Request.Path, AppLogType.Exception, new { contactData, exception = ex }, User);
-            if (tryCount > 4)
-            {
-               throw;
-            }
-            return await TryToSave(contactData, tryCount++).ConfigureAwait(false);
-
-         }
-      }
    }
 }

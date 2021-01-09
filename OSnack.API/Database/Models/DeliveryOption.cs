@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 using Newtonsoft.Json;
-
+using P8B.Core.CSharp.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -25,11 +25,13 @@ namespace OSnack.API.Database.Models
 
       [Column(TypeName = "decimal(7,2)")]
       [Required(ErrorMessage = "Price Is Required \n")]
+      [PositiveDecimalIncludingZero(ErrorMessage = "Price should not be negative. \n")]
       public decimal Price { get; set; }
 
 
       [Column(TypeName = "decimal(7,2)")]
       [Required(ErrorMessage = "Minimum Order Total Is Required \n")]
+      [PositiveDecimalIncludingZero(ErrorMessage = "Minimum Order Total should not be negative. \n")]
       public decimal MinimumOrderTotal { get; set; }
 
       public bool IsPremitive { get; set; } = false;

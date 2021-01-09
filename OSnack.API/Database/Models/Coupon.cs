@@ -1,15 +1,14 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using OSnack.API.Extras.Attributes;
+using OSnack.API.Extras.CustomTypes;
+using P8B.Core.CSharp;
+using P8B.Core.CSharp.Attributes;
+using P8B.Core.CSharp.JsonConvertor;
+using P8B.Core.CSharp.Models;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
-using Newtonsoft.Json;
-
-using OSnack.API.Extras.CustomTypes;
-
-using P8B.Core.CSharp;
-using P8B.Core.CSharp.Models;
 
 namespace OSnack.API.Database.Models
 {
@@ -21,21 +20,27 @@ namespace OSnack.API.Database.Models
       [Required(ErrorMessage = "Coupon Code Required \n")]
       public string Code { get; set; }
 
-      [NotMapped]
-      public string PendigCode { get; set; }
-
       [Required(ErrorMessage = "Coupon Type is Required \n")]
       public CouponType? Type { get; set; }
 
-      public int MaxUseQuantity { get; set; }
-      public int MinimumOrderPrice { get; set; }
+      [Required(ErrorMessage = "Max Use Quantity is Required \n")]
+      [PositiveDecimalIncludingZero(ErrorMessage = "Max Use Quantity should not be negative. \n")]
+      [JsonConverter(typeof(StrictIntConverter))]
+      public int? MaxUseQuantity { get; set; }
 
       [Column(TypeName = "decimal(7,2)")]
+      [Required(ErrorMessage = "Minimum Order Price is Required \n")]
+      [PositiveDecimalIncludingZero(ErrorMessage = "Minimum Order Price should not be negative. \n")]
+      public decimal? MinimumOrderPrice { get; set; }
+
+      [Column(TypeName = "decimal(7,2)")]
+      [PositiveDecimalIncludingZero(ErrorMessage = "Discount Amount should not be negative. \n")]
       public decimal DiscountAmount { get; set; }
 
       [Column(TypeName = "nvarchar(50)")]
       [DataType(DataType.Date)]
       [Required(ErrorMessage = "Expiry Date is Required \n")]
+      [DateGreaterThanToday(ErrorMessage = "ExpiryDate must be greater than today @")]
       public DateTime ExpiryDate { get; set; }
 
       [JsonIgnore]

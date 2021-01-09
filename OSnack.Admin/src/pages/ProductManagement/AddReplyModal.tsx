@@ -26,6 +26,7 @@ const AddReplyModal = (props: IProps) => {
       useAddReplyComment(comment).then((result) => {
          if (isUnmounted.current) return;
          setComment(result.data);
+         errorAlert.clear();
          props.onClose();
       }
       ).catch(errors => {

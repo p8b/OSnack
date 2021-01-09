@@ -20,9 +20,11 @@ namespace OSnack.API.Database.Models
       public int Id { get; set; }
 
       [Column(TypeName = "nvarchar(500)")]
+      [StringLength(256, ErrorMessage = "Review Must be less than 500 Characters \n")]
       public string Description { get; set; }
 
       [Column(TypeName = "nvarchar(500)")]
+      [StringLength(256, ErrorMessage = "Reply Must be less than 500 Characters \n")]
       public string Reply { get; set; }
 
       [ForeignKey("UserId")]

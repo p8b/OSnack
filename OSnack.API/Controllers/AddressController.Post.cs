@@ -2,13 +2,11 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
-
 using P8B.Core.CSharp;
+using P8B.Core.CSharp.Attributes;
 using P8B.Core.CSharp.Models;
-
 using System;
 using System.Collections.Generic;
 using System.Net.Mime;
@@ -19,6 +17,7 @@ namespace OSnack.API.Controllers
    public partial class AddressController
    {
       #region *** ***
+      [PramaterNotNull]
       [Consumes(MediaTypeNames.Application.Json)]
       [ProducesResponseType(typeof(Address), StatusCodes.Status201Created)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
@@ -30,6 +29,9 @@ namespace OSnack.API.Controllers
       {
          try
          {
+            //if (newAddress is null)
+            //   return checkObjectIsNull(newAddress);
+
             if (newAddress != null)
             {
                newAddress.User = await _DbContext.Users.AsTracking().Include(u => u.Role)

@@ -57,6 +57,11 @@ export const usePutComment = async (modifiedComment: Comment): Promise<IReturnUs
                         var responseData: Comment = await response?.json();
                         return { data: responseData, status: response?.status };
 
+                case 422: 
+                        return response?.json().then((data: ErrorDto[]) => {
+                                throw new AlertObj(data, AlertTypes.Error, response?.status);
+                        });
+
                 case 412: 
                         return response?.json().then((data: ErrorDto[]) => {
                                 throw new AlertObj(data, AlertTypes.Error, response?.status);

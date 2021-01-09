@@ -63,6 +63,37 @@ namespace OSnack.API.Controllers
             return StatusCode(417, ErrorsList);
          }
       }
+      #region *** ***
+      [ProducesResponseType(typeof(Communication), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
+      #endregion
+      [HttpGet("Get/[action]/{questionKey}")]
+      [Authorize(AppConst.AccessPolicies.Public)]
+      public async Task<IActionResult> GetQuestion(string questionKey)
+      {
+         try
+         {
+
+            Communication question = await _DbContext.Communications
+               .Include(c => c.Messages)
+               .SingleOrDefaultAsync(c => c.Type == ContactType.Question && c.Id == questionKey)
+               .ConfigureAwait(false);
+
+            if (question is null)
+            {
+               CoreFunc.Error(ref ErrorsList, "Question Not exists.");
+               return StatusCode(412, ErrorsList);
+            }
+
+            return Ok(question);
+         }
+         catch (Exception ex)
+         {
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
+            return StatusCode(417, ErrorsList);
+         }
+      }
 
 
    }

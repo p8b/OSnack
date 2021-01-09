@@ -3,14 +3,15 @@ import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { Address } from "../../_core/apiModels";
 export type IReturnUseDeleteAddress={ data:string , status?: number;};
-export const useDeleteAddress = async (address: Address): Promise<IReturnUseDeleteAddress> =>{
-        let url_ = API_URL + "/Address/Delete";
+export const useDeleteAddress = async (addressId: number): Promise<IReturnUseDeleteAddress> =>{
+        let url_ = API_URL + "/Address/Delete/{addressId}";
+        if (addressId !== null && addressId !== undefined)
+        url_ = url_.replace("{addressId}", encodeURIComponent("" + addressId));
         url_ = url_.replace(/[?&]$/, "");
-        const content_ = address;
-        let response = await httpCaller.DELETE(url_, content_);
+        let response = await httpCaller.DELETE(url_);
         if( response?.status === 400){
             await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
-            response = await httpCaller.DELETE(url_, content_);
+            response = await httpCaller.DELETE(url_);
         }
 
         switch(response?.status){

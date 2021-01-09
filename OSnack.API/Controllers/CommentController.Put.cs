@@ -18,6 +18,7 @@ namespace OSnack.API.Controllers
       #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
       [ProducesResponseType(typeof(Comment), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
 
@@ -29,6 +30,21 @@ namespace OSnack.API.Controllers
 
          try
          {
+            ModelState.Clear();
+            TryValidateModel(modifiedComment);
+
+            foreach (var key in ModelState.Keys)
+            {
+               if (key.StartsWith("User") || key.StartsWith("Product"))
+                  ModelState.Remove(key);
+            }
+
+            if (!ModelState.IsValid)
+            {
+               CoreFunc.ExtractErrors(ModelState, ref ErrorsList);
+               return UnprocessableEntity(ErrorsList);
+            }
+
             Comment comment = await _DbContext.Comments
                .SingleOrDefaultAsync(c => c.Id == modifiedComment.Id).ConfigureAwait(false);
             if (comment == null)
@@ -52,6 +68,7 @@ namespace OSnack.API.Controllers
       #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
       [ProducesResponseType(typeof(Comment), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
 
@@ -63,6 +80,21 @@ namespace OSnack.API.Controllers
 
          try
          {
+            ModelState.Clear();
+            TryValidateModel(modifiedComment);
+
+            foreach (var key in ModelState.Keys)
+            {
+               if (key.StartsWith("User") || key.StartsWith("Product"))
+                  ModelState.Remove(key);
+            }
+
+            if (!ModelState.IsValid)
+            {
+               CoreFunc.ExtractErrors(ModelState, ref ErrorsList);
+               return UnprocessableEntity(ErrorsList);
+            }
+
             Comment comment = await _DbContext.Comments
                .Include(c => c.User)
                .SingleOrDefaultAsync(c => c.Id == modifiedComment.Id && c.User.Id == AppFunc.GetUserId(User)).ConfigureAwait(false);

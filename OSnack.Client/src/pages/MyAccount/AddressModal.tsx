@@ -89,7 +89,7 @@ const AddressModal = (props: IProps) => {
    };
    const deleteAddress = async () => {
       errorAlert.PleaseWait(500, isUnmounted);
-      useDeleteAddress(address).then(result => {
+      useDeleteAddress(address.id!).then(result => {
          if (isUnmounted.current) return;
          errorAlert.clear();
          errorAlert.setSingleSuccess("Deleted", result.data);

@@ -282,6 +282,7 @@ const ViewOrders = (props: IProps) => {
             dispute={selectedDispute}
             access={props.access}
             onClose={() => { setIsOpenDisputeModalModal(false); }}
+            useAddMessageSecretCommunication={props.useAddMessageSecretCommunication}
          />
 
 
@@ -290,6 +291,8 @@ const ViewOrders = (props: IProps) => {
 };
 
 declare type IProps = {
+   useAddMessageSecretCommunication?: (modifyCommunication: Communication) => Promise<{ data: Communication, status?: number; }>;
+   useDeleteCommunication?: (communication: Communication) => Promise<{ data: string, status?: number; }>;
    access: ClientAppAccess;
    useAllUserOrderSecret?: (userId: number, selectedPage: number, maxNumberPerItemsPage: number, searchString: string | null, filterStatus: string | null, isSortAsce: boolean | undefined, sortName: string | null | undefined) => Promise<IReturnUseAllOfficialOrder>;
    usePutOrderStatusOrder?: (modifiedOrder: Order) => Promise<{ data: Order, status?: number; }>;

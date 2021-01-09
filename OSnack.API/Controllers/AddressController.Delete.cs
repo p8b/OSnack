@@ -25,13 +25,14 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status404NotFound)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
       #endregion
-      [HttpDelete("[action]")]
+      [HttpDelete("[action]/{addressId}")]
       [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test 
-      public async Task<IActionResult> Delete([FromBody] Address address)
+      public async Task<IActionResult> Delete(int addressId)
       {
          try
          {
-            if (!await _DbContext.Addresses.AnyAsync(a => a.Id == address.Id).ConfigureAwait(false))
+            Address address = await _DbContext.Addresses.SingleAsync(a => a.Id == addressId).ConfigureAwait(false);
+            if (address is null)
             {
                CoreFunc.Error(ref ErrorsList, "Address not found");
                return NotFound(ErrorsList);

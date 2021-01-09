@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OSnack.API.Database;
 
 namespace OSnack.API.Migrations
 {
     [DbContext(typeof(OSnackDbContext))]
-    partial class OSnackDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210108213552_0.1.1")]
+    partial class _011
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -281,34 +283,6 @@ namespace OSnack.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EmailTemplates");
-                });
-
-            modelBuilder.Entity("OSnack.API.Database.Models.Message", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<string>("Body")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CommunicationId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(36)");
-
-                    b.Property<string>("Date")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<bool>("IsCustomer")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CommunicationId");
-
-                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("OSnack.API.Database.Models.Newsletter", b =>
@@ -807,17 +781,6 @@ namespace OSnack.API.Migrations
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("OSnack.API.Database.Models.Message", b =>
-                {
-                    b.HasOne("OSnack.API.Database.Models.Communication", "Communication")
-                        .WithMany("Messages")
-                        .HasForeignKey("CommunicationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Communication");
-                });
-
             modelBuilder.Entity("OSnack.API.Database.Models.NutritionalInfo", b =>
                 {
                     b.HasOne("OSnack.API.Database.Models.Product", "Product")
@@ -936,11 +899,6 @@ namespace OSnack.API.Migrations
             modelBuilder.Entity("OSnack.API.Database.Models.Category", b =>
                 {
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("OSnack.API.Database.Models.Communication", b =>
-                {
-                    b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("OSnack.API.Database.Models.Coupon", b =>

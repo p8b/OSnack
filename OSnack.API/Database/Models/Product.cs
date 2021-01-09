@@ -17,11 +17,11 @@ namespace OSnack.API.Database.Models
       public int Id { get; set; }
 
       [Column(TypeName = "nvarchar(256)")]
-      [StringLength(256, ErrorMessage = "Must be less than 256 Characters \n")]
+      [StringLength(256, ErrorMessage = "Description Must be less than 256 Characters \n")]
       public string Description { get; set; }
 
       [Display(Name = "Original Display Image")]
-      [StringLength(50, ErrorMessage = "Must be less than 50 Characters \n")]
+      [StringLength(50, ErrorMessage = "Original Image Path Must be less than 50 Characters \n")]
       public string OriginalImagePath { get; set; }
 
       [NotMapped]

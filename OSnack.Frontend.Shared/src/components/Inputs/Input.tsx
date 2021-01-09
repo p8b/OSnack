@@ -35,8 +35,9 @@ export const Input = (props: IProps) => {
          }
          <input id={id} ref={props.ref} type={props?.type || "text"}
             className={`line-limit-1 ${props.showDanger ? "danger" : ""} ${props.showValid ? "valid" : ""} ${props.inputClassName || ""}`}
-            value={props.value || ""}
+            value={props.value ?? ""}
             onFocus={i => { lblPosition("initial"); }}
+            step="any"
             onChange={i => {
                props.onChange(i);
                props.validationPattern && validationClassName(i.target);

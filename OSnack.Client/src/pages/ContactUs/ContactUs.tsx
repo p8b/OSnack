@@ -22,16 +22,20 @@ const ContactUs = (props: IProps) => {
    const sendMessage = () => {
       errorAlert.PleaseWait(500, isUnmounted);
       contact.messages = [{ body: message }];
+      console.log("call");
       usePostQuestionCommunication(contact)
-         .then((result) => {
+         .then(result => {
             if (isUnmounted.current) return;
             setMessage("");
             errorAlert.setSingleSuccess("submit", result.data);
             setShowSuccess(true);
+            console.log(result.data);
+            console.log("success");
 
          }).catch(errors => {
             if (isUnmounted.current) return;
             errorAlert.set(errors);
+            console.log("catch");
          });
    };
 

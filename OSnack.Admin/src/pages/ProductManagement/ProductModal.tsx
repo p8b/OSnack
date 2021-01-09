@@ -56,6 +56,7 @@ const ProductModal = (props: IProps) => {
    }, [props.isOpen]);
 
    const createProduct = async () => {
+      console.log(product);
       errorAlert.PleaseWait(500, isUnmounted);
       usePostProduct(product).then(result => {
          if (isUnmounted.current) return;
@@ -65,6 +66,7 @@ const ProductModal = (props: IProps) => {
          errorAlert.clear();
       }).catch(errors => {
          if (isUnmounted.current) return;
+
          errorAlert.set(errors);
       });
    };
@@ -92,7 +94,7 @@ const ProductModal = (props: IProps) => {
 
    const deleteProduct = async () => {
       errorAlert.PleaseWait(500, isUnmounted);
-      useDeleteProduct(product).then(() => {
+      useDeleteProduct(product.id!).then(() => {
          if (isUnmounted.current) return;
          resetImageUpload();
          errorAlert.clear();

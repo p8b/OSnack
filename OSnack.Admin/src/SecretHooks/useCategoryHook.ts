@@ -1,16 +1,17 @@
 import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/components/Texts/Alert";
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
-import { Category, CategoryListAndTotalCount } from "osnack-frontend-shared/src/_core/apiModels";
+import { CategoryListAndTotalCount, Category } from "osnack-frontend-shared/src/_core/apiModels";
 export type IReturnUseDeleteCategory={ data:string , status?: number;};
-export const useDeleteCategory = async (category: Category): Promise<IReturnUseDeleteCategory> =>{
-        let url_ = API_URL + "/Category/Delete";
+export const useDeleteCategory = async (categoryId: number): Promise<IReturnUseDeleteCategory> =>{
+        let url_ = API_URL + "/Category/Delete/{categoryId}";
+        if (categoryId !== null && categoryId !== undefined)
+        url_ = url_.replace("{categoryId}", encodeURIComponent("" + categoryId));
         url_ = url_.replace(/[?&]$/, "");
-        const content_ = category;
-        let response = await httpCaller.DELETE(url_, content_);
+        let response = await httpCaller.DELETE(url_);
         if( response?.status === 400){
             await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
-            response = await httpCaller.DELETE(url_, content_);
+            response = await httpCaller.DELETE(url_);
         }
 
         switch(response?.status){

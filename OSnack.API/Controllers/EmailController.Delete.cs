@@ -22,16 +22,16 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
-      [HttpDelete("[action]")]
+      [HttpDelete("[action]/{emailTemplateId}")]
       [Authorize(AppConst.AccessPolicies.Secret)] /// Done
-      public async Task<IActionResult> DeleteTemplate([FromBody] EmailTemplate emailTemplate)
+      public async Task<IActionResult> DeleteTemplate(int emailTemplateId)
       {
          try
          {
             EmailTemplate foundTemplate = await _DbContext.EmailTemplates.AsTracking()
-               .FirstOrDefaultAsync((et) => et.Id == emailTemplate.Id)
+               .FirstOrDefaultAsync((et) => et.Id == emailTemplateId)
                .ConfigureAwait(false);
-            if (foundTemplate == null)
+            if (foundTemplate is null)
             {
                ErrorsList.Add(new Error("", "Template cannot be found."));
                return UnprocessableEntity(ErrorsList);
@@ -42,7 +42,7 @@ namespace OSnack.API.Controllers
             _DbContext.Remove(foundTemplate);
 
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
-            return Ok($"Email Template ('{emailTemplate.Name}') was deleted");
+            return Ok($"Email Template was deleted");
          }
          catch (Exception ex)
          {

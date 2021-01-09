@@ -14,10 +14,10 @@ namespace OSnack.API.Database.Models
    public class Communication
    {
       [Key]
-      [Column(TypeName = "nvarchar(9)")]
-      [StringLength(9, ErrorMessage = "Must be less than 9 Characters \n")]
+      [Column(TypeName = "nvarchar(36)")]
+      [StringLength(36, ErrorMessage = "Must be less than 36 Characters \n")]
       [EmailTemplateVariable(Name = "DisputeId")]
-      public string Id { get; set; }
+      public string Id { get; set; } = Guid.NewGuid().ToString();
 
       [Required(ErrorMessage = "Contact Type is Required \n")]
       public ContactType Type { get; set; }

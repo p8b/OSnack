@@ -3,14 +3,15 @@ import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
 import { EmailTemplate, EmailTemplateAndDefaultEmailTemplate, EmailTemplateTypes } from "osnack-frontend-shared/src/_core/apiModels";
 export type IReturnUseDeleteTemplateEmail={ data:string , status?: number;};
-export const useDeleteTemplateEmail = async (emailTemplate: EmailTemplate): Promise<IReturnUseDeleteTemplateEmail> =>{
-        let url_ = API_URL + "/Email/DeleteTemplate";
+export const useDeleteTemplateEmail = async (emailTemplateId: number): Promise<IReturnUseDeleteTemplateEmail> =>{
+        let url_ = API_URL + "/Email/DeleteTemplate/{emailTemplateId}";
+        if (emailTemplateId !== null && emailTemplateId !== undefined)
+        url_ = url_.replace("{emailTemplateId}", encodeURIComponent("" + emailTemplateId));
         url_ = url_.replace(/[?&]$/, "");
-        const content_ = emailTemplate;
-        let response = await httpCaller.DELETE(url_, content_);
+        let response = await httpCaller.DELETE(url_);
         if( response?.status === 400){
             await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
-            response = await httpCaller.DELETE(url_, content_);
+            response = await httpCaller.DELETE(url_);
         }
 
         switch(response?.status){

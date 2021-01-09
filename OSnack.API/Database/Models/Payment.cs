@@ -41,6 +41,8 @@ namespace OSnack.API.Database.Models
       [DataType(DataType.Currency, ErrorMessage = "Invalid Currency \n")]
       [Column(TypeName = "decimal(7,2)")]
       public decimal RefundAmount { get; set; }
+      public DateTime? RefundDateTime { get; set; }
+
 
       [Required(ErrorMessage = "Order is required \n")]
       [ForeignKey("OrderId")]

@@ -52,7 +52,7 @@ const DeliveyOptionModal = (props: IProps) => {
 
    const deleteDeliveryOption = async () => {
       errorAlert.PleaseWait(500, isUnmounted);
-      useDeleteDeliveryOption(deliveryOption).then(() => {
+      useDeleteDeliveryOption(deliveryOption.id!).then(() => {
          if (isUnmounted.current) return;
          errorAlert.clear();
          props.onClose();

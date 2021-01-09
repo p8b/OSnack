@@ -3,7 +3,7 @@ import EmailEditor from 'react-email-editor';
 import ButtonPopupConfirm from 'osnack-frontend-shared/src/components/Buttons/ButtonPopupConfirm';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
-import { EmailTemplate, EmailTemplateRequiredClass, EmailTemplateTypes } from 'osnack-frontend-shared/src/_core/apiModels';
+import { EmailTemplate, EmailTemplateRequiredClass, EmailTemplateTypes, EmailTemplateTypesList } from 'osnack-frontend-shared/src/_core/apiModels';
 import { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import CopyText from 'osnack-frontend-shared/src/components/Texts/CopyText';
 import { sleep } from 'osnack-frontend-shared/src/_core/appFunc';
@@ -107,7 +107,7 @@ const EmailTemplatesEdit = (props: IProps) => {
    };
    const onDelete = async () => {
       errorAlert.PleaseWait(500, isUnmounted);
-      useDeleteTemplateEmail(template).then(result => {
+      useDeleteTemplateEmail(template.id!).then(result => {
          if (isUnmounted.current) return;
          errorAlert.setSingleSuccess("Deleted", result.data);
          sleep(3000, isUnmounted).then(() => { setIsTemplateRecognised(false); });
@@ -168,7 +168,7 @@ const EmailTemplatesEdit = (props: IProps) => {
    }
    return (
       <>
-         <PageHeader title={`${template.id == 0 ? "New Template" : "Edit " + template.name?.replace(/([A-Z])/g, ' $1')}`} className="line-header line-limit-1" />
+         <PageHeader title={`${template.id == 0 ? "New Template" : "Edit " + EmailTemplateTypesList.find(e => e.Value == template.templateType)?.Name}`} className="line-header line-limit-1" />
          <div className="row col-12 mb-2" >
 
             <Button onClick={() => history.push("/EmailTemplate")} children="Back" className="mr-auto btn-lg back-icon" />
@@ -178,10 +178,10 @@ const EmailTemplatesEdit = (props: IProps) => {
             <Button onClick={saveTemplate} children={`Save${isSaved ? "d" : ""}`} className={`btn-lg btn-green ${isSaved ? "tick-icon" : "save-icon"}`} />
          </div>
          <div className="row pm-0 pl-3 pr-3">
-            {template.serverClasses != undefined && template.serverClasses!.length > 0 &&
+            {template.requiredClasses != undefined && template.requiredClasses!.length > 0 &&
                <InputDropdown dropdownTitle={`Server Model${selectedServerClass == undefined ? "s" : ": " + selectedServerClass.value}`}
                   className="col-auto pb-0">
-                  {template.serverClasses?.map(sc =>
+                  {template.requiredClasses?.map(sc =>
                      <div className="dropdown-item cursor-pointer pl-0 pr-0" key={Math.random()}
                         onClick={() => { setSelectedServerClass(sc); }}>
                         {sc.value}

@@ -28,6 +28,7 @@ const PasswordReset = lazy(() => import("osnack-frontend-shared/src/pages/Passwo
 const TermsAndConditions = lazy(() => import("./pages/TermsAndConditions/TermsAndConditions"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy/PrivacyPolicy"));
 const Unsubscribe = lazy(() => import("./pages/Newsletter/Unsubscribe"));
+const ViewQuestion = lazy(() => import("./pages/ContactUs/ViewQuestion"));
 
 const App = () => {
    return (
@@ -52,6 +53,7 @@ const App = () => {
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/PrivacyPolicy" Render={(props: any) => <PrivacyPolicy {...props} />} />
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/TermsAndConditions" Render={(props: any) => <TermsAndConditions {...props} />} />
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/Unsubscribe" Render={(props: any) => <Unsubscribe {...props} />} />
+                        <CustomRoute authenticate={useSilentOfficialAuthentication} path="/ViewQuestion" Render={(props: any) => <ViewQuestion {...props} />} />
 
                         {/***** Protected Routes  ****/}
                         <CustomRoute authenticate={useSilentOfficialAuthentication} exact AuthRequired path="/MyAccount" Render={(props: any) => <MyAccount {...props} />} />

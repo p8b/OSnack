@@ -22,16 +22,16 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status404NotFound)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
       #endregion
-      [HttpDelete("[action]")]
+      [HttpDelete("[action]/{deliveyOptionId}")]
       [Authorize(AppConst.AccessPolicies.Secret)]
       /// Ready For Test
-      public async Task<IActionResult> Delete([FromBody] DeliveryOption deliveyOption)
+      public async Task<IActionResult> Delete(int deliveyOptionId)
       {
          try
          {
-            DeliveryOption currentDeliveryOption = await _DbContext.DeliveryOptions.SingleOrDefaultAsync(d => d.Id == deliveyOption.Id)
+            DeliveryOption currentDeliveryOption = await _DbContext.DeliveryOptions.SingleOrDefaultAsync(d => d.Id == deliveyOptionId)
                            .ConfigureAwait(false);
-            if (currentDeliveryOption == null)
+            if (currentDeliveryOption is null)
             {
                CoreFunc.Error(ref ErrorsList, "Delivery Option not found");
                return NotFound(ErrorsList);
@@ -44,7 +44,7 @@ namespace OSnack.API.Controllers
                return StatusCode(412, ErrorsList);
             }
 
-            _DbContext.DeliveryOptions.Remove(deliveyOption);
+            _DbContext.DeliveryOptions.Remove(currentDeliveryOption);
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
 
             return Ok("Delivery Option was deleted");

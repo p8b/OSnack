@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
 using OSnack.API.Database;
-
+using P8B.Core.CSharp;
 using P8B.Core.CSharp.Models;
 using P8B.UK.API.Services;
 
@@ -24,5 +24,14 @@ namespace OSnack.API.Controllers
          _DbContext = db;
          _LoggingService = new LoggingService(db);
       }
+
+
+      internal UnprocessableEntityObjectResult checkObjectIsNull()
+      {
+         CoreFunc.Error(ref ErrorsList, "Request cannot be process.");
+         return UnprocessableEntity(ErrorsList);
+      }
+
+
    }
 }

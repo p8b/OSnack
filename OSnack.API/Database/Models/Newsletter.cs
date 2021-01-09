@@ -1,5 +1,5 @@
-﻿using P8B.Core.CSharp;
-
+﻿
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,9 +10,9 @@ namespace OSnack.API.Database.Models
 
 
       [Key]
-      [Column(TypeName = "nvarchar(7)")]
-      [StringLength(7, ErrorMessage = "Must be less than 7 Characters \n")]
-      public string Id { get; set; } = CoreFunc.StringGenerator(7, 0, 7, 7, 0);
+      [Column(TypeName = "nvarchar(36)")]
+      [StringLength(36, ErrorMessage = "Must be less than 36 Characters \n")]
+      public string Id { get; set; } = Guid.NewGuid().ToString();
 
       [DataType(DataType.EmailAddress, ErrorMessage = "Invalid Email \n")]
       [Required(ErrorMessage = "Email is Required \n")]

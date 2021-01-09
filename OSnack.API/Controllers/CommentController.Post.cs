@@ -31,6 +31,7 @@ namespace OSnack.API.Controllers
 
          try
          {
+
             User user = await _DbContext.Users
                .Include(u => u.Orders)
                .ThenInclude(o => o.OrderItems)

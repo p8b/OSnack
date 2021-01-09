@@ -24,14 +24,15 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(System.Collections.Generic.List<P8B.Core.CSharp.Models.Error>), StatusCodes.Status404NotFound)]
       [ProducesResponseType(typeof(System.Collections.Generic.List<P8B.Core.CSharp.Models.Error>), StatusCodes.Status412PreconditionFailed)]
       #endregion
-      [HttpDelete("[action]")]
+      [HttpDelete("[action]/{couponCode}")]
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
-      public async Task<IActionResult> Delete([FromBody] Coupon coupon)
+      public async Task<IActionResult> Delete(string couponCode)
       {
          try
          {
-            if (!await _DbContext.Coupons.AnyAsync(d => d.Code == coupon.Code)
-                           .ConfigureAwait(false))
+            Coupon coupon = await _DbContext.Coupons.SingleOrDefaultAsync(d => d.Code == couponCode)
+                           .ConfigureAwait(false);
+            if (coupon is null)
             {
                CoreFunc.Error(ref ErrorsList, "Coupon not found");
                return NotFound(ErrorsList);

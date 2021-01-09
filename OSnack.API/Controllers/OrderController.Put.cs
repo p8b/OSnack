@@ -143,6 +143,7 @@ namespace OSnack.API.Controllers
                   request.RequestBody(refundRequest);
                   var response = await PayPalClient.client().Execute(request);
                   originalOrder.Payment.RefundAmount = Convert.ToDecimal(refundValue);
+                  originalOrder.Payment.RefundDateTime = DateTime.UtcNow;
                   originalOrder.Payment.Type = originalOrder.Status == OrderStatusType.PartialyRefunded
                                                                      ? PaymentType.PartialyRefunded : PaymentType.FullyRefunded;
 

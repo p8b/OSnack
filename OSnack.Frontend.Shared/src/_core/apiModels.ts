@@ -160,10 +160,9 @@ export class Payee {
 }
 export class Coupon {
     code!: string;
-    pendigCode?: string | undefined;
     type!: CouponType;
-    maxUseQuantity?: number;
-    minimumOrderPrice?: number;
+    maxUseQuantity!: number;
+    minimumOrderPrice!: number;
     discountAmount?: number;
     expiryDate!: Date;
 
@@ -218,6 +217,7 @@ export class Payment {
     email?: string | undefined;
     dateTime!: Date;
     refundAmount?: number;
+    refundDateTime?: Date | undefined;
 
 }
 export class TaxInfo {
@@ -297,11 +297,10 @@ export class Communication {
 }
 export class EmailTemplate {
     id?: number = 0;
-    name?: string | undefined;
     templateType!: EmailTemplateTypes;
     subject!: string;
     tokenUrlPath?: string | undefined;
-    serverClasses?: EmailTemplateRequiredClass[] | undefined;
+    requiredClasses?: EmailTemplateRequiredClass[] | undefined;
     html!: string;
     design!: any;
 

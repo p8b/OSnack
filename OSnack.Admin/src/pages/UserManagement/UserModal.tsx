@@ -45,7 +45,7 @@ const UserModal = (props: IProps) => {
    };
    const deleteUser = async () => {
       errorAlert.PleaseWait(500, isUnmounted);
-      useDeleteUser(user).then(() => {
+      useDeleteUser(user.id!).then(() => {
          if (isUnmounted.current) return;
          errorAlert.setSingleSuccess("", "confirm");
          setUser(user);

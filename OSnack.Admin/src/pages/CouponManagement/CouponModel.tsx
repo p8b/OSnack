@@ -15,6 +15,7 @@ const CouponModel = (props: IProps) => {
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
    const [coupon, setCoupon] = useState(new Coupon());
+   const [pendingCode, setPendingCode] = useState("");
 
    useEffect(() => {
       return () => { isUnmounted.current = true; };
@@ -23,14 +24,15 @@ const CouponModel = (props: IProps) => {
    useEffect(() => {
       if (props.coupon.code == undefined)
          setCoupon({ ...props.coupon, expiryDate: getNextDate(31) });
-      else
+      else {
          setCoupon(props.coupon);
-
+         setPendingCode(props.coupon.code);
+      }
    }, [props.coupon]);
 
    const createCoupon = async () => {
       errorAlert.PleaseWait(500, isUnmounted);
-      usePostCoupon(coupon).then(result => {
+      usePostCoupon({ ...coupon, code: pendingCode }).then(result => {
          if (isUnmounted.current) return;
          setCoupon(result.data);
          props.onSuccess();
@@ -57,7 +59,7 @@ const CouponModel = (props: IProps) => {
 
    const deleteCoupon = async () => {
       errorAlert.PleaseWait(500, isUnmounted);
-      useDeleteCoupon(coupon).then(() => {
+      useDeleteCoupon(coupon.code).then(() => {
          if (isUnmounted.current) return;
          errorAlert.clear();
          props.onSuccess();
@@ -75,9 +77,9 @@ const CouponModel = (props: IProps) => {
          {/***** Name ****/}
          <div className="row">
             <Input label="Code*"
-               value={coupon.pendigCode || coupon.code}
+               value={pendingCode}
                disabled={(coupon.code != undefined)}
-               onChange={i => { if (coupon.code == undefined) setCoupon({ ...coupon, pendigCode: i.target.value }); }}
+               onChange={i => { if (coupon.code == undefined) setPendingCode(i.target.value); }}
                className="col-12 col-sm-6"
                showDanger={errorAlert.checkExist("code")}
             />

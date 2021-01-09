@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 using OSnack.API.Extras.CustomTypes;
@@ -22,17 +21,19 @@ namespace OSnack.API.Controllers
       #region ***  ***
       [Consumes(MediaTypeNames.Application.Json)]
       [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-      #endregion
-      [HttpDelete("[action]")]
-      [Authorize(AppConst.AccessPolicies.Secret)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status404NotFound)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
+      #endregion
+      [HttpDelete("[action]/{productId}")]
+      [Authorize(AppConst.AccessPolicies.Secret)]
+
       /// Done    
-      public async Task<IActionResult> Delete([FromBody] Product product)
+      public async Task<IActionResult> Delete(int productId)
       {
          try
          {
-            if (!await _DbContext.Products.AnyAsync(d => d.Id == product.Id).ConfigureAwait(false))
+            Product product = await _DbContext.Products.SingleOrDefaultAsync(d => d.Id == productId).ConfigureAwait(false);
+            if (product is null)
             {
                CoreFunc.Error(ref ErrorsList, "Product not found");
                return NotFound(ErrorsList);

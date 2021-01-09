@@ -47,7 +47,7 @@ namespace OSnack.API.Controllers
          try
          {
             var originalCommunication = await _DbContext.Communications.Include(c => c.Messages).SingleOrDefaultAsync(c => c.Id == modifyCommunication.Id);
-            if (originalCommunication == null)
+            if (originalCommunication is null)
             {
                CoreFunc.Error(ref ErrorsList, "Dispute Not exists.");
                return StatusCode(412, ErrorsList);
@@ -58,7 +58,7 @@ namespace OSnack.API.Controllers
 
             var newMessage = modifyCommunication.Messages.Find(m => m.Id == 0);
 
-            if (string.IsNullOrWhiteSpace(newMessage.Body))
+            if (string.IsNullOrWhiteSpace(newMessage.Body) && modifyCommunication.IsOpen)
             {
                /// extract the errors and return bad request containing the errors
                CoreFunc.Error(ref ErrorsList, "Message is required.");

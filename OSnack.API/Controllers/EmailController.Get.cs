@@ -31,7 +31,7 @@ namespace OSnack.API.Controllers
          try
          {
             List<EmailTemplate> templateList = await _DbContext.EmailTemplates
-               .OrderByDescending(et => et.Name)
+               .OrderByDescending(et => et.TemplateType)
                .ToListAsync().ConfigureAwait(false);
 
             EmailTemplate copyDefaultTemplate = null;

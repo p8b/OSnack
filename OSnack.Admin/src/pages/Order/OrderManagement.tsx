@@ -118,7 +118,7 @@ const OrderManagement = (props: IProps) => {
 
       orderList.map(order =>
          tData.AddRow([
-            <span>  <span className={`${getBadgeByOrderStatusType(order.status)} font-weight-bold pm-0  h6 mt-auto mb-auto `}
+            <span>  <span className={`${getBadgeByOrderStatusType(order.status)} pm-0  h6 mt-auto mb-auto `}
                children={OrderStatusTypeList.find(t => t.Value == order.status)?.Name} /></span>,
             getFullNameOrEmail(order),
             `£${order.totalPrice}`,
@@ -174,7 +174,7 @@ const OrderManagement = (props: IProps) => {
    return (
 
       <Container className="container-fluid ">
-         <PageHeader title="Order Management" className="hr-section-sm line-limit-1" />
+         <PageHeader title="Orders" className="hr-section-sm line-limit-1" />
 
          <Container className="row col-12 col-md-11 pt-2 pb-2 bg-white ml-auto mr-auto">
             <Alert alert={errorAlert.alert}

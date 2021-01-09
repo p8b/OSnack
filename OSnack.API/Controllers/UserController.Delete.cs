@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.EntityFrameworkCore;
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 
@@ -10,7 +10,6 @@ using P8B.Core.CSharp.Models;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 namespace OSnack.API.Controllers
 {
@@ -24,25 +23,25 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
-      [HttpDelete("[action]")]
+      [HttpDelete("[action]/{userId}")]
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test 
-      public async Task<IActionResult> Delete([FromBody] User thisUser)
+      public async Task<IActionResult> Delete(int userId)
       {
          try
          {
-            /// if the User record with the same id is not found
-            if (!_DbContext.Users.Any(u => u.Id == thisUser.Id))
+            User user = await _DbContext.Users.SingleOrDefaultAsync(u => u.Id == userId).ConfigureAwait(false);
+            if (user is null)
             {
                CoreFunc.Error(ref ErrorsList, "User not found");
                return StatusCode(412, ErrorsList);
             }
             /// else the User is found
             /// now delete the user record
-            _DbContext.Users.Remove(_DbContext.Users.Find(thisUser.Id));
+            _DbContext.Users.Remove(user);
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
 
             /// return 200 OK status
-            return Ok($"User ID ('{thisUser.Id}') was deleted");
+            return Ok($"User ID ('{user.Id}') was deleted");
          }
          catch (Exception ex)
          {

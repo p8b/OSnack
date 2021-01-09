@@ -3,6 +3,7 @@ import Container from '../../components/Container';
 import { Access } from '../../_core/appConstant.Variables';
 import ViewOrders from 'osnack-frontend-shared/src/components/Order/ViewOrders';
 import { useAllUserOrder, usePutOrderStatusOrder } from '../../SecretHooks/useOrderHook';
+import { useAddMessageSecretCommunication } from '../../SecretHooks/useCommunicationHook';
 
 const ViewUserOrders = (props: IProps) => {
    return (
@@ -12,6 +13,7 @@ const ViewUserOrders = (props: IProps) => {
             useAllUserOrderSecret={useAllUserOrder}
             usePutOrderStatusOrder={usePutOrderStatusOrder}
             location={props.location}
+            useAddMessageSecretCommunication={useAddMessageSecretCommunication}
          />
       </Container>
    );

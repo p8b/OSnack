@@ -100,7 +100,7 @@ const CategoryModal = (props: IProps) => {
    };
    const deleteCategory = async () => {
       errorAlert.PleaseWait(500, isUnmounted);
-      useDeleteCategory(category).then(() => {
+      useDeleteCategory(category.id!).then(() => {
          if (isUnmounted.current) return;
          errorAlert.clear();
          resetImageUpload();

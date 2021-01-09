@@ -121,7 +121,7 @@ const ProductManagement = (props: IProps) => {
       tData.AddHeader("Name", "Name")
          .AddHeader("Category", "Category.Name")
          .AddHeader("Price", "Price")
-         .AddHeader("Unit Quantity", "UnitQuantity")
+         .AddHeader("Unit Quantity")
          .AddHeader("Status", "Status");
 
       productList.map(product =>

@@ -24,8 +24,6 @@ namespace OSnack.API.Database.Models
          DefaultValue(0)]
       public int Id { get; set; }
 
-      [Column(TypeName = "nvarchar(256)")]
-      public string Name { get; set; }
       [Required(ErrorMessage = "Type Is Required \n")]
       public EmailTemplateTypes TemplateType { get; set; }
 
