@@ -82,7 +82,7 @@ const ViewCommunication = (props: IProps) => {
             }
          </div>
          {communication.id != undefined && (communication.messages?.length ?? 0) > 0 &&
-            <div className="col-12 m-0 pt-1 pb-1 bg-light-gray overflow-y-auto">
+            <div className="col-12 m-0 pt-1 pb-1 bg-light-gray">
                {communication.messages!.map(message => {
                   return (
                      <div key={message.id} className={`col-10 chat ${getChatCss(message.isCustomer)}`}>
@@ -112,6 +112,7 @@ const ViewCommunication = (props: IProps) => {
             <ModalFooter
                createText="Send"
                cancelText="Close"
+               classNameCreate={props.classNameCreate}
                onCreate={(communicationStatus || communication.status) ? sendMessage : undefined}
                onDelete={(communication.type != ContactType.Dispute && props.access === ClientAppAccess.Secret && !communication.status) ? deleteCommunication : undefined}
                onCancel={props.onClose}
@@ -128,5 +129,6 @@ declare type IProps = {
    access: ClientAppAccess;
    communication: Communication;
    onClose?: () => void;
+   classNameCreate?: string;
 };
 export default ViewCommunication;

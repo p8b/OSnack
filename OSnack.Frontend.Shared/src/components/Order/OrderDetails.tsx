@@ -104,7 +104,7 @@ const OrderDetails = (props: IProps) => {
                }
 
                {props.order.dispute != undefined &&
-                  <div className="col-12 pm-0 cursor-pointer  small-text text-primary" onClick={() => props.showDispute!(props.order.dispute!)}>Show Dispute.</div>
+                  <div className="col-12 pm-0 cursor-pointer  small-text text-primary" onClick={() => props.showDispute!(props.order.dispute!)}>View Dispute History.</div>
                }
 
                <div className="pm-0 mt-3">

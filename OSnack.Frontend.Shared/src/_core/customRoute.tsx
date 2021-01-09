@@ -40,7 +40,7 @@ const CustomRoute = (props: IProps) => {
       setPrevPath(props.path);
    }
    if (props.AuthRequired && !auth.state.isAuthenticated && !authChecking)
-      return (<Redirect to={{ pathname: "/Login", state: { fromPath: prevPath } }} />);
+      return (<Redirect to={{ pathname: "/Login", state: { fromPath: window.location.pathname } }} />);
 
    if (!props.AuthRequired || (props.AuthRequired && auth.state.isAuthenticated && !authChecking))
       return (<Route exact={props?.exact} path={props.path} render={props.Render} />);

@@ -52,6 +52,7 @@ const ViewQuestion = (props: IProps) => {
                <div className="row justify-content-center bg-white p-3">
                   <ViewCommunication access={Access}
                      communication={communication}
+                     classNameCreate="col-md-auto ml-auto"
                   />
                </div>
             }

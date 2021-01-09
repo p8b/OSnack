@@ -6,28 +6,28 @@ const ModalFooter = (props: IProps) => {
       <div className="row col-12 pm-0 ">
          { props.onCreate &&
             <Button children={props.createText || "Create"}
-               className="col-12 col-md mt-2 btn-green btn-lg"
+               className={`col-12 col-md mt-2 btn-green btn-lg ${props.classNameCreate}`}
                onClick={props.onCreate} />
          }
          { props.onUpdate &&
             <ButtonPopupConfirm title={props.upatedText || "Update"}
-               popupMessage={props.confirmText || "Are you sure?"}
-               className={`col-12 col-md mt-2 `}
+               popupMessage={props.deleteConfirmText || "Are you sure?"}
+               className={`col-12 col-md mt-2 ${props.classNameUpdate}`}
                btnClassName="btn-green"
                onConfirmClick={props.onUpdate}
             />
          }
          { props.onDelete &&
             <ButtonPopupConfirm title={props.deleteText || "Delete"}
-               popupMessage={props.confirmText || "Are you sure?"}
-               className="col-12 col-md mt-2"
+               popupMessage={props.deleteConfirmText || "Are you sure?"}
+               className={`col-12 col-md mt-2 ${props.deleteConfirmText}`}
                btnClassName="btn-red"
                onConfirmClick={props.onDelete}
             />
          }
          { props.onCancel &&
             <Button children={props.cancelText || "Cancel"}
-               className={`col-12 col-md mt-2 btn-white btn-lg`}
+               className={`col-12 col-md mt-2 btn-white btn-lg ${props.classNameCancel}`}
                onClick={props.onCancel} />
          }
       </div>
@@ -39,7 +39,12 @@ interface IProps {
    upatedText?: string;
    deleteText?: string;
    cancelText?: string;
-   confirmText?: string;
+   classNameCreate?: string;
+   classNameUpdate?: string;
+   classNameDelete?: string;
+   classNameCancel?: string;
+   updateConfirmText?: string;
+   deleteConfirmText?: string;
    onCreate?: () => void;
    onUpdate?: () => void;
    onDelete?: () => void;

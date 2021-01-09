@@ -153,14 +153,17 @@ namespace OSnack.API.Services
          }
       }
 
-      public async Task<bool> OrderDisputeAsync(Order order)
+      public async Task<bool> OrderDisputeAsync(Order order, Communication communication)
       {
          try
          {
             await SetUserTemplate(EmailTemplateTypes.OrderDispute).ConfigureAwait(false);
+
+            communication.SetURL(AppConst.Settings.EmailSettings.PathNames.Dispute);
             foreach (EmailTemplateRequiredClass serverClass in Template.RequiredClasses)
             {
                SetTemplateServerPropValue(serverClass, order);
+               SetTemplateServerPropValue(serverClass, communication);
             }
 
             string email = order.Payment.Email;

@@ -39,7 +39,7 @@ namespace OSnack.API.Extras.CustomTypes
       [EmailTemplateTypeRequiredClasses(typeof(Order), typeof(Payment), typeof(Message))]
       OrderCancellation = 8,
 
-      [EmailTemplateTypeRequiredClasses(typeof(Order))]
+      [EmailTemplateTypeRequiredClasses(typeof(Order), typeof(Communication))]
       OrderDispute = 9,
 
    }

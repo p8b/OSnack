@@ -1,6 +1,9 @@
 ﻿using Newtonsoft.Json;
+
+using OSnack.API.Extras;
 using OSnack.API.Extras.Attributes;
 using OSnack.API.Extras.CustomTypes;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -16,7 +19,6 @@ namespace OSnack.API.Database.Models
       [Key]
       [Column(TypeName = "nvarchar(36)")]
       [StringLength(36, ErrorMessage = "Must be less than 36 Characters \n")]
-      [EmailTemplateVariable(Name = "DisputeId")]
       public string Id { get; set; } = Guid.NewGuid().ToString();
 
       [Required(ErrorMessage = "Contact Type is Required \n")]
@@ -47,6 +49,13 @@ namespace OSnack.API.Database.Models
       public List<Message> Messages { get; set; }
 
       public DateTime Date { get; set; } = DateTime.UtcNow;
+
+
+      [EmailTemplateVariable(Name = "CommunicationURL")]
+      [NotMapped]
+      public string URL { get; private set; }
+
+      public void SetURL(string url) => URL = $"{AppConst.Settings.AppDomains.ClientApp}{url}/{Id}";
    }
 
 }

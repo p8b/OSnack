@@ -50,7 +50,10 @@ namespace OSnack.API.Controllers
             newDispute.Email = user.Email;
             newDispute.FullName = $"{user.FirstName} {user.Surname}";
             newDispute.Status = true;
-            newDispute.Order = await _DbContext.Orders.SingleOrDefaultAsync(o => o.Id == newDispute.Order_Id);
+            newDispute.Order = await _DbContext.Orders
+               .Include(o => o.Payment)
+               .Include(o => o.User)
+               .SingleOrDefaultAsync(o => o.Id == newDispute.Order_Id);
             newDispute.Type = ContactType.Dispute;
             newDispute.Messages[0].IsCustomer = true;
 
@@ -70,9 +73,11 @@ namespace OSnack.API.Controllers
 
             await _DbContext.Communications.AddAsync(newDispute).ConfigureAwait(false);
             _DbContext.Entry(newDispute.Order).State = EntityState.Unchanged;
+            _DbContext.Entry(newDispute.Order.User).State = EntityState.Unchanged;
+            _DbContext.Entry(newDispute.Order.Payment).State = EntityState.Unchanged;
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
 
-            await _EmailService.OrderDisputeAsync(newDispute.Order).ConfigureAwait(false);
+            await _EmailService.OrderDisputeAsync(newDispute.Order, newDispute).ConfigureAwait(false);
 
             return Created("", newDispute);
          }

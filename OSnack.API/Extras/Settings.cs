@@ -33,10 +33,10 @@ namespace OSnack.API.Extras
       public string BrandName { get; set; }
 
       /// <summary>
-      /// Use for setting the domain of antiforgery token cookie
+      /// App Domains
       /// </summary>
-      [JsonProperty(PropertyName = "AntiforgeryCookieDomain")]
-      public string AntiforgeryCookieDomain { get; set; }
+      [JsonProperty(PropertyName = "AppDomains")]
+      public AppDomains AppDomains { get; set; }
 
 
       /// <summary>
@@ -51,10 +51,6 @@ namespace OSnack.API.Extras
       [JsonProperty(PropertyName = "PayPal")]
       public PayPalSettings PayPal { get; set; }
 
-      /// <summary>
-      /// The array of allowed CORs (Cross-Origin Request) URL
-      /// which are allowed to connect to the web API
-      /// </summary>
       [JsonProperty(PropertyName = "DbConnectionStrings")]
       private string[] _DbConnectionStrings { get; set; }
 
@@ -90,5 +86,20 @@ namespace OSnack.API.Extras
          //return SelectedConnection;
          return _DbConnectionStrings[0];
       }
+   }
+
+   public class AppDomains
+   {
+
+      /// <summary>
+      /// Use for setting the domain of antiforgery token cookie
+      /// </summary>
+      [JsonProperty(PropertyName = "AntiforgeryCookieDomain")]
+      public string AntiforgeryCookieDomain { get; set; }
+
+      [JsonProperty(PropertyName = "ClientApp")]
+      public string ClientApp { get; set; }
+      [JsonProperty(PropertyName = "AdminApp")]
+      public string AdminApp { get; set; }
    }
 }

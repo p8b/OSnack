@@ -125,7 +125,7 @@ namespace OSnack.API.Controllers
                HttpOnly = false,
                SameSite = SameSiteMode.Lax,
                Secure = true,
-               Domain = AppConst.Settings.AntiforgeryCookieDomain
+               Domain = AppConst.Settings.AppDomains.AntiforgeryCookieDomain
             };
          }
          AntiforgeryTokenSet tokens = _Antiforgery.GetAndStoreTokens(HttpContext);
