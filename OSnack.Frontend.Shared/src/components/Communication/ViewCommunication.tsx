@@ -1,13 +1,12 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import { Communication, ContactType } from '../../_core/apiModels';
-import { IReturnUseAddMessageOfficialCommunication, useAddMessageOfficialCommunication } from '../../hooks/OfficialHooks/useCommunicationHook';
+import { IReturnUsePutOfficialCommunication, usePutOfficialCommunication } from '../../hooks/OfficialHooks/useCommunicationHook';
 import PageHeader from '../Texts/PageHeader';
 import { TextArea } from '../Inputs/TextArea';
 import Alert, { AlertObj, useAlert } from '../Texts/Alert';
 import { ClientAppAccess } from '../../_core/constant.Variables';
 import { Toggler } from '../Inputs/Toggler';
 import ModalFooter from '../Modals/ModalFooter';
-import DropDown from '../Buttons/DropDown';
 
 const ViewCommunication = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -21,7 +20,7 @@ const ViewCommunication = (props: IProps) => {
 
    useEffect(() => {
       setCommunication(props.communication);
-      setCommunicationStatus(props.communication.isOpen ?? false);
+      setCommunicationStatus(props.communication.status ?? false);
    }, [props.communication]);
 
    useEffect(() => {
@@ -39,29 +38,14 @@ const ViewCommunication = (props: IProps) => {
       errorAlert.PleaseWait(500, isUnmounted);
       switch (props.access) {
          case ClientAppAccess.Official:
-            useAddMessageOfficialCommunication({
-               ...communication,
-               messages: [...props.communication.messages!, { body: message }]
-            }).then(onSuccess).catch(onError);
+            usePutOfficialCommunication(communication.id ?? null, message).then(onSuccess).catch(onError);
          case ClientAppAccess.Secret:
-            props.useAddMessageSecretCommunication!({
-               ...communication,
-               messages: [...props.communication.messages!, { body: message }],
-               isOpen: communicationStatus
-            }).then(onSuccess).catch(onError);
+            props.usePutSecretCommunication!(communication.id ?? null, message, communicationStatus).then(onSuccess).catch(onError);
          default:
       }
    };
-   const deleteMessage = (messageId?: number) => {
-      errorAlert.PleaseWait(500, isUnmounted);
-      props.useDeleteMessageCommunication!(communication.id ?? null, messageId ?? 0).then(result => {
-         if (isUnmounted.current) return;
-         setCommunication(result.data);
-         errorAlert.clear();
-      }).catch(onError);
-   };
 
-   const onSuccess = (result: IReturnUseAddMessageOfficialCommunication) => {
+   const onSuccess = (result: IReturnUsePutOfficialCommunication) => {
       if (isUnmounted.current) return;
       setMessage("");
       setCommunication(result.data);
@@ -86,7 +70,7 @@ const ViewCommunication = (props: IProps) => {
    return (
       <>
          <div className="col-12 pm-0 pos-t-sticky pt-3 bg-white">
-            <PageHeader title={`${communication.type === ContactType.Dispute ? "Dispute" : "Question"} ${communication.isOpen ? "" : "Closed"}`} />
+            <PageHeader title={`${communication.type === ContactType.Dispute ? "Dispute" : "Question"} ${communication.status ? "" : "Closed"}`} />
             {props.access == ClientAppAccess.Secret &&
                <Toggler
                   className="toggler-lg circle col pb-3"
@@ -107,15 +91,6 @@ const ViewCommunication = (props: IProps) => {
                            <div className="col text-gray small-text line-limit-1">
                               {new Date(message.date!).ToShortDateTime()} - {message.isCustomer ? communication.fullName : "Customer Support"}
                            </div>
-                           {props.access === ClientAppAccess.Secret && !message.isCustomer &&
-                              <DropDown className="col-auto"
-                                 title="...">
-                                 <button className="dropdown-item"
-                                    onClick={() => { deleteMessage(message.id); }} >
-                                    Delete
-                           </button>
-                              </DropDown>
-                           }
                         </div>
                      </div>
                   );
@@ -137,8 +112,8 @@ const ViewCommunication = (props: IProps) => {
             <ModalFooter
                createText="Send"
                cancelText="Close"
-               onCreate={(communicationStatus || communication.isOpen) ? sendMessage : undefined}
-               onDelete={(communication.type != ContactType.Dispute && props.access === ClientAppAccess.Secret && !communication.isOpen) ? deleteCommunication : undefined}
+               onCreate={(communicationStatus || communication.status) ? sendMessage : undefined}
+               onDelete={(communication.type != ContactType.Dispute && props.access === ClientAppAccess.Secret && !communication.status) ? deleteCommunication : undefined}
                onCancel={props.onClose}
             />
          </div>
@@ -148,10 +123,8 @@ const ViewCommunication = (props: IProps) => {
 };
 
 declare type IProps = {
-   useAddMessageSecretCommunication?: (modifyCommunication: Communication) => Promise<{ data: Communication, status?: number; }>;
+   usePutSecretCommunication?: (communicationId: string | null, messageBody: string | null, status: boolean) => Promise<{ data: Communication, status?: number; }>;
    useDeleteCommunication?: (communicationId: string | null) => Promise<{ data: string, status?: number; }>;
-   useDeleteMessageCommunication?: (communicationId: string | null, messageId: number) => Promise<{ data: Communication, status?: number; }>;
-   useUpdateStatusCommunication?: (communicationId: string | null, status: boolean) => Promise<{ data: Communication, status?: number; }>;
    access: ClientAppAccess;
    communication: Communication;
    onClose?: () => void;

@@ -14,6 +14,7 @@ import CommunicationModal from '../Modals/CommunicationModal';
 import { Button } from '../Buttons/Button';
 import DropDown from '../Buttons/DropDown';
 import SearchInput from '../Inputs/SeachInput';
+import { IReturnUsePutOfficialCommunication } from '../../hooks/OfficialHooks/useCommunicationHook';
 
 const ViewOrders = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -22,7 +23,7 @@ const ViewOrders = (props: IProps) => {
    const [selectUserId, setSelectUserId] = useState(Number(extractUri(window.location.pathname)[1]));
    const [searchValue, setSearchValue] = useState("");
    const [selectedDispute, setSelectedDispute] = useState(new Communication());
-   const [isOpenDisputeModalModal, setIsOpenDisputeModalModal] = useState(false);
+   const [isOpenDisputeModal, setIsOpenDisputeModal] = useState(false);
    const [selectOrder, setSelectOrder] = useState(new Order());
    const [selectType, setSelectType] = useState(GetAllRecords);
    const [isOpenOrderModal, setIsOpenOrderModal] = useState(false);
@@ -169,7 +170,7 @@ const ViewOrders = (props: IProps) => {
             new Date(order.date!).ToShortDate(),
             PaymentTypeList.find(t => t.Value == order.payment.type)?.Name,
             <>
-               {order.dispute == undefined &&
+               {(order.dispute == undefined || !order.dispute.status) &&
                   <TableRowButtons
                      btnClassName="btn-blue edit-icon"
                      btnClick={() => {
@@ -177,7 +178,7 @@ const ViewOrders = (props: IProps) => {
                         setIsOpenOrderModal(true);
                      }}
                   />}
-               {order.dispute != undefined &&
+               {(order.dispute != undefined && order.dispute.status) &&
                   <TableRowButtons
                      btn1ClassName="col-12 col-lg-6 btn-blue edit-icon"
                      btn1Click={() => {
@@ -186,7 +187,7 @@ const ViewOrders = (props: IProps) => {
                      }}
                      btnClassName="col-12 col-lg-6 btn-white small-text"
                      btnChildren="Dispute"
-                     btnClick={() => { setSelectedDispute(order.dispute!); setIsOpenDisputeModalModal(true); }}
+                     btnClick={() => { setSelectedDispute(order.dispute!); setIsOpenDisputeModal(true); }}
                   />}
             </>
          ]));
@@ -275,14 +276,12 @@ const ViewOrders = (props: IProps) => {
             onClose={() => { setIsOpenOrderModal(false); onSearch(); }}
             onSave={UpdateOrder}
             onDispute={props.onDispute}
-         />
-         <CommunicationModal isOpen={isOpenDisputeModalModal}
+            usePutSecretCommunication={props.usePutSecretCommunication} />
+         <CommunicationModal isOpen={isOpenDisputeModal}
             communication={selectedDispute}
             access={props.access}
-            onClose={() => { setIsOpenDisputeModalModal(false); }}
-            useAddMessageSecretCommunication={props.useAddMessageSecretCommunication}
-            useDeleteMessageCommunication={props.useDeleteMessageCommunication}
-            useUpdateStatusCommunication={props.useUpdateStatusCommunication}
+            onClose={() => { setIsOpenDisputeModal(false); }}
+            usePutSecretCommunication={props.usePutSecretCommunication}
          />
 
 
@@ -292,10 +291,7 @@ const ViewOrders = (props: IProps) => {
 
 declare type IProps = {
    access: ClientAppAccess;
-   useAddMessageSecretCommunication?: (modifyCommunication: Communication) => Promise<{ data: Communication, status?: number; }>;
-   useDeleteCommunication?: (communicationId: string | null) => Promise<{ data: string, status?: number; }>;
-   useDeleteMessageCommunication?: (communicationId: string | null, messageId: number) => Promise<{ data: Communication, status?: number; }>;
-   useUpdateStatusCommunication?: (communicationId: string | null, status: boolean) => Promise<{ data: Communication, status?: number; }>;
+   usePutSecretCommunication?: (communicationId: string | null, messageBody: string | null, status: boolean) => Promise<IReturnUsePutOfficialCommunication>;
    useAllUserOrderSecret?: (userId: number, selectedPage: number, maxNumberPerItemsPage: number, searchString: string | null, filterStatus: string | null, isSortAsce: boolean | undefined, sortName: string | null | undefined) => Promise<IReturnUseAllOfficialOrder>;
    usePutOrderStatusOrder?: (modifiedOrder: Order) => Promise<{ data: Order, status?: number; }>;
    location?: any;

@@ -13,7 +13,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Container from '../../components/Container';
 import { useAllOrder, usePutOrderStatusOrder } from '../../SecretHooks/useOrderHook';
-import { useAddMessageSecretCommunication, useDeleteMessageCommunication } from '../../SecretHooks/useCommunicationHook';
+import { usePutSecretCommunication } from '../../SecretHooks/useCommunicationHook';
 import { Access } from '../../_core/appConstant.Variables';
 import CommunicationModal from 'osnack-frontend-shared/src/components/Modals/CommunicationModal';
 
@@ -125,7 +125,7 @@ const OrderManagement = (props: IProps) => {
             PaymentTypeList.find(t => t.Value == order.payment.type)?.Name,
             new Date(order.date!).ToShortDate(),
             <>
-               {order.dispute == undefined &&
+               {(order.dispute == undefined || !order.dispute.status) &&
                   <TableRowButtons
                      btnClassName="btn-blue edit-icon"
                      btnClick={() => {
@@ -133,7 +133,7 @@ const OrderManagement = (props: IProps) => {
                         setIsOpenOrderModal(true);
                      }}
                   />}
-               {order.dispute != undefined &&
+               {(order.dispute != undefined && order.dispute.status) &&
                   <TableRowButtons
                      btn1ClassName="col-12 col-lg-6 btn-blue edit-icon"
                      btn1Click={() => {
@@ -228,13 +228,13 @@ const OrderManagement = (props: IProps) => {
                order={selectOrder}
                access={Access}
                onClose={() => setIsOpenOrderModal(false)}
-               onSave={UpdateOrder} />
+               onSave={UpdateOrder}
+               usePutSecretCommunication={usePutSecretCommunication} />
             <CommunicationModal isOpen={isOpenDisputeModal}
                communication={selectedDispute}
                access={Access}
                onClose={() => { setIsOpenDisputeModal(false); onSearch(); }}
-               useAddMessageSecretCommunication={useAddMessageSecretCommunication}
-               useDeleteMessageCommunication={useDeleteMessageCommunication}
+               usePutSecretCommunication={usePutSecretCommunication}
             />
          </Container>
       </Container>

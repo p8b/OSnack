@@ -58,50 +58,5 @@ namespace OSnack.API.Controllers
          }
       }
 
-      #region *** ***
-      [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(typeof(Communication), StatusCodes.Status200OK)]
-      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
-      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status404NotFound)]
-      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
-      #endregion
-      [HttpDelete("[action]/{communicationId}/{messageId}")]
-      [Authorize(AppConst.AccessPolicies.Secret)]
-      public async Task<IActionResult> DeleteMessage(string communicationId, int messageId)
-      {
-         try
-         {
-            Message currentMessage = await _DbContext.Messages.SingleOrDefaultAsync(m => m.Id == messageId)
-                           .ConfigureAwait(false);
-
-            if (currentMessage is null)
-            {
-               CoreFunc.Error(ref ErrorsList, "Message not found");
-               return NotFound(ErrorsList);
-            }
-
-            if (currentMessage.IsCustomer)
-            {
-               CoreFunc.Error(ref ErrorsList, "Cannot delete customer message");
-               return NotFound(ErrorsList);
-            }
-
-            _DbContext.Messages.Remove(currentMessage);
-            await _DbContext.SaveChangesAsync().ConfigureAwait(false);
-
-
-            Communication originalCommunication = await _DbContext.Communications
-               .Include(c => c.Messages)
-            .SingleOrDefaultAsync(c => c.Id.Equals(communicationId))
-            .ConfigureAwait(false);
-
-            return Ok(originalCommunication);
-         }
-         catch (Exception ex)
-         {
-            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
-            return StatusCode(417, ErrorsList);
-         }
-      }
    }
 }

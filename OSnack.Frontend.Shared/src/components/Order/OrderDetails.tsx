@@ -1,5 +1,5 @@
 ﻿import React, { useEffect, useState } from 'react';
-import { Order, OrderStatusType, OrderStatusTypeList, ProductUnitType } from '../../_core/apiModels';
+import { Communication, Order, OrderStatusType, OrderStatusTypeList, ProductUnitType } from '../../_core/apiModels';
 import { getBadgeByOrderStatusType, onImageError } from '../../_core/appFunc';
 import { API_URL, ClientAppAccess } from '../../_core/constant.Variables';
 import InputDropdown from '../Inputs/InputDropDown';
@@ -98,8 +98,13 @@ const OrderDetails = (props: IProps) => {
                      <div className="col-4 p-0 font-weight-bold">£{props.order.payment.refundAmount}</div>
                   </div>
                }
-               {!props.disableDispute && props.access == ClientAppAccess.Official && props.order.dispute == undefined && props.order.status != OrderStatusType.Canceled &&
+               {!props.disableDispute && props.access == ClientAppAccess.Official && props.order.dispute == undefined &&
+                  (props.order.status == OrderStatusType.InProgress || props.order.status == OrderStatusType.Confirmed || props.order.status == OrderStatusType.Delivered) &&
                   <div className="col-12 pm-0 cursor-pointer  small-text text-primary" onClick={props.onDispute}>I have issue with this order.</div>
+               }
+
+               {props.order.dispute != undefined &&
+                  <div className="col-12 pm-0 cursor-pointer  small-text text-primary" onClick={() => props.showDispute!(props.order.dispute!)}>Show Dispute.</div>
                }
 
                <div className="pm-0 mt-3">
@@ -146,5 +151,6 @@ declare type IProps = {
    availabeType?: OrderStatusType[];
    disableDispute?: boolean;
    onDispute?: () => void;
+   showDispute?: (communication: Communication) => void;
 };
 export default OrderDetails;

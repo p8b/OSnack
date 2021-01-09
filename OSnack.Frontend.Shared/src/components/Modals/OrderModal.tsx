@@ -1,5 +1,5 @@
 ﻿import React, { useContext, useEffect, useState } from 'react';
-import { ContactType, Order, OrderStatusType } from '../../_core/apiModels';
+import { Communication, ContactType, Order, OrderStatusType } from '../../_core/apiModels';
 import Modal from '../../components/Modals/Modal';
 import OrderDetails from '../../components/Order/OrderDetails';
 import PageHeader from '../../components/Texts/PageHeader';
@@ -8,6 +8,8 @@ import { ClientAppAccess } from '../../_core/constant.Variables';
 import OrderMessageModal from './OrderMessageModal';
 import { AuthContext } from '../../_core/authenticationContext';
 import AddDisputeModal from './AddDisputeModal';
+import CommunicationModal from './CommunicationModal';
+import { IReturnUsePutOfficialCommunication } from '../../hooks/OfficialHooks/useCommunicationHook';
 
 
 
@@ -16,8 +18,11 @@ const OrderModal = (props: IProps) => {
    const auth = useContext(AuthContext);
    const [selectedOrder, setSelectedOrder] = useState(new Order());
    const [isOpenMessageModal, setIsOpenMessageModal] = useState(false);
+   const [isOpenDisputeModal, setIsOpenDisputeModal] = useState(false);
+   const [isOpenAddDisputeModal, setIsOpenAddDisputeModal] = useState(false);
+
    const [openMessageModalType, setOpenMessageModalType] = useState(OrderStatusType.InProgress);
-   const [isOpenAddDisputeModalModal, setIsOpenAddDisputeModalModal] = useState(false);
+   const [selectedDispute, setSelectedDispute] = useState(new Communication());
 
    useEffect(() => {
       setSelectedOrder(props.order);
@@ -59,7 +64,7 @@ const OrderModal = (props: IProps) => {
                selectedOrder.dispute = {
                   type: ContactType.Dispute,
                   email: auth.state.user.email,
-                  isOpen: false, messages: [{ body: message }]
+                  status: false, messages: [{ body: message }]
                };
             else
                selectedOrder.dispute.messages?.push({ body: message, isCustomer: false });
@@ -102,7 +107,8 @@ const OrderModal = (props: IProps) => {
             <div className="row  mt-1">
                <OrderDetails order={selectedOrder} access={props.access}
                   availabeType={getAvailabeType()}
-                  statusChanged={statusChange} onDispute={() => { setIsOpenAddDisputeModalModal(true); }} />
+                  statusChanged={statusChange} onDispute={() => { setIsOpenAddDisputeModal(true); }}
+                  showDispute={(dispute) => { setSelectedDispute(dispute); setIsOpenDisputeModal(true); }} />
 
                {/***** buttons ****/}
                <div className="row col-12 pm-0 pos-b-sticky bg-white pb-3">
@@ -123,9 +129,16 @@ const OrderModal = (props: IProps) => {
                totalPrice={selectedOrder.totalPrice}
                type={openMessageModalType}
             />
-            <AddDisputeModal isOpen={isOpenAddDisputeModalModal}
+            <AddDisputeModal isOpen={isOpenAddDisputeModal}
                order={selectedOrder}
-               onClose={(dispute) => { setIsOpenAddDisputeModalModal(false); setSelectedOrder({ ...selectedOrder, dispute: dispute }); }}
+               onClose={(dispute) => { setIsOpenAddDisputeModal(false); setSelectedOrder({ ...selectedOrder, dispute: dispute }); }}
+            />
+
+            <CommunicationModal isOpen={isOpenDisputeModal}
+               communication={selectedDispute}
+               access={props.access}
+               onClose={() => { setIsOpenDisputeModal(false); }}
+               usePutSecretCommunication={props.usePutSecretCommunication}
             />
          </>
       </Modal >
@@ -142,5 +155,6 @@ declare type IProps = {
    access: ClientAppAccess;
    onSave?: (order: Order) => void;
    onDispute?: (order: Order) => void;
+   usePutSecretCommunication?: (communicationId: string | null, messageBody: string | null, status: boolean) => Promise<IReturnUsePutOfficialCommunication>;
 };
 export default OrderModal;

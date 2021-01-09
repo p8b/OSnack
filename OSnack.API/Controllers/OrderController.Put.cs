@@ -159,7 +159,7 @@ namespace OSnack.API.Controllers
                         Order = originalOrder
                      };
                   }
-                  originalOrder.Dispute.IsOpen = false;
+                  originalOrder.Dispute.Status = false;
                   var newMessage = modifiedOrder.Dispute.Messages.Find(m => m.Id == 0);
                   if (!string.IsNullOrEmpty(newMessage.Body))
                   {

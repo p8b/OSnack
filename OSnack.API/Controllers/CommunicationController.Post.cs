@@ -49,8 +49,7 @@ namespace OSnack.API.Controllers
             User user = await _DbContext.Users.SingleOrDefaultAsync(u => u.Id == AppFunc.GetUserId(User));
             newDispute.Email = user.Email;
             newDispute.FullName = $"{user.FirstName} {user.Surname}";
-            newDispute.PhoneNumber = user.PhoneNumber;
-            newDispute.IsOpen = true;
+            newDispute.Status = true;
             newDispute.Order = await _DbContext.Orders.SingleOrDefaultAsync(o => o.Id == newDispute.Order_Id);
             newDispute.Type = ContactType.Dispute;
             newDispute.Messages[0].IsCustomer = true;
@@ -110,9 +109,8 @@ namespace OSnack.API.Controllers
                var user = await _DbContext.Users.SingleOrDefaultAsync(u => u.Id == AppFunc.GetUserId(User));
                newContact.Email = user.Email;
                newContact.FullName = $"{user.FirstName} {user.Surname}";
-               newContact.PhoneNumber = user.PhoneNumber;
             }
-            newContact.IsOpen = true;
+            newContact.Status = true;
             newContact.Type = ContactType.Question;
             newContact.Messages[0].IsCustomer = true;
             ModelState.Clear();

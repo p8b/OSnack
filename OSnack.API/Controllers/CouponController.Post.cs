@@ -7,7 +7,7 @@ using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 
 using P8B.Core.CSharp;
-
+using P8B.Core.CSharp.Attributes;
 using System;
 using System.Net.Mime;
 using System.Threading.Tasks;

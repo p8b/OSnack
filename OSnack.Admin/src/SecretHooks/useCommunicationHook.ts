@@ -1,7 +1,7 @@
 import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/components/Texts/Alert";
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
-import { Communication, CommunicationListAndTotalCount } from "osnack-frontend-shared/src/_core/apiModels";
+import { CommunicationListAndTotalCount, Communication } from "osnack-frontend-shared/src/_core/apiModels";
 export type IReturnUseDeleteCommunication={ data:string , status?: number;};
 export const useDeleteCommunication = async (communicationId: string | null): Promise<IReturnUseDeleteCommunication> =>{
         let url_ = API_URL + "/Communication/Delete/{communicationId}";
@@ -18,47 +18,6 @@ export const useDeleteCommunication = async (communicationId: string | null): Pr
 
                 case 200: 
                         var responseData: string = await response?.json();
-                        return { data: responseData, status: response?.status };
-
-                case 417: 
-                        return response?.json().then((data: ErrorDto[]) => {
-                                throw new AlertObj(data, AlertTypes.Error, response?.status);
-                        });
-
-                case 404: 
-                        return response?.json().then((data: ErrorDto[]) => {
-                                throw new AlertObj(data, AlertTypes.Error, response?.status);
-                        });
-
-                case 412: 
-                        return response?.json().then((data: ErrorDto[]) => {
-                                throw new AlertObj(data, AlertTypes.Error, response?.status);
-                        });
-
-                default:
-                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
-                        throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
-        }
-  
-}
-export type IReturnUseDeleteMessageCommunication={ data:Communication , status?: number;};
-export const useDeleteMessageCommunication = async (communicationId: string | null, messageId: number): Promise<IReturnUseDeleteMessageCommunication> =>{
-        let url_ = API_URL + "/Communication/DeleteMessage/{communicationId}/{messageId}";
-        if (communicationId !== null && communicationId !== undefined)
-        url_ = url_.replace("{communicationId}", encodeURIComponent("" + communicationId));
-        if (messageId !== null && messageId !== undefined)
-        url_ = url_.replace("{messageId}", encodeURIComponent("" + messageId));
-        url_ = url_.replace(/[?&]$/, "");
-        let response = await httpCaller.DELETE(url_);
-        if( response?.status === 400){
-            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
-            response = await httpCaller.DELETE(url_);
-        }
-
-        switch(response?.status){
-
-                case 200: 
-                        var responseData: Communication = await response?.json();
                         return { data: responseData, status: response?.status };
 
                 case 417: 
@@ -119,15 +78,20 @@ export const useSearchCommunication = async (selectedPage: number, maxNumberPerI
         }
   
 }
-export type IReturnUseAddMessageSecretCommunication={ data:Communication , status?: number;};
-export const useAddMessageSecretCommunication = async (modifyCommunication: Communication): Promise<IReturnUseAddMessageSecretCommunication> =>{
-        let url_ = API_URL + "/Communication/Put/AddMessageSecret";
+export type IReturnUsePutSecretCommunication={ data:Communication , status?: number;};
+export const usePutSecretCommunication = async (communicationId: string | null, messageBody: string | null, status: boolean): Promise<IReturnUsePutSecretCommunication> =>{
+        let url_ = API_URL + "/Communication/Put/PutSecret/{communicationId}/{messageBody}/{status}";
+        if (communicationId !== null && communicationId !== undefined)
+        url_ = url_.replace("{communicationId}", encodeURIComponent("" + communicationId));
+        if (messageBody !== null && messageBody !== undefined)
+        url_ = url_.replace("{messageBody}", encodeURIComponent("" + messageBody));
+        if (status !== null && status !== undefined)
+        url_ = url_.replace("{status}", encodeURIComponent("" + status));
         url_ = url_.replace(/[?&]$/, "");
-        const content_ = modifyCommunication;
-        let response = await httpCaller.PUT(url_, content_);
+        let response = await httpCaller.PUT(url_);
         if( response?.status === 400){
             await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
-            response = await httpCaller.PUT(url_, content_);
+            response = await httpCaller.PUT(url_);
         }
 
         switch(response?.status){

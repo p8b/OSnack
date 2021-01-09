@@ -161,6 +161,7 @@
     <Folder Include="src\pages\About\" />
     <Folder Include="src\pages\ContactUs\" />
     <Folder Include="src\pages\Basket\" />
+    <Folder Include="src\pages\Communication\" />
     <Folder Include="src\pages\Newsletter\" />
     <Folder Include="src\pages\PrivacyPolicy\" />
     <Folder Include="src\pages\ProductPage\" />
@@ -191,7 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\app.tsx" />
-    <TypeScriptCompile Include="src\pages\ContactUs\ViewQuestion.tsx" />
+    <TypeScriptCompile Include="src\pages\Communication\ViewCommunication.tsx" />
     <TypeScriptCompile Include="src\pages\ProductPage\ReviewModal.tsx" />
     <TypeScriptCompile Include="src\components\Container.tsx" />
     <TypeScriptCompile Include="src\components\Footer.tsx" />

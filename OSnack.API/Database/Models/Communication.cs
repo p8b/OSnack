@@ -22,7 +22,7 @@ namespace OSnack.API.Database.Models
       [Required(ErrorMessage = "Contact Type is Required \n")]
       public ContactType Type { get; set; }
 
-      public bool IsOpen { get; set; }
+      public bool Status { get; set; }
 
       [Column(TypeName = "nvarchar(200)")]
       [StringLength(200, ErrorMessage = "Must be less than 200 Characters \n")]
@@ -35,8 +35,6 @@ namespace OSnack.API.Database.Models
        ErrorMessage = "Invalid Email \n")]
       public string Email { get; set; }
 
-      [RegularExpression(@"^\+?(?:\d\s?){10,12}$", ErrorMessage = "Invalid UK Phone Number \n")]
-      public string PhoneNumber { get; set; }
 
       [ForeignKey("OrderId")]
       [JsonIgnore]

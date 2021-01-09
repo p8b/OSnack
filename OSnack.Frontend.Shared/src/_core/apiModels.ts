@@ -286,10 +286,9 @@ export class PurchaseUnit {
 export class Communication {
     id?: string | undefined;
     type!: ContactType;
-    isOpen?: boolean;
+    status?: boolean;
     fullName?: string | undefined;
     email!: string;
-    phoneNumber?: string | undefined;
     order_Id?: string | undefined;
     messages?: Message[] | undefined;
     date?: Date;
@@ -299,7 +298,6 @@ export class EmailTemplate {
     id?: number = 0;
     templateType!: EmailTemplateTypes;
     subject!: string;
-    tokenUrlPath?: string | undefined;
     requiredClasses?: EmailTemplateRequiredClass[] | undefined;
     html!: string;
     design!: any;

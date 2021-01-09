@@ -25,7 +25,7 @@ const AddDisputeModal = (props: IProps) => {
          email: auth.state.user.email,
          type: ContactType.Dispute,
          order_Id: props.order.id,
-         isOpen: true,
+         status: true,
          messages: [{ body: message }]
       }).then((result) => {
          if (isUnmounted.current) return;

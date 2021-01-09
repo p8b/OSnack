@@ -26,9 +26,9 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test
-      [HttpPut("Put/[action]")]
-      public async Task<IActionResult> AddMessageOfficial([FromBody] Communication modifyCommunication)
-         => await Addmessage(modifyCommunication, true);
+      [HttpPut("Put/[action]/{communicationId}/{messageBody}")]
+      public async Task<IActionResult> PutOfficial(string communicationId, string messageBody)
+         => await Update(communicationId, true, messageBody);
 
       #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
@@ -38,40 +38,40 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
-      [HttpPut("Put/[action]")]
-      public async Task<IActionResult> AddMessageSecret([FromBody] Communication modifyCommunication)
-         => await Addmessage(modifyCommunication, false);
+      [HttpPut("Put/[action]/{communicationId}/{messageBody}/{status}")]
+      public async Task<IActionResult> PutSecret(string communicationId, string messageBody, bool status)
+         => await Update(communicationId, false, messageBody, status);
 
-      private async Task<IActionResult> Addmessage(Communication modifyCommunication, bool IsCustomer)
+      private async Task<IActionResult> Update(string communicationId, bool isCustomer, string messageBody, bool status = false)
       {
          try
          {
-            var originalCommunication = await _DbContext.Communications.Include(c => c.Messages).SingleOrDefaultAsync(c => c.Id == modifyCommunication.Id);
+            var originalCommunication = await _DbContext.Communications.Include(c => c.Messages).SingleOrDefaultAsync(c => c.Id == communicationId);
             if (originalCommunication is null)
             {
                CoreFunc.Error(ref ErrorsList, "Dispute Not exists.");
                return StatusCode(412, ErrorsList);
             }
 
-            if (!IsCustomer)
-               originalCommunication.IsOpen = modifyCommunication.IsOpen;
+            if (!isCustomer)
+               originalCommunication.Status = status;
 
-            var newMessage = modifyCommunication.Messages.Find(m => m.Id == 0);
 
-            if (string.IsNullOrWhiteSpace(newMessage.Body) && modifyCommunication.IsOpen)
+            if (string.IsNullOrWhiteSpace(messageBody) && originalCommunication.Status)
             {
                /// extract the errors and return bad request containing the errors
                CoreFunc.Error(ref ErrorsList, "Message is required.");
                return StatusCode(412, ErrorsList);
             }
 
-            if (!string.IsNullOrEmpty(newMessage.Body))
-            {
+            originalCommunication.Messages.Add(
+               new Message()
+               {
+                  IsCustomer = isCustomer,
+                  Body = messageBody
+               });
 
-               newMessage.IsCustomer = IsCustomer;
-               originalCommunication.Messages.Add(newMessage);
-
-            }
+            ModelState.Clear();
             TryValidateModel(originalCommunication);
 
             foreach (var key in ModelState.Keys)

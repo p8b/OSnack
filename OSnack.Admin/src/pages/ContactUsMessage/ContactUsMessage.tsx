@@ -9,7 +9,7 @@ import { ConstMaxNumberOfPerItemsPage, GetAllRecords } from 'osnack-frontend-sha
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Container from '../../components/Container';
-import { useAddMessageSecretCommunication, useSearchCommunication, useDeleteCommunication, useDeleteMessageCommunication } from '../../SecretHooks/useCommunicationHook';
+import { usePutSecretCommunication, useSearchCommunication, useDeleteCommunication } from '../../SecretHooks/useCommunicationHook';
 import { Access } from '../../_core/appConstant.Variables';
 import CommunicationModal from 'osnack-frontend-shared/src/components/Modals/CommunicationModal';
 import { Communication } from 'osnack-frontend-shared/src/_core/apiModels';
@@ -99,7 +99,7 @@ const ContactUsMessage = (props: IProps) => {
             new Date(message.date!).ToShortDate(),
             message.fullName,
             message.email,
-            message.isOpen ? "Open" : "Closed",
+            message.status ? "Open" : "Closed",
             <TableRowButtons
                btnClassName="btn-white dispute-icon"
                btnClick={() => {
@@ -151,9 +151,8 @@ const ContactUsMessage = (props: IProps) => {
                communication={selectCommunication}
                access={Access}
                onClose={() => { setIsOpenMessageModal(false); onSearch(); }}
-               useAddMessageSecretCommunication={useAddMessageSecretCommunication}
+               usePutSecretCommunication={usePutSecretCommunication}
                useDeleteCommunication={useDeleteCommunication}
-               useDeleteMessageCommunication={useDeleteMessageCommunication}
             />
          </Container>
       </Container>

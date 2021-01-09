@@ -3,7 +3,7 @@ import { Communication } from '../../_core/apiModels';
 import Modal from '../../components/Modals/Modal';
 import { ClientAppAccess } from '../../_core/constant.Variables';
 import ViewCommunication from '../Communication/ViewCommunication';
-import { IReturnUseAddMessageOfficialCommunication } from '../../hooks/OfficialHooks/useCommunicationHook';
+import { IReturnUsePutOfficialCommunication } from '../../hooks/OfficialHooks/useCommunicationHook';
 
 const CommunicationModal = (props: IProps) => {
 
@@ -12,10 +12,8 @@ const CommunicationModal = (props: IProps) => {
          bodyRef={props.modalRef}
          isOpen={props.isOpen}>
          <ViewCommunication access={props.access}
-            useAddMessageSecretCommunication={props.useAddMessageSecretCommunication}
+            usePutSecretCommunication={props.usePutSecretCommunication}
             useDeleteCommunication={props.useDeleteCommunication}
-            useDeleteMessageCommunication={props.useDeleteMessageCommunication}
-            useUpdateStatusCommunication={props.useUpdateStatusCommunication}
             communication={props.communication}
             onClose={props.onClose}
          />
@@ -26,10 +24,8 @@ const CommunicationModal = (props: IProps) => {
 };
 
 declare type IProps = {
-   useAddMessageSecretCommunication?: (modifyCommunication: Communication) => Promise<IReturnUseAddMessageOfficialCommunication>;
+   usePutSecretCommunication?: (communicationId: string | null, messageBody: string | null, status: boolean) => Promise<IReturnUsePutOfficialCommunication>;
    useDeleteCommunication?: (communicationId: string | null) => Promise<{ data: string, status?: number; }>;
-   useDeleteMessageCommunication?: (communicationId: string | null, messageId: number) => Promise<{ data: Communication, status?: number; }>;
-   useUpdateStatusCommunication?: (communicationId: string | null, status: boolean) => Promise<{ data: Communication, status?: number; }>;
    access: ClientAppAccess;
    communication: Communication;
    isOpen: boolean;

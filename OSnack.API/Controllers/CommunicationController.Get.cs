@@ -38,8 +38,7 @@ namespace OSnack.API.Controllers
                .Where(c => c.Type == ContactType.Question)
                 .CountAsync(c => searchValue.Equals(CoreConst.GetAllRecords) || c.Id.Contains(searchValue)
                                                                                      || c.FullName.Contains(searchValue)
-                                                                                     || c.Email.Contains(searchValue)
-                                                                                     || c.PhoneNumber.Contains(searchValue))
+                                                                                     || c.Email.Contains(searchValue))
                 .ConfigureAwait(false);
 
             List<Communication> list = await _DbContext.Communications.Include(c => c.Order).ThenInclude(o => o.User)
@@ -47,8 +46,7 @@ namespace OSnack.API.Controllers
                .Where(c => c.Type == ContactType.Question)
                 .Where(c => searchValue.Equals(CoreConst.GetAllRecords) || c.Id.Contains(searchValue)
                                                                                      || c.FullName.Contains(searchValue)
-                                                                                     || c.Email.Contains(searchValue)
-                                                                                     || c.PhoneNumber.Contains(searchValue))
+                                                                                     || c.Email.Contains(searchValue))
                 .OrderByDynamic(sortName, isSortAsce)
                 .Skip((selectedPage - 1) * maxNumberPerItemsPage)
                 .Take(maxNumberPerItemsPage)
@@ -82,11 +80,46 @@ namespace OSnack.API.Controllers
 
             if (question is null)
             {
-               CoreFunc.Error(ref ErrorsList, "Question Not exists.");
+               CoreFunc.Error(ref ErrorsList, "Communication Not Found.");
                return StatusCode(412, ErrorsList);
             }
 
             return Ok(question);
+         }
+         catch (Exception ex)
+         {
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
+            return StatusCode(417, ErrorsList);
+         }
+      }
+      #region *** ***
+      [ProducesResponseType(typeof(Communication), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
+      #endregion
+      [HttpGet("Get/[action]/{disputeKey}")]
+      [Authorize(AppConst.AccessPolicies.Official)]
+      public async Task<IActionResult> GetDispute(string disputeKey)
+      {
+         try
+         {
+
+            Communication dispute = await _DbContext.Communications
+               .Include(c => c.Order)
+               .ThenInclude(o => o.User)
+               .Include(c => c.Order)
+               .ThenInclude(o => o.OrderItems)
+               .Include(c => c.Messages)
+               .SingleOrDefaultAsync(c => c.Type == ContactType.Dispute && c.Id == disputeKey && c.Order.User.Id == AppFunc.GetUserId(User))
+               .ConfigureAwait(false);
+
+            if (dispute is null)
+            {
+               CoreFunc.Error(ref ErrorsList, "Dispute Not Found.");
+               return StatusCode(412, ErrorsList);
+            }
+
+            return Ok(dispute);
          }
          catch (Exception ex)
          {
