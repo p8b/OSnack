@@ -79,11 +79,9 @@ namespace OSnack.API.Database.Models
 
          /// Create a new token
          User = user;
-         Url = Url;
          Email = user.Email;
          ExpiaryDateTime = ExpiaryDate;
-         Random rn = new Random();
-         Value = $"{rn.Next(100, 999)}-{rn.Next(1000, 9999)}";
+         Value = $"{Guid.NewGuid()}";
          Url = string.Format(@"{0}{1}/{2}", UrlDomain, UrlPath, Value);
 
          dbContext.Entry(User).State = Microsoft.EntityFrameworkCore.EntityState.Unchanged;

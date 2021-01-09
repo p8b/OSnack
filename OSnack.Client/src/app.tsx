@@ -53,7 +53,7 @@ const App = () => {
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/PrivacyPolicy" Render={(props: any) => <PrivacyPolicy {...props} />} />
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/TermsAndConditions" Render={(props: any) => <TermsAndConditions {...props} />} />
                         <CustomRoute authenticate={useSilentOfficialAuthentication} path="/Unsubscribe" Render={(props: any) => <Unsubscribe {...props} />} />
-                        <CustomRoute authenticate={useSilentOfficialAuthentication} path="/ViewQuestion" Render={(props: any) => <ViewQuestion {...props} />} />
+                        <CustomRoute authenticate={useSilentOfficialAuthentication} path="/ViewCommunication" Render={(props: any) => <ViewQuestion {...props} />} />
 
                         {/***** Protected Routes  ****/}
                         <CustomRoute authenticate={useSilentOfficialAuthentication} exact AuthRequired path="/MyAccount" Render={(props: any) => <MyAccount {...props} />} />

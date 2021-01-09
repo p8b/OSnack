@@ -48,7 +48,7 @@ const EmailTemplateEditDetailsModal = (props: IProps) => {
                {props.templateTypes && props.templateTypes.map(t =>
                   <div className="dropdown-item cursor-pointer" key={Math.random()}
                      onClick={() => {
-                        setTemplate({ ...template, name: EmailTemplateTypes[t], templateType: t });
+                        setTemplate({ ...template, templateType: t });
                      }} >
                      {EmailTemplateTypes[t].replace(/([A-Z])/g, ' $1')}
                   </div>
@@ -59,22 +59,6 @@ const EmailTemplateEditDetailsModal = (props: IProps) => {
                showDanger={errorAlert.checkExist("Subject")}
                onChange={i => setTemplate({ ...template, subject: i.target?.value })}
             />
-            {template.templateType == EmailTemplateTypes.Others &&
-               <Input label="Name" className="col-12 col-sm-6"
-                  disabled={template.templateType != EmailTemplateTypes.Others}
-                  value={template.name}
-                  showDanger={errorAlert.checkExist("name")}
-                  onChange={i => setTemplate({ ...template, name: i.target?.value })}
-               />
-            }
-            {template.serverClasses?.find(sc => sc.value == "Token") &&
-               <Input label="Token URL Path*" className="col-12 col-sm-6"
-                  value={template.tokenUrlPath}
-                  disabled={template.serverClasses?.find(c => c.value == "Token") == undefined}
-                  showDanger={errorAlert.checkExist("TokenUrlPath")}
-                  onChange={i => setTemplate({ ...template, tokenUrlPath: i.target?.value })}
-               />
-            }
             <div className="col-12 mt-2">
                <Alert alert={errorAlert.alert} className="col-12 mb-1"
                   onClosed={() => errorAlert.clear()}

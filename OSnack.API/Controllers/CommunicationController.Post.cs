@@ -27,7 +27,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
-      [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test
+      [Authorize(AppConst.AccessPolicies.Official)]
       [HttpPost("Post/[action]")]
       public async Task<IActionResult> PostDispute([FromBody] Communication newDispute)
       {
@@ -35,7 +35,6 @@ namespace OSnack.API.Controllers
          {
             if (string.IsNullOrWhiteSpace(newDispute.Messages.FirstOrDefault().Body))
             {
-               /// extract the errors and return bad request containing the errors
                CoreFunc.Error(ref ErrorsList, "Message is required.");
                return StatusCode(412, ErrorsList);
             }
@@ -47,7 +46,7 @@ namespace OSnack.API.Controllers
                return UnprocessableEntity(ErrorsList);
             }
 
-            var user = await _DbContext.Users.SingleOrDefaultAsync(u => u.Id == AppFunc.GetUserId(User));
+            User user = await _DbContext.Users.SingleOrDefaultAsync(u => u.Id == AppFunc.GetUserId(User));
             newDispute.Email = user.Email;
             newDispute.FullName = $"{user.FirstName} {user.Surname}";
             newDispute.PhoneNumber = user.PhoneNumber;
@@ -69,14 +68,13 @@ namespace OSnack.API.Controllers
                CoreFunc.ExtractErrors(ModelState, ref ErrorsList);
                return UnprocessableEntity(ErrorsList);
             }
-            await _EmailService.OrderDisputeAsync(newDispute.Order).ConfigureAwait(false);
 
             await _DbContext.Communications.AddAsync(newDispute).ConfigureAwait(false);
-            if (newDispute.Order != null)
-            {
-               _DbContext.Entry(newDispute.Order).State = EntityState.Unchanged;
-            }
+            _DbContext.Entry(newDispute.Order).State = EntityState.Unchanged;
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
+
+            await _EmailService.OrderDisputeAsync(newDispute.Order).ConfigureAwait(false);
+
             return Created("", newDispute);
          }
          catch (Exception ex)

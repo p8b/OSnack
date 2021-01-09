@@ -1,10 +1,11 @@
 ﻿using OSnack.API.Database.Models;
+using OSnack.API.Extras;
 using OSnack.API.Extras.CustomTypes;
 
 using System;
 using System.Threading.Tasks;
 
-namespace P8B.UK.API.Services
+namespace OSnack.API.Services
 {
    public partial class EmailService
    {
@@ -27,7 +28,7 @@ namespace P8B.UK.API.Services
          try
          {
             await SetUserTemplate(EmailTemplateTypes.WelcomeExternalRegistration).ConfigureAwait(false);
-            foreach (var serverClass in Template.RequiredClasses)
+            foreach (EmailTemplateRequiredClass serverClass in Template.RequiredClasses)
             {
                SetTemplateServerPropValue(serverClass, user);
                SetTemplateServerPropValue(serverClass, user.RegistrationMethod);
@@ -49,18 +50,17 @@ namespace P8B.UK.API.Services
          {
             await SetUserTemplate(EmailTemplateTypes.EmailConfirmation).ConfigureAwait(false);
 
-            var token = new Token()
+            Token token = new Token()
             {
                Type = TokenTypes.ConfirmEmail,
                UrlDomain = DomainUrl,
             };
-            token.GenerateToken(user, DateTime.UtcNow.AddYears(1), _DbContext, Template.TokenUrlPath);
-            foreach (var serverClass in Template.RequiredClasses)
+            token.GenerateToken(user, DateTime.UtcNow.AddYears(1), _DbContext, AppConst.Settings.EmailSettings.PathNames.ConfirmEmail);
+            foreach (EmailTemplateRequiredClass serverClass in Template.RequiredClasses)
             {
                SetTemplateServerPropValue(serverClass, user);
                SetTemplateServerPropValue(serverClass, token);
             }
-
 
             await SendEmailAsync($"{user.FirstName} {user.Surname}", user.Email).ConfigureAwait(false);
             return true;
@@ -78,19 +78,18 @@ namespace P8B.UK.API.Services
          {
             await SetUserTemplate(EmailTemplateTypes.WelcomeNewEmployee).ConfigureAwait(false);
 
-            var token = new Token()
+            Token token = new Token()
             {
                Type = TokenTypes.ChangePassword,
                UrlDomain = DomainUrl,
             };
-            token.GenerateToken(user, DateTime.UtcNow.AddDays(2), _DbContext, Template.TokenUrlPath);
-            foreach (var serverClass in Template.RequiredClasses)
+            token.GenerateToken(user, DateTime.UtcNow.AddDays(2), _DbContext, AppConst.Settings.EmailSettings.PathNames.NewEmployee);
+            foreach (EmailTemplateRequiredClass serverClass in Template.RequiredClasses)
             {
                SetTemplateServerPropValue(serverClass, user);
                SetTemplateServerPropValue(serverClass, user.Role);
                SetTemplateServerPropValue(serverClass, token);
             }
-
 
             await SendEmailAsync($"{user.FirstName} {user.Surname}", user.Email).ConfigureAwait(false);
             return true;
@@ -107,13 +106,13 @@ namespace P8B.UK.API.Services
          try
          {
             await SetUserTemplate(EmailTemplateTypes.PasswordReset).ConfigureAwait(false);
-            var token = new Token()
+            Token token = new Token()
             {
                Type = TokenTypes.ChangePassword,
                UrlDomain = DomainUrl,
             };
-            token.GenerateToken(user, DateTime.UtcNow.AddHours(5), _DbContext, Template.TokenUrlPath);
-            foreach (var serverClass in Template.RequiredClasses)
+            token.GenerateToken(user, DateTime.UtcNow.AddHours(5), _DbContext, AppConst.Settings.EmailSettings.PathNames.PasswordReset);
+            foreach (EmailTemplateRequiredClass serverClass in Template.RequiredClasses)
             {
                SetTemplateServerPropValue(serverClass, user);
                SetTemplateServerPropValue(serverClass, token);
@@ -134,13 +133,13 @@ namespace P8B.UK.API.Services
          try
          {
             await SetUserTemplate(EmailTemplateTypes.OrderReceipt).ConfigureAwait(false);
-            foreach (var serverClass in Template.RequiredClasses)
+            foreach (EmailTemplateRequiredClass serverClass in Template.RequiredClasses)
             {
                SetTemplateServerPropValue(serverClass, order);
                SetTemplateServerPropValue(serverClass, order.Payment);
             }
 
-            var email = order.Payment.Email;
+            string email = order.Payment.Email;
 
             if (order.User != null)
                email = order.User.Email;
@@ -159,12 +158,12 @@ namespace P8B.UK.API.Services
          try
          {
             await SetUserTemplate(EmailTemplateTypes.OrderDispute).ConfigureAwait(false);
-            foreach (var serverClass in Template.RequiredClasses)
+            foreach (EmailTemplateRequiredClass serverClass in Template.RequiredClasses)
             {
                SetTemplateServerPropValue(serverClass, order);
             }
 
-            var email = order.Payment.Email;
+            string email = order.Payment.Email;
 
             if (order.User != null)
                email = order.User.Email;
@@ -182,13 +181,13 @@ namespace P8B.UK.API.Services
          try
          {
             await SetUserTemplate(EmailTemplateTypes.OrderReceipt).ConfigureAwait(false);
-            foreach (var serverClass in Template.RequiredClasses)
+            foreach (EmailTemplateRequiredClass serverClass in Template.RequiredClasses)
             {
                SetTemplateServerPropValue(serverClass, order);
                SetTemplateServerPropValue(serverClass, order.Payment);
             }
 
-            var email = order.Payment.Email;
+            string email = order.Payment.Email;
 
             if (order.User != null)
                email = order.User.Email;

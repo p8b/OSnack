@@ -11,6 +11,7 @@ using OSnack.API.Database.Models;
 using OSnack.API.Extras.CustomTypes;
 
 using P8B.Core.CSharp.Models;
+using P8B.UK.API.Services;
 
 using System;
 using System.Collections;
@@ -20,7 +21,7 @@ using System.Net.Security;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace P8B.UK.API.Services
+namespace OSnack.API.Services
 {
    public partial class EmailService
    {

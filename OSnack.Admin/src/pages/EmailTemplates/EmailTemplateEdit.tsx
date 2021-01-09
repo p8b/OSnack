@@ -170,7 +170,6 @@ const EmailTemplatesEdit = (props: IProps) => {
       <>
          <PageHeader title={`${template.id == 0 ? "New Template" : "Edit " + EmailTemplateTypesList.find(e => e.Value == template.templateType)?.Name}`} className="line-header line-limit-1" />
          <div className="row col-12 mb-2" >
-
             <Button onClick={() => history.push("/EmailTemplate")} children="Back" className="mr-auto btn-lg back-icon" />
             {renderInsertDefaultTemplateButton()}
             <Button onClick={() => { setIsOpenDetailsModal(true); }} children="Details" className="btn-lg btn-white edit-icon" />

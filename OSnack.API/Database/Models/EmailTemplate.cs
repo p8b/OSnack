@@ -30,8 +30,6 @@ namespace OSnack.API.Database.Models
       [Required(ErrorMessage = "Subject Is Required \n")]
       public string Subject { get; set; } = "";
 
-      public string TokenUrlPath { get; set; }
-
       [NotMapped]
       public List<EmailTemplateRequiredClass> RequiredClasses { get; set; }
 
@@ -184,8 +182,6 @@ namespace OSnack.API.Database.Models
       public string Value { get; set; }
 
       public List<ClassProperty> ClassProperties { get; set; }
-
-      //public EmailTemplate EmailTemplate { get; set; }
    }
 
    public class ClassProperty
