@@ -26,7 +26,7 @@ const ModalFooter = (props: IProps) => {
             />
          }
          { props.onCancel &&
-            <Button children={props.deleteText || "Cancel"}
+            <Button children={props.cancelText || "Cancel"}
                className={`col-12 col-md mt-2 btn-white btn-lg`}
                onClick={props.onCancel} />
          }

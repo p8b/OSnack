@@ -7,7 +7,7 @@ using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 
 using P8B.Core.CSharp;
-using P8B.Core.CSharp.Attributes;
+
 using System;
 using System.Net.Mime;
 using System.Threading.Tasks;
@@ -17,7 +17,6 @@ namespace OSnack.API.Controllers
    public partial class CouponController
    {
       #region *** ***
-      [PramaterNotNull]
       [Consumes(MediaTypeNames.Application.Json)]
       [ProducesResponseType(typeof(Coupon), StatusCodes.Status201Created)]
       [ProducesResponseType(typeof(System.Collections.Generic.List<P8B.Core.CSharp.Models.Error>), StatusCodes.Status412PreconditionFailed)]

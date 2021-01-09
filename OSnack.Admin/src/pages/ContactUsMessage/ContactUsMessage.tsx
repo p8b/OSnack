@@ -9,7 +9,7 @@ import { ConstMaxNumberOfPerItemsPage, GetAllRecords } from 'osnack-frontend-sha
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Container from '../../components/Container';
-import { useAddMessageSecretCommunication, useSearchCommunication, useDeleteCommunication } from '../../SecretHooks/useCommunicationHook';
+import { useAddMessageSecretCommunication, useSearchCommunication, useDeleteCommunication, useDeleteMessageCommunication } from '../../SecretHooks/useCommunicationHook';
 import { Access } from '../../_core/appConstant.Variables';
 import CommunicationModal from 'osnack-frontend-shared/src/components/Modals/CommunicationModal';
 import { Communication } from 'osnack-frontend-shared/src/_core/apiModels';
@@ -21,7 +21,7 @@ const ContactUsMessage = (props: IProps) => {
    const history = useHistory();
    const errorAlert = useAlert(new AlertObj());
    const [searchValue, setSearchValue] = useState("");
-   const [selectMessage, setSelectMessage] = useState(new Communication());
+   const [selectCommunication, setSelectCommunication] = useState(new Communication());
    const [isOpenMessageModal, setIsOpenMessageModal] = useState(false);
 
    const [tableData, setTableData] = useState(new TableData());
@@ -89,23 +89,21 @@ const ContactUsMessage = (props: IProps) => {
       }
       errorAlert.clear();
       let tData = new TableData();
-      tData.AddHeader("Id", "Id")
+      tData.AddHeader("Date", "Date")
          .AddHeader("FullName", "FullName")
          .AddHeader("Email", "Email")
-         .AddHeader("Phone Number")
-         .AddHeader("Date", "Date");
+         .AddHeader("Status", "IsOpen");
 
       communicationList.map(message =>
          tData.AddRow([
-            message.id,
+            new Date(message.date!).ToShortDate(),
             message.fullName,
             message.email,
-            message.phoneNumber,
-            new Date(message.date!).ToShortDate(),
+            message.isOpen ? "Open" : "Closed",
             <TableRowButtons
                btnClassName="btn-white dispute-icon"
                btnClick={() => {
-                  setSelectMessage(message);
+                  setSelectCommunication(message);
                   setIsOpenMessageModal(true);
                }}
             />
@@ -150,11 +148,12 @@ const ContactUsMessage = (props: IProps) => {
                </div>
             }
             <CommunicationModal isOpen={isOpenMessageModal}
-               dispute={selectMessage}
+               communication={selectCommunication}
                access={Access}
                onClose={() => { setIsOpenMessageModal(false); onSearch(); }}
                useAddMessageSecretCommunication={useAddMessageSecretCommunication}
                useDeleteCommunication={useDeleteCommunication}
+               useDeleteMessageCommunication={useDeleteMessageCommunication}
             />
          </Container>
       </Container>

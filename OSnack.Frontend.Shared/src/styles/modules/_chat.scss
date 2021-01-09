@@ -1,32 +1,16 @@
 ﻿.chat {
-    border: 2px solid #dedede;
-    border-radius: 5px;
-    padding: 10px;
-    margin: 10px 0;
+    border: .1rem solid #dedede;
+    border-radius: .1rem;
+    padding: .5rem;
+    margin: .5rem;
 
-    &::after {
-        content: "";
-        clear: both;
-        display: table;
-    }
-
-    &.send {
-        background-color: #f1f1f1;
-
-        .sender {
-            font-size: small;
-            text-align: right;
-        }
+    &.incoming {
+        background-color: rgb(250, 255, 241);
     }
 
 
-    &.receive {
-        border-color: #f1f1f1;
+    &.outgoing {
         margin-left: auto;
         background-color: white;
-
-        .sender {
-            font-size: small;
-        }
     }
 }

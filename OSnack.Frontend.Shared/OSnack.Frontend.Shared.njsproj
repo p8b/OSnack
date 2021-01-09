@@ -237,11 +237,8 @@
     <Content Include="src\styles\modules\_checkbox.scss" />
     <Content Include="src\styles\modules\_dropdown.scss" />
     <Content Include="src\styles\modules\_general.scss" />
-    <Content Include="src\styles\modules\_line-limit.scss" />
-    <Content Include="src\styles\modules\_page-header.scss" />
     <Content Include="src\styles\modules\_icons.scss" />
     <Content Include="src\styles\modules\_input.scss" />
-    <Content Include="src\styles\modules\_label.scss" />
     <Content Include="src\styles\modules\_modal.scss" />
     <Content Include="src\styles\modules\_position.scss" />
     <Content Include="src\styles\modules\_radius.scss" />

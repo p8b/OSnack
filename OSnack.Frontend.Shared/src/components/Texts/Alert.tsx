@@ -48,7 +48,6 @@ export const useAlert: IUseAlert = (init) => {
 
    const PleaseWait = (ms: number = 500, isCanceled: React.MutableRefObject<boolean> = useRef(false)) => {
       isWaitCanceled.current = false;
-
       sleep(ms, isCanceled).then(() => {
          if (alert.List.length === 0 && !isWaitCanceled.current)
             setAlert({ ...alert, List: [new ErrorDto("0", "Just a moment please...")], Type: AlertTypes.Warning });

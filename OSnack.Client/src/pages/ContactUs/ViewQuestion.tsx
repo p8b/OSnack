@@ -39,7 +39,7 @@ const ViewQuestion = (props: IProps) => {
             {question.id == questionKey && questionKey != undefined &&
                <div className="row justify-content-center bg-white p-3">
                   <ViewCommunication access={Access}
-                     dispute={question}
+                     communication={question}
                   />
                </div>
             }

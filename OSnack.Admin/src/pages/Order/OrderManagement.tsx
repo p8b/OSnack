@@ -13,7 +13,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Container from '../../components/Container';
 import { useAllOrder, usePutOrderStatusOrder } from '../../SecretHooks/useOrderHook';
-import { useAddMessageSecretCommunication } from '../../SecretHooks/useCommunicationHook';
+import { useAddMessageSecretCommunication, useDeleteMessageCommunication } from '../../SecretHooks/useCommunicationHook';
 import { Access } from '../../_core/appConstant.Variables';
 import CommunicationModal from 'osnack-frontend-shared/src/components/Modals/CommunicationModal';
 
@@ -230,10 +230,11 @@ const OrderManagement = (props: IProps) => {
                onClose={() => setIsOpenOrderModal(false)}
                onSave={UpdateOrder} />
             <CommunicationModal isOpen={isOpenDisputeModal}
-               dispute={selectedDispute}
+               communication={selectedDispute}
                access={Access}
                onClose={() => { setIsOpenDisputeModal(false); onSearch(); }}
                useAddMessageSecretCommunication={useAddMessageSecretCommunication}
+               useDeleteMessageCommunication={useDeleteMessageCommunication}
             />
          </Container>
       </Container>

@@ -35,6 +35,7 @@ namespace OSnack.API.Database
       public DbSet<OSnackAccessClaim<int>> AccessClaims { get; set; }
       public DbSet<NutritionalInfo> NutritionalInfos { get; set; }
       public DbSet<Communication> Communications { get; set; }
+      public DbSet<Message> Messages { get; set; }
 
 
       protected override void OnModelCreating(ModelBuilder builder)

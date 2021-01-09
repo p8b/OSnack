@@ -218,11 +218,9 @@ const ViewOrders = (props: IProps) => {
             className="col-12 mb-2"
             onClosed={() => { errorAlert.clear(); }}
          />
-         <div className="col-auto pm-0" >
-            {props.location?.state?.backUrl != undefined &&
-               <Button onClick={() => history.push(props.location.state?.backUrl!)} children="Back" className="mr-auto btn-lg back-icon" />
-            }
-         </div>
+         {props.location?.state?.backUrl != undefined &&
+            <Button onClick={() => history.push(props.location.state?.backUrl!)} children="Back" className="col-auto mr-auto btn-lg back-icon" />
+         }
          {props.location?.state?.backUrl == undefined && tblTotalItemCount == 0 &&
             <div className="row col-12 justify-content-center">
                <div className="col-12 text-center mt-4">You do not have any orders. <br /> Let's do something about it.</div>
@@ -231,29 +229,29 @@ const ViewOrders = (props: IProps) => {
          }
          {tblTotalItemCount > 0 &&
             <>
-               <div className="row pm-0">
-                  <SearchInput key="searchInput"
-                     value={searchValue}
-                     onChange={i => setSearchValue(i.target.value)}
-                     className="col-12 col-md-8 pr-md-4"
-                     onSearch={() => { onSearch(undefined, 1); }}
-                  />
-                  <DropDown title={`Status Type: ${OrderStatusTypeList.find((s) => s.Id?.toString() == selectType)?.Name || "All"}`}
-                     className="col-12 col-md-4 ml-auto m-0"
-                     titleClassName="btn btn-white filter-icon">
-                     <button className="dropdown-item"
-                        onClick={() => { onSearch(undefined, 1, undefined, GetAllRecords); }} >
-                        All
-                  </button>
-                     {OrderStatusTypeList.filter(o => availableStatusTypeList!.includes(o.Value))?.map(statusType =>
-                        <button className="dropdown-item" key={statusType.Id}
-                           onClick={() => { onSearch(undefined, 1, undefined, statusType.Id?.toString()); }} >
-                           {statusType.Name}
+               <div className="col-12 bg-white pb-2 ">
+                  <div className="row col-12 pm-0 mb-3">
+                     <SearchInput key="searchInput"
+                        value={searchValue}
+                        onChange={i => setSearchValue(i.target.value)}
+                        className="col-12 col-md-8"
+                        onSearch={() => { onSearch(undefined, 1); }}
+                     />
+                     <DropDown title={`Status Type: ${OrderStatusTypeList.find((s) => s.Id?.toString() == selectType)?.Name || "All"}`}
+                        className="col-12 col-md-4 p-0"
+                        titleClassName="btn btn-white filter-icon">
+                        <button className="dropdown-item"
+                           onClick={() => { onSearch(undefined, 1, undefined, GetAllRecords); }} >
+                           All
                         </button>
-                     )}
-                  </DropDown>
-               </div>
-               <div className="row col-12 pm-0  bg-white pb-2">
+                        {OrderStatusTypeList.filter(o => availableStatusTypeList!.includes(o.Value))?.map(statusType =>
+                           <button className="dropdown-item" key={statusType.Id}
+                              onClick={() => { onSearch(undefined, 1, undefined, statusType.Id?.toString()); }} >
+                              {statusType.Name}
+                           </button>
+                        )}
+                     </DropDown>
+                  </div>
                   <Table className="col-12 text-center table-striped"
                      defaultSortName={tblSortName}
                      data={tableData}
@@ -279,10 +277,12 @@ const ViewOrders = (props: IProps) => {
             onDispute={props.onDispute}
          />
          <CommunicationModal isOpen={isOpenDisputeModalModal}
-            dispute={selectedDispute}
+            communication={selectedDispute}
             access={props.access}
             onClose={() => { setIsOpenDisputeModalModal(false); }}
             useAddMessageSecretCommunication={props.useAddMessageSecretCommunication}
+            useDeleteMessageCommunication={props.useDeleteMessageCommunication}
+            useUpdateStatusCommunication={props.useUpdateStatusCommunication}
          />
 
 
@@ -291,9 +291,11 @@ const ViewOrders = (props: IProps) => {
 };
 
 declare type IProps = {
-   useAddMessageSecretCommunication?: (modifyCommunication: Communication) => Promise<{ data: Communication, status?: number; }>;
-   useDeleteCommunication?: (communication: Communication) => Promise<{ data: string, status?: number; }>;
    access: ClientAppAccess;
+   useAddMessageSecretCommunication?: (modifyCommunication: Communication) => Promise<{ data: Communication, status?: number; }>;
+   useDeleteCommunication?: (communicationId: string | null) => Promise<{ data: string, status?: number; }>;
+   useDeleteMessageCommunication?: (communicationId: string | null, messageId: number) => Promise<{ data: Communication, status?: number; }>;
+   useUpdateStatusCommunication?: (communicationId: string | null, status: boolean) => Promise<{ data: Communication, status?: number; }>;
    useAllUserOrderSecret?: (userId: number, selectedPage: number, maxNumberPerItemsPage: number, searchString: string | null, filterStatus: string | null, isSortAsce: boolean | undefined, sortName: string | null | undefined) => Promise<IReturnUseAllOfficialOrder>;
    usePutOrderStatusOrder?: (modifiedOrder: Order) => Promise<{ data: Order, status?: number; }>;
    location?: any;

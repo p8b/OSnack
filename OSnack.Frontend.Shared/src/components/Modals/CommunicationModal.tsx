@@ -3,6 +3,7 @@ import { Communication } from '../../_core/apiModels';
 import Modal from '../../components/Modals/Modal';
 import { ClientAppAccess } from '../../_core/constant.Variables';
 import ViewCommunication from '../Communication/ViewCommunication';
+import { IReturnUseAddMessageOfficialCommunication } from '../../hooks/OfficialHooks/useCommunicationHook';
 
 const CommunicationModal = (props: IProps) => {
 
@@ -13,7 +14,9 @@ const CommunicationModal = (props: IProps) => {
          <ViewCommunication access={props.access}
             useAddMessageSecretCommunication={props.useAddMessageSecretCommunication}
             useDeleteCommunication={props.useDeleteCommunication}
-            dispute={props.dispute}
+            useDeleteMessageCommunication={props.useDeleteMessageCommunication}
+            useUpdateStatusCommunication={props.useUpdateStatusCommunication}
+            communication={props.communication}
             onClose={props.onClose}
          />
       </Modal >
@@ -23,10 +26,12 @@ const CommunicationModal = (props: IProps) => {
 };
 
 declare type IProps = {
-   useAddMessageSecretCommunication?: (modifyCommunication: Communication) => Promise<{ data: Communication, status?: number; }>;
-   useDeleteCommunication?: (communication: Communication) => Promise<{ data: string, status?: number; }>;
+   useAddMessageSecretCommunication?: (modifyCommunication: Communication) => Promise<IReturnUseAddMessageOfficialCommunication>;
+   useDeleteCommunication?: (communicationId: string | null) => Promise<{ data: string, status?: number; }>;
+   useDeleteMessageCommunication?: (communicationId: string | null, messageId: number) => Promise<{ data: Communication, status?: number; }>;
+   useUpdateStatusCommunication?: (communicationId: string | null, status: boolean) => Promise<{ data: Communication, status?: number; }>;
    access: ClientAppAccess;
-   dispute: Communication;
+   communication: Communication;
    isOpen: boolean;
    onClose: () => void;
    modalRef?: any;

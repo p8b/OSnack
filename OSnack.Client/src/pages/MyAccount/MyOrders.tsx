@@ -7,7 +7,7 @@ import { Access } from '../../_core/appConstant.Variables';
 const MyOrders = (props: IProps) => {
 
    return (
-      <Container>
+      <Container className="mt-2 mb-2">
          <ViewOrders access={Access} />
       </Container>
    );
