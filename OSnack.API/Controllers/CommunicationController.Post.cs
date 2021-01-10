@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using Newtonsoft.Json.Linq;
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 using OSnack.API.Extras.CustomTypes;
@@ -13,6 +13,8 @@ using P8B.Core.CSharp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Net.Mime;
 using System.Threading.Tasks;
 
@@ -33,6 +35,8 @@ namespace OSnack.API.Controllers
       {
          try
          {
+
+
             if (string.IsNullOrWhiteSpace(newDispute.Messages.FirstOrDefault().Body))
             {
                CoreFunc.Error(ref ErrorsList, "Message is required.");
@@ -102,10 +106,15 @@ namespace OSnack.API.Controllers
 
          try
          {
-            if (newContact.Messages.Count != 1)
+            if (!ReCaptchaPassed(newContact.captchaToken))
             {
-               /// extract the errors and return bad request containing the errors
-               CoreFunc.Error(ref ErrorsList, "The message is empty.");
+               CoreFunc.Error(ref ErrorsList, "Captcha validation failed");
+               return StatusCode(412, ErrorsList);
+            }
+
+            if (string.IsNullOrWhiteSpace(newContact.Messages.FirstOrDefault().Body))
+            {
+               CoreFunc.Error(ref ErrorsList, "Message is required.");
                return StatusCode(412, ErrorsList);
             }
 
@@ -145,6 +154,25 @@ namespace OSnack.API.Controllers
             CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
+      }
+
+
+      public static bool ReCaptchaPassed(string gRecaptchaResponse)
+      {
+         HttpClient httpClient = new HttpClient();
+
+         var res = httpClient.GetAsync($"https://www.google.com/recaptcha/api/siteverify?secret=6LfxNycaAAAAAFgnIdsp-z3gJE_efppZe9F2mln1&response={gRecaptchaResponse}").Result;
+
+         if (res.StatusCode != HttpStatusCode.OK)
+            return false;
+
+         string JSONres = res.Content.ReadAsStringAsync().Result;
+         dynamic JSONdata = JObject.Parse(JSONres);
+
+         if (JSONdata.success != "true")
+            return false;
+
+         return true;
       }
 
    }

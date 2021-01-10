@@ -21,3 +21,8 @@
 .scrollbar-x-width {
     padding-bottom: .7rem !important;
 }
+
+.show-scroll {
+    overflow-y: auto;
+    max-height: 20rem;
+}

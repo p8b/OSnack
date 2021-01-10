@@ -8,7 +8,9 @@ import { AuthContext } from 'osnack-frontend-shared/src/_core/authenticationCont
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import Container from '../../components/Container';
 import { usePostQuestionCommunication } from "osnack-frontend-shared/src/hooks/PublicHooks/useCommunicationHook";
-import { CommonRegex } from 'osnack-frontend-shared/src/_core/constant.Variables';
+import {
+   useGoogleReCaptcha
+} from 'react-google-recaptcha-v3';
 
 const ContactUs = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -17,26 +19,27 @@ const ContactUs = (props: IProps) => {
    const [contact, setContact] = useState(new Communication());
    const [message, setMessage] = useState("");
    const [showSuccess, setShowSuccess] = useState(false);
+   const { executeRecaptcha } = useGoogleReCaptcha();
    useEffect(() => () => { isUnmounted.current = true; }, []);
 
    const sendMessage = () => {
-      errorAlert.PleaseWait(500, isUnmounted);
-      contact.messages = [{ body: message }];
-      console.log("call");
-      usePostQuestionCommunication(contact)
-         .then(result => {
-            if (isUnmounted.current) return;
-            setMessage("");
-            errorAlert.setSingleSuccess("submit", result.data);
-            setShowSuccess(true);
-            console.log(result.data);
-            console.log("success");
+      executeRecaptcha("Contact").then((token) => {
+         errorAlert.PleaseWait(500, isUnmounted);
+         contact.captchaToken = token;
+         contact.messages = [{ body: message }];
+         usePostQuestionCommunication(contact)
+            .then(result => {
+               if (isUnmounted.current) return;
+               setMessage("");
+               errorAlert.setSingleSuccess("submit", result.data);
+               setShowSuccess(true);
+            }).catch(errors => {
+               if (isUnmounted.current) return;
+               errorAlert.set(errors);
+            });
+      });
 
-         }).catch(errors => {
-            if (isUnmounted.current) return;
-            errorAlert.set(errors);
-            console.log("catch");
-         });
+
    };
 
    return (
@@ -61,14 +64,6 @@ const ContactUs = (props: IProps) => {
                               />
                               <Input className="col-12" label="Email*"
                                  value={contact.email} onChange={(i) => { setContact({ ...contact, email: i.target.value }); }}
-                              />
-                              <Input label="Phone Number"
-                                 className="col-12"
-                                 type="text"
-                                 value={contact.phoneNumber}
-                                 showDanger={errorAlert.checkExist("phoneNumber")}
-                                 validationPattern={CommonRegex.UkNumber}
-                                 onChange={i => setContact({ ...contact, phoneNumber: i.target.value })}
                               />
                            </>
                         }

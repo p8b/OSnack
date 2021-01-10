@@ -1,7 +1,7 @@
 import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/components/Texts/Alert";
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
-import { CommunicationListAndTotalCount, Communication } from "osnack-frontend-shared/src/_core/apiModels";
+import { CommunicationListAndTotalCount, Message, Communication } from "osnack-frontend-shared/src/_core/apiModels";
 export type IReturnUseDeleteCommunication={ data:string , status?: number;};
 export const useDeleteCommunication = async (communicationId: string | null): Promise<IReturnUseDeleteCommunication> =>{
         let url_ = API_URL + "/Communication/Delete/{communicationId}";
@@ -79,19 +79,18 @@ export const useSearchCommunication = async (selectedPage: number, maxNumberPerI
   
 }
 export type IReturnUsePutSecretCommunication={ data:Communication , status?: number;};
-export const usePutSecretCommunication = async (communicationId: string | null, messageBody: string | null, status: boolean): Promise<IReturnUsePutSecretCommunication> =>{
-        let url_ = API_URL + "/Communication/Put/PutSecret/{communicationId}/{messageBody}/{status}";
+export const usePutSecretCommunication = async (message: Message, communicationId: string | null, status: boolean): Promise<IReturnUsePutSecretCommunication> =>{
+        let url_ = API_URL + "/Communication/Put/PutSecret/{communicationId}/{status}";
         if (communicationId !== null && communicationId !== undefined)
         url_ = url_.replace("{communicationId}", encodeURIComponent("" + communicationId));
-        if (messageBody !== null && messageBody !== undefined)
-        url_ = url_.replace("{messageBody}", encodeURIComponent("" + messageBody));
         if (status !== null && status !== undefined)
         url_ = url_.replace("{status}", encodeURIComponent("" + status));
         url_ = url_.replace(/[?&]$/, "");
-        let response = await httpCaller.PUT(url_);
+        const content_ = message;
+        let response = await httpCaller.PUT(url_, content_);
         if( response?.status === 400){
             await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
-            response = await httpCaller.PUT(url_);
+            response = await httpCaller.PUT(url_, content_);
         }
 
         switch(response?.status){

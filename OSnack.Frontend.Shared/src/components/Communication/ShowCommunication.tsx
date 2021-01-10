@@ -1,5 +1,5 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
-import { Communication, ContactType } from '../../_core/apiModels';
+import { Communication, ContactType, Message } from '../../_core/apiModels';
 import { IReturnUsePutOfficialCommunication, usePutOfficialCommunication } from '../../hooks/OfficialHooks/useCommunicationHook';
 import PageHeader from '../Texts/PageHeader';
 import { TextArea } from '../Inputs/TextArea';
@@ -8,13 +8,14 @@ import { ClientAppAccess } from '../../_core/constant.Variables';
 import { Toggler } from '../Inputs/Toggler';
 import ModalFooter from '../Modals/ModalFooter';
 
-const ViewCommunication = (props: IProps) => {
+const ShowCommunication = (props: IProps) => {
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
    const [message, setMessage] = useState("");
    const [communicationStatus, setCommunicationStatus] = useState(false);
    const [communication, setCommunication] = useState(new Communication());
    const messagesEndRef = useRef<HTMLDivElement | null>(null);
+   const containerRef = useRef<HTMLDivElement | null>(null);
 
    useEffect(() => () => { isUnmounted.current = true; }, []);
 
@@ -24,7 +25,20 @@ const ViewCommunication = (props: IProps) => {
    }, [props.communication]);
 
    useEffect(() => {
-      messagesEndRef!.current && messagesEndRef!.current!.scrollIntoView();
+      if (props.isInModal)
+         messagesEndRef!.current && messagesEndRef!.current!.scrollIntoView();
+      else
+         if (messagesEndRef!.current != undefined) {
+            if (messagesEndRef.current!.offsetTop < containerRef.current!.scrollTop) {
+               containerRef.current!.scrollTop = messagesEndRef.current!.offsetTop;
+            } else {
+               const offsetBottom = messagesEndRef.current!.offsetTop + messagesEndRef.current!.offsetHeight;
+               const scrollBottom = containerRef.current!.scrollTop + containerRef.current!.offsetHeight;
+               if (offsetBottom > scrollBottom) {
+                  containerRef.current!.scrollTop = offsetBottom - containerRef.current!.offsetHeight;
+               }
+            }
+         }
    }, [communication]);
 
    const deleteCommunication = () => {
@@ -38,9 +52,9 @@ const ViewCommunication = (props: IProps) => {
       errorAlert.PleaseWait(500, isUnmounted);
       switch (props.access) {
          case ClientAppAccess.Official:
-            usePutOfficialCommunication(communication.id ?? null, message).then(onSuccess).catch(onError);
+            usePutOfficialCommunication({ body: message }, communication.id ?? null).then(onSuccess).catch(onError);
          case ClientAppAccess.Secret:
-            props.usePutSecretCommunication!(communication.id ?? null, message, communicationStatus).then(onSuccess).catch(onError);
+            props.usePutSecretCommunication!({ body: message }, communication.id ?? null, communicationStatus).then(onSuccess).catch(onError);
          default:
       }
    };
@@ -82,7 +96,7 @@ const ViewCommunication = (props: IProps) => {
             }
          </div>
          {communication.id != undefined && (communication.messages?.length ?? 0) > 0 &&
-            <div className="col-12 m-0 pt-1 pb-1 bg-light-gray">
+            <div className={`col-12 m-0 pt-1 pb-1 bg-light-gray ${!props.isInModal && "show-scroll"}`} ref={containerRef}>
                {communication.messages!.map(message => {
                   return (
                      <div key={message.id} className={`col-10 chat ${getChatCss(message.isCustomer)}`}>
@@ -112,7 +126,7 @@ const ViewCommunication = (props: IProps) => {
             <ModalFooter
                createText="Send"
                cancelText="Close"
-               classNameCreate={props.classNameCreate}
+               classNameCreate={props.isInModal ? undefined : "col-md-auto ml-auto"}
                onCreate={(communicationStatus || communication.status) ? sendMessage : undefined}
                onDelete={(communication.type != ContactType.Dispute && props.access === ClientAppAccess.Secret && !communication.status) ? deleteCommunication : undefined}
                onCancel={props.onClose}
@@ -124,11 +138,11 @@ const ViewCommunication = (props: IProps) => {
 };
 
 declare type IProps = {
-   usePutSecretCommunication?: (communicationId: string | null, messageBody: string | null, status: boolean) => Promise<{ data: Communication, status?: number; }>;
+   usePutSecretCommunication?: (message: Message, communicationId: string | null, status: boolean) => Promise<{ data: Communication, status?: number; }>;
    useDeleteCommunication?: (communicationId: string | null) => Promise<{ data: string, status?: number; }>;
    access: ClientAppAccess;
    communication: Communication;
    onClose?: () => void;
-   classNameCreate?: string;
+   isInModal?: boolean;
 };
-export default ViewCommunication;
+export default ShowCommunication;

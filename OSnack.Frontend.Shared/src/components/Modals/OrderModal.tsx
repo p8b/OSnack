@@ -1,5 +1,5 @@
 ﻿import React, { useContext, useEffect, useState } from 'react';
-import { Communication, ContactType, Order, OrderStatusType } from '../../_core/apiModels';
+import { Communication, ContactType, Message, Order, OrderStatusType } from '../../_core/apiModels';
 import Modal from '../../components/Modals/Modal';
 import OrderDetails from '../../components/Order/OrderDetails';
 import PageHeader from '../../components/Texts/PageHeader';
@@ -155,6 +155,6 @@ declare type IProps = {
    access: ClientAppAccess;
    onSave?: (order: Order) => void;
    onDispute?: (order: Order) => void;
-   usePutSecretCommunication?: (communicationId: string | null, messageBody: string | null, status: boolean) => Promise<IReturnUsePutOfficialCommunication>;
+   usePutSecretCommunication?: (message: Message, communicationId: string | null, status: boolean) => Promise<IReturnUsePutOfficialCommunication>;
 };
 export default OrderModal;

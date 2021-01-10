@@ -4,12 +4,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import Container from '../../components/Container';
 import { useGetQuestionCommunication } from "osnack-frontend-shared/src/hooks/PublicHooks/useCommunicationHook";
 import { useGetDisputeCommunication } from "osnack-frontend-shared/src/hooks/OfficialHooks/useCommunicationHook";
-import ViewCommunication from 'osnack-frontend-shared/src/components/Communication/ViewCommunication';
+import ShowCommunication from 'osnack-frontend-shared/src/components/Communication/ShowCommunication';
 import { Access } from '../../_core/appConstant.Variables';
 import { extractUri } from 'osnack-frontend-shared/src/_core/appFunc';
 import { useHistory } from 'react-router-dom';
 
-const ViewQuestion = (props: IProps) => {
+const ViewCommunication = (props: IProps) => {
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
    const [communicationKey] = useState(extractUri(window.location.pathname)[1]);
@@ -50,9 +50,8 @@ const ViewQuestion = (props: IProps) => {
             />
             {communication.id == communicationKey && communicationKey != undefined &&
                <div className="row justify-content-center bg-white p-3">
-                  <ViewCommunication access={Access}
+                  <ShowCommunication access={Access}
                      communication={communication}
-                     classNameCreate="col-md-auto ml-auto"
                   />
                </div>
             }
@@ -63,4 +62,4 @@ const ViewQuestion = (props: IProps) => {
 
 declare type IProps = {
 };
-export default ViewQuestion;
+export default ViewCommunication;

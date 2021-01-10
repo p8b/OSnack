@@ -1,7 +1,7 @@
 import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
-import { Communication } from "../../_core/apiModels";
+import { Communication, Message } from "../../_core/apiModels";
 export type IReturnUseGetDisputeCommunication={ data:Communication , status?: number;};
 export const useGetDisputeCommunication = async (disputeKey: string | null): Promise<IReturnUseGetDisputeCommunication> =>{
         let url_ = API_URL + "/Communication/Get/GetDispute/{disputeKey}";
@@ -75,17 +75,16 @@ export const usePostDisputeCommunication = async (newDispute: Communication): Pr
   
 }
 export type IReturnUsePutOfficialCommunication={ data:Communication , status?: number;};
-export const usePutOfficialCommunication = async (communicationId: string | null, messageBody: string | null): Promise<IReturnUsePutOfficialCommunication> =>{
-        let url_ = API_URL + "/Communication/Put/PutOfficial/{communicationId}/{messageBody}";
+export const usePutOfficialCommunication = async (message: Message, communicationId: string | null): Promise<IReturnUsePutOfficialCommunication> =>{
+        let url_ = API_URL + "/Communication/Put/PutOfficial/{communicationId}";
         if (communicationId !== null && communicationId !== undefined)
         url_ = url_.replace("{communicationId}", encodeURIComponent("" + communicationId));
-        if (messageBody !== null && messageBody !== undefined)
-        url_ = url_.replace("{messageBody}", encodeURIComponent("" + messageBody));
         url_ = url_.replace(/[?&]$/, "");
-        let response = await httpCaller.PUT(url_);
+        const content_ = message;
+        let response = await httpCaller.PUT(url_, content_);
         if( response?.status === 400){
             await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
-            response = await httpCaller.PUT(url_);
+            response = await httpCaller.PUT(url_, content_);
         }
 
         switch(response?.status){

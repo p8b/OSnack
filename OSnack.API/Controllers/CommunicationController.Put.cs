@@ -26,9 +26,9 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test
-      [HttpPut("Put/[action]/{communicationId}/{messageBody}")]
-      public async Task<IActionResult> PutOfficial(string communicationId, string messageBody)
-         => await Update(communicationId, true, messageBody);
+      [HttpPut("Put/[action]/{communicationId}")]
+      public async Task<IActionResult> PutOfficial([FromBody] Message message, string communicationId)
+         => await Update(communicationId, true, message);
 
       #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
@@ -38,11 +38,11 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test
-      [HttpPut("Put/[action]/{communicationId}/{messageBody}/{status}")]
-      public async Task<IActionResult> PutSecret(string communicationId, string messageBody, bool status)
-         => await Update(communicationId, false, messageBody, status);
+      [HttpPut("Put/[action]/{communicationId}/{status}")]
+      public async Task<IActionResult> PutSecret([FromBody] Message message, string communicationId, bool status)
+         => await Update(communicationId, false, message, status);
 
-      private async Task<IActionResult> Update(string communicationId, bool isCustomer, string messageBody, bool status = false)
+      private async Task<IActionResult> Update(string communicationId, bool isCustomer, Message message, bool status = false)
       {
          try
          {
@@ -57,19 +57,14 @@ namespace OSnack.API.Controllers
                originalCommunication.Status = status;
 
 
-            if (string.IsNullOrWhiteSpace(messageBody) && originalCommunication.Status)
+            if (string.IsNullOrWhiteSpace(message.Body) && originalCommunication.Status)
             {
                /// extract the errors and return bad request containing the errors
                CoreFunc.Error(ref ErrorsList, "Message is required.");
                return StatusCode(412, ErrorsList);
             }
-
-            originalCommunication.Messages.Add(
-               new Message()
-               {
-                  IsCustomer = isCustomer,
-                  Body = messageBody
-               });
+            message.IsCustomer = isCustomer;
+            originalCommunication.Messages.Add(message);
 
             ModelState.Clear();
             TryValidateModel(originalCommunication);

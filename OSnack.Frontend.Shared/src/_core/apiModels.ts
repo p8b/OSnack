@@ -292,6 +292,8 @@ export class Communication {
     order_Id?: string | undefined;
     messages?: Message[] | undefined;
     date?: Date;
+    url?: string | undefined;
+    captchaToken?: string | undefined;
 
 }
 export class EmailTemplate {

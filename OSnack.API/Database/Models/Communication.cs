@@ -56,6 +56,9 @@ namespace OSnack.API.Database.Models
       public string URL { get; private set; }
 
       public void SetURL(string url) => URL = $"{AppConst.Settings.AppDomains.ClientApp}{url}/{Id}";
+
+      [NotMapped]
+      public string captchaToken { get; set; }
    }
 
 }

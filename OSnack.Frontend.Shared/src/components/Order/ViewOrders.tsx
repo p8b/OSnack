@@ -1,7 +1,7 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import { IReturnUseAllOfficialOrder, useAllOfficialOrder } from '../../hooks/OfficialHooks/useOrderHook';
 import Alert, { AlertObj, useAlert } from '../Texts/Alert';
-import { Communication, Order, OrderStatusType, OrderStatusTypeList, PaymentTypeList } from '../../_core/apiModels';
+import { Communication, Message, Order, OrderStatusType, OrderStatusTypeList, PaymentTypeList } from '../../_core/apiModels';
 import { ClientAppAccess, ConstMaxNumberOfPerItemsPage, GetAllRecords } from '../../_core/constant.Variables';
 import { useHistory } from 'react-router-dom';
 import { checkUri, generateUri, getBadgeByOrderStatusType, extractUri } from '../../_core/appFunc';
@@ -291,7 +291,7 @@ const ViewOrders = (props: IProps) => {
 
 declare type IProps = {
    access: ClientAppAccess;
-   usePutSecretCommunication?: (communicationId: string | null, messageBody: string | null, status: boolean) => Promise<IReturnUsePutOfficialCommunication>;
+   usePutSecretCommunication?: (message: Message, communicationId: string | null, status: boolean) => Promise<IReturnUsePutOfficialCommunication>;
    useAllUserOrderSecret?: (userId: number, selectedPage: number, maxNumberPerItemsPage: number, searchString: string | null, filterStatus: string | null, isSortAsce: boolean | undefined, sortName: string | null | undefined) => Promise<IReturnUseAllOfficialOrder>;
    usePutOrderStatusOrder?: (modifiedOrder: Order) => Promise<{ data: Order, status?: number; }>;
    location?: any;
