@@ -1,4 +1,4 @@
-﻿import React, { CSSProperties, useRef, useState } from 'react';
+﻿import React, { CSSProperties, useEffect, useRef, useState } from 'react';
 import { sleep } from '../../_core/appFunc';
 
 const Alert = (props: IProps) => {
@@ -44,37 +44,39 @@ const Alert = (props: IProps) => {
 export default Alert;
 export const useAlert: IUseAlert = (init) => {
    const [alert, setAlert] = useState(init);
-   const isWaitCanceled = useRef(false);
+   const isWait = useRef(false);
 
-   const PleaseWait = (ms: number = 500, isCanceled: React.MutableRefObject<boolean> = useRef(false)) => {
-      isWaitCanceled.current = false;
+   useEffect(() => () => { isWait.current = false; }, []);
+
+   const pleaseWait = (isCanceled: React.MutableRefObject<boolean>, ms: number = 500) => {
+      isWait.current = true;
       sleep(ms, isCanceled).then(() => {
-         if (alert.List.length === 0 && !isWaitCanceled.current)
+         if (alert.List.length === 0 && isWait.current)
             setAlert({ ...alert, List: [new ErrorDto("0", "Just a moment please...")], Type: AlertTypes.Warning });
       });
    };
    const setSingleSuccess = (key: string, value: string) => {
-      isWaitCanceled.current = true;
+      isWait.current = false;
       setAlert({ ...alert, List: [new ErrorDto(key, value)], Type: AlertTypes.Success });
    };
    const setSingleWarning = (key: string, value: string) => {
-      isWaitCanceled.current = true;
+      isWait.current = false;
       setAlert({ ...alert, List: [new ErrorDto(key, value)], Type: AlertTypes.Warning });
    };
    const setSingleError = (key: string, value: string) => {
-      isWaitCanceled.current = true;
+      isWait.current = false;
       setAlert({ ...alert, List: [new ErrorDto(key, value)], Type: AlertTypes.Error });
    };
    const setSingleDefault = (key: string, value: string) => {
-      isWaitCanceled.current = true;
+      isWait.current = false;
       setAlert({ ...alert, List: [new ErrorDto(key, value)], Type: AlertTypes.default });
    };
    const set = (value: AlertObj) => {
-      isWaitCanceled.current = true;
+      isWait.current = false;
       setAlert({ ...alert, List: value.List, Type: value.Type });
    };
    const clear = () => {
-      isWaitCanceled.current = true;
+      isWait.current = false;
       setAlert({ ...alert, List: [], Type: AlertTypes.default });
    };
 
@@ -84,7 +86,6 @@ export const useAlert: IUseAlert = (init) => {
       return false;
    };
    const checkExistFilterRequired = (inputName: string = "") => {
-
       const includesError = !!alert.List!.find(t => t.key!.toLowerCase() === inputName.toLowerCase() && (t.value as string).includes("Required" || "required"));
       const returnVal = !!alert.List!.find(t => t.key!.toLowerCase() === inputName.toLowerCase());
       if (includesError) {
@@ -95,14 +96,24 @@ export const useAlert: IUseAlert = (init) => {
       }
       return returnVal;
    };
-   return { alert, set, PleaseWait, clear, setSingleSuccess, setSingleWarning, setSingleError, setSingleDefault, checkExist, checkExistFilterRequired };
+   return {
+      alert, set,
+      pleaseWait,
+      clear,
+      setSingleSuccess,
+      setSingleWarning,
+      setSingleError,
+      setSingleDefault,
+      checkExist,
+      checkExistFilterRequired
+   };
 };
 
 export type IUseAlert = (init: AlertObj) => IUseAlertReturn;
 export interface IUseAlertReturn {
    alert: AlertObj;
    set: (value: AlertObj) => void;
-   PleaseWait: (ms: number, isCanceled: React.MutableRefObject<boolean>) => void;
+   pleaseWait: (isCanceled: React.MutableRefObject<boolean>, ms?: number) => void;
    clear: () => void;
    setSingleSuccess: (key: string, value: string) => void;
    setSingleWarning: (key: string, value: string) => void;
