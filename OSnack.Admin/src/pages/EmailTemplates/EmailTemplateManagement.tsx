@@ -15,15 +15,13 @@ const EmailTemplatePanel = (props: IProps) => {
    const [tempList, setTempList] = useState<EmailTemplate[]>([]);
    const [defaultEmailTemplate, setDefaultEmailTemplate] = useState(new EmailTemplate());
 
-
-
    useEffect(() => {
       reloadTemplateList();
       return () => { isUnmounted.current = true; };
    }, []);
 
    const reloadTemplateList = () => {
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       useAllTemplateEmail().then(result => {
          if (isUnmounted.current) return;
          errorAlert.clear();

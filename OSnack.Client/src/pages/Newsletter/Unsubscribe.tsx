@@ -12,7 +12,7 @@ const Unsubscribe = (props: IProps) => {
    const history = useHistory();
 
    useEffect(() => {
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       useDeleteNewsletter(key).then(result => {
          if (isUnmounted.current) return;
          setKey("");

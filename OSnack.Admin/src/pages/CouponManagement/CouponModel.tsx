@@ -31,7 +31,7 @@ const CouponModel = (props: IProps) => {
    }, [props.coupon]);
 
    const createCoupon = async () => {
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       usePostCoupon({ ...coupon, code: pendingCode }).then(result => {
          if (isUnmounted.current) return;
          setCoupon(result.data);
@@ -44,7 +44,7 @@ const CouponModel = (props: IProps) => {
    };
    const updateCoupon = async () => {
 
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       usePutCoupon(coupon).then(result => {
          if (isUnmounted.current) return;
          setCoupon(result.data);
@@ -58,7 +58,7 @@ const CouponModel = (props: IProps) => {
    };
 
    const deleteCoupon = async () => {
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       useDeleteCoupon(coupon.code).then(() => {
          if (isUnmounted.current) return;
          errorAlert.clear();
@@ -70,10 +70,10 @@ const CouponModel = (props: IProps) => {
 
    };
    return (
-      <Modal className="col-11 col-sm-10 col-md-8 col-lg-6 pl-4 pr-4"
+      <Modal className="col-12 col-sm-11 col-md-9 col-lg-6"
          bodyRef={props.modalRef}
          isOpen={props.isOpen}>
-         <PageHeader className="col-12" title={coupon.code == undefined ? "New Coupon" : "Update Coupon"} />
+         <PageHeader className="col-12 pm-0" title={coupon.code == undefined ? "New Coupon" : "Update Coupon"} />
          {/***** Name ****/}
          <div className="row">
             <Input label="Code*"
@@ -96,8 +96,6 @@ const CouponModel = (props: IProps) => {
                   </button>
                )}
             </InputDropDown>
-         </div>
-         <div className="row">
             <Input label="Discount Amount*"
                type="number"
                disabled={!(coupon.type != CouponType.FreeDelivery)}
@@ -116,8 +114,6 @@ const CouponModel = (props: IProps) => {
                showDanger={errorAlert.checkExist("maxUseQuantity")}
 
             />
-         </div>
-         <div className="row">
             <Input label="Minimum Order Price*"
                type="number"
                positiveNumbersOnly

@@ -2,7 +2,7 @@
     font-family: 'Rubik', sans-serif;
     border: 0;
     overflow-x: hidden !important;
-    overflow-y: scroll;
+    overflow-y: auto;
     min-height: 100%;
 
     &.remove-scroll {

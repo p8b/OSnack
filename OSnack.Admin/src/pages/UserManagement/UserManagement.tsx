@@ -1,12 +1,12 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
-import Table, { TableData, TableView } from 'osnack-frontend-shared/src/components/Table/Table';
+import Table, { TableData, TableView, useTableData } from 'osnack-frontend-shared/src/components/Table/Table';
 import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRowButtons';
 import { Role, User } from 'osnack-frontend-shared/src/_core/apiModels';
 import Container from '../../components/Container';
 import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
-import { ConstMaxNumberOfPerItemsPage, GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
+import { GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { useGetUser } from '../../SecretHooks/useUserHook';
@@ -20,6 +20,7 @@ const UserManagement = (props: IProps) => {
    const isUnmounted = useRef(false);
    const history = useHistory();
    const errorAlert = useAlert(new AlertObj());
+   const tbl = useTableData("FirstName", true);
    const [searchValue, setSearchValue] = useState("");
    const [selectedUser, setSelectedUser] = useState(new User());
    const [selectedRoleFilter, setselectedRoleFilter] = useState(GetAllRecords);
@@ -27,15 +28,8 @@ const UserManagement = (props: IProps) => {
    const [redirectToOrders, setRedirectToOrders] = useState(false);
    const [roleList, setRoleList] = useState<Role[]>([]);
 
-   const [tableData, setTableData] = useState(new TableData());
-   const [tblSortName, setTblsortName] = useState("FirstName");
-   const [tblIsSortAsc, setTblIsSortAsc] = useState(true);
-   const [tblTotalItemCount, setTblTotalItemCount] = useState(0);
-   const [tblSelectedPage, setTblSelectedPage] = useState(1);
-   const [tblMaxItemsPerPage, setTblMaxItemsPerPage] = useState(ConstMaxNumberOfPerItemsPage);
-
    useEffect(() => {
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       useGetRole().then(result => {
          if (isUnmounted.current) return;
          setRoleList(result.data);
@@ -44,17 +38,17 @@ const UserManagement = (props: IProps) => {
          errorAlert.set(errors);
       });
       onSearch(...checkUri(window.location.pathname,
-         [tblSelectedPage, tblMaxItemsPerPage, selectedRoleFilter, tblIsSortAsc, tblSortName, GetAllRecords]));
+         [tbl.selectedPage, tbl.maxItemsPerPage, selectedRoleFilter, tbl.isSortAsc, tbl.sortName, GetAllRecords]));
       return () => { isUnmounted.current = true; };
    }, []);
 
 
    const onSearch = (
-      selectedPage = tblSelectedPage,
-      maxItemsPerPage = tblMaxItemsPerPage,
+      selectedPage = tbl.selectedPage,
+      maxItemsPerPage = tbl.maxItemsPerPage,
       roleFilter = selectedRoleFilter,
-      isSortAsc = tblIsSortAsc,
-      sortName = tblSortName,
+      isSortAsc = tbl.isSortAsc,
+      sortName = tbl.sortName,
       searchString = GetAllRecords
    ) => {
 
@@ -62,17 +56,17 @@ const UserManagement = (props: IProps) => {
          searchString = searchValue;
       if (searchString != GetAllRecords)
          setSearchValue(searchString);
-      if (isSortAsc != tblIsSortAsc)
-         setTblIsSortAsc(isSortAsc);
+      if (isSortAsc != tbl.isSortAsc)
+         tbl.setIsSortAsc(isSortAsc);
 
-      if (sortName != tblSortName)
-         setTblsortName(sortName);
+      if (sortName != tbl.sortName)
+         tbl.setSortName(sortName);
 
-      if (selectedPage != tblSelectedPage)
-         setTblSelectedPage(selectedPage);
+      if (selectedPage != tbl.selectedPage)
+         tbl.setSelectedPage(selectedPage);
 
-      if (maxItemsPerPage != tblMaxItemsPerPage)
-         setTblMaxItemsPerPage(maxItemsPerPage);
+      if (maxItemsPerPage != tbl.maxItemsPerPage)
+         tbl.setMaxItemsPerPage(maxItemsPerPage);
 
       if (Number(roleFilter) == -1)
          roleFilter = GetAllRecords;
@@ -80,16 +74,16 @@ const UserManagement = (props: IProps) => {
          setselectedRoleFilter(roleFilter);
 
       history.push(generateUri(window.location.pathname,
-         [selectedPage || tblSelectedPage,
+         [selectedPage || tbl.selectedPage,
             maxItemsPerPage, roleFilter == GetAllRecords ? -1 : roleFilter,
          Number(isSortAsc), sortName, searchString != GetAllRecords ? searchString : ""]));
 
 
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       useGetUser(selectedPage, maxItemsPerPage, searchString, roleFilter, isSortAsc, sortName).then(
          result => {
             if (isUnmounted.current) return;
-            setTblTotalItemCount(result.data.totalCount || 0);
+            tbl.setTotalItemCount(result.data.totalCount || 0);
             errorAlert.clear();
             populateUserTable(result.data.userList!);
          }
@@ -139,7 +133,7 @@ const UserManagement = (props: IProps) => {
             </>
          ]));
 
-      setTableData(tData);
+      tbl.setData(tData);
    };
 
    const editUser = (user: User) => {
@@ -160,59 +154,55 @@ const UserManagement = (props: IProps) => {
    return (
       <Container className="container-fluid" >
          <PageHeader title="Users" className="line-header" />
-         <div className="row col-12 col-md-11 pt-2 pb-2 bg-white ml-auto mr-auto">
+         <div className="row col-12 py-3 mx-auto bg-white">
             {/***** Search Input and new category button  ****/}
-            <div className="row col-12 pm-0">
 
-               <SearchInput key="searchInput"
-                  value={searchValue}
-                  onChange={i => setSearchValue(i.target.value)}
-                  className="col-12 col-md-9  pr-md-4"
-                  onSearch={() => { onSearch(1); }}
-               />
+            <SearchInput
+               value={searchValue}
+               onChange={i => setSearchValue(i.target.value)}
+               className="col-12 col-md-9  pr-md-4"
+               onSearch={() => { onSearch(1); }}
+            />
 
-               <Button children={<span className="add-icon" children="User" />}
-                  className="col-12 col-md-3 mt-1 mt-md-0 btn-green btn"
-                  onClick={() => { setIsOpenUserModal(true); }}
-               />
-            </div>
-            <div className="row col-12 pm-0 pt-3 ">
+            <Button children={<span className="add-icon" children="User" />}
+               className="col-12 col-md-3 btn-green btn mt-2 mt-md-0"
+               onClick={() => { setIsOpenUserModal(true); }}
+            />
 
-               <DropDown title={`Role: ${roleList.find((r) => r.id?.toString() == selectedRoleFilter)?.name || "All"}`}
-                  className="col-12 col-md-4 ml-auto pm-0"
-                  titleClassName="btn btn-white filter-icon ">
-                  <button className="dropdown-item"
-                     onClick={() => { onSearch(1, undefined, GetAllRecords); }} >
-                     All
+            <DropDown title={`Role: ${roleList.find((r) => r.id?.toString() == selectedRoleFilter)?.name || "All"}`}
+               className="col-12 col-sm pm-0 mt-2"
+               titleClassName="btn btn-white filter-icon ">
+               <button className="dropdown-item"
+                  onClick={() => { onSearch(1, undefined, GetAllRecords); }} >
+                  All
                   </button>
-                  {roleList.map(role =>
-                     <button className="dropdown-item" key={role.id}
-                        onClick={() => { onSearch(1, undefined, role.id?.toString()); }} >
-                        {role.name}
-                     </button>
-                  )}
-               </DropDown>
+               {roleList.map(role =>
+                  <button className="dropdown-item" key={role.id}
+                     onClick={() => { onSearch(1, undefined, role.id?.toString()); }} >
+                     {role.name}
+                  </button>
+               )}
+            </DropDown>
 
-               <Alert alert={errorAlert.alert}
-                  className="col-12 mb-2"
-                  onClosed={() => { errorAlert.clear(); }}
-               />
-            </div>
+            <Alert alert={errorAlert.alert}
+               className="col-12 mb-2"
+               onClosed={() => { errorAlert.clear(); }}
+            />
 
             {/***** Users Table  ****/}
-            {tblTotalItemCount > 0 &&
+            {tbl.totalItemCount > 0 &&
                <div className="row col-12 pm-0">
                   <Table className="col-12 text-center table-striped"
-                     defaultSortName={tblSortName}
-                     data={tableData}
-                     onSortChange={(isSortAsce, sortName) => onSearch(undefined, undefined, undefined, isSortAsce, sortName)}
+                     defaultSortName={tbl.sortName}
+                     data={tbl.data}
+                     onSortChange={(selectedPage, isSortAsce, sortName) => onSearch(selectedPage, undefined, undefined, isSortAsce, sortName)}
                      view={TableView.CardView}
-                     listCount={tblTotalItemCount} />
+                     listCount={tbl.totalItemCount} />
                   <Pagination
-                     maxItemsPerPage={tblMaxItemsPerPage}
-                     selectedPage={tblSelectedPage}
+                     maxItemsPerPage={tbl.maxItemsPerPage}
+                     selectedPage={tbl.selectedPage}
                      onChange={(selectedPage, maxItemsPerPage) => { onSearch(selectedPage, maxItemsPerPage); }}
-                     listCount={tblTotalItemCount} />
+                     listCount={tbl.totalItemCount} />
                </div>
             }
             {/***** Add/ modify User modal  ****/}

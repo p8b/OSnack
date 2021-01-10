@@ -42,14 +42,14 @@ const ShowCommunication = (props: IProps) => {
    }, [communication]);
 
    const deleteCommunication = () => {
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       props.useDeleteCommunication!(communication.id || null).then(() => {
          if (isUnmounted.current) return;
          props.onClose!();
       }).catch(onError);
    };
    const sendMessage = () => {
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       switch (props.access) {
          case ClientAppAccess.Official:
             usePutOfficialCommunication({ body: message }, communication.id ?? null).then(onSuccess).catch(onError);

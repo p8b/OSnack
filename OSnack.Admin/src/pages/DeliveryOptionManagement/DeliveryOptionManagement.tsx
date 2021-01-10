@@ -1,12 +1,12 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
-import Table, { TableData } from 'osnack-frontend-shared/src/components/Table/Table';
+import Table, { TableData, useTableData } from 'osnack-frontend-shared/src/components/Table/Table';
 import { DeliveryOption } from 'osnack-frontend-shared/src/_core/apiModels';
 import Container from '../../components/Container';
 import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
 import { useSearchDeliveryOption } from '../../SecretHooks/useDeliveryOptionHook';
-import { ConstMaxNumberOfPerItemsPage, GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
+import { GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRowButtons';
@@ -18,28 +18,22 @@ const DeliveryOptionManagement = (props: IProps) => {
    const isUnmounted = useRef(false);
    const history = useHistory();
    const errorAlert = useAlert(new AlertObj());
+   const tbl = useTableData("IsPremitive", true);
    const [searchValue, setSearchValue] = useState("");
    const [selectedDeliveryOption, setSelectedDeliveryOption] = useState(new DeliveryOption());
    const [isOpenDeliveryOptionModal, setIsOpenDeliveryOptionModal] = useState(false);
 
-   const [tableData, setTableData] = useState(new TableData());
-   const [tblSortName, setTblsortName] = useState("IsPremitive");
-   const [tblIsSortAsc, setTblIsSortAsc] = useState(true);
-   const [tblTotalItemCount, setTblTotalItemCount] = useState(0);
-   const [tblSelectedPage, setTblSelectedPage] = useState(1);
-   const [tblMaxItemsPerPage, setTblMaxItemsPerPage] = useState(ConstMaxNumberOfPerItemsPage);
-
    useEffect(() => {
       onSearch(...checkUri(window.location.pathname,
-         [tblSelectedPage, tblMaxItemsPerPage, tblIsSortAsc, tblSortName, GetAllRecords]));
+         [tbl.selectedPage, tbl.maxItemsPerPage, tbl.isSortAsc, tbl.sortName, GetAllRecords]));
       return () => { isUnmounted.current = true; };
    }, []);
 
    const onSearch = (
-      selectedPage = tblSelectedPage,
-      maxItemsPerPage = tblMaxItemsPerPage,
-      isSortAsc = tblIsSortAsc,
-      sortName = tblSortName,
+      selectedPage = tbl.selectedPage,
+      maxItemsPerPage = tbl.maxItemsPerPage,
+      isSortAsc = tbl.isSortAsc,
+      sortName = tbl.sortName,
       searchString = GetAllRecords
    ) => {
 
@@ -48,28 +42,28 @@ const DeliveryOptionManagement = (props: IProps) => {
       if (searchString != GetAllRecords)
          setSearchValue(searchString);
 
-      if (isSortAsc != tblIsSortAsc)
-         setTblIsSortAsc(isSortAsc);
+      if (isSortAsc != tbl.isSortAsc)
+         tbl.setIsSortAsc(isSortAsc);
 
-      if (sortName != tblSortName)
-         setTblsortName(sortName);
+      if (sortName != tbl.sortName)
+         tbl.setSortName(sortName);
 
-      if (selectedPage != tblSelectedPage)
-         setTblSelectedPage(selectedPage);
+      if (selectedPage != tbl.selectedPage)
+         tbl.setSelectedPage(selectedPage);
 
-      if (maxItemsPerPage != tblMaxItemsPerPage)
-         setTblMaxItemsPerPage(maxItemsPerPage);
+      if (maxItemsPerPage != tbl.maxItemsPerPage)
+         tbl.setMaxItemsPerPage(maxItemsPerPage);
 
       history.push(generateUri(window.location.pathname,
-         [selectedPage || tblSelectedPage,
+         [selectedPage || tbl.selectedPage,
             maxItemsPerPage, Number(isSortAsc), sortName, searchString != GetAllRecords ? searchString : ""]));
 
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       useSearchDeliveryOption(selectedPage, maxItemsPerPage, searchString, isSortAsc, sortName).then(
          result => {
             if (isUnmounted.current) return;
             errorAlert.clear();
-            setTblTotalItemCount(result.data.totalCount || 0);
+            tbl.setTotalItemCount(result.data.totalCount || 0);
             populateTable(result.data.deliveryOptionList);
          }).catch((errors) => {
             if (isUnmounted.current) return;
@@ -98,7 +92,7 @@ const DeliveryOptionManagement = (props: IProps) => {
             />
          ]));
 
-      setTableData(tData);
+      tbl.setData(tData);
    };
 
    const editDeliveyOption = (deliveryOption: DeliveryOption) => {
@@ -113,9 +107,8 @@ const DeliveryOptionManagement = (props: IProps) => {
    return (
       <Container className="container-fluid ">
          <PageHeader title="Delivey Options" className="line-header" />
-         <Container className="row col-12 col-md-11 pt-2 pb-2 bg-white ml-auto mr-auto">
-            {/***** Search Input and new category button  ****/}
-            <SearchInput key="searchInput"
+         <div className="row col-12 py-3 mx-auto bg-white">
+            <SearchInput
                value={searchValue}
                onChange={i => setSearchValue(i.target.value)}
                className="col-12 col-md-9 pr-md-4"
@@ -123,7 +116,7 @@ const DeliveryOptionManagement = (props: IProps) => {
             />
 
             <Button children={<span className="add-icon" children="Delivery Option" />}
-               className="col-12 col-md-3 btn-green btn"
+               className="col-12 col-md-3 btn-green btn mt-2 mt-md-0"
                onClick={() => { setSelectedDeliveryOption(new DeliveryOption()); setIsOpenDeliveryOptionModal(true); }}
             />
 
@@ -133,18 +126,18 @@ const DeliveryOptionManagement = (props: IProps) => {
             />
 
             {/***** Category Table  ****/}
-            {tblTotalItemCount > 0 &&
+            {tbl.totalItemCount > 0 &&
                <div className="row col-12 pm-0">
                   <Table className="col-12 text-center table-striped"
-                     defaultSortName={tblSortName}
-                     data={tableData}
-                     onSortChange={(isSortAsce, sortName) => onSearch(undefined, undefined, isSortAsce, sortName)}
-                     listCount={tblTotalItemCount}
+                     defaultSortName={tbl.sortName}
+                     data={tbl.data}
+                     onSortChange={(selectedPage, isSortAsce, sortName) => onSearch(selectedPage, undefined, isSortAsce, sortName)}
+                     listCount={tbl.totalItemCount}
                   />
                   <Pagination
-                     maxItemsPerPage={tblMaxItemsPerPage}
-                     selectedPage={tblSelectedPage}
-                     listCount={tblTotalItemCount}
+                     maxItemsPerPage={tbl.maxItemsPerPage}
+                     selectedPage={tbl.selectedPage}
+                     listCount={tbl.totalItemCount}
                      onChange={(selectedPage, maxItemsPerPage) => { onSearch(selectedPage, maxItemsPerPage); }}
                   />
 
@@ -155,7 +148,7 @@ const DeliveryOptionManagement = (props: IProps) => {
                onSuccess={() => { onSearch(); }}
                deliveryOption={selectedDeliveryOption}
                onClose={() => { resetCategoryModal(); onSearch(); }} />
-         </Container>
+         </div>
       </Container>
    );
 };

@@ -72,7 +72,7 @@ const ImageCropModal = (props: IProps) => {
    };
 
    return (
-      <Modal className="col-11 col-sm-10 col-md-8 col-lg-6 pl-4 pr-4"
+      <Modal className="col-11 col-sm-10 col-md-8 col-lg-6"
          isOpen={props.isOpen}>
          <PageHeader title='Edit Image' />
          <Cropper
@@ -87,30 +87,27 @@ const ImageCropModal = (props: IProps) => {
             onRotationChange={r => { setRotation(r); }}
             onCropComplete={(croppedArea, croppedAreaPixels) => { setCroppedAreaPixels(croppedAreaPixels); }}
          />
-         <div className="row col-12 mt-2 pt-2">
-            <label children="Zoom" className="col-3" />
-            <div className="col-9 p-0">
-               <Slider
-                  min={1}
-                  max={10}
-                  step={0.1}
-                  value={zoom}
-                  onChange={(z) => { setZoom(z); }}
-               />
-            </div>
+         <div className="row col-12 pm-0 my-4">
+            <label children="Zoom" className="col-3 pm-0 px-2" />
+            <Slider
+               className="col my-auto"
+               min={1}
+               max={10}
+               step={0.1}
+               value={zoom}
+               onChange={(z) => { setZoom(z); }}
+            />
          </div>
-         <div className="row col-12 mt-2 pt-2">
-            <label children="Rotation" className="col-3" />
-            <div className="col-9 p-0">
-               <Slider
-                  min={0}
-                  max={360}
-                  step={0.1}
-                  aria-labelledby="rotation"
-                  value={rotation}
-                  onChange={(r) => { setRotation(r); }}
-               />
-            </div>
+         <div className="row col-12 pm-0 my-4">
+            <label children="Rotation" className="col-3 pm-0 px-2" />
+            <Slider
+               className="col my-auto"
+               min={0}
+               max={360}
+               step={0.1}
+               value={rotation}
+               onChange={(r) => { setRotation(r); }}
+            />
          </div>
 
          <Button children="Confirm"

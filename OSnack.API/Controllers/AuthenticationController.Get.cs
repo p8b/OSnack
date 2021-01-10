@@ -28,10 +28,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
       [Authorize(AppConst.AccessPolicies.Public)]
       [HttpGet("Get/[action]")]
-      public void AntiforgeryToken()
-      {
-         SetAntiforgeryCookie();
-      }
+      public void AntiforgeryToken() => SetAntiforgeryCookie();
 
       #region *** ***
       [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]

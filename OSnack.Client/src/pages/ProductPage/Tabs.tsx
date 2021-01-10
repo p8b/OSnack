@@ -5,22 +5,20 @@ import { StarRating } from 'osnack-frontend-shared/src/components/Inputs/StarRat
 import { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import { ReviewModal } from './ReviewModal';
-import { ConstMaxNumberOfPerItemsPage } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import LoadMore from 'osnack-frontend-shared/src/components/Pagination/LoadMore';
+import { useTableData } from 'osnack-frontend-shared/src/components/Table/Table';
 
 
 const Tabs = (props: IProps) => {
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
+   const tbl = useTableData("");
    const [selectedNav, setSelectedNav] = useState(productTabs.NutritionalInfo);
    const [showNutritionalInfo, setShowNutritionalInfo] = useState(false);
    const [commentList, setCommentList] = useState<Comment[]>([]);
    const [comment, setComment] = useState<Comment | undefined>(new Comment());
    const [isOpenReviewModal, setIsOpenReviewModal] = useState(false);
 
-   const [tblTotalItemCount, setTblTotalItemCount] = useState(0);
-   const [tblSelectedPage, setTblSelectedPage] = useState(1);
-   const [tblMaxItemsPerPage, setTblMaxItemsPerPage] = useState(ConstMaxNumberOfPerItemsPage);
 
    useEffect(() => () => { isUnmounted.current = true; }, []);
 
@@ -44,25 +42,22 @@ const Tabs = (props: IProps) => {
       reloadComments(undefined, undefined);
    }, [props.product.id]);
 
+   const reloadComments = (selectedPage = tbl.selectedPage,
+      maxItemsPerPage = tbl.maxItemsPerPage) => {
 
+      if (selectedPage != tbl.selectedPage)
+         tbl.setSelectedPage(selectedPage);
 
-
-   const reloadComments = (selectedPage = tblSelectedPage,
-      maxItemsPerPage = tblMaxItemsPerPage) => {
-
-      if (selectedPage != tblSelectedPage)
-         setTblSelectedPage(selectedPage);
-
-      if (maxItemsPerPage != tblMaxItemsPerPage) {
-         setTblMaxItemsPerPage(maxItemsPerPage);
+      if (maxItemsPerPage != tbl.maxItemsPerPage) {
+         tbl.setMaxItemsPerPage(maxItemsPerPage);
          selectedPage = 1;
       }
 
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       useGetComment(props.product.id!, selectedPage, maxItemsPerPage).then(result => {
          if (isUnmounted.current) return;
          setComment(result.data.comment);
-         setTblTotalItemCount(result.data.totalCount!);
+         tbl.setTotalItemCount(result.data.totalCount!);
 
          let list: Comment[] = commentList;
          if (selectedPage == 1)
@@ -145,10 +140,10 @@ const Tabs = (props: IProps) => {
                      </div>
                   )
                   }
-                  <LoadMore maxItemsPerPage={tblMaxItemsPerPage}
-                     selectedPage={tblSelectedPage}
+                  <LoadMore maxItemsPerPage={tbl.maxItemsPerPage}
+                     selectedPage={tbl.selectedPage}
                      onChange={(selectedPage, maxItemsPerPage) => { reloadComments(selectedPage, maxItemsPerPage); }}
-                     listCount={tblTotalItemCount} />
+                     listCount={tbl.totalItemCount} />
                </>
             }
          </div>

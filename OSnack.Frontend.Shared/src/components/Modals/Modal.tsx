@@ -10,15 +10,9 @@ const Modal = (props: IProps) => {
    useEffect(() => {
       if (props.isOpen) {
          document.body.classList.add("remove-scroll");
-         document.body.classList.add("scrollbar-y-width");
-         document.getElementById("navbar")?.classList.add("scrollbar-y-width");
-         document.getElementById("footer")?.classList.add("scrollbar-y-width");
       }
       else {
          document.body.classList.remove("remove-scroll");
-         document.body.classList.remove("scrollbar-y-width");
-         document.getElementById("navbar")?.classList.remove("scrollbar-y-width");
-         document.getElementById("footer")?.classList.remove("scrollbar-y-width");
       }
       document.addEventListener("keyup", keydownHander);
       setfocusToFirstElement();
@@ -45,9 +39,9 @@ const Modal = (props: IProps) => {
    return (
       <>
          {props.isOpen && <div className="modal-backdrop show" />}
-         <div tabIndex={-1} className={`modal ${props.isOpen ? ' show d-block ' : " d-none "}`}>
-            <div ref={modalRow} className="row h-100 ">
-               <div className={`modal-body bg-solid bg-white m-auto p-3 ${props.className ?? ""} `}
+         <div tabIndex={-1} className={`modal ${props.isOpen ? 'show d-block' : " d-none "}`}>
+            <div ref={modalRow} className="row h-100 pm-0">
+               <div className={`modal-body bg-solid bg-white m-auto ${props.className ?? ""} `}
                   ref={props.bodyRef}>
                   {props.isOpen && props.children}
                </div>

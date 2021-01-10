@@ -31,7 +31,6 @@ const CardView = (props: IProps) => {
    );
 };
 interface IProps {
-   onSortClick?: (isSortAsce: boolean, selectedSortName: string) => void;
    className?: string;
    data: TableData;
    defaultSortName?: string;

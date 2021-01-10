@@ -15,7 +15,7 @@ const BasketCoupon = (props: IProps) => {
          setCode("");
          return;
       }
-      props.alert.PleaseWait(500, isUnmounted);
+      props.alert.pleaseWait(isUnmounted);
       useValidateCoupon(code).then(result => {
          if (isUnmounted.current) return;
          if (result.data.type == CouponType.FreeDelivery && !props.acceptFreeCoupon) {

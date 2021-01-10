@@ -22,7 +22,7 @@ const DeliveyOptionModal = (props: IProps) => {
    }, [props.deliveryOption]);
 
    const createDeliveryOption = async () => {
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       usePostDeliveryOption(deliveryOption).then(result => {
          if (isUnmounted.current) return;
          setDeliveyOption(result.data);
@@ -36,7 +36,7 @@ const DeliveyOptionModal = (props: IProps) => {
    };
    const updateDeliveryOption = async () => {
 
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       usePutDeliveryOption(deliveryOption).then(result => {
          if (isUnmounted.current) return;
          setDeliveyOption(result.data);
@@ -51,7 +51,7 @@ const DeliveyOptionModal = (props: IProps) => {
    };
 
    const deleteDeliveryOption = async () => {
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       useDeleteDeliveryOption(deliveryOption.id!).then(() => {
          if (isUnmounted.current) return;
          errorAlert.clear();
@@ -63,7 +63,7 @@ const DeliveyOptionModal = (props: IProps) => {
 
    };
    return (
-      <Modal className="col-11 col-sm-10 col-md-8 col-lg-6 pl-4 pr-4"
+      <Modal className="col-12 col-sm-11 col-md-9 col-lg-6"
          bodyRef={props.modalRef}
          isOpen={props.isOpen}>
          <PageHeader className="col-12" title={deliveryOption.id == 0 ? "New Delivey Option" : "Update Delivey Option"} />

@@ -56,7 +56,7 @@ const Checkout = (props: IProps) => {
 
    const getDeliveryOptionAndAddresses = () => {
 
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       if (auth.state.isAuthenticated) {
          useAllAddress().then(result => {
             if (isUnmounted.current) return;
@@ -174,7 +174,7 @@ const Checkout = (props: IProps) => {
 
    const checkout = () => {
       errorAlert.clear();
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       useVerifyOrderOrder(order).then(result => {
          if (isUnmounted.current) return;
          setPaypalOrder(result.data);

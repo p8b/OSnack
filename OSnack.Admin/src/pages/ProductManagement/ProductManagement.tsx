@@ -2,12 +2,12 @@
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
-import Table, { TableData, TableView } from 'osnack-frontend-shared/src/components/Table/Table';
+import Table, { TableData, TableView, useTableData } from 'osnack-frontend-shared/src/components/Table/Table';
 import { Category, Product, ProductUnitTypeList } from 'osnack-frontend-shared/src/_core/apiModels';
 import ProductModal from './ProductModal';
 import Container from '../../components/Container';
 import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
-import { ConstMaxNumberOfPerItemsPage, GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
+import { GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
 import { useSearchSecretProduct } from '../../SecretHooks/useProductHook';
 import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
@@ -21,23 +21,18 @@ const ProductManagement = (props: IProps) => {
    const isUnmounted = useRef(false);
    const history = useHistory();
    const errorAlert = useAlert(new AlertObj());
-   const [searchValue, setSearchValue] = useState("");
-   const [selectedProduct, setSelectedProduct] = useState(new Product());
+   const tbl = useTableData("Name", true);
 
+   const [searchValue, setSearchValue] = useState("");
    const [categoryList, setCategoryList] = useState<Category[]>([]);
-   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState(GetAllRecords);
-   const [selectedStatusFilter, setSelectedStatusFilter] = useState(GetAllRecords);
+   const [productUnitTypeList] = useState(ProductUnitTypeList);
+
    const [isOpenProductModal, setIsOpenProductModal] = useState(false);
    const [isOpenCommentModal, setIsOpenCommentModal] = useState(false);
 
-   const [productUnitTypeList] = useState(ProductUnitTypeList);
-
-   const [tableData, setTableData] = useState(new TableData());
-   const [tblSortName, setTblsortName] = useState("Name");
-   const [tblIsSortAsc, setTblIsSortAsc] = useState(true);
-   const [tblTotalItemCount, setTblTotalItemCount] = useState(0);
-   const [tblSelectedPage, setTblSelectedPage] = useState(1);
-   const [tblMaxItemsPerPage, setTblMaxItemsPerPage] = useState(ConstMaxNumberOfPerItemsPage);
+   const [selectedProduct, setSelectedProduct] = useState(new Product());
+   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState(GetAllRecords);
+   const [selectedStatusFilter, setSelectedStatusFilter] = useState(GetAllRecords);
 
    useEffect(() => {
       useAllSecretCategory().then(result => {
@@ -48,60 +43,43 @@ const ProductManagement = (props: IProps) => {
          errorAlert.set(errors);
       });
       onSearch(...checkUri(window.location.pathname,
-         [tblSelectedPage, tblMaxItemsPerPage, selectedStatusFilter, selectedCategoryFilter, tblIsSortAsc, tblSortName, GetAllRecords]));
+         [tbl.selectedPage, tbl.maxItemsPerPage, selectedStatusFilter, selectedCategoryFilter, tbl.isSortAsc, tbl.sortName, GetAllRecords]));
       return () => { isUnmounted.current = true; };
    }, []);
 
    const onSearch = async (
-      selectedPage = tblSelectedPage,
-      maxItemsPerPage = tblMaxItemsPerPage,
+      selectedPage = tbl.selectedPage,
+      maxItemsPerPage = tbl.maxItemsPerPage,
       statusFilter = selectedStatusFilter,
       categoryFilter = selectedCategoryFilter,
-      isSortAsc = tblIsSortAsc,
-      sortName = tblSortName,
+      isSortAsc = tbl.isSortAsc,
+      sortName = tbl.sortName,
       searchString = GetAllRecords
    ) => {
-      if (searchValue != null && searchValue != "")
-         searchString = searchValue;
-      if (searchString != GetAllRecords)
-         setSearchValue(searchString);
-
-
-      if (isSortAsc != tblIsSortAsc)
-         setTblIsSortAsc(isSortAsc);
-
-      if (sortName != tblSortName)
-         setTblsortName(sortName);
-
-      if (selectedPage != tblSelectedPage)
-         setTblSelectedPage(selectedPage);
-
-      if (maxItemsPerPage != tblMaxItemsPerPage)
-         setTblMaxItemsPerPage(maxItemsPerPage);
-
-      if (Number(categoryFilter) == -1)
-         categoryFilter = GetAllRecords;
-      if (categoryFilter != selectedCategoryFilter)
-         setSelectedCategoryFilter(categoryFilter);
-
-      if (Number(statusFilter) == -1)
-         statusFilter = GetAllRecords;
-      if (statusFilter != selectedStatusFilter)
-         setSelectedStatusFilter(statusFilter);
+      if (searchValue != null && searchValue != "") searchString = searchValue;
+      if (searchString != GetAllRecords) setSearchValue(searchString);
+      if (isSortAsc != tbl.isSortAsc) tbl.setIsSortAsc(isSortAsc);
+      if (sortName != tbl.sortName) tbl.setSortName(sortName);
+      if (maxItemsPerPage != tbl.maxItemsPerPage) tbl.setMaxItemsPerPage(maxItemsPerPage);
+      if (Number(categoryFilter) == -1) categoryFilter = GetAllRecords;
+      if (Number(statusFilter) == -1) statusFilter = GetAllRecords;
+      if (categoryFilter != selectedCategoryFilter) setSelectedCategoryFilter(categoryFilter);
+      if (statusFilter != selectedStatusFilter) setSelectedStatusFilter(statusFilter);
+      if (selectedPage != tbl.selectedPage) tbl.setSelectedPage(selectedPage);
 
       history.push(generateUri(window.location.pathname,
-         [selectedPage || tblSelectedPage,
+         [selectedPage || tbl.selectedPage,
             maxItemsPerPage, statusFilter == GetAllRecords ? -1 : statusFilter,
          categoryFilter == GetAllRecords ? -1 : categoryFilter,
          Number(isSortAsc),
             sortName,
          searchString != GetAllRecords ? searchString : ""]));
 
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       useSearchSecretProduct(selectedPage, maxItemsPerPage, categoryFilter, searchString, statusFilter, isSortAsc, sortName)
          .then(result => {
             if (isUnmounted.current) return;
-            setTblTotalItemCount(result.data.totalCount || 0);
+            tbl.setTotalItemCount(result.data.totalCount || 0);
             errorAlert.clear();
             populateProductTable(result.data.productList!);
          }).catch(errors => {
@@ -109,7 +87,6 @@ const ProductManagement = (props: IProps) => {
             errorAlert.set(errors);
          });
    };
-
    const populateProductTable = (productList: Product[]) => {
       if (productList.length == 0) {
          errorAlert.setSingleWarning("0", "No Result Found");
@@ -150,7 +127,7 @@ const ProductManagement = (props: IProps) => {
             </>
          ]));
 
-      setTableData(tData);
+      tbl.setData(tData);
    };
    const editProduct = (product: Product) => {
       setSelectedProduct(product);
@@ -175,92 +152,78 @@ const ProductManagement = (props: IProps) => {
    };
 
    return (
-      <Container className="container-fluid pr-0">
+      <Container className="container-fluid">
          <PageHeader title="Products" className="line-header" />
-         <div className="row col-12 col-md-11 pt-2 pb-2 bg-white ml-auto mr-auto">
-            {/***** Search Input and new product button  ****/}
-            <div className="row col-12 pm-0">
+         <div className="row col-12 py-3 mx-auto bg-white">
+            <SearchInput
+               value={searchValue}
+               onChange={i => setSearchValue(i.target.value)}
+               className="col-12 col-md-9 pr-md-4"
+               onSearch={() => { onSearch(1); }}
+            />
 
-               <SearchInput key="searchInput"
-                  value={searchValue}
-                  onChange={i => setSearchValue(i.target.value)}
-                  className="col-12 col-md-9 pr-md-4"
-                  onSearch={() => { onSearch(1); }}
-               />
+            <Button children={<span className="add-icon" children="Product" />}
+               className="col-12 col-md-3 btn-green btn mt-2 mt-md-0"
+               onClick={() => { setIsOpenProductModal(true); }}
+            />
 
-               <Button children={<span className="add-icon" children="Product" />}
-                  className="col-12 col-md-3 mt-1 mt-md-0 btn-green btn"
-                  onClick={() => { setIsOpenProductModal(true); }}
-               />
-            </div>
-            <div className="row col-12 pm-0 pt-3 ">
-
-               <DropDown title={`Category: ${categoryList.find((c) => c.id?.toString() == selectedCategoryFilter)?.name || "All"}`}
-                  className="col-12 col-sm-6 col-md-4 ml-auto m-0 p-1"
-                  titleClassName="btn btn-white filter-icon">
-                  <button className="dropdown-item"
-                     onClick={() => { onSearch(1, undefined, undefined, GetAllRecords); }} >
-                     All
+            <DropDown title={`Category: ${categoryList.find((c) => c.id?.toString() == selectedCategoryFilter)?.name ?? "All"}`}
+               className="col-12 col-sm pm-0 mt-2"
+               titleClassName="btn btn-white filter-icon mr-sm-1">
+               <button className="dropdown-item"
+                  onClick={() => { onSearch(1, undefined, undefined, GetAllRecords); }} >All</button>
+               {categoryList.map(category =>
+                  <button className="dropdown-item" key={category.id}
+                     onClick={() => { onSearch(1, undefined, undefined, category.id?.toString()); }} >
+                     {category.name}
                   </button>
-                  {categoryList.map(category =>
-                     <button className="dropdown-item" key={category.id}
-                        onClick={() => { onSearch(1, undefined, undefined, category.id?.toString()); }} >
-                        {category.name}
-                     </button>
-                  )}
-               </DropDown>
-               <DropDown title={`Status: ${getStatusDisplayValue()}`}
-                  className="col-12 col-sm-6 col-md-4 m-0 p-1"
-                  titleClassName="btn btn-white  filter-icon">
-                  <button className="dropdown-item"
-                     onClick={() => { onSearch(1, undefined, GetAllRecords); }} >
-                     All
+               )}
+            </DropDown>
+            <DropDown title={`Status: ${getStatusDisplayValue()}`}
+               className="col-12 col-sm pm-0 mt-2"
+               titleClassName="btn btn-white filter-icon ml-sm-1">
+               <button className="dropdown-item"
+                  onClick={() => { onSearch(1, undefined, GetAllRecords); }} >
+                  All
                   </button>
-                  <button className="dropdown-item"
-                     onClick={() => { onSearch(1, undefined, "True"); }} >
-                     Active
+               <button className="dropdown-item"
+                  onClick={() => { onSearch(1, undefined, "True"); }} >
+                  Active
                   </button>
-                  <button className="dropdown-item"
-                     onClick={() => { onSearch(1, undefined, "False"); }} >
-                     Disabled
+               <button className="dropdown-item"
+                  onClick={() => { onSearch(1, undefined, "False"); }} >
+                  Disabled
                   </button>
-               </DropDown>
+            </DropDown>
 
-               <Alert alert={errorAlert.alert}
-                  className="col-12 mb-2"
-                  onClosed={() => { errorAlert.clear(); }}
-               />
-            </div>
+            <Alert alert={errorAlert.alert}
+               className="col-12 mb-2"
+               onClosed={() => { errorAlert.clear(); }}
+            />
 
-            {/***** Category Table  ****/}
-            {tblTotalItemCount > 0 &&
+            {tbl.totalItemCount > 0 &&
                <div className="row col-12 pm-0">
                   <Table className="col-12 text-center table-striped"
-                     defaultSortName={tblSortName}
-                     data={tableData}
-                     onSortChange={(isSortAsce, sortName) => onSearch(undefined, undefined, undefined, undefined, isSortAsce, sortName)}
+                     defaultSortName={tbl.sortName}
+                     data={tbl.data}
+                     onSortChange={(selectedPage, isSortAsce, sortName) => onSearch(selectedPage, undefined, undefined, undefined, isSortAsce, sortName)}
                      view={TableView.CardView}
-                     listCount={tblTotalItemCount}
+                     listCount={tbl.totalItemCount}
                   />
                   <Pagination
-                     maxItemsPerPage={tblMaxItemsPerPage}
-                     selectedPage={tblSelectedPage}
-                     listCount={tblTotalItemCount}
+                     maxItemsPerPage={tbl.maxItemsPerPage}
+                     selectedPage={tbl.selectedPage}
+                     listCount={tbl.totalItemCount}
                      onChange={(selectedPage, maxItemsPerPage) => { onSearch(selectedPage, maxItemsPerPage); }}
                   />
                </div>
             }
-            {/***** Add/ modify category modal  ****/}
             <ProductModal isOpen={isOpenProductModal} categoryList={categoryList}
                onSuccess={() => { resetProductModal(); onSearch(); }}
                product={selectedProduct}
                onClose={resetProductModal} />
             <CommentModal isOpen={isOpenCommentModal} productId={selectedProduct.id!}
                onClose={resetProductModal} />
-
-
-
-
          </div>
       </Container>
    );

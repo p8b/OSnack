@@ -3,7 +3,7 @@ import { Button } from '../Buttons/Button';
 import ButtonPopupConfirm from '../Buttons/ButtonPopupConfirm';
 const ModalFooter = (props: IProps) => {
    return (
-      <div className="row col-12 pm-0 ">
+      <div className="row pm-0 ">
          { props.onCreate &&
             <Button children={props.createText || "Create"}
                className={`col-12 col-md mt-2 btn-green btn-lg ${props.classNameCreate}`}

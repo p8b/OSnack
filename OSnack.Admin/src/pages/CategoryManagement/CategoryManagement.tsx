@@ -1,13 +1,13 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
-import Table, { TableData } from 'osnack-frontend-shared/src/components/Table/Table';
+import Table, { TableData, useTableData } from 'osnack-frontend-shared/src/components/Table/Table';
 import { Category } from 'osnack-frontend-shared/src/_core/apiModels';
 import CategoryModal from './CategoryModal';
 import Container from '../../components/Container';
 import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
 import { useSearchCategory } from '../../SecretHooks/useCategoryHook';
-import { ConstMaxNumberOfPerItemsPage, GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
+import { GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRowButtons';
@@ -18,58 +18,40 @@ const CategoryManagement = (props: IProps) => {
    const isUnmounted = useRef(false);
    const history = useHistory();
    const errorAlert = useAlert(new AlertObj());
+   const tbl = useTableData("Name", true);
    const [searchValue, setSearchValue] = useState("");
    const [selectedCategory, setSelectedCategory] = useState(new Category());
    const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false);
 
-   const [tableData, setTableData] = useState(new TableData());
-   const [tblSortName, setTblsortName] = useState("Name");
-   const [tblIsSortAsc, setTblIsSortAsc] = useState(true);
-   const [tblTotalItemCount, setTblTotalItemCount] = useState(0);
-   const [tblSelectedPage, setTblSelectedPage] = useState(1);
-   const [tblMaxItemsPerPage, setTblMaxItemsPerPage] = useState(ConstMaxNumberOfPerItemsPage);
-
    useEffect(() => {
       onSearch(...checkUri(window.location.pathname,
-         [tblSelectedPage, tblMaxItemsPerPage, tblIsSortAsc, tblSortName, GetAllRecords]));
+         [tbl.selectedPage, tbl.maxItemsPerPage, tbl.isSortAsc, tbl.sortName, GetAllRecords]));
       return () => { isUnmounted.current = true; };
    }, []);
 
    const onSearch = (
-      selectedPage = tblSelectedPage,
-      maxItemsPerPage = tblMaxItemsPerPage,
-      isSortAsc = tblIsSortAsc,
-      sortName = tblSortName,
+      selectedPage = tbl.selectedPage,
+      maxItemsPerPage = tbl.maxItemsPerPage,
+      isSortAsc = tbl.isSortAsc,
+      sortName = tbl.sortName,
       searchString = GetAllRecords
    ) => {
 
-      if (searchValue != null && searchValue != "")
-         searchString = searchValue;
-      if (searchString != GetAllRecords)
-         setSearchValue(searchString);
-
-      if (isSortAsc != tblIsSortAsc)
-         setTblIsSortAsc(isSortAsc);
-
-      if (sortName != tblSortName)
-         setTblsortName(sortName);
-
-      if (selectedPage != tblSelectedPage)
-         setTblSelectedPage(selectedPage);
-
-      if (maxItemsPerPage != tblMaxItemsPerPage)
-         setTblMaxItemsPerPage(maxItemsPerPage);
-
+      if (searchValue != null && searchValue != "") searchString = searchValue;
+      if (searchString != GetAllRecords) setSearchValue(searchString);
+      if (isSortAsc != tbl.isSortAsc) tbl.setIsSortAsc(isSortAsc);
+      if (sortName != tbl.sortName) tbl.setSortName(sortName);
+      if (selectedPage != tbl.selectedPage) tbl.setSelectedPage(selectedPage);
+      if (maxItemsPerPage != tbl.maxItemsPerPage) tbl.setMaxItemsPerPage(maxItemsPerPage);
       history.push(generateUri(window.location.pathname,
-         [selectedPage || tblSelectedPage,
-            maxItemsPerPage, Number(isSortAsc), sortName, searchString != GetAllRecords ? searchString : ""]));
+         [selectedPage, maxItemsPerPage, Number(isSortAsc), sortName, searchString != GetAllRecords ? searchString : ""]));
 
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       useSearchCategory(selectedPage, maxItemsPerPage, searchString, isSortAsc, sortName).then(
          result => {
             if (isUnmounted.current) return;
             errorAlert.clear();
-            setTblTotalItemCount(result.data.totalCount || 0);
+            tbl.setTotalItemCount(result.data.totalCount || 0);
             populateCategoryTable(result.data.categoryList);
          }).catch((errors) => {
             if (isUnmounted.current) return;
@@ -98,7 +80,7 @@ const CategoryManagement = (props: IProps) => {
             />
          ]));
 
-      setTableData(tData);
+      tbl.setData(tData);
    };
 
    const editCategory = (category: Category) => {
@@ -113,9 +95,8 @@ const CategoryManagement = (props: IProps) => {
    return (
       <Container className="container-fluid ">
          <PageHeader title="Categories" className="line-header" />
-         <Container className="row col-12 col-md-11 pt-2 pb-2 bg-white ml-auto mr-auto">
-            {/***** Search Input and new category button  ****/}
-            <SearchInput key="searchInput"
+         <div className="row col-12 py-3 mx-auto bg-white">
+            <SearchInput
                value={searchValue}
                onChange={i => setSearchValue(i.target.value)}
                className="col-12 col-md-9 pr-md-4"
@@ -123,7 +104,7 @@ const CategoryManagement = (props: IProps) => {
             />
 
             <Button children={<span className="add-icon" children="Category" />}
-               className="col-12 col-md-3 btn-green btn"
+               className="col-12 col-md-3 btn-green btn mt-2 mt-md-0"
                onClick={() => { setIsOpenCategoryModal(true); }}
             />
 
@@ -132,30 +113,28 @@ const CategoryManagement = (props: IProps) => {
                onClosed={() => { errorAlert.clear(); }}
             />
 
-            {/***** Category Table  ****/}
-            {tblTotalItemCount > 0 &&
-               <div className="row col-12 pm-0">
+            {tbl.totalItemCount > 0 &&
+               <div className="row col-12 pm-0 mt-3 pb-2">
                   <Table className="col-12 text-center table-striped"
-                     defaultSortName={tblSortName}
-                     data={tableData}
-                     onSortChange={(isSortAsce, sortName) => onSearch(undefined, undefined, isSortAsce, sortName)}
-                     listCount={tblTotalItemCount}
+                     defaultSortName={tbl.sortName}
+                     data={tbl.data}
+                     onSortChange={(selectedPage, isSortAsce, sortName) => onSearch(selectedPage, undefined, isSortAsce, sortName)}
+                     listCount={tbl.totalItemCount}
                   />
                   <Pagination
-                     maxItemsPerPage={tblMaxItemsPerPage}
-                     selectedPage={tblSelectedPage}
-                     listCount={tblTotalItemCount}
+                     maxItemsPerPage={tbl.maxItemsPerPage}
+                     selectedPage={tbl.selectedPage}
+                     listCount={tbl.totalItemCount}
                      onChange={(selectedPage, maxItemsPerPage) => { onSearch(selectedPage, maxItemsPerPage); }}
                   />
 
                </div>
             }
-            {/***** Add/ modify category modal  ****/}
             <CategoryModal isOpen={isOpenCategoryModal}
                onSuccess={() => { resetCategoryModal(); onSearch(); }}
                category={selectedCategory}
                onClose={resetCategoryModal} />
-         </Container>
+         </div>
       </Container>
    );
 };

@@ -2,6 +2,7 @@
 import InputDropdown from '../Inputs/InputDropDown';
 import CardView from './CardView';
 import RowView from './RowView';
+import { ConstMaxNumberOfPerItemsPage } from "../../_core/constant.Variables";
 
 const Table = (props: IProps) => {
    const [currentView, setCurrentViews] = useState(TableView.CardView);
@@ -17,6 +18,9 @@ const Table = (props: IProps) => {
          window.removeEventListener("resize", sizeChange);
       };
    }, []);
+   useEffect(() => {
+      setSelectedSortName(props.defaultSortName);
+   }, [props.defaultSortName]);
 
    const sizeChange = () => {
       if (window.screen.width <= 650)
@@ -25,21 +29,15 @@ const Table = (props: IProps) => {
          setCurrentViews(TableView.RowView);
 
    };
-
-   useEffect(() => {
-      setSelectedSortName(props.defaultSortName);
-   }, [props.defaultSortName]);
-
    const sort = (sortName: string) => {
       if (selectedSortName === sortName) {
          setIsSortAsc(!isSortAsc);
-         props.onSortChange!(!isSortAsc, selectedSortName);
+         props.onSortChange!(1, !isSortAsc, selectedSortName);
       } else {
          setSelectedSortName(sortName);
-         props.onSortChange!(isSortAsc, sortName);
+         props.onSortChange!(1, isSortAsc, sortName);
       }
    };
-
    const getSortedColCss = (sortName: string) => {
       return selectedSortName === sortName ?
          !isSortAsc ? "sort-numeric-down-icon" : "sort-numeric-up-icon"
@@ -54,16 +52,18 @@ const Table = (props: IProps) => {
                   className="col-12  col-md-auto pm-0 pb-0 "
                   titleClassName={`btn ${!isSortAsc ? "sort-numeric-down-icon" : "sort-numeric-up-icon"}`}>
                   {props.data.headers().filter(h => h.sortName != undefined).map(header =>
-                     <button key={Math.random()} className={`dropdown-item ${getSortedColCss(header.sortName!)}`} onClick={() => { sort(header.sortName!); }}>
+                     <button key={Math.random()} className={`dropdown-item ${getSortedColCss(header.sortName!)}`}
+                        onClick={() => { sort(header.sortName!); }}>
                         {header.name}
                      </button>
                   )}
                </InputDropdown>
             }
-
             <div className="row col-12 col-md-auto ml-md-auto">
-               <button className={`btn-no-style table-card-icon cursor-pointer ${currentView != TableView.CardView ? "disabled" : ""}`} onClick={() => setCurrentViews(TableView.CardView)} />
-               <button className={`btn-no-style table-row-icon cursor-pointer ${currentView != TableView.RowView ? " disabled" : ""}`} onClick={() => setCurrentViews(TableView.RowView)} />
+               <button className={`btn-no-style table-card-icon cursor-pointer ${currentView != TableView.CardView ? "disabled" : ""}`}
+                  onClick={() => setCurrentViews(TableView.CardView)} />
+               <button className={`btn-no-style table-row-icon cursor-pointer ${currentView != TableView.RowView ? " disabled" : ""}`}
+                  onClick={() => setCurrentViews(TableView.RowView)} />
                <div className="col-auto pm-0 ml-auto small-text text-gray mt-auto mb-auto"
                   children={props.listCount != undefined ? `Total items: ${props.listCount}` : ""} />
             </div>
@@ -72,7 +72,6 @@ const Table = (props: IProps) => {
             <CardView className={props.className}
                defaultSortName={props.defaultSortName}
                data={props.data}
-               onSortClick={props.onSortChange}
             />}
          {currentView == TableView.RowView &&
             <RowView className={props.className}
@@ -85,9 +84,8 @@ const Table = (props: IProps) => {
 
 };
 
-
 interface IProps {
-   onSortChange?: (isAsc: boolean, sortName: string) => void;
+   onSortChange?: (selectedPage: number, isAsc: boolean, sortName: string) => void;
    className?: string;
    data: TableData;
    listCount?: number;
@@ -97,6 +95,30 @@ interface IProps {
    postRow?: any;
 }
 export default Table;
+
+export const useTableData = (
+   defaultSortName: string,
+   defaultIsSortAsc: boolean = false,
+   defaultMaxItemPerPage: number = ConstMaxNumberOfPerItemsPage,
+   defaultTotalItemCount: number = 0,
+   defaultSelectedPage: number = 1
+) => {
+   const [data, setData] = useState(new TableData());
+   const [sortName, setSortName] = useState(defaultSortName);
+   const [isSortAsc, setIsSortAsc] = useState(defaultIsSortAsc);
+   const [totalItemCount, setTotalItemCount] = useState(defaultTotalItemCount);
+   const [selectedPage, setSelectedPage] = useState(defaultSelectedPage);
+   const [maxItemsPerPage, setMaxItemsPerPage] = useState(defaultMaxItemPerPage);
+   return {
+      data, setData,
+      sortName, setSortName,
+      isSortAsc, setIsSortAsc,
+      totalItemCount, setTotalItemCount,
+      selectedPage, setSelectedPage,
+      maxItemsPerPage, setMaxItemsPerPage
+   };
+};
+
 
 export enum TableView {
    RowView = 0,

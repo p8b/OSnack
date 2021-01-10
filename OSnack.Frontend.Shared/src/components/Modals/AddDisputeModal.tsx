@@ -20,7 +20,7 @@ const AddDisputeModal = (props: IProps) => {
    useEffect(() => () => { isUnmounted.current = true; }, []);
 
    const sendMessage = () => {
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       usePostDisputeCommunication({
          email: auth.state.user.email,
          type: ContactType.Dispute,

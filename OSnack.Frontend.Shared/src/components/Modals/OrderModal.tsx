@@ -3,16 +3,13 @@ import { Communication, ContactType, Message, Order, OrderStatusType } from '../
 import Modal from '../../components/Modals/Modal';
 import OrderDetails from '../../components/Order/OrderDetails';
 import PageHeader from '../../components/Texts/PageHeader';
-import { Button } from '../../components/Buttons/Button';
 import { ClientAppAccess } from '../../_core/constant.Variables';
 import OrderMessageModal from './OrderMessageModal';
 import { AuthContext } from '../../_core/authenticationContext';
 import AddDisputeModal from './AddDisputeModal';
 import CommunicationModal from './CommunicationModal';
 import { IReturnUsePutOfficialCommunication } from '../../hooks/OfficialHooks/useCommunicationHook';
-
-
-
+import ModalFooter from './ModalFooter';
 
 const OrderModal = (props: IProps) => {
    const auth = useContext(AuthContext);
@@ -99,52 +96,41 @@ const OrderModal = (props: IProps) => {
    };
 
    return (
-      <Modal className="col-11 col-sm-10 col-lg-8 pm-0 pl-4 pr-4 pb-0"
+      <Modal className="col-12 col-sm-11 col-lg-9 m-0"
          bodyRef={props.modalRef}
          isOpen={props.isOpen}>
-         <>
-            <PageHeader title="Order Details" />
-            <div className="row  mt-1">
-               <OrderDetails order={selectedOrder} access={props.access}
-                  availabeType={getAvailabeType()}
-                  statusChanged={statusChange} onDispute={() => { setIsOpenAddDisputeModal(true); }}
-                  showDispute={(dispute) => { setSelectedDispute(dispute); setIsOpenDisputeModal(true); }} />
+         <PageHeader title="Order Details" />
+         <OrderDetails order={selectedOrder} access={props.access}
+            availabeType={getAvailabeType()}
+            statusChanged={statusChange} onDispute={() => { setIsOpenAddDisputeModal(true); }}
+            showDispute={dispute => { setSelectedDispute(dispute); setIsOpenDisputeModal(true); }} />
 
-               {/***** buttons ****/}
-               <div className="row col-12 pm-0 pos-b-sticky bg-white pb-3">
-                  {props.access == ClientAppAccess.Secret && getAvailabeType().length > 0 &&
-                     <Button children="Save"
-                        className={`col-12 col-md-6 mt-2 btn-green btn-lg col-sm-6"}`}
-                        onClick={saveChange} />
-                  }
-                  <Button children={`${(props.access == ClientAppAccess.Official || getAvailabeType().length == 0) ? "Close" : "Cancel"}`}
-                     className={`col-12 ${props.access == ClientAppAccess.Secret && getAvailabeType().length > 0 ? "col-md-6" : ""} mt-2 btn-white btn-lg col-sm-6"}`}
-                     onClick={() => { props.onClose(); setSelectedOrder(props.order); }} />
-               </div>
-            </div >
+         <ModalFooter
+            updateConfirmText="Save"
+            cancelText={`${(props.access == ClientAppAccess.Official || getAvailabeType().length == 0) ? "Close" : "Cancel"}`}
+            onUpdate={(props.access == ClientAppAccess.Secret && getAvailabeType().length > 0) ? saveChange : undefined}
+            onCancel={() => { props.onClose(); setSelectedOrder(props.order); }}
+         />
 
-            <OrderMessageModal isOpen={isOpenMessageModal}
-               onClose={() => { setIsOpenMessageModal(false); setSelectedOrder(props.order); }}
-               onSave={updateMessage}
-               totalPrice={selectedOrder.totalPrice}
-               type={openMessageModalType}
-            />
-            <AddDisputeModal isOpen={isOpenAddDisputeModal}
-               order={selectedOrder}
-               onClose={(dispute) => { setIsOpenAddDisputeModal(false); setSelectedOrder({ ...selectedOrder, dispute: dispute }); }}
-            />
+         <OrderMessageModal isOpen={isOpenMessageModal}
+            onClose={() => { setIsOpenMessageModal(false); setSelectedOrder(props.order); }}
+            onSave={updateMessage}
+            totalPrice={selectedOrder.totalPrice}
+            type={openMessageModalType}
+         />
+         <AddDisputeModal isOpen={isOpenAddDisputeModal}
+            order={selectedOrder}
+            onClose={(dispute) => { setIsOpenAddDisputeModal(false); setSelectedOrder({ ...selectedOrder, dispute: dispute }); }}
+         />
 
-            <CommunicationModal isOpen={isOpenDisputeModal}
-               communication={selectedDispute}
-               access={props.access}
-               onClose={() => { setIsOpenDisputeModal(false); }}
-               usePutSecretCommunication={props.usePutSecretCommunication}
-            />
-         </>
+         <CommunicationModal isOpen={isOpenDisputeModal}
+            communication={selectedDispute}
+            access={props.access}
+            onClose={() => { setIsOpenDisputeModal(false); }}
+            usePutSecretCommunication={props.usePutSecretCommunication}
+         />
       </Modal >
-
    );
-
 };
 
 declare type IProps = {

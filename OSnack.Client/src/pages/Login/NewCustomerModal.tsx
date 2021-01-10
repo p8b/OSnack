@@ -44,7 +44,7 @@ const NewCustomerModal = (props: IProps) => {
       if (errors.length > 0)
          errorAlert.set(new AlertObj(errors, AlertTypes.Error));
       else {
-         errorAlert.PleaseWait(500, isUnmounted);
+         errorAlert.pleaseWait(isUnmounted);
          useCreateCustomerUser(user, subscribeNewsLetter).then(result => {
             if (isUnmounted.current) return;
             setRedirectToMain(true);
@@ -68,7 +68,7 @@ const NewCustomerModal = (props: IProps) => {
    if (redirectToMain) return <Redirect to="/" />;
 
    return (
-      <Modal className="col-11 col-sm-10 col-md-8 col-lg-6 pl-4 pr-4"
+      <Modal className="col-12 col-sm-11 col-md-9 col-lg-6"
          bodyRef={props.modalRef}
          isOpen={props.isOpen}>
          <PageHeader title="New Customer" />

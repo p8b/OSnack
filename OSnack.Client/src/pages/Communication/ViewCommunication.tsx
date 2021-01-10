@@ -18,7 +18,7 @@ const ViewCommunication = (props: IProps) => {
    const history = useHistory();
 
    useEffect(() => {
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       if (!isDispute)
          useGetQuestionCommunication(communicationKey).then(result => {
             if (isUnmounted.current) return;

@@ -18,7 +18,7 @@ const ConfrimEmail = (props: IProps) => {
 
    useEffect(() => {
 
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       useUpdatePasswordWithTokenUser({
          pathName: window.location.pathname,
          email: email,
@@ -49,7 +49,7 @@ const ConfrimEmail = (props: IProps) => {
       else {
 
 
-         errorAlert.PleaseWait(500, isUnmounted);
+         errorAlert.pleaseWait(isUnmounted);
          useUpdatePasswordWithTokenUser({
             pathName: window.location.pathname,
             email: email,

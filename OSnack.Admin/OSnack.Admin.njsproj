@@ -145,7 +145,7 @@
     <Folder Include="src\components\NavMenu\" />
     <Folder Include="src\components\ImageUpload\" />
     <Folder Include="src\pages\" />
-    <Folder Include="src\pages\ContactUsMessage\" />
+    <Folder Include="src\pages\MessagesManagement\" />
     <Folder Include="src\pages\Dashboard\" />
     <Folder Include="src\pages\LoginPage\" />
     <Folder Include="src\pages\MyAccount\" />
@@ -190,7 +190,7 @@
     <TypeScriptCompile Include="src\index.tsx" />
     <TypeScriptCompile Include="src\pages\CategoryManagement\CategoryManagement.tsx" />
     <TypeScriptCompile Include="src\pages\CategoryManagement\CategoryModal.tsx" />
-    <TypeScriptCompile Include="src\pages\ContactUsMessage\ContactUsMessage.tsx" />
+    <TypeScriptCompile Include="src\pages\MessagesManagement\MessagesManagement.tsx" />
     <TypeScriptCompile Include="src\pages\CouponManagement\CouponManagement.tsx" />
     <TypeScriptCompile Include="src\pages\CouponManagement\CouponModel.tsx" />
     <TypeScriptCompile Include="src\pages\Dashboard\Dashboard.tsx" />
@@ -202,7 +202,7 @@
     <TypeScriptCompile Include="src\pages\MyAccount\MyAccount.tsx" />
     <TypeScriptCompile Include="src\pages\Order\OrderManagement.tsx" />
     <TypeScriptCompile Include="src\pages\Order\ViewUserOrders.tsx" />
-    <TypeScriptCompile Include="src\pages\ProductManagement\AddReplyModal.tsx" />
+    <TypeScriptCompile Include="src\pages\ProductManagement\ReplyCommentModal.tsx" />
     <TypeScriptCompile Include="src\pages\ProductManagement\CommentModal.tsx" />
     <TypeScriptCompile Include="src\pages\ProductManagement\ProductManagement.tsx" />
     <TypeScriptCompile Include="src\pages\ProductManagement\ProductNutritionalInfoModal.tsx" />

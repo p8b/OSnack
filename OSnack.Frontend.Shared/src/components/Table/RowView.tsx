@@ -12,10 +12,10 @@ const RowView = (props: IProps) => {
    const sort = (sortName: string) => {
       if (selectedSortName === sortName) {
          setIsSortAsc(!isSortAsc);
-         props.onSortClick!(!isSortAsc, selectedSortName);
+         props.onSortClick!(1, !isSortAsc, selectedSortName);
       } else {
          setSelectedSortName(sortName);
-         props.onSortClick!(isSortAsc, sortName);
+         props.onSortClick!(1, isSortAsc, sortName);
       }
    };
 
@@ -72,7 +72,7 @@ const RowView = (props: IProps) => {
 
 
 interface IProps {
-   onSortClick?: (isSortAsce: boolean, selectedSortName: string) => void;
+   onSortClick?: (selectedPage: number, isSortAsce: boolean, selectedSortName: string) => void;
    className?: string;
    data: TableData;
    defaultSortName?: string;

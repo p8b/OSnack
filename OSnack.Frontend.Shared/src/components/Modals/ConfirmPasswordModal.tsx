@@ -17,7 +17,7 @@ const ConfirmPasswordModal = (props: IProps) => {
    }, [props.isOpen]);
 
    const onSubmit = async () => {
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       useConfirmCurrentUserPasswordAuthentication(password).then(user => {
          if (isUnmounted.current) return;
          errorAlert.clear();

@@ -263,6 +263,7 @@
     <Folder Include="src\components\Loading\" />
     <Folder Include="src\components\Modals\" />
     <Folder Include="src\components\Communication\" />
+    <Folder Include="src\components\Comment\" />
     <Folder Include="src\components\Order\" />
     <Folder Include="src\components\Pagination\" />
     <Folder Include="src\components\Table\" />
@@ -307,6 +308,7 @@
     <TypeScriptCompile Include="src\components\Buttons\FacebookLogin.tsx" />
     <TypeScriptCompile Include="src\components\Buttons\GoogleLogin.tsx" />
     <TypeScriptCompile Include="src\components\Buttons\NavLink.tsx" />
+    <TypeScriptCompile Include="src\components\Comment\Comment.tsx" />
     <TypeScriptCompile Include="src\components\Communication\ShowCommunication.tsx" />
     <TypeScriptCompile Include="src\components\Inputs\DatePicker.tsx" />
     <TypeScriptCompile Include="src\components\Inputs\InputDropDown.tsx" />

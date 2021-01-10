@@ -2,10 +2,10 @@
 import { IReturnUseAllOfficialOrder, useAllOfficialOrder } from '../../hooks/OfficialHooks/useOrderHook';
 import Alert, { AlertObj, useAlert } from '../Texts/Alert';
 import { Communication, Message, Order, OrderStatusType, OrderStatusTypeList, PaymentTypeList } from '../../_core/apiModels';
-import { ClientAppAccess, ConstMaxNumberOfPerItemsPage, GetAllRecords } from '../../_core/constant.Variables';
+import { ClientAppAccess, GetAllRecords } from '../../_core/constant.Variables';
 import { useHistory } from 'react-router-dom';
 import { checkUri, generateUri, getBadgeByOrderStatusType, extractUri } from '../../_core/appFunc';
-import Table, { TableData, TableView } from '../Table/Table';
+import Table, { TableData, TableView, useTableData } from '../Table/Table';
 import TableRowButtons from '../Table/TableRowButtons';
 import PageHeader from '../Texts/PageHeader';
 import Pagination from '../Pagination/Pagination';
@@ -20,6 +20,7 @@ const ViewOrders = (props: IProps) => {
    const isUnmounted = useRef(false);
    const history = useHistory();
    const errorAlert = useAlert(new AlertObj());
+   const tbl = useTableData("Date", true);
    const [selectUserId, setSelectUserId] = useState(Number(extractUri(window.location.pathname)[1]));
    const [searchValue, setSearchValue] = useState("");
    const [selectedDispute, setSelectedDispute] = useState(new Communication());
@@ -30,22 +31,15 @@ const ViewOrders = (props: IProps) => {
    const [fullName, setFullName] = useState("");
    const [availableStatusTypeList, setavailableStatusTypeList] = useState<OrderStatusType[]>([]);
 
-   const [tableData, setTableData] = useState(new TableData());
-   const [tblSortName, setTblsortName] = useState("Date");
-   const [tblIsSortAsc, setTblIsSortAsc] = useState(false);
-   const [tblTotalItemCount, setTblTotalItemCount] = useState(0);
-   const [tblSelectedPage, setTblSelectedPage] = useState(1);
-   const [tblMaxItemsPerPage, setTblMaxItemsPerPage] = useState(ConstMaxNumberOfPerItemsPage);
-
    useEffect(() => {
       switch (props.access) {
          case ClientAppAccess.Official:
             onSearch(undefined, ...checkUri(window.location.pathname,
-               [tblSelectedPage, tblMaxItemsPerPage, selectType, tblIsSortAsc, tblSortName, GetAllRecords]));
+               [tbl.selectedPage, tbl.maxItemsPerPage, selectType, tbl.isSortAsc, tbl.sortName, GetAllRecords]));
             break;
          case ClientAppAccess.Secret:
             onSearch(...checkUri(window.location.pathname,
-               [selectUserId, tblSelectedPage, tblMaxItemsPerPage, selectType, tblIsSortAsc, tblSortName, GetAllRecords]));
+               [selectUserId, tbl.selectedPage, tbl.maxItemsPerPage, selectType, tbl.isSortAsc, tbl.sortName, GetAllRecords]));
             break;
          default:
             break;
@@ -55,42 +49,23 @@ const ViewOrders = (props: IProps) => {
 
    const onSearch = (
       userId = selectUserId,
-      selectedPage = tblSelectedPage,
-      maxItemsPerPage = tblMaxItemsPerPage,
+      selectedPage = tbl.selectedPage,
+      maxItemsPerPage = tbl.maxItemsPerPage,
       filterType = selectType,
-      isSortAsc = tblIsSortAsc,
-      sortName = tblSortName,
+      isSortAsc = tbl.isSortAsc,
+      sortName = tbl.sortName,
       searchString = GetAllRecords
    ) => {
-      if (searchValue != null && searchValue != "")
-         searchString = searchValue;
-
-      if (searchString != GetAllRecords)
-         setSearchValue(searchString);
-
       setSelectUserId(userId);
-
-      if (selectedPage != tblSelectedPage)
-         setTblSelectedPage(selectedPage);
-
-      if (Number(filterType) == -1)
-         filterType = GetAllRecords;
-
-      if (filterType != selectType) {
-         setSelectType(filterType);
-      }
-
-      if (isSortAsc != tblIsSortAsc)
-         setTblIsSortAsc(isSortAsc);
-
-      if (sortName != tblSortName)
-         setTblsortName(sortName);
-
-      if (selectedPage != undefined && selectedPage != tblSelectedPage)
-         setTblSelectedPage(selectedPage);
-
-      if (maxItemsPerPage != tblMaxItemsPerPage)
-         setTblMaxItemsPerPage(maxItemsPerPage);
+      if (searchValue != null && searchValue != "") searchString = searchValue;
+      if (searchString != GetAllRecords) setSearchValue(searchString);
+      if (selectedPage != tbl.selectedPage) tbl.setSelectedPage(selectedPage);
+      if (Number(filterType) == -1) filterType = GetAllRecords;
+      if (filterType != selectType) setSelectType(filterType);
+      if (isSortAsc != tbl.isSortAsc) tbl.setIsSortAsc(isSortAsc);
+      if (sortName != tbl.sortName) tbl.setSortName(sortName);
+      if (selectedPage != undefined && selectedPage != tbl.selectedPage) tbl.setSelectedPage(selectedPage);
+      if (maxItemsPerPage != tbl.maxItemsPerPage) tbl.setMaxItemsPerPage(maxItemsPerPage);
       switch (props.access) {
          case ClientAppAccess.Official:
             history.push(generateUri(window.location.pathname,
@@ -116,7 +91,7 @@ const ViewOrders = (props: IProps) => {
             break;
       }
 
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       switch (props.access) {
          case ClientAppAccess.Official:
             useAllOfficialOrder(selectedPage, maxItemsPerPage, searchString, filterType, isSortAsc, sortName)
@@ -137,7 +112,7 @@ const ViewOrders = (props: IProps) => {
    };
    const onGetUserOrderSuccess = (result: IReturnUseAllOfficialOrder) => {
       if (isUnmounted.current) return;
-      setTblTotalItemCount(result.data.totalCount || 0);
+      tbl.setTotalItemCount(result.data.totalCount || 0);
       setavailableStatusTypeList(result.data.availableTypes!);
       populateOrderTable(result.data.orderList!);
       setFullName(result.data.fullName!);
@@ -192,7 +167,7 @@ const ViewOrders = (props: IProps) => {
             </>
          ]));
 
-      setTableData(tData);
+      tbl.setData(tData);
    };
    const UpdateOrder = (order: Order) => {
       setIsOpenOrderModal(false);
@@ -222,17 +197,17 @@ const ViewOrders = (props: IProps) => {
          {props.location?.state?.backUrl != undefined &&
             <Button onClick={() => history.push(props.location.state?.backUrl!)} children="Back" className="col-auto mr-auto btn-lg back-icon" />
          }
-         {props.location?.state?.backUrl == undefined && tblTotalItemCount == 0 &&
+         {props.location?.state?.backUrl == undefined && tbl.totalItemCount == 0 &&
             <div className="row col-12 justify-content-center">
                <div className="col-12 text-center mt-4">You do not have any orders. <br /> Let's do something about it.</div>
                <Button className="btn btn-green col-auto mt-4" children="Shop now" onClick={() => { history.push("/Shop"); }} />
             </div>
          }
-         {tblTotalItemCount > 0 &&
+         {tbl.totalItemCount > 0 &&
             <>
                <div className="col-12 bg-white pb-2 ">
                   <div className="row col-12 pm-0 mb-3">
-                     <SearchInput key="searchInput"
+                     <SearchInput
                         value={searchValue}
                         onChange={i => setSearchValue(i.target.value)}
                         className="col-12 col-md-8"
@@ -254,19 +229,19 @@ const ViewOrders = (props: IProps) => {
                      </DropDown>
                   </div>
                   <Table className="col-12 text-center table-striped"
-                     defaultSortName={tblSortName}
-                     data={tableData}
-                     onSortChange={(isSortAsce, sortName) => { onSearch(undefined, undefined, undefined, undefined, isSortAsce, sortName); }}
+                     defaultSortName={tbl.sortName}
+                     data={tbl.data}
+                     onSortChange={(selectedPage, isSortAsce, sortName) => { onSearch(undefined, selectedPage, undefined, undefined, isSortAsce, sortName); }}
                      view={TableView.CardView}
-                     listCount={tblTotalItemCount}
+                     listCount={tbl.totalItemCount}
                   />
                   <Pagination
-                     maxItemsPerPage={tblMaxItemsPerPage}
-                     selectedPage={tblSelectedPage}
+                     maxItemsPerPage={tbl.maxItemsPerPage}
+                     selectedPage={tbl.selectedPage}
                      onChange={(selectedPage, maxItemsPerPage) => {
                         onSearch(undefined, selectedPage, maxItemsPerPage);
                      }}
-                     listCount={tblTotalItemCount} />
+                     listCount={tbl.totalItemCount} />
                </div>
             </>
          }

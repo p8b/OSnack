@@ -1,19 +1,11 @@
 ﻿.comment {
-    border: 2px solid #dedede;
-    border-radius: 5px;
-    padding: 10px;
-    margin: 10px 0;
+    border: .1rem solid #dedede;
+    border-radius: .1rem;
+    padding: .5rem;
+    margin: .5rem;
 
-    &::after {
-        content: "";
-        clear: both;
-        display: table;
-    }
-
-    .reply {
-        background-color: #dedede;
-        border-radius: 5px;
-        padding: 10px;
-        margin: 10px 0;
+    & .reply {
+        @extend .comment;
+        background-color: rgb(250, 255, 241);
     }
 }

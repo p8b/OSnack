@@ -46,7 +46,7 @@ const Login = (props: IProps) => {
       }
    };
    const login = async () => {
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       switch (props.access) {
          case ClientAppAccess.Official:
             useLoginOfficialAuthentication(loginInfo).then(loginSuccess).catch(loginFailed);
@@ -63,7 +63,7 @@ const Login = (props: IProps) => {
       info.rememberMe = loginInfo.rememberMe;
       info.redirectUrl = window.location.href;
 
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       switch (props.access) {
          case ClientAppAccess.Official:
             useExternalLoginOfficialAuthentication(info).then(externalLoginSuccess).catch(loginFailed);
@@ -76,7 +76,7 @@ const Login = (props: IProps) => {
       }
    };
 
-   const externalLoginWait = () => { errorAlert.PleaseWait(500, isUnmounted); };
+   const externalLoginWait = () => { errorAlert.pleaseWait(isUnmounted); };
 
    const externalLoginFailed = (err: string) => {
       errorAlert.set(new AlertObj([new ErrorDto(Math.random().toString(), err)], AlertTypes.Error));

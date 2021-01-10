@@ -25,7 +25,7 @@ const MyAddresses = (props: IProps) => {
       setIsOpenAddressModal(true);
    };
    const reloadAddressList = () => {
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       useAllAddress().then(result => {
          if (isUnmounted.current) return;
 
@@ -43,7 +43,7 @@ const MyAddresses = (props: IProps) => {
    };
 
    const setDefault = (addressId: number) => {
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       useSetDefaultAddress(addressId).then(() => {
          reloadAddressList();
       }).catch(errors => {

@@ -10,7 +10,7 @@ const ConfrimEmail = (props: IProps) => {
    const [redirectToHome, setRedirectToHome] = useState(false);
 
    useEffect(() => {
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       useConfirmEmailUser(window.location.pathname).then(() => {
          if (isUnmounted.current) return;
          errorAlert.setSingleSuccess("", "Success");

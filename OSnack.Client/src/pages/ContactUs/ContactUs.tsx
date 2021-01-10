@@ -24,7 +24,7 @@ const ContactUs = (props: IProps) => {
 
    const sendMessage = () => {
       executeRecaptcha("Contact").then((token) => {
-         errorAlert.PleaseWait(500, isUnmounted);
+         errorAlert.pleaseWait(isUnmounted);
          contact.captchaToken = token;
          contact.messages = [{ body: message }];
          usePostQuestionCommunication(contact)

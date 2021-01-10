@@ -18,7 +18,7 @@ const ForgotPasswordModal = (props: IProps) => {
       errorAlert.clear();
       //Submit password reset request
       if (!isTokenSent) {
-         errorAlert.PleaseWait(500, isUnmounted);
+         errorAlert.pleaseWait(isUnmounted);
          useRequestPasswordResetUser(email).then(() => {
             if (isUnmounted.current) return;
             setIsTokenSent(true);

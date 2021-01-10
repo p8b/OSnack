@@ -33,7 +33,7 @@ const ProductModal = (props: IProps) => {
       setProduct(props.product);
       if (props.product.id && props.product.id > 0) {
          setIsNewImageSet(false);
-         errorAlert.PleaseWait(500, isUnmounted);
+         errorAlert.pleaseWait(isUnmounted);
          getBase64fromUrlImage(`${API_URL}/${props.product.imagePath}`)
             .then(imgBase64 => {
                if (isUnmounted.current) return;
@@ -57,7 +57,7 @@ const ProductModal = (props: IProps) => {
 
    const createProduct = async () => {
       console.log(product);
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       usePostProduct(product).then(result => {
          if (isUnmounted.current) return;
          setProduct(result.data);
@@ -78,7 +78,7 @@ const ProductModal = (props: IProps) => {
          prod.originalImageBase64 = '';
       }
 
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       usePutProduct(product).then(result => {
          if (isUnmounted.current) return;
          setProduct(result.data);
@@ -93,7 +93,7 @@ const ProductModal = (props: IProps) => {
    };
 
    const deleteProduct = async () => {
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       useDeleteProduct(product.id!).then(() => {
          if (isUnmounted.current) return;
          resetImageUpload();
@@ -127,9 +127,8 @@ const ProductModal = (props: IProps) => {
       errorAlert.set(errors);
    };
 
-
    return (
-      <Modal className="col-11 col-sm-10 col-md-8 col-lg-6 pl-4 pr-4"
+      <Modal className="col-12 col-sm-10 col-md-9 col-lg-6"
          bodyRef={props.modalRef}
          isOpen={props.isOpen}>
          <div className="row">

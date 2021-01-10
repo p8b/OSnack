@@ -24,7 +24,7 @@ export const ReviewModal = (props: IProps) => {
 
    const changeRate = (rate: number) => {
       if (comment.id == 0) {
-         errorAlert.PleaseWait(500, isUnmounted);
+         errorAlert.pleaseWait(isUnmounted);
          usePostComment({ ...comment, rate: rate }).then(result => {
             if (isUnmounted.current) return;
             setCommment(result.data);
@@ -40,7 +40,7 @@ export const ReviewModal = (props: IProps) => {
          errorAlert.setSingleError("rate", "Rating is required");
          return;
       }
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       usePutComment(comment).then(result => {
          if (isUnmounted.current) return;
          setCommment(result.data);

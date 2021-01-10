@@ -49,8 +49,6 @@ const LoadMore = (props: IProps) => {
          selectedPage = TOTALpages;
          props.onChange(selectedPage, props.maxItemsPerPage);
       }
-
-
       setTotalPages(TOTALpages);
    };
    const onScrollChange = () => {

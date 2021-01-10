@@ -30,7 +30,7 @@ const ProductPage = (props: IProps) => {
    }, [window.location.pathname]);
 
    const loadProduct = (scrollToTop?: boolean) => {
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       const uriPathNameArr = window.location.pathname.split('/').filter(val => val.length > 0);
       if (uriPathNameArr.length === 4 && uriPathNameArr[1].toLowerCase() == "product") {
          useProductAndRelateProduct(uriPathNameArr[2], decodeURI(uriPathNameArr[3]))

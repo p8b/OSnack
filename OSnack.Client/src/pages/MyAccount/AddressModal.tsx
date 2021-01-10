@@ -43,7 +43,7 @@ const AddressModal = (props: IProps) => {
          errorAlert.set(errors);
          return;
       }
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       address.userId = Auth.state.user.id;
       usePostAddress(address).then(result => {
          if (isUnmounted.current) return;
@@ -74,7 +74,7 @@ const AddressModal = (props: IProps) => {
          return;
       }
 
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       address.userId = Auth.state.user.id;
       usePutAddress(address).then(result => {
          if (isUnmounted.current) return;
@@ -88,7 +88,7 @@ const AddressModal = (props: IProps) => {
 
    };
    const deleteAddress = async () => {
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       useDeleteAddress(address.id!).then(result => {
          if (isUnmounted.current) return;
          errorAlert.clear();
@@ -103,7 +103,7 @@ const AddressModal = (props: IProps) => {
    };
 
    return (
-      <Modal className="col-11 col-sm-10 col-md-8 col-lg-6 pl-4 pr-4"
+      <Modal className="col-12 col-sm-11 col-md-9 col-lg-6"
          bodyRef={props.modalRef}
          isOpen={props.isOpen}>
          <PageHeader title={address.id === 0 ? "New Address" : "Update Address"} />

@@ -23,7 +23,7 @@ const CategoryModal = (props: IProps) => {
       if (props.category.id && props.category.id > 0) {
          setIsNewImageSet(false);
 
-         errorAlert.PleaseWait(500, isUnmounted);
+         errorAlert.pleaseWait(isUnmounted);
          getBase64fromUrlImage(`${API_URL}/${props.category.imagePath}`)
             .then(imgBase64 => {
                if (isUnmounted.current) return;
@@ -56,7 +56,7 @@ const CategoryModal = (props: IProps) => {
          errorAlert.set(errors);
          return;
       }
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       usePostCategory(category).then(() => {
          if (isUnmounted.current) return;
          errorAlert.clear();
@@ -87,7 +87,7 @@ const CategoryModal = (props: IProps) => {
          cat.originalImageBase64 = '';
       } if (isUnmounted.current) return;
 
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       usePutCategory(cat).then(() => {
          if (isUnmounted.current) return;
          errorAlert.clear();
@@ -99,7 +99,7 @@ const CategoryModal = (props: IProps) => {
       });
    };
    const deleteCategory = async () => {
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       useDeleteCategory(category.id!).then(() => {
          if (isUnmounted.current) return;
          errorAlert.clear();
@@ -134,7 +134,7 @@ const CategoryModal = (props: IProps) => {
    };
 
    return (
-      <Modal className="col-11 col-sm-10 col-md-8 col-lg-6 pl-4 pr-4"
+      <Modal className="col-12 col-sm-11 col-md-9 col-lg-6"
          bodyRef={props.modalRef}
          isOpen={props.isOpen}>
          <PageHeader title={category.id === 0 ? "New Category" : "Update Category"} />

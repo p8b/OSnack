@@ -20,7 +20,7 @@ const UserModal = (props: IProps) => {
    }, [props.user]);
 
    const createUser = async () => {
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       useCreateUserUser(user).then(result => {
          if (isUnmounted.current) return;
          errorAlert.clear();
@@ -32,7 +32,7 @@ const UserModal = (props: IProps) => {
       });
    };
    const updateUser = async () => {
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       useUpdateUserUser(user).then(result => {
          if (isUnmounted.current) return;
          errorAlert.clear();
@@ -44,7 +44,7 @@ const UserModal = (props: IProps) => {
       });
    };
    const deleteUser = async () => {
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       useDeleteUser(user.id!).then(() => {
          if (isUnmounted.current) return;
          errorAlert.setSingleSuccess("", "confirm");
@@ -57,7 +57,7 @@ const UserModal = (props: IProps) => {
    };
 
    return (
-      <Modal className="col-11 col-sm-10 col-md-8 col-lg-6 pl-4 pr-4"
+      <Modal className="col-12 col-sm-11 col-md-9 col-lg-6"
          bodyRef={props.modalRef}
          isOpen={props.isOpen}>
          <PageHeader title={`${user.id === 0 ? "New" : "Update"} User`} />

@@ -71,7 +71,7 @@ const EmailTemplatesEdit = (props: IProps) => {
 
    const saveTemplate = () => {
       if (!isEditorLoaded) return;
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
 
       emailEditorRef.current?.editor!.exportHtml(async (data: { design: any; html: string; }) => {
          if (isUnmounted.current) return;
@@ -106,7 +106,7 @@ const EmailTemplatesEdit = (props: IProps) => {
       });
    };
    const onDelete = async () => {
-      errorAlert.PleaseWait(500, isUnmounted);
+      errorAlert.pleaseWait(isUnmounted);
       useDeleteTemplateEmail(template.id!).then(result => {
          if (isUnmounted.current) return;
          errorAlert.setSingleSuccess("Deleted", result.data);

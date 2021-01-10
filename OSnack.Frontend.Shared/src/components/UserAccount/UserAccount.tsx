@@ -29,7 +29,7 @@ const UserAccount = (props: IProps) => {
 
       errorAlertPasswordInfo.clear();
 
-      errorAlertAccountInfo.PleaseWait(500, isUnmounted);
+      errorAlertAccountInfo.pleaseWait(isUnmounted);
       setIsOpenConfirmPassword(false);
       useUpdateCurrentUserUser({ user: user, currentPassword: currentPass }).then((user) => {
          if (isUnmounted.current) return;
@@ -70,7 +70,7 @@ const UserAccount = (props: IProps) => {
       setCurrentPassword(currentPass);
       setSelectedAction("");
 
-      errorAlertPasswordInfo.PleaseWait(500, isUnmounted);
+      errorAlertPasswordInfo.pleaseWait(isUnmounted);
       useUpdateCurrentUserPasswordUser({ user: user, currentPassword: currentPass })
          .then(result => {
             if (isUnmounted.current) return;
