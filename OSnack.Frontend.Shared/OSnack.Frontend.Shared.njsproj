@@ -326,6 +326,8 @@
     <TypeScriptCompile Include="src\components\Inputs\Toggler.tsx" />
     <TypeScriptCompile Include="src\components\Loading\Loading.tsx" />
     <TypeScriptCompile Include="src\components\Modals\ModalFooter.tsx" />
+    <TypeScriptCompile Include="src\components\Modals\OrderMessageModal.tsx" />
+    <TypeScriptCompile Include="src\components\Modals\OrderModal.tsx" />
     <TypeScriptCompile Include="src\components\Order\OrderDetails.tsx" />
     <TypeScriptCompile Include="src\components\Pagination\LoadMore.tsx" />
     <TypeScriptCompile Include="src\components\Pagination\Pagination.tsx" />
@@ -335,9 +337,7 @@
     <TypeScriptCompile Include="src\components\Table\TableRowButtons.tsx" />
     <TypeScriptCompile Include="src\components\Texts\CopyText.tsx" />
     <TypeScriptCompile Include="src\hooks\function\useScript.tsx" />
-    <TypeScriptCompile Include="src\components\Modals\OrderMessageModal.tsx" />
     <TypeScriptCompile Include="src\components\Order\ViewOrders.tsx" />
-    <TypeScriptCompile Include="src\components\Modals\OrderModal.tsx" />
     <TypeScriptCompile Include="src\hooks\OfficialHooks\useAddressHook.ts" />
     <TypeScriptCompile Include="src\hooks\OfficialHooks\useAuthenticationHook.ts" />
     <TypeScriptCompile Include="src\hooks\OfficialHooks\useCommentHook.ts" />

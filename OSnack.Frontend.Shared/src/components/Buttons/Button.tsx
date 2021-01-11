@@ -2,10 +2,10 @@
 import { sleep } from '../../_core/appFunc';
 
 export const Button = (props: IProps) => {
-   useEffect(() => () => { isWait.current = true; }, []);
    const [loading, setLoading] = useState(false);
    const [disable, setDisable] = useState(false);
    const isWait = useRef(false);
+   useEffect(() => () => { isWait.current = true; }, []);
    const onClick = (event: React.MouseEvent<HTMLButtonElement>) => {
       if (props.enableLoading) {
          setDisable(true);

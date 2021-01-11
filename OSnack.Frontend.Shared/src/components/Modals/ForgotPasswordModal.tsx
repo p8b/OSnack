@@ -36,7 +36,6 @@ const ForgotPasswordModal = (props: IProps) => {
       <Modal className="col-11 col-sm-10 col-md-9 col-lg-4 pl-4 pr-4"
          isOpen={props.isOpen}>
          {!isTokenSent &&
-            /***** Submit new password reset request ****/
             <>
                <PageHeader title="Forgot Password?" />
                <p>Don't worry, we will email you a link to reset you password.</p>
@@ -44,31 +43,20 @@ const ForgotPasswordModal = (props: IProps) => {
                   value={email}
                   onChange={i => setEmail(i.target.value)}
                />
-
-               <Alert alert={errorAlert.alert}
-                  className="col-12 mb-2"
-                  onClosed={() => errorAlert.clear()}
-               />
-
-               <Button children="Continue" className="btn-lg col-12 col-sm-6 mt-2 btn-lg  btn-green"
-                  onClick={onSubmit} enableLoading={isUnmounted} />
-
-               <Button children="Cancel" className="btn-lg col-12 col-sm-6 mt-2  btn-lg btn-white"
-                  onClick={props.onCancel} />
             </>
          }
-         {isTokenSent &&
-            <>
-               <Alert alert={errorAlert.alert}
-                  className="col-12 mb-2"
-                  onClosed={() => errorAlert.clear()}
-               />
 
-               <Button children="Close" className="btn-lg col-12 btn-lg btn-white"
-                  onClick={props.onCancel} />
-            </>
+         <Alert alert={errorAlert.alert}
+            className="col-12 mb-2"
+            onClosed={() => errorAlert.clear()}
+         />
 
+         {!isTokenSent &&
+            <Button children="Continue" className="btn-lg col-12 col-sm-6 mt-2 btn-lg  btn-green"
+               onClick={onSubmit} enableLoading={isUnmounted} />
          }
+         <Button children="Cancel" className="btn-lg col-12 col-sm-6 mt-2  btn-lg btn-white"
+            onClick={props.onCancel} />
       </Modal >
    );
 };

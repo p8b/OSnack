@@ -41,8 +41,10 @@ const NewCustomerModal = (props: IProps) => {
          errors.push(new ErrorDto("passwordHash", "Passwords must match."));
       if (!termsAndCondition)
          errors.push(new ErrorDto("0", "You must agree to terms and conditions"));
-      if (errors.length > 0)
+      if (errors.length > 0) {
          errorAlert.set(new AlertObj(errors, AlertTypes.Error));
+         loadingCallBack!();
+      }
       else {
          errorAlert.pleaseWait(isUnmounted);
          useCreateCustomerUser(user, subscribeNewsLetter).then(result => {

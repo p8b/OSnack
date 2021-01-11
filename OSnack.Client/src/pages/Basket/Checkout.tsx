@@ -273,7 +273,7 @@ const Checkout = (props: IProps) => {
                   <Link className="col-12 btn btn-lg btn-green mb-4 mt-4" children="Login" to={{ pathname: "/Login", state: { fromPath: "/Checkout" } }} />
                   <PageHeader title="OR" />
 
-                  <Button className="col-12 btn-lg btn-green mb-4 mt-4" children="Guest Checkout" onClick={checkout} />
+                  <Button className="col-12 btn-lg btn-green mb-4 mt-4" children="Guest Checkout" onClick={checkout} enableLoading={isUnmounted} />
                </>
             }
             <div className="row justify-content-center">

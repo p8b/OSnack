@@ -48,7 +48,7 @@ const ImageUpload = (props: IProps) => {
 
    return (
       <div className={props.className}>
-         <div className={"col-12 file-input pm-0 cursor-pointer"} >
+         <div className={`col-12 file-input pm-0 cursor-pointer  ${props.showDanger ? "danger" : ""}`} >
             <label children={
                <>
                   <span className="col pm-0 my-auto line-limit-1">Upload{croppedImage != '' ? " New" : ""} Image </span>
@@ -56,7 +56,7 @@ const ImageUpload = (props: IProps) => {
                </>
             } htmlFor="uploadImage"
                className={`col-form-label row pm-0 cursor-pointer dark`} />
-            <input id="uploadImage" type="file" accept="image/*" className=" d-none"
+            <input id="uploadImage" type="file" accept="image/*" className={` d-none `}
                onChange={e => uploadDocument(e.target)}
             />
          </div>
@@ -94,6 +94,7 @@ declare type IProps = {
    originalImageBase64: string;
    modifiedImageBase64: string;
    className: string;
+   showDanger?: boolean;
    onUploaded: (modifiedImageBase64: string, originalImageBase64: string) => void;
    onError: (msg: string) => void;
    onLoading?: (progress: number) => void;

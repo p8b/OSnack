@@ -67,6 +67,7 @@ const ProductModal = (props: IProps) => {
          loadingCallBack!();
       }).catch(errors => {
          if (isUnmounted.current) return;
+         console.log(errors);
          errorAlert.set(errors);
          loadingCallBack!();
       });
@@ -169,7 +170,7 @@ const ProductModal = (props: IProps) => {
 
             <InputDropDown dropdownTitle={product.category?.name || "Select Option"}
                label="Category*"
-               showDanger={errorAlert.checkExistFilterRequired("Category")}
+               showDanger={errorAlert.checkExistFilterRequired("ProductCategory")}
                className="col-12 col-sm-6 " >
                {props.categoryList.map(category =>
                   <button className="dropdown-item" key={category.id}
@@ -192,6 +193,7 @@ const ProductModal = (props: IProps) => {
 
             <InputDropDown dropdownTitle={productUnitTypeList.find((pu) => pu.Value == product.unitType)?.Name || "Select Option"}
                label="Unit Type*"
+               showDanger={errorAlert.checkExistFilterRequired("UnitType")}
                className="col-12 col-sm-6 " >
                {productUnitTypeList.map(productUnitType =>
                   <button className="dropdown-item" key={productUnitType.Id}
@@ -241,6 +243,7 @@ const ProductModal = (props: IProps) => {
                onUploaded={onImageUploaded}
                onError={onImageUploadError}
                onLoading={onImageUploadLoading}
+               showDanger={errorAlert.checkExistFilterRequired("ImageBase64")}
             />
 
          </div>

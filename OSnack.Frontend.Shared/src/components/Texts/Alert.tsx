@@ -33,7 +33,7 @@ const Alert = (props: IProps) => {
    return (
       <div style={style} className={`row col-12 m-0 mt-2 mb-2 ${props?.className ?? ""} ${(props.alert?.List && props.alert?.List.length === 0) ? "d-none" : ""}`}>
          <div className="col-11"
-            children={props.alert?.List && props.alert!.List.map((error: ErrorDto) => <div key={error.key || Math.random()} children={error.value} />)}
+            children={props.alert?.List && props.alert!.List.map((error: ErrorDto) => error.excludeFromDisplay ? <></> : <div key={error.key || Math.random()} children={error.value} />)}
          />
          <div className="col-1 p-0 pr-2 text-right"
             children={<a onClick={props.onClosed} children="✘" />}
@@ -88,10 +88,13 @@ export const useAlert: IUseAlert = (init) => {
    const checkExistFilterRequired = (inputName: string = "") => {
       const includesError = !!alert.List!.find(t => t.key!.toLowerCase() === inputName.toLowerCase() && (t.value as string).includes("Required" || "required"));
       const returnVal = !!alert.List!.find(t => t.key!.toLowerCase() === inputName.toLowerCase());
-      if (includesError) {
+      var currentError = alert.List.find(t => t.key!.toLowerCase() == inputName.toLowerCase());
+      if (includesError && !currentError?.excludeFromDisplay) {
+         currentError!.excludeFromDisplay = true;
          var List = alert.List.filter(t => t.key!.toLowerCase() !== inputName.toLowerCase());
          if (!List.find(t => t.key!.includes("ErrorRemoved")))
             List.push(new ErrorDto("ErrorRemoved", "Highlighted Fields Are Required."));
+         List.push(currentError!);
          set(new AlertObj(List, alert.Type));
       }
       return returnVal;
@@ -133,6 +136,7 @@ export enum AlertTypes { default, Success, Error, Warning };
 export class ErrorDto {
    key: string;
    value: string;
+   excludeFromDisplay: boolean = false;
    constructor(key?: string, value?: string) {
       this.key = key ?? "";
       this.value = value ?? "";

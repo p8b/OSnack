@@ -201,6 +201,7 @@
     <TypeScriptCompile Include="src\pages\LoginPage\LoginPage.tsx" />
     <TypeScriptCompile Include="src\pages\MyAccount\MyAccount.tsx" />
     <TypeScriptCompile Include="src\pages\Order\OrderManagement.tsx" />
+    <TypeScriptCompile Include="src\pages\Order\OrderMessageModal.tsx" />
     <TypeScriptCompile Include="src\pages\Order\ViewUserOrders.tsx" />
     <TypeScriptCompile Include="src\pages\ProductManagement\ReplyCommentModal.tsx" />
     <TypeScriptCompile Include="src\pages\ProductManagement\CommentModal.tsx" />
