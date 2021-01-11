@@ -10,7 +10,6 @@ import { useDeleteCoupon, usePutCoupon, usePostCoupon } from '../../SecretHooks/
 import { getNextDate } from 'osnack-frontend-shared/src/_core/appFunc';
 import ModalFooter from 'osnack-frontend-shared/src/components/Modals/ModalFooter';
 
-
 const CouponModel = (props: IProps) => {
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
@@ -87,13 +86,13 @@ const CouponModel = (props: IProps) => {
                disabled={(coupon.code != undefined)}
                onChange={i => { if (coupon.code == undefined) setPendingCode(i.target.value); }}
                className="col-12 col-sm-6"
-               showDanger={errorAlert.checkExist("code")}
+               showDanger={errorAlert.checkExistFilterRequired("code")}
             />
 
             <InputDropDown dropdownTitle={CouponTypeList.find(c => c.Value == coupon.type)?.Name || "Select Option"}
                label="Type*"
                disabled={(coupon.code != undefined)}
-               showDanger={errorAlert.checkExist("type")}
+               showDanger={errorAlert.checkExistFilterRequired("type")}
                className="col-12 col-sm-6 " >
                {CouponTypeList.map(couponType =>
                   <button className="dropdown-item" key={couponType.Id}
@@ -109,7 +108,7 @@ const CouponModel = (props: IProps) => {
                value={coupon.discountAmount}
                onChange={i => { setCoupon({ ...coupon, discountAmount: i.target.value as unknown as number }); }}
                className="col-12 col-sm-6"
-               showDanger={errorAlert.checkExist("discountAmount")}
+               showDanger={errorAlert.checkExistFilterRequired("discountAmount")}
             />
             <Input label="Max use quantity *"
                type="number"
@@ -117,7 +116,7 @@ const CouponModel = (props: IProps) => {
                value={coupon.maxUseQuantity}
                onChange={i => { setCoupon({ ...coupon, maxUseQuantity: i.target.value as unknown as number }); }}
                className="col-12 col-sm-6"
-               showDanger={errorAlert.checkExist("maxUseQuantity")}
+               showDanger={errorAlert.checkExistFilterRequired("maxUseQuantity")}
 
             />
             <Input label="Minimum Order Price*"
@@ -126,7 +125,7 @@ const CouponModel = (props: IProps) => {
                value={coupon.minimumOrderPrice}
                onChange={i => { setCoupon({ ...coupon, minimumOrderPrice: i.target.value as unknown as number }); }}
                className="col-12 col-sm-6"
-               showDanger={errorAlert.checkExist("maxUseQuantity")}
+               showDanger={errorAlert.checkExistFilterRequired("minimumOrderPrice")}
 
             />
             <DatePicker label="Expire Date*" className="col-12 col-sm-6" selectDate={coupon.expiryDate}

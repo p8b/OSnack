@@ -150,10 +150,11 @@ const CategoryModal = (props: IProps) => {
 
          {/***** Name ****/}
          <div className="row">
-            <Input label="Name"
+            <Input label="Name*"
                value={category.name}
                onChange={i => { setCategory({ ...category, name: i.target.value }); }}
-               className="col-12 col-sm-6" />
+               className="col-12 col-sm-6"
+               showDanger={errorAlert.checkExistFilterRequired("Name")} />
 
             {/***** Image upload and show preview button ****/}
             <ImageUpload className="col-12 col-sm-6 mt-4"
@@ -162,6 +163,7 @@ const CategoryModal = (props: IProps) => {
                onUploaded={onImageUploaded}
                onError={onImageUploadError}
                onLoading={onImageUploadLoading}
+               showDanger={errorAlert.checkExistFilterRequired("ImageBase64")}
             />
          </div>
 

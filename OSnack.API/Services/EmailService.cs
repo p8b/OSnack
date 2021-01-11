@@ -211,7 +211,7 @@ namespace OSnack.API.Services
                            foreach (var item in propValue as IEnumerable)
                            {
                               Type itemType = item.GetType();
-                              var temp = Template.RequiredClasses.FirstOrDefault(sc => sc.Value.ToString().Equals(item.GetType().Name));
+                              var temp = Template.RequiredClasses.FirstOrDefault(sc => sc.Value.ToString().Replace(" ", "").Equals(item.GetType().Name));
                               if (temp != null)
                               {
                                  string repeatSectionCopy = repeatSection;

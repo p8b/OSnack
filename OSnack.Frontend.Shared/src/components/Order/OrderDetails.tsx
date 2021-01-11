@@ -47,14 +47,16 @@ const OrderDetails = (props: IProps) => {
                   </InputDropdown>
                }
 
-               {(props.access == ClientAppAccess.Official || props.availabeType!.length == 0) &&
-                  <div className="row pm-0">
-                     <div className="col-8 pm-0 small-text text-gray" >Status:</div>
-                     <span className={`${getBadgeByOrderStatusType(props.order.status)}`}
-                        children={OrderStatusTypeList.find(o => o.Value == props.order.status)?.Name} />
-                  </div>
-               }
                <div className="row pm-0 ">
+                  {(props.access == ClientAppAccess.Official || props.availabeType!.length == 0) &&
+                     <>
+                        <div className="col-7 pm-0 small-text text-gray mt-auto" children="Status:" />
+                        <div className="col-5 p-0">
+                           <span className={`${getBadgeByOrderStatusType(props.order.status)}`}
+                              children={OrderStatusTypeList.find(o => o.Value == props.order.status)?.Name} />
+                        </div>
+                     </>
+                  }
                   <div className="col-7 pm-0 small-text text-gray" >Order Id :</div>
                   <div className="col-5 p-0 small-text">{props.order.id}</div>
                   <div className="col-7 pm-0 small-text text-gray" >{props.order.payment.paymentProvider} Reference :</div>

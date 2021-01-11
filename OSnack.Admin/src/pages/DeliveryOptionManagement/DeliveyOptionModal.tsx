@@ -7,7 +7,6 @@ import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
 import { usePostDeliveryOption, useDeleteDeliveryOption, usePutDeliveryOption } from '../../SecretHooks/useDeliveryOptionHook';
 import ModalFooter from 'osnack-frontend-shared/src/components/Modals/ModalFooter';
 
-
 const DeliveyOptionModal = (props: IProps) => {
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
@@ -16,7 +15,6 @@ const DeliveyOptionModal = (props: IProps) => {
    useEffect(() => {
       return () => { isUnmounted.current = true; };
    }, []);
-
    useEffect(() => {
       setDeliveyOption(props.deliveryOption);
    }, [props.deliveryOption]);
@@ -53,7 +51,6 @@ const DeliveyOptionModal = (props: IProps) => {
       });
 
    };
-
    const deleteDeliveryOption = (loadingCallBack?: () => void) => {
       errorAlert.pleaseWait(isUnmounted);
       useDeleteDeliveryOption(deliveryOption.id!).then(() => {
@@ -67,21 +64,19 @@ const DeliveyOptionModal = (props: IProps) => {
          loadingCallBack!();
       });
    };
+
    return (
       <Modal className="col-12 col-sm-11 col-md-9 col-lg-6"
          bodyRef={props.modalRef}
          isOpen={props.isOpen}>
          <PageHeader className="col-12" title={deliveryOption.id == 0 ? "New Delivey Option" : "Update Delivey Option"} />
-         {/***** Name ****/}
          <div className="row">
             <Input label="Name*"
                value={deliveryOption.name}
                onChange={i => setDeliveyOption({ ...deliveryOption, name: i.target.value })}
                className="col-12"
-               showDanger={errorAlert.checkExist("nam")}
+               showDanger={errorAlert.checkExistFilterRequired("name")}
             />
-         </div>
-         <div className="row">
             <Input label="Price*"
                type="number"
                disabled={(deliveryOption.isPremitive && deliveryOption.price == 0)}
@@ -89,7 +84,7 @@ const DeliveyOptionModal = (props: IProps) => {
                value={deliveryOption.price}
                onChange={i => { setDeliveyOption({ ...deliveryOption, price: i.target.value as unknown as number }); }}
                className="col-12 col-sm-6"
-               showDanger={errorAlert.checkExist("price")}
+               showDanger={errorAlert.checkExistFilterRequired("price")}
             />
             <Input label="Minimum Order *"
                type="number"
@@ -98,8 +93,7 @@ const DeliveyOptionModal = (props: IProps) => {
                disabled={(deliveryOption.isPremitive && deliveryOption.minimumOrderTotal == 0)}
                onChange={i => { setDeliveyOption({ ...deliveryOption, minimumOrderTotal: i.target.value as unknown as number }); }}
                className="col-12 col-sm-6"
-               showDanger={errorAlert.checkExist("maxUseQuantity")}
-
+               showDanger={errorAlert.checkExistFilterRequired("minimumOrderTotal")}
             />
          </div>
          <Alert alert={errorAlert.alert}

@@ -15,13 +15,13 @@ const CategoryManagement = lazy(() => import("./pages/CategoryManagement/Categor
 const CouponManagement = lazy(() => import("./pages/CouponManagement/CouponManagement"));
 const ProductManagement = lazy(() => import("./pages/ProductManagement/ProductManagement"));
 const UserManagement = lazy(() => import("./pages/UserManagement/UserManagement"));
-const OrderManagement = lazy(() => import("./pages/Order/OrderManagement"));
+const OrderManagement = lazy(() => import("./pages/OrderManagement/OrderManagement"));
 const PageNotFound = lazy(() => import("osnack-frontend-shared/src/pages/PageNotFound"));
 const ConfirmEmail = lazy(() => import("osnack-frontend-shared/src/pages/ConfirmEmail"));
 const PasswordReset = lazy(() => import("osnack-frontend-shared/src/pages/PasswordReset"));
 const EmailTemplateManagement = lazy(() => import("./pages/EmailTemplates/EmailTemplateManagement"));
 const EmailTemplateEdit = lazy(() => import("./pages/EmailTemplates/EmailTemplateEdit"));
-const ViewUserOrders = lazy(() => import("./pages/Order/ViewUserOrders"));
+const ViewUserOrders = lazy(() => import("./pages/OrderManagement/ViewUserOrders"));
 const MessagesManagement = lazy(() => import("./pages/MessagesManagement/MessagesManagement"));
 const DeliveryOptionManagement = lazy(() => import("./pages/DeliveryOptionManagement/DeliveryOptionManagement"));
 

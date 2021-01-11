@@ -5,7 +5,7 @@ import Container from "./Container";
 const Footer = () => {
    return (
       <footer id="footer" className="footer pt-4">
-         <Container className="wide-container">
+         <Container>
             <div className="row pm-0">
                <div className="row col-12 justify-content-center pm-0 mt-2  mb-2 ">
                   <div className="col-12 col-md-6 mt-4 text-center mt-auto mb-auto">

@@ -33,6 +33,9 @@ namespace OSnack.API.Controllers
       {
          try
          {
+            if (newProduct.Category.Id == 0)
+               newProduct.Category = null;
+            TryValidateModel(newProduct);
             ModelState.Remove("Category.Name");
             ModelState.Remove("Category.ImageBase64");
             ModelState.Remove("NutritionalInfo.Product");

@@ -148,17 +148,12 @@ const ProductModal = (props: IProps) => {
                   onChange={i => { setProduct({ ...product, status: i }); }}
                />
             </div>
-         </div>
-         {/***** Name ****/}
-         <div className="row">
             <Input label="Name*"
                value={product.name}
                onChange={i => { setProduct({ ...product, name: i.target.value }); }}
                className="col-12"
                showDanger={errorAlert.checkExistFilterRequired("Name")}
             />
-         </div>
-         <div className="row">
             <Input label="Stock Quantity*"
                type="number"
                positiveNumbersOnly
@@ -170,7 +165,7 @@ const ProductModal = (props: IProps) => {
 
             <InputDropDown dropdownTitle={product.category?.name || "Select Option"}
                label="Category*"
-               showDanger={errorAlert.checkExistFilterRequired("ProductCategory")}
+               showDanger={errorAlert.checkExistFilterRequired("Category")}
                className="col-12 col-sm-6 " >
                {props.categoryList.map(category =>
                   <button className="dropdown-item" key={category.id}
@@ -179,9 +174,6 @@ const ProductModal = (props: IProps) => {
                   </button>
                )}
             </InputDropDown>
-         </div>
-         {/***** Net Quantity ****/}
-         <div className="row">
             <Input label="Unit Quantity*"
                type="number"
                positiveNumbersOnly
@@ -203,9 +195,6 @@ const ProductModal = (props: IProps) => {
                )}
             </InputDropDown>
 
-         </div>
-         {/***** Price,  Energy KJ & Kcal ****/}
-         <div className="row">
             <Input label="Price* (£)"
                type="number"
                positiveNumbersOnly
@@ -221,22 +210,17 @@ const ProductModal = (props: IProps) => {
                   onClick={() => { setNutritionalInfoModalIsOpen(true); }}
                />
             </div>
-            {/***** Nutritional information Modal ****/}
             <ProductNutritionalInfoModal isOpen={nutritionalInfoModalIsOpen}
                alert={errorAlert}
                nutritionalInfo={product.nutritionalInfo}
                onSubmit={(info) => { setProduct({ ...product, nutritionalInfo: info }); setNutritionalInfoModalIsOpen(false); }}
             />
-         </div>
-         {/***** Description ****/}
-         <div className="row">
             <TextArea label="Description"
                rows={5}
                value={product.description}
                onChange={i => { setProduct({ ...product, description: i.target.value }); }}
                className="col-12 col-sm-6" />
 
-            {/***** Image upload and show preview button ****/}
             <ImageUpload className="col-12 col-sm-6 mt-4"
                modifiedImageBase64={imageBase64}
                originalImageBase64={originalImageBase64}

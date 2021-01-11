@@ -29,6 +29,7 @@ const UserModal = (props: IProps) => {
          loadingCallBack!();
       }).catch(errors => {
          if (isUnmounted.current) return;
+         console.log(errors);
          errorAlert.set(errors);
          loadingCallBack!();
       });
@@ -68,21 +69,17 @@ const UserModal = (props: IProps) => {
          isOpen={props.isOpen}>
          <PageHeader title={`${user.id === 0 ? "New" : "Update"} User`} />
 
-         {/***** Name & Surname ****/}
          <div className="row">
-            <Input label="Name"
+            <Input label="Name*"
                showDanger={errorAlert.checkExistFilterRequired("FirstName")}
                value={user.firstName}
                onChange={i => { setUser({ ...user, firstName: i.target.value }); }}
                className="col-12 col-sm-6" />
-            <Input label="Surname"
+            <Input label="Surname*"
                showDanger={errorAlert.checkExistFilterRequired("Surname")}
                value={user.surname}
                onChange={i => { setUser({ ...user, surname: i.target.value }); }}
                className="col-12 col-sm-6" />
-         </div>
-         {/***** Phone & Role ****/}
-         <div className="row">
             <Input label={`Phone No.`}
                value={user.phoneNumber}
                showDanger={errorAlert.checkExistFilterRequired("PhoneNumber")}
@@ -99,11 +96,7 @@ const UserModal = (props: IProps) => {
                   </button>
                )}
             </InputDropdown>
-         </div>
-
-         {/***** Email & Registration Type ****/}
-         <div className="row">
-            <Input label={`Email ${user.id && user.id > 0 ? (user.emailConfirmed ? "(Verified)" : "(Not Verified)") : ""}`}
+            <Input label={`Email${user.id && user.id > 0 ? (user.emailConfirmed ? " (Verified)" : " (Not Verified)") : "*"}`}
                value={user.email}
                disabled={user.registrationMethod?.type != null}
                showDanger={errorAlert.checkExistFilterRequired("Email")}

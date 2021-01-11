@@ -91,12 +91,12 @@ const ShowCommunication = (props: IProps) => {
    return (
       <>
          <div className="col-12 pm-0 pos-t-sticky pt-3 bg-white">
-            <PageHeader title={`${communication.type === ContactType.Dispute ? "Dispute" : "Question"} ${communication.status ? "" : "Closed"}`} />
+            <PageHeader title={`${communication.type === ContactType.Dispute ? "Dispute" : "Communication"} ${communication.status ? "" : "Closed"}`} />
             {props.access == ClientAppAccess.Secret &&
                <Toggler
                   className="toggler-lg circle col pb-3"
-                  lblValueTrue="Dispute Open"
-                  lblValueFalse="Dispute Closed"
+                  lblValueTrue={`${communication.type === ContactType.Dispute ? "Dispute" : "Communication"} Open`}
+                  lblValueFalse={`${communication.type === ContactType.Dispute ? "Dispute" : "Communication"} Closed`}
                   value={communicationStatus}
                   onChange={val => { setCommunicationStatus(val); }}
                />

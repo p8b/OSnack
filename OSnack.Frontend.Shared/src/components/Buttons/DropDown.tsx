@@ -32,7 +32,7 @@ const DropDown = (props: IProps) => {
             <button disabled={props.disabled} className={`col p-0 btn-no-style ${isOpen ? "show" : ""}`}
                onClick={() => setIsOpen((prev) => !prev)}
                ref={(props.buttonRef || dropDownButton)}>
-               <div aria-disabled={props.disabled} className={` line-limit-1 ${props?.titleClassName} ${props.disabled ? "disabled" : ""}`}>
+               <div className={`line-limit-1 ${props?.titleClassName} ${props.disabled ? "disabled" : ""}`}>
                   {props.title}
                </div>
             </button>

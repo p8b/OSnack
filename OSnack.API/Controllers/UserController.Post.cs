@@ -40,7 +40,12 @@ namespace OSnack.API.Controllers
             if (string.IsNullOrWhiteSpace(newUser.Password))
                newUser.Password = CoreFunc.StringGenerator(10, 3, 3, 2, 2);
 
+            if (newUser.Role.Id == 0)
+               newUser.Role = null;
             TryValidateModel(newUser);
+
+            ModelState.Remove("Role.Name");
+            ModelState.Remove("Role.AccessClaim");
             ModelState.Remove("PasswordHash");
             if (!ModelState.IsValid)
             {

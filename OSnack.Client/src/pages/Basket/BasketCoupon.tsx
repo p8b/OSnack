@@ -13,6 +13,7 @@ const BasketCoupon = (props: IProps) => {
       if (code == undefined || code == "") {
          props.alert.setSingleError("Access Denied", "Coupon code required.");
          setCode("");
+         loadingCallBack!();
          return;
       }
       props.alert.pleaseWait(isUnmounted);
