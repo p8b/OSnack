@@ -42,8 +42,8 @@ export const useDeleteCommunication = async (communicationId: string | null): Pr
   
 }
 export type IReturnUseSearchCommunication={ data:CommunicationListAndTotalCount , status?: number;};
-export const useSearchCommunication = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, isSortAsce: boolean, sortName: string | null): Promise<IReturnUseSearchCommunication> =>{
-        let url_ = API_URL + "/Communication/Get/Search/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{isSortAsce}/{sortName}";
+export const useSearchCommunication = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null, filterStatus: string | null | undefined, isSortAsce: boolean, sortName: string | null): Promise<IReturnUseSearchCommunication> =>{
+        let url_ = API_URL + "/Communication/Get/Search/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{isSortAsce}/{sortName}?";
         if (selectedPage !== null && selectedPage !== undefined)
         url_ = url_.replace("{selectedPage}", encodeURIComponent("" + selectedPage));
         if (maxNumberPerItemsPage !== null && maxNumberPerItemsPage !== undefined)
@@ -54,6 +54,7 @@ export const useSearchCommunication = async (selectedPage: number, maxNumberPerI
         url_ = url_.replace("{isSortAsce}", encodeURIComponent("" + isSortAsce));
         if (sortName !== null && sortName !== undefined)
         url_ = url_.replace("{sortName}", encodeURIComponent("" + sortName));
+            url_ += "filterStatus=" + encodeURIComponent("" + filterStatus) + "&";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);
         if( response?.status === 400){

@@ -97,7 +97,8 @@ export const useAlert: IUseAlert = (init) => {
       return returnVal;
    };
    return {
-      alert, set,
+      alert,
+      set,
       pleaseWait,
       clear,
       setSingleSuccess,

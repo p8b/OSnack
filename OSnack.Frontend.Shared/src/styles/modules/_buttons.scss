@@ -17,9 +17,6 @@
     }
 
     &.loading {
-        & {
-            text-decoration: line-through double;
-        }
 
         &:after {
             text-decoration: none;

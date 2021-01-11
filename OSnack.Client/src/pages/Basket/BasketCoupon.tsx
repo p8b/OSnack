@@ -9,7 +9,7 @@ const BasketCoupon = (props: IProps) => {
    const isUnmounted = useRef(false);
    const [code, setCode] = useState("");
    useEffect(() => { setCode(props.coupon.code); return () => { isUnmounted.current = true; }; }, []);
-   const couponCheck = () => {
+   const couponCheck = (loadingCallBack?: () => void) => {
       if (code == undefined || code == "") {
          props.alert.setSingleError("Access Denied", "Coupon code required.");
          setCode("");
@@ -28,7 +28,12 @@ const BasketCoupon = (props: IProps) => {
             return;
          }
          props.setCoupon(result.data);
-      }).catch(errors => { if (isUnmounted.current) return; props.alert.set(errors); });
+         loadingCallBack!();
+      }).catch(errors => {
+         if (isUnmounted.current) return;
+         props.alert.set(errors);
+         loadingCallBack!();
+      });
    };
    return (
       <div className="row col-12 pm-0 pb-2">
@@ -38,7 +43,7 @@ const BasketCoupon = (props: IProps) => {
             className="col-8 mb-0 p-0 " />
          <div className="row col-4 pm-0 mt-auto">
             <Button className="col-12 btn-sm btn-blue radius-none m-0"
-               onClick={couponCheck} children="Apply" />
+               onClick={couponCheck} children="Apply" enableLoading={isUnmounted} />
          </div>
       </div>
    );

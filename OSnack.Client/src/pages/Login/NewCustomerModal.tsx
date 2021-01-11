@@ -27,7 +27,7 @@ const NewCustomerModal = (props: IProps) => {
       setTermsAndCondition(false);
    }, [props.newUser]);
 
-   const createNewCustomer = async () => {
+   const createNewCustomer = (loadingCallBack?: () => void) => {
       let errors = [];
       if ((user.firstName || "") === "")
          errors.push(new ErrorDto("firstName", "Name is required"));
@@ -49,9 +49,11 @@ const NewCustomerModal = (props: IProps) => {
             if (isUnmounted.current) return;
             setRedirectToMain(true);
             errorAlert.clear();
+            loadingCallBack!();
          }).catch(errors => {
             if (isUnmounted.current) return;
             errorAlert.set(errors);
+            loadingCallBack!();
          });
       };
    };
@@ -137,7 +139,7 @@ const NewCustomerModal = (props: IProps) => {
                   onClosed={() => errorAlert.clear()}
                />
                <Button children="Submit" className="btn-lg col-12 col-sm-6 mt-2 btn-green"
-                  onClick={() => createNewCustomer()} />
+                  onClick={createNewCustomer} enableLoading={isUnmounted} />
                <Button children="Cancel" className="btn-lg col-12 col-sm-6 mt-2 btn-white"
                   onClick={() => { errorAlert.clear(); props.onCancel(); }} />
             </div>

@@ -182,7 +182,7 @@ const UserAccount = (props: IProps) => {
                if (selectedAction == "Password")
                   onConfirmPassword(currentPassword);
             }}
-            onCancel={() => {
+            onClose={() => {
                setSelectedAction("");
                errorAlertPasswordInfo.clear();
                errorAlertAccountInfo.clear();

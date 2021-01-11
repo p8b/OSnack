@@ -41,34 +41,41 @@ const ShowCommunication = (props: IProps) => {
          }
    }, [communication]);
 
-   const deleteCommunication = () => {
+   const deleteCommunication = (loadingCallBack?: () => void) => {
       errorAlert.pleaseWait(isUnmounted);
       props.useDeleteCommunication!(communication.id || null).then(() => {
          if (isUnmounted.current) return;
          props.onClose!();
-      }).catch(onError);
+         loadingCallBack!();
+      }).catch((errors) => onError(errors, loadingCallBack));
    };
-   const sendMessage = () => {
+   const sendMessage = (loadingCallBack?: () => void) => {
       errorAlert.pleaseWait(isUnmounted);
       switch (props.access) {
          case ClientAppAccess.Official:
-            usePutOfficialCommunication({ body: message }, communication.id ?? null).then(onSuccess).catch(onError);
+            usePutOfficialCommunication({ body: message }, communication.id ?? null)
+               .then((result) => onSuccess(result, loadingCallBack))
+               .catch((errors) => onError(errors, loadingCallBack));
          case ClientAppAccess.Secret:
-            props.usePutSecretCommunication!({ body: message }, communication.id ?? null, communicationStatus).then(onSuccess).catch(onError);
+            props.usePutSecretCommunication!({ body: message }, communication.id ?? null, communicationStatus)
+               .then((result) => onSuccess(result, loadingCallBack))
+               .catch((errors) => onError(errors, loadingCallBack));
          default:
       }
    };
 
-   const onSuccess = (result: IReturnUsePutOfficialCommunication) => {
+   const onSuccess = (result: IReturnUsePutOfficialCommunication, loadingCallBack?: () => void) => {
       if (isUnmounted.current) return;
       setMessage("");
       setCommunication(result.data);
       errorAlert.setSingleSuccess("updated", `${result.data.type == ContactType.Dispute ? "Dispute" : "Question"} is Updated`);
+      loadingCallBack!();
    };
 
-   const onError = (errors: AlertObj) => {
+   const onError = (errors: AlertObj, loadingCallBack?: () => void) => {
       if (isUnmounted.current) return;
       errorAlert.set(errors);
+      loadingCallBack!();
    };
 
    const getChatCss = (isCustomer?: boolean) => {
@@ -129,6 +136,8 @@ const ShowCommunication = (props: IProps) => {
                classNameCreate={props.isInModal ? undefined : "col-md-auto ml-auto"}
                onCreate={(communicationStatus || communication.status) ? sendMessage : undefined}
                onDelete={(communication.type != ContactType.Dispute && props.access === ClientAppAccess.Secret && !communication.status) ? deleteCommunication : undefined}
+               enableLoadingCreate={isUnmounted}
+               enableLoadingDelete={isUnmounted}
                onCancel={props.onClose}
             />
          </div>

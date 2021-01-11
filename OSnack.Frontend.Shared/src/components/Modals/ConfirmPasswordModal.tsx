@@ -1,9 +1,9 @@
 ﻿import React, { useState, useEffect, useRef } from "react";
 import Modal from "./Modal";
 import { Input } from "../Inputs/Input";
-import { Button } from "../Buttons/Button";
 import Alert, { AlertObj, useAlert } from "../Texts/Alert";
 import { useConfirmCurrentUserPasswordAuthentication } from "../../hooks/OfficialHooks/useAuthenticationHook";
+import ModalFooter from "./ModalFooter";
 
 const ConfirmPasswordModal = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -16,16 +16,18 @@ const ConfirmPasswordModal = (props: IProps) => {
          errorAlert.clear();
    }, [props.isOpen]);
 
-   const onSubmit = async () => {
+   const onSubmit = (loadingCallBack?: () => void) => {
       errorAlert.pleaseWait(isUnmounted);
       useConfirmCurrentUserPasswordAuthentication(password).then(user => {
          if (isUnmounted.current) return;
          errorAlert.clear();
          props.onSuccess(password);
          setPassword("");
+         loadingCallBack!();
       }).catch(errors => {
          if (isUnmounted.current) return;
          errorAlert.set(errors);
+         loadingCallBack!();
       });
    };
    return (
@@ -37,18 +39,19 @@ const ConfirmPasswordModal = (props: IProps) => {
             onChange={i => setPassword(i.target.value)}
          />
          <Alert alert={errorAlert.alert} onClosed={() => errorAlert.clear()} />
-         <Button children="Continue" className="btn-lg col-12 col-sm-6 mt-2 btn-lg  btn-green"
-            onClick={onSubmit} />
-
-         <Button children="Cancel" className="btn-lg col-12 col-sm-6 mt-2  btn-lg btn-white"
-            onClick={props.onCancel} />
+         <ModalFooter
+            createText="Continue"
+            onCreate={onSubmit}
+            enableLoadingCreate={isUnmounted}
+            onCancel={() => { errorAlert.clear(); props.onClose(); }}
+         />
       </Modal >
    );
 };
 declare type IProps = {
    isOpen: boolean,
    onSuccess: (currentPassword: string) => void;
-   onCancel: () => void;
+   onClose: () => void;
 };
 
 export default ConfirmPasswordModal;

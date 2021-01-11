@@ -24,17 +24,18 @@ const Login = (props: IProps) => {
       document.getElementById("email")?.focus();
    }, []);
 
-   const loginSuccess = (result: { data: User, status?: number; }) => {
+   const loginSuccess = (result: { data: User, status?: number; }, loadingCallBack?: () => void) => {
       if (isUnmounted.current) return;
       useAntiforgeryTokenAuthentication().then(() => {
          auth.setState({ isAuthenticated: true, user: result.data });
          errorAlert.clear();
       }).catch();
+      loadingCallBack!();
    };
-   const loginFailed = (errors: AlertObj) => {
+   const loginFailed = (errors: AlertObj, loadingCallBack?: () => void) => {
       if (isUnmounted.current) return;
       errorAlert.set(errors);
-
+      loadingCallBack!();
    };
    const externalLoginSuccess = (result: { data: User, status?: number; }) => {
       if (isUnmounted.current) return;
@@ -45,11 +46,13 @@ const Login = (props: IProps) => {
          loginSuccess(result);
       }
    };
-   const login = async () => {
+   const login = (loadingCallBack?: () => void) => {
       errorAlert.pleaseWait(isUnmounted);
       switch (props.access) {
          case ClientAppAccess.Official:
-            useLoginOfficialAuthentication(loginInfo).then(loginSuccess).catch(loginFailed);
+            useLoginOfficialAuthentication(loginInfo)
+               .then((result) => loginSuccess(result, loadingCallBack))
+               .catch((errors) => loginFailed(errors, loadingCallBack));
             break;
          case ClientAppAccess.Secret:
             useLoginSecretAuthentication(loginInfo).then(loginSuccess).catch(loginFailed);
@@ -124,7 +127,10 @@ const Login = (props: IProps) => {
 
          <Alert alert={errorAlert.alert} className="col-12" onClosed={errorAlert.clear} />
 
-         <Button children="Login" className="col-12 btn-lg btn-green mt-2 " onClick={login} />
+         <Button children="Login"
+            className="col-12 btn-lg btn-green mt-2 "
+            enableLoading={isUnmounted}
+            onClick={login} />
          {  !props.disableExternalLogin &&
             <>
                {/*****                <FacebookLogin clientId="1237220039954343"

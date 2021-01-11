@@ -3,10 +3,10 @@ import { Communication, ContactType, Order } from '../../_core/apiModels';
 import Modal from '../../components/Modals/Modal';
 import { usePostDisputeCommunication } from '../../hooks/OfficialHooks/useCommunicationHook';
 import PageHeader from '../../components/Texts/PageHeader';
-import { Button } from '../../components/Buttons/Button';
 import { AuthContext } from '../../_core/authenticationContext';
 import { TextArea } from '../../components/Inputs/TextArea';
-import { AlertObj, useAlert } from '../../components/Texts/Alert';
+import Alert, { AlertObj, useAlert } from '../../components/Texts/Alert';
+import ModalFooter from './ModalFooter';
 
 
 
@@ -19,7 +19,7 @@ const AddDisputeModal = (props: IProps) => {
 
    useEffect(() => () => { isUnmounted.current = true; }, []);
 
-   const sendMessage = () => {
+   const sendMessage = (loadingCallBack?: () => void) => {
       errorAlert.pleaseWait(isUnmounted);
       usePostDisputeCommunication({
          email: auth.state.user.email,
@@ -31,9 +31,11 @@ const AddDisputeModal = (props: IProps) => {
          if (isUnmounted.current) return;
          setMessage("");
          props.onClose(result.data);
+         loadingCallBack!();
       }).catch(errors => {
          if (isUnmounted.current) return;
          errorAlert.set(errors);
+         loadingCallBack!();
       });
    };
 
@@ -47,15 +49,15 @@ const AddDisputeModal = (props: IProps) => {
                <TextArea className="col-12" label="Message*" rows={3} value={message}
                   onChange={(i) => { setMessage(i.target.value); }} />
 
-               {/***** buttons ****/}
-               <div className="row col-12 pm-0 pos-b-sticky bg-white pb-3">
-                  <Button children="Submit"
-                     className={`col-12 col-md-6 mt-2 btn-green btn-lg col-sm-6"}`}
-                     onClick={sendMessage} />
-                  <Button children="Close"
-                     className="col-12  mt-2 btn-white btn-lg col-sm-6"
-                     onClick={() => { props.onClose(); }} />
-               </div>
+               <Alert alert={errorAlert.alert}
+                  className="col-12 mb-2"
+                  onClosed={() => errorAlert.clear()} />
+               <ModalFooter
+                  createText="Submit"
+                  onCreate={sendMessage}
+                  enableLoadingCreate={isUnmounted}
+                  onCancel={() => { errorAlert.clear(); props.onClose(); }}
+               />
             </div >
          </>
       </Modal >

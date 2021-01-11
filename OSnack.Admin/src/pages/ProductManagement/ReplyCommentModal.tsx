@@ -16,21 +16,23 @@ const ReplyCommentModal = (props: IProps) => {
    useEffect(() => () => { isUnmounted.current = true; }, []);
    useEffect(() => { setComment(props.comment); }, [props.comment]);
 
-   const addReply = () => {
+   const addReply = (loadingCallBack?: () => void) => {
       errorAlert.pleaseWait(isUnmounted);
       useAddReplyComment(comment).then(result => {
          if (isUnmounted.current) return;
          setComment(result.data);
          errorAlert.clear();
          props.onClose();
+         loadingCallBack!();
       }).catch(errors => {
          if (isUnmounted.current) return;
          errorAlert.set(errors);
+         loadingCallBack!();
       });
    };
 
    return (
-      <Modal className="col-12 col-sm-10 col-lg-6 pm-0 px-4"
+      <Modal className="col-12 col-sm-10 col-lg-6  px-4"
          bodyRef={props.modalRef}
          isOpen={props.isOpen}>
          <PageHeader title="Reply" />
@@ -45,6 +47,7 @@ const ReplyCommentModal = (props: IProps) => {
          <ModalFooter
             createText="Reply"
             onCreate={addReply}
+            enableLoadingCreate={isUnmounted}
             onCancel={() => { errorAlert.clear(); props.onClose(); }}
          />
       </Modal >

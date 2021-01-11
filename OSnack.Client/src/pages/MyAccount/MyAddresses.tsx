@@ -70,11 +70,7 @@ const MyAddresses = (props: IProps) => {
             {addressList.length > 0 &&
                addressList.map(addr => {
                   return (
-                     <ButtonCard key={addr.id} cardClassName="card-lg col-12 row pm-0"
-                        onClick={() => {
-                           setSelectAddress(addr);
-                           setIsOpenAddressModal(true);
-                        }}>
+                     <ButtonCard key={addr.id} cardClassName="card-lg col-12 row pm-0">
 
                         <div className={` tick-icon mb-auto ml-auto ${addr.isDefault ? '' : 'hide'}`} />
 
@@ -95,11 +91,14 @@ const MyAddresses = (props: IProps) => {
                         </div>
                         <div className="row col-12 pm-0  mt-auto">
                            <Button className="btn-sm  col m-0 radius-none"
-                              children="Edit" />
+                              children="Edit" onClick={() => {
+                                 setSelectAddress(addr);
+                                 setIsOpenAddressModal(true);
+                              }} />
                            {!addr.isDefault &&
                               <Button className="btn-sm  col-6 m-0 "
-                                 onClick={(e) => {
-                                    e.stopPropagation();
+                                 onClick={(c, e) => {
+                                    e!.stopPropagation();
                                     setDefault(addr.id || 0);
                                  }}
 

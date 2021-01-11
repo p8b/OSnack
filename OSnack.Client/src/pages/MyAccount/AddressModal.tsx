@@ -26,7 +26,7 @@ const AddressModal = (props: IProps) => {
       setAddress(props.address);
    }, [props.address]);
 
-   const createAddress = async () => {
+   const createAddress = (loadingCallBack?: () => void) => {
       let errors = new AlertObj([], AlertTypes.Error);
 
       if (address.name == "")
@@ -49,14 +49,16 @@ const AddressModal = (props: IProps) => {
          if (isUnmounted.current) return;
          errorAlert.clear();
          setAddress(result.data);
-         props.onClose();
          props.onSuccess(result.data);
+         loadingCallBack!();
+         props.onClose();
       }).catch(errors => {
          if (isUnmounted.current) return;
          errorAlert.set(errors);
+         loadingCallBack!();
       });
    };
-   const updateAddress = async () => {
+   const updateAddress = (loadingCallBack?: () => void) => {
 
       let errors = new AlertObj([], AlertTypes.Error);
 
@@ -79,25 +81,29 @@ const AddressModal = (props: IProps) => {
       usePutAddress(address).then(result => {
          if (isUnmounted.current) return;
          errorAlert.clear();
-         props.onClose();
          props.onSuccess(result.data);
+         loadingCallBack!();
+         props.onClose();
       }).catch(errors => {
          if (isUnmounted.current) return;
          errorAlert.set(errors);
+         loadingCallBack!();
       });
 
    };
-   const deleteAddress = async () => {
+   const deleteAddress = (loadingCallBack?: () => void) => {
       errorAlert.pleaseWait(isUnmounted);
       useDeleteAddress(address.id!).then(result => {
          if (isUnmounted.current) return;
          errorAlert.clear();
          errorAlert.setSingleSuccess("Deleted", result.data);
-         props.onClose();
          props.onSuccess(address);
+         loadingCallBack!();
+         props.onClose();
       }).catch(errors => {
          if (isUnmounted.current) return;
          errorAlert.set(errors);
+         loadingCallBack!();
       });
 
    };
@@ -143,8 +149,11 @@ const AddressModal = (props: IProps) => {
          />
          <ModalFooter
             onCreate={address.id != 0 ? undefined : createAddress}
+            enableLoadingCreate={isUnmounted}
             onUpdate={address.id === 0 ? undefined : updateAddress}
+            enableLoadingUpdate={isUnmounted}
             onDelete={address.id === 0 ? undefined : deleteAddress}
+            enableLoadingDelete={isUnmounted}
             onCancel={() => { errorAlert.clear(); props.onClose(); }} />
       </Modal >
    );

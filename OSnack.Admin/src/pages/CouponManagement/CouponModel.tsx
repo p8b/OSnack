@@ -30,19 +30,21 @@ const CouponModel = (props: IProps) => {
       }
    }, [props.coupon]);
 
-   const createCoupon = async () => {
+   const createCoupon = (loadingCallBack?: () => void) => {
       errorAlert.pleaseWait(isUnmounted);
       usePostCoupon({ ...coupon, code: pendingCode }).then(result => {
          if (isUnmounted.current) return;
          setCoupon(result.data);
          props.onSuccess();
          errorAlert.clear();
+         loadingCallBack!();
       }).catch(errors => {
          if (isUnmounted.current) return;
          errorAlert.set(errors);
+         loadingCallBack!();
       });
    };
-   const updateCoupon = async () => {
+   const updateCoupon = (loadingCallBack?: () => void) => {
 
       errorAlert.pleaseWait(isUnmounted);
       usePutCoupon(coupon).then(result => {
@@ -50,22 +52,26 @@ const CouponModel = (props: IProps) => {
          setCoupon(result.data);
          props.onSuccess();
          errorAlert.clear();
+         loadingCallBack!();
       }).catch(errors => {
          if (isUnmounted.current) return;
          errorAlert.set(errors);
+         loadingCallBack!();
       });
 
    };
 
-   const deleteCoupon = async () => {
+   const deleteCoupon = (loadingCallBack?: () => void) => {
       errorAlert.pleaseWait(isUnmounted);
       useDeleteCoupon(coupon.code).then(() => {
          if (isUnmounted.current) return;
          errorAlert.clear();
          props.onSuccess();
+         loadingCallBack!();
       }).catch(errors => {
          if (isUnmounted.current) return;
          errorAlert.set(errors);
+         loadingCallBack!();
       });
 
    };
@@ -136,6 +142,9 @@ const CouponModel = (props: IProps) => {
             onCreate={coupon.code != undefined ? undefined : createCoupon}
             onUpdate={coupon.code == undefined ? undefined : updateCoupon}
             onDelete={coupon.code == undefined ? undefined : deleteCoupon}
+            enableLoadingCreate={isUnmounted}
+            enableLoadingUpdate={isUnmounted}
+            enableLoadingDelete={isUnmounted}
             onCancel={() => { errorAlert.clear(); props.onClose(); }} />
 
       </Modal >

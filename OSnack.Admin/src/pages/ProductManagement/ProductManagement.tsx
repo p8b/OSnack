@@ -63,13 +63,14 @@ const ProductManagement = (props: IProps) => {
       if (maxItemsPerPage != tbl.maxItemsPerPage) tbl.setMaxItemsPerPage(maxItemsPerPage);
       if (Number(categoryFilter) == -1) categoryFilter = GetAllRecords;
       if (Number(statusFilter) == -1) statusFilter = GetAllRecords;
-      if (categoryFilter != selectedCategoryFilter) setSelectedCategoryFilter(categoryFilter);
       if (statusFilter != selectedStatusFilter) setSelectedStatusFilter(statusFilter);
+      if (categoryFilter != selectedCategoryFilter) setSelectedCategoryFilter(categoryFilter);
       if (selectedPage != tbl.selectedPage) tbl.setSelectedPage(selectedPage);
 
       history.push(generateUri(window.location.pathname,
          [selectedPage || tbl.selectedPage,
-            maxItemsPerPage, statusFilter == GetAllRecords ? -1 : statusFilter,
+            maxItemsPerPage,
+         statusFilter == GetAllRecords ? -1 : statusFilter,
          categoryFilter == GetAllRecords ? -1 : categoryFilter,
          Number(isSortAsc),
             sortName,

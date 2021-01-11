@@ -43,7 +43,7 @@ const CategoryModal = (props: IProps) => {
       }
    }, [props.category]);
 
-   const createCategory = async () => {
+   const createCategory = (loadingCallBack?: () => void) => {
       let errors = new AlertObj([], AlertTypes.Error);
 
       if (category.name == "")
@@ -59,15 +59,18 @@ const CategoryModal = (props: IProps) => {
       errorAlert.pleaseWait(isUnmounted);
       usePostCategory(category).then(() => {
          if (isUnmounted.current) return;
+         loadingCallBack!();
          errorAlert.clear();
          resetImageUpload();
          props.onSuccess();
       }).catch((errors) => {
          if (isUnmounted.current) return;
          errorAlert.set(errors);
+         loadingCallBack!();
       });
    };
-   const updateCategory = async () => {
+
+   const updateCategory = (loadingCallBack?: () => void) => {
       let errors = new AlertObj([], AlertTypes.Error);
 
       if (category.name == "")
@@ -85,7 +88,8 @@ const CategoryModal = (props: IProps) => {
       if (!isNewImageSet) {
          cat.imageBase64 = '';
          cat.originalImageBase64 = '';
-      } if (isUnmounted.current) return;
+      }
+      if (isUnmounted.current) return;
 
       errorAlert.pleaseWait(isUnmounted);
       usePutCategory(cat).then(() => {
@@ -93,21 +97,26 @@ const CategoryModal = (props: IProps) => {
          errorAlert.clear();
          resetImageUpload();
          props.onSuccess();
+         loadingCallBack!();
       }).catch((errors) => {
          if (isUnmounted.current) return;
          errorAlert.set(errors);
+         loadingCallBack!();
       });
    };
-   const deleteCategory = async () => {
+
+   const deleteCategory = (loadingCallBack?: () => void) => {
       errorAlert.pleaseWait(isUnmounted);
       useDeleteCategory(category.id!).then(() => {
          if (isUnmounted.current) return;
          errorAlert.clear();
          resetImageUpload();
          props.onSuccess();
+         loadingCallBack!();
       }).catch((errors) => {
          if (isUnmounted.current) return;
          errorAlert.set(errors);
+         loadingCallBack!();
       });
    };
 
@@ -164,6 +173,9 @@ const CategoryModal = (props: IProps) => {
             onCreate={category.id != 0 ? undefined : createCategory}
             onUpdate={category.id === 0 ? undefined : updateCategory}
             onDelete={category.id === 0 ? undefined : deleteCategory}
+            enableLoadingCreate={isUnmounted}
+            enableLoadingUpdate={isUnmounted}
+            enableLoadingDelete={isUnmounted}
             onCancel={() => { errorAlert.clear(); resetImageUpload(); props.onClose(); }} />
       </Modal >
    );

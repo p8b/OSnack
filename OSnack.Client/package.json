@@ -52,7 +52,6 @@
   "dependencies": {
     "osnack-frontend-shared": "file://../OSnack.Frontend.Shared",
     "react-alice-carousel": "2.2.0",
-    "react-google-recaptcha-v3": "^1.7.1",
     "react-markdown": "5.0.3"
   },
   "peerDependencies": {}

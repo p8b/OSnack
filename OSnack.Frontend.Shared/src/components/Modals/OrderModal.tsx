@@ -1,4 +1,4 @@
-﻿import React, { useContext, useEffect, useState } from 'react';
+﻿import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Communication, ContactType, Message, Order, OrderStatusType } from '../../_core/apiModels';
 import Modal from '../../components/Modals/Modal';
 import OrderDetails from '../../components/Order/OrderDetails';
@@ -10,9 +10,12 @@ import AddDisputeModal from './AddDisputeModal';
 import CommunicationModal from './CommunicationModal';
 import { IReturnUsePutOfficialCommunication } from '../../hooks/OfficialHooks/useCommunicationHook';
 import ModalFooter from './ModalFooter';
+import Alert, { AlertObj, useAlert } from '../Texts/Alert';
 
 const OrderModal = (props: IProps) => {
    const auth = useContext(AuthContext);
+   const isUnmounted = useRef(false);
+   const errorAlert = useAlert(new AlertObj());
    const [selectedOrder, setSelectedOrder] = useState(new Order());
    const [isOpenMessageModal, setIsOpenMessageModal] = useState(false);
    const [isOpenDisputeModal, setIsOpenDisputeModal] = useState(false);
@@ -20,6 +23,8 @@ const OrderModal = (props: IProps) => {
 
    const [openMessageModalType, setOpenMessageModalType] = useState(OrderStatusType.InProgress);
    const [selectedDispute, setSelectedDispute] = useState(new Communication());
+
+   useEffect(() => () => { isUnmounted.current = true; }, []);
 
    useEffect(() => {
       setSelectedOrder(props.order);
@@ -88,11 +93,29 @@ const OrderModal = (props: IProps) => {
       setSelectedOrder({ ...selectedOrder, status: status });
    };
 
-   const saveChange = () => {
+   const saveChange = (loadingCallBack?: () => void) => {
       if (selectedOrder.status == props.order.status)
          props.onClose();
-      else
-         props.onSave!(selectedOrder);
+      else {
+         switch (props.access) {
+            case ClientAppAccess.Official:
+               break;
+            case ClientAppAccess.Secret:
+               props.usePutOrderStatusOrder!(selectedOrder).then(() => {
+                  if (isUnmounted.current) return;
+                  errorAlert.clear();
+                  props.onSuccess();
+                  loadingCallBack!();
+               }).catch((errors) => {
+                  if (isUnmounted.current) return;
+                  errorAlert.set(errors);
+                  loadingCallBack!();
+               });
+               break;
+            default:
+               break;
+         };
+      }
    };
 
    return (
@@ -105,10 +128,15 @@ const OrderModal = (props: IProps) => {
             statusChanged={statusChange} onDispute={() => { setIsOpenAddDisputeModal(true); }}
             showDispute={dispute => { setSelectedDispute(dispute); setIsOpenDisputeModal(true); }} />
 
+         <Alert alert={errorAlert.alert}
+            className="col-12 mb-2"
+            onClosed={() => { errorAlert.clear(); }}
+         />
          <ModalFooter
-            updateConfirmText="Save"
+            updateText="Save"
             cancelText={`${(props.access == ClientAppAccess.Official || getAvailabeType().length == 0) ? "Close" : "Cancel"}`}
             onUpdate={(props.access == ClientAppAccess.Secret && getAvailabeType().length > 0) ? saveChange : undefined}
+            enableLoadingUpdate={isUnmounted}
             onCancel={() => { props.onClose(); setSelectedOrder(props.order); }}
          />
 
@@ -139,8 +167,9 @@ declare type IProps = {
    onClose: () => void;
    modalRef?: any;
    access: ClientAppAccess;
-   onSave?: (order: Order) => void;
+   onSuccess: () => void;
    onDispute?: (order: Order) => void;
    usePutSecretCommunication?: (message: Message, communicationId: string | null, status: boolean) => Promise<IReturnUsePutOfficialCommunication>;
+   usePutOrderStatusOrder?: (modifiedOrder: Order) => Promise<{ data: Order, status?: number; }>;
 };
 export default OrderModal;

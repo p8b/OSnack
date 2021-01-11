@@ -12,7 +12,7 @@ const BasketItem = (props: IProps) => {
       <div className="row mt-4 mb-4">
          <div className="col-3 col-sm-4">
             <img className="shop-card-img" onError={onImageError.Product}
-               src={`${API_URL}/${props.orderItem.imagePath}`} alt={name} />
+               src={`${API_URL}/${props.orderItem.imagePath}`} alt={props.orderItem.name} />
          </div>
          <div className="row col-9 col-sm-8 pl-5">
             <div className="col-12 p-0 "><span className="h5">{props.orderItem.name}</span> ({props.orderItem.productCategoryName})</div>

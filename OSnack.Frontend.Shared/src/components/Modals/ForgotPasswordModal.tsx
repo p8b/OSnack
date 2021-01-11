@@ -14,7 +14,7 @@ const ForgotPasswordModal = (props: IProps) => {
 
    useEffect(() => () => { isUnmounted.current = true; }, []);
 
-   const onSubmit = async () => {
+   const onSubmit = (loadingCallBack?: () => void) => {
       errorAlert.clear();
       //Submit password reset request
       if (!isTokenSent) {
@@ -23,9 +23,11 @@ const ForgotPasswordModal = (props: IProps) => {
             if (isUnmounted.current) return;
             setIsTokenSent(true);
             errorAlert.setSingleSuccess("", "The Link to reset your password was sent to your email. Please check your Spam folder.");
+            loadingCallBack!();
          }).catch((errors) => {
             if (isUnmounted.current) return;
             errorAlert.set(errors);
+            loadingCallBack!();
          });
       }
    };
@@ -49,7 +51,7 @@ const ForgotPasswordModal = (props: IProps) => {
                />
 
                <Button children="Continue" className="btn-lg col-12 col-sm-6 mt-2 btn-lg  btn-green"
-                  onClick={onSubmit} />
+                  onClick={onSubmit} enableLoading={isUnmounted} />
 
                <Button children="Cancel" className="btn-lg col-12 col-sm-6 mt-2  btn-lg btn-white"
                   onClick={props.onCancel} />

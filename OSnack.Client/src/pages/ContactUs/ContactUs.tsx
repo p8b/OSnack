@@ -8,38 +8,45 @@ import { AuthContext } from 'osnack-frontend-shared/src/_core/authenticationCont
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import Container from '../../components/Container';
 import { usePostQuestionCommunication } from "osnack-frontend-shared/src/hooks/PublicHooks/useCommunicationHook";
-import {
-   useGoogleReCaptcha
-} from 'react-google-recaptcha-v3';
+import useScript from 'osnack-frontend-shared/src/hooks/function/useScript';
 
 const ContactUs = (props: IProps) => {
    const isUnmounted = useRef(false);
+   const siteKey = "6LfxNycaAAAAAP_-cZ7GUHugSEdqfWIRAiBtl3fX";
+   const captchaScript = useScript(`https://www.google.com/recaptcha/api.js?render=${siteKey}`);
    const auth = useContext(AuthContext);
    const errorAlert = useAlert(new AlertObj());
    const [contact, setContact] = useState(new Communication());
    const [message, setMessage] = useState("");
-   const [showSuccess, setShowSuccess] = useState(false);
-   const { executeRecaptcha } = useGoogleReCaptcha();
-   useEffect(() => () => { isUnmounted.current = true; }, []);
 
-   const sendMessage = () => {
-      executeRecaptcha("Contact").then((token) => {
-         errorAlert.pleaseWait(isUnmounted);
-         contact.captchaToken = token;
-         contact.messages = [{ body: message }];
-         usePostQuestionCommunication(contact)
-            .then(result => {
-               if (isUnmounted.current) return;
-               setMessage("");
-               errorAlert.setSingleSuccess("submit", result.data);
-               setShowSuccess(true);
-            }).catch(errors => {
-               if (isUnmounted.current) return;
-               errorAlert.set(errors);
-            });
-      });
+   useEffect(() => () => {
+      isUnmounted.current = true;
+      document.body.removeChild(document.getElementsByClassName("grecaptcha-badge")[0]!.parentNode!);
+   }, []);
 
-
+   const sendMessage = (loadingCallBack?: () => void) => {
+      if (captchaScript.isLoaded)
+         // @ts-ignore
+         grecaptcha.execute(siteKey, { action: 'Contact' }).then((token) => {
+            contact.captchaToken = token;
+            contact.messages = [{ body: message }];
+            errorAlert.pleaseWait(isUnmounted);
+            usePostQuestionCommunication(contact)
+               .then(result => {
+                  if (isUnmounted.current) return;
+                  setMessage("");
+                  loadingCallBack!();
+                  errorAlert.setSingleSuccess("submit", result.data);
+               }).catch(errors => {
+                  if (isUnmounted.current) return;
+                  errorAlert.set(errors);
+                  loadingCallBack!();
+               });
+         });
+      else {
+         loadingCallBack!();
+         errorAlert.setSingleSuccess("error", "Captcha is not loading.");
+      }
    };
 
    return (
@@ -50,31 +57,27 @@ const ContactUs = (props: IProps) => {
                <div className="col-12 col-md-6 pm-0 bg-white mb-3 pt-3 pb-3">
                   <Alert className="col-12 mb-2"
                      alert={errorAlert.alert}
-                     onClosed={() => { errorAlert.clear(); setShowSuccess(false); }} />
-                  {!showSuccess &&
+                     onClosed={() => errorAlert.clear()} />
+                  <div className="col-12 mt-auto mb-auto text-center">
+                     <a className="col-12 phone-icon" children=" 078 6569 0055" href="tel:07865690055" />
+                     <a className="col-12 email-icon" children=" support@osnack.co.uk" href="mailto:support@osnack.co.uk" />
+                  </div>
+                  {!auth.state.isAuthenticated &&
                      <>
-                        <div className="col-12 mt-auto mb-auto text-center">
-                           <a className="col-12 phone-icon" children=" 078 6569 0055" href="tel:07865690055" />
-                           <a className="col-12 email-icon" children=" support@osnack.co.uk" href="mailto:support@osnack.co.uk" />
-                        </div>
-                        {!auth.state.isAuthenticated &&
-                           <>
-                              < Input className="col-12" label="Name*"
-                                 value={contact.fullName} onChange={(i) => { setContact({ ...contact, fullName: i.target.value }); }}
-                              />
-                              <Input className="col-12" label="Email*"
-                                 value={contact.email} onChange={(i) => { setContact({ ...contact, email: i.target.value }); }}
-                              />
-                           </>
-                        }
-
-                        <TextArea className="col-12" label="Message*" rows={3} value={message}
-                           onChange={(i) => { setMessage(i.target.value); }} />
-                        <div className="col-12 mt-3">
-                           <Button className="w-100 btn-lg btn-green" children="Send" onClick={sendMessage} />
-                        </div>
+                        < Input className="col-12" label="Name*"
+                           value={contact.fullName} onChange={(i) => { setContact({ ...contact, fullName: i.target.value }); }}
+                        />
+                        <Input className="col-12" label="Email*"
+                           value={contact.email} onChange={(i) => { setContact({ ...contact, email: i.target.value }); }}
+                        />
                      </>
                   }
+
+                  <TextArea className="col-12" label="Message*" rows={3} value={message}
+                     onChange={(i) => { setMessage(i.target.value); }} />
+                  <div className="col-12 mt-3">
+                     <Button className="w-100 btn-lg btn-green" children="Send" onClick={sendMessage} enableLoading={isUnmounted} />
+                  </div>
                </div>
                <div className="col-12 col-md-6 text-center pm-0 mt-2 mb-3 pt-3 pb-3">
                   <div className="col-12 pm-0 pos-sticky">

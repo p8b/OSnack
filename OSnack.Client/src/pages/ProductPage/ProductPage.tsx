@@ -76,7 +76,7 @@ const ProductPage = (props: IProps) => {
                   </nav>
                   <div className="row ">
                      <div className="col-12 col-sm-4 pb-4 p-sm-4 justify-text-center">
-                        <img className="shop-card-img" src={`${API_URL}/${product.imagePath}`} alt={name} />
+                        <img className="shop-card-img" src={`${API_URL}/${product.imagePath}`} alt={product.name} />
                         {product.score != -1 &&
                            <StarRating className="col-auto pm-0 ml-auto" rate={product.score} readonly />
                         }

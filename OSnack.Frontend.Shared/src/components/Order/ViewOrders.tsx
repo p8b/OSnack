@@ -20,7 +20,7 @@ const ViewOrders = (props: IProps) => {
    const isUnmounted = useRef(false);
    const history = useHistory();
    const errorAlert = useAlert(new AlertObj());
-   const tbl = useTableData("Date", true);
+   const tbl = useTableData("Date", false);
    const [selectUserId, setSelectUserId] = useState(Number(extractUri(window.location.pathname)[1]));
    const [searchValue, setSearchValue] = useState("");
    const [selectedDispute, setSelectedDispute] = useState(new Communication());
@@ -169,23 +169,7 @@ const ViewOrders = (props: IProps) => {
 
       tbl.setData(tData);
    };
-   const UpdateOrder = (order: Order) => {
-      setIsOpenOrderModal(false);
 
-      switch (props.access) {
-         case ClientAppAccess.Official:
-            break;
-         case ClientAppAccess.Secret:
-            props.usePutOrderStatusOrder!(order != undefined ? order : selectOrder).then(() => {
-               errorAlert.clear();
-               errorAlert.setSingleSuccess("updated", "Order Updated.");
-               onSearch();
-            }).catch(onGetUserOrderFailed);
-            break;
-         default:
-            break;
-      };
-   };
 
    return (
       <>
@@ -248,8 +232,9 @@ const ViewOrders = (props: IProps) => {
          <OrderModal isOpen={isOpenOrderModal}
             order={selectOrder}
             access={props.access}
-            onClose={() => { setIsOpenOrderModal(false); onSearch(); }}
-            onSave={UpdateOrder}
+            onClose={() => { setIsOpenOrderModal(false); }}
+            onSuccess={() => { setIsOpenOrderModal(false); onSearch(); }}
+            usePutOrderStatusOrder={props.usePutOrderStatusOrder}
             onDispute={props.onDispute}
             usePutSecretCommunication={props.usePutSecretCommunication} />
          <CommunicationModal isOpen={isOpenDisputeModal}

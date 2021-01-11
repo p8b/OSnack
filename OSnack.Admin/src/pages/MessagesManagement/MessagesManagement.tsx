@@ -25,10 +25,11 @@ const MessagesManagement = (props: IProps) => {
    const [searchValue, setSearchValue] = useState("");
    const [selectCommunication, setSelectCommunication] = useState(new Communication());
    const [isOpenMessageModal, setIsOpenMessageModal] = useState(false);
+   const [selectedStatusFilter, setSelectedStatusFilter] = useState("True");
 
    useEffect(() => {
       onSearch(...checkUri(window.location.pathname,
-         [tbl.selectedPage, tbl.maxItemsPerPage, tbl.isSortAsc, tbl.sortName, GetAllRecords]));
+         [tbl.selectedPage, tbl.maxItemsPerPage, selectedStatusFilter, tbl.isSortAsc, tbl.sortName, GetAllRecords]));
       return () => { isUnmounted.current = true; };
    }, []);
 
@@ -37,6 +38,7 @@ const MessagesManagement = (props: IProps) => {
    const onSearch = (
       selectedPage = tbl.selectedPage,
       maxItemsPerPage = tbl.maxItemsPerPage,
+      statusFilter = selectedStatusFilter,
       isSortAsc = tbl.isSortAsc,
       sortName = tbl.sortName,
       searchString = GetAllRecords
@@ -61,13 +63,19 @@ const MessagesManagement = (props: IProps) => {
 
       if (maxItemsPerPage != tbl.maxItemsPerPage)
          tbl.setMaxItemsPerPage(maxItemsPerPage);
+      if (Number(statusFilter) == -1) statusFilter = GetAllRecords;
+      if (statusFilter != selectedStatusFilter) setSelectedStatusFilter(statusFilter);
 
       history.push(generateUri(window.location.pathname,
          [selectedPage || tbl.selectedPage,
-            maxItemsPerPage, Number(isSortAsc), sortName, searchString != GetAllRecords ? searchString : ""]));
+            maxItemsPerPage,
+         statusFilter == GetAllRecords ? -1 : statusFilter,
+         Number(isSortAsc),
+            sortName,
+         searchString != GetAllRecords ? searchString : ""]));
 
       errorAlert.pleaseWait(isUnmounted);
-      useSearchCommunication(selectedPage, maxItemsPerPage, searchString, isSortAsc, sortName).then(result => {
+      useSearchCommunication(selectedPage, maxItemsPerPage, searchString, statusFilter, isSortAsc, sortName).then(result => {
          if (isUnmounted.current) return;
          tbl.setTotalItemCount(result.data.totalCount || 0);
          errorAlert.clear();
@@ -106,6 +114,16 @@ const MessagesManagement = (props: IProps) => {
       tbl.setData(tData);
    };
 
+   const getStatusDisplayValue = () => {
+      switch (selectedStatusFilter) {
+         case "True":
+            return "Open";
+         case "False":
+            return "Close";
+      }
+      return "All";
+   };
+
    return (
       <Container className="container-fluid ">
          <PageHeader title="Contact Us Message" className="hr-section-sm line-limit-1" />
@@ -117,20 +135,21 @@ const MessagesManagement = (props: IProps) => {
                onSearch={() => { onSearch(1); }}
             />
 
-            <DropDown title={`Status Type: ${"All"}`}
-               className="col-12 col-md-3 pm-0 "
-               titleClassName="btn btn-white filter-icon">
+            <DropDown title={`Status: ${getStatusDisplayValue()}`}
+               className="col-12 col-md-3 pm-0"
+               titleClassName="btn btn-white filter-icon ml-sm-1">
                <button className="dropdown-item"
-                  onClick={() => { /*onSearch(1, undefined); */ }} >
+                  onClick={() => { onSearch(1, undefined, GetAllRecords); }} >
                   All
                   </button>
-               {/***** {OrderStatusTypeList.filter(o => availableStatusTypeList.includes(o.Value))?.map(statusType =>
-                  <button className="dropdown-item" key={statusType.Id}
-                     onClick={() => { onSearch(1, undefined, statusType.Id?.toString()); }} >
-                     {statusType.Name}
-                  </button> 
-               )}
-                  ****/}
+               <button className="dropdown-item"
+                  onClick={() => { onSearch(1, undefined, "True"); }} >
+                  Open
+                  </button>
+               <button className="dropdown-item"
+                  onClick={() => { onSearch(1, undefined, "False"); }} >
+                  Close
+                  </button>
             </DropDown>
             <Alert alert={errorAlert.alert}
                className="col-12 mb-2"
@@ -141,7 +160,7 @@ const MessagesManagement = (props: IProps) => {
                   <Table className="col-12 text-center table-striped"
                      defaultSortName={tbl.sortName}
                      data={tbl.data}
-                     onSortChange={(selectedPage, isSortAsce, sortName) => onSearch(selectedPage, undefined, isSortAsce, sortName)}
+                     onSortChange={(selectedPage, isSortAsce, sortName) => onSearch(selectedPage, undefined, undefined, isSortAsce, sortName)}
                      view={TableView.CardView}
                      listCount={tbl.totalItemCount}
                   />

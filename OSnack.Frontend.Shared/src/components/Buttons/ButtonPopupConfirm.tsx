@@ -1,7 +1,10 @@
 ﻿
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDetectOutsideClick } from '../../hooks/function/useDetectOutsideClick';
+import { Button } from './Button';
 const ButtonPopupConfirm = (props: IProps) => {
+   useEffect(() => () => { isWait.current = true; }, []);
+   const isWait = useRef(false);
    const [id] = useState(Math.random());
    const [toggleDropdown] = useState(React.createRef<HTMLDivElement>());
    const [isOpenDropdown, setIsOpenDropdown] = useDetectOutsideClick([toggleDropdown], false);
@@ -9,8 +12,8 @@ const ButtonPopupConfirm = (props: IProps) => {
    return (
       <div className={`btn-group form dropup p-0 ${props.className}`} ref={toggleDropdown}>
          <div className="col p-0">
-            <button id={`${id}`} type="button" className={`btn btn-lg mt-auto col-12 m-0 ${props.btnClassName}`}
-               onClick={() => setIsOpenDropdown(prev => !prev)}
+            <Button className={`btn-lg mt-auto col-12 m-0 ${props.btnClassName}`}
+               onClick={() => { if (isWait.current) return; setIsOpenDropdown(prev => !prev); }}
                children={`${props.title}${isOpenDropdown ? "?" : ""}`}
             />
             {isOpenDropdown && (
@@ -20,15 +23,17 @@ const ButtonPopupConfirm = (props: IProps) => {
                      children={props.popupMessage}
                   />
                   <div className="dropdown-item pm-0 mt-2">
-                     <button type="button" className={"btn btn-sm btn-green col-6 radius-none-l"}
-                        onClick={() => {
-                           props.onConfirmClick!();
-                           setIsOpenDropdown(false);
+                     <Button className={"btn-sm btn-green col-6 radius-none-l"}
+                        onClick={(loadingCallBack, event) => {
+                           if (isWait.current) return;
+                           props.onConfirmClick!(loadingCallBack, event);
+                           //setIsOpenDropdown(false);
                         }}
                         children="Yes"
+                        enableLoading={isWait}
                      />
 
-                     <button type="button" className={"btn btn-sm btn-red col-6 radius-none-r"}
+                     <Button className={"btn-sm btn-red col-6 radius-none-r"}
                         onClick={() => setIsOpenDropdown(false)}
                         children="No"
                      />
@@ -46,6 +51,7 @@ declare type IProps = {
    btnClassName?: string;
    spanClassName?: string;
    popupMessage?: string;
-   onConfirmClick?(): void;
+   onConfirmClick?: (loadingCallBack?: () => void, event?: React.MouseEvent<HTMLButtonElement>) => void;
+   enableLoading?: React.MutableRefObject<boolean>;
 };
 export default ButtonPopupConfirm;

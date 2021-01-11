@@ -145,7 +145,7 @@ const DeliveryOptionManagement = (props: IProps) => {
             }
             {/***** Add/ modify category modal  ****/}
             <DeliveyOptionModal isOpen={isOpenDeliveryOptionModal}
-               onSuccess={() => { onSearch(); }}
+               onSuccess={() => { resetCategoryModal(); onSearch(); }}
                deliveryOption={selectedDeliveryOption}
                onClose={() => { resetCategoryModal(); onSearch(); }} />
          </div>

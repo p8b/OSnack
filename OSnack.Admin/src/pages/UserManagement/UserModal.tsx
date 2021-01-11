@@ -19,40 +19,46 @@ const UserModal = (props: IProps) => {
       setUser(props.user);
    }, [props.user]);
 
-   const createUser = async () => {
+   const createUser = (loadingCallBack?: () => void) => {
       errorAlert.pleaseWait(isUnmounted);
       useCreateUserUser(user).then(result => {
          if (isUnmounted.current) return;
          errorAlert.clear();
          setUser(result.data);
          props.onSuccess();
+         loadingCallBack!();
       }).catch(errors => {
          if (isUnmounted.current) return;
          errorAlert.set(errors);
+         loadingCallBack!();
       });
    };
-   const updateUser = async () => {
+   const updateUser = (loadingCallBack?: () => void) => {
       errorAlert.pleaseWait(isUnmounted);
       useUpdateUserUser(user).then(result => {
          if (isUnmounted.current) return;
          errorAlert.clear();
          setUser(result.data);
          props.onSuccess();
+         loadingCallBack!();
       }).catch(errors => {
          if (isUnmounted.current) return;
          errorAlert.set(errors);
+         loadingCallBack!();
       });
    };
-   const deleteUser = async () => {
+   const deleteUser = (loadingCallBack?: () => void) => {
       errorAlert.pleaseWait(isUnmounted);
       useDeleteUser(user.id!).then(() => {
          if (isUnmounted.current) return;
          errorAlert.setSingleSuccess("", "confirm");
          setUser(user);
          props.onSuccess();
+         loadingCallBack!();
       }).catch(errors => {
          if (isUnmounted.current) return;
          errorAlert.set(errors);
+         loadingCallBack!();
       });
    };
 
@@ -118,6 +124,9 @@ const UserModal = (props: IProps) => {
             onCreate={user.id != 0 ? undefined : createUser}
             onUpdate={user.id === 0 ? undefined : updateUser}
             onDelete={user.id === 0 ? undefined : deleteUser}
+            enableLoadingCreate={isUnmounted}
+            enableLoadingUpdate={isUnmounted}
+            enableLoadingDelete={isUnmounted}
             onCancel={() => { errorAlert.clear(); props.onClose(); }} />
       </Modal >
    );

@@ -21,7 +21,7 @@ const DeliveyOptionModal = (props: IProps) => {
       setDeliveyOption(props.deliveryOption);
    }, [props.deliveryOption]);
 
-   const createDeliveryOption = async () => {
+   const createDeliveryOption = (loadingCallBack?: () => void) => {
       errorAlert.pleaseWait(isUnmounted);
       usePostDeliveryOption(deliveryOption).then(result => {
          if (isUnmounted.current) return;
@@ -29,12 +29,14 @@ const DeliveyOptionModal = (props: IProps) => {
          props.onSuccess();
          errorAlert.clear();
          errorAlert.setSingleSuccess("", "Delivery Option Created.");
+         loadingCallBack!();
       }).catch(errors => {
          if (isUnmounted.current) return;
          errorAlert.set(errors);
+         loadingCallBack!();
       });
    };
-   const updateDeliveryOption = async () => {
+   const updateDeliveryOption = (loadingCallBack?: () => void) => {
 
       errorAlert.pleaseWait(isUnmounted);
       usePutDeliveryOption(deliveryOption).then(result => {
@@ -43,24 +45,27 @@ const DeliveyOptionModal = (props: IProps) => {
          props.onSuccess();
          errorAlert.clear();
          errorAlert.setSingleSuccess("", "Delivery Option Updated.");
+         loadingCallBack!();
       }).catch(errors => {
          if (isUnmounted.current) return;
          errorAlert.set(errors);
+         loadingCallBack!();
       });
 
    };
 
-   const deleteDeliveryOption = async () => {
+   const deleteDeliveryOption = (loadingCallBack?: () => void) => {
       errorAlert.pleaseWait(isUnmounted);
       useDeleteDeliveryOption(deliveryOption.id!).then(() => {
          if (isUnmounted.current) return;
          errorAlert.clear();
          props.onClose();
+         loadingCallBack!();
       }).catch(errors => {
          if (isUnmounted.current) return;
          errorAlert.set(errors);
+         loadingCallBack!();
       });
-
    };
    return (
       <Modal className="col-12 col-sm-11 col-md-9 col-lg-6"
@@ -106,6 +111,9 @@ const DeliveyOptionModal = (props: IProps) => {
             onCreate={deliveryOption.id != 0 ? undefined : createDeliveryOption}
             onUpdate={deliveryOption.id === 0 ? undefined : updateDeliveryOption}
             onDelete={(deliveryOption.id === 0 || deliveryOption.isPremitive) ? undefined : deleteDeliveryOption}
+            enableLoadingCreate={isUnmounted}
+            enableLoadingUpdate={isUnmounted}
+            enableLoadingDelete={isUnmounted}
             onCancel={() => { errorAlert.clear(); props.onClose(); }} />
 
       </Modal >

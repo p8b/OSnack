@@ -172,16 +172,18 @@ const Checkout = (props: IProps) => {
       });
    };
 
-   const checkout = () => {
+   const checkout = (loadingCallBack?: () => void) => {
       errorAlert.clear();
       errorAlert.pleaseWait(isUnmounted);
       useVerifyOrderOrder(order).then(result => {
          if (isUnmounted.current) return;
          setPaypalOrder(result.data);
          setIsOpenPayementModal(true);
+         loadingCallBack!();
          errorAlert.clear();
       }).catch(errors => {
          if (isUnmounted.current) return;
+         loadingCallBack!();
          errorAlert.set(errors);
       });
    };
@@ -262,7 +264,7 @@ const Checkout = (props: IProps) => {
                         <Button className="col-2 col-md-1 btn-sm edit-icon  mb-auto ml-auto"
                            onClick={() => { setIsOpenAddressModal(true); }} />
                      }
-                     <Button className="col-12 btn-lg btn-green mb-4 mt-4" children="Checkout" onClick={checkout} />
+                     <Button className="col-12 btn-lg btn-green mb-4 mt-4" children="Checkout" onClick={checkout} enableLoading={isUnmounted} />
                   </div>
                </>
             }

@@ -29,13 +29,16 @@ namespace OSnack.API.Controllers
           int selectedPage,
           int maxNumberPerItemsPage,
           string searchValue = "",
+          string filterStatus = CoreConst.GetAllRecords,
           bool isSortAsce = false,
           string sortName = "Date")
       {
          try
          {
+            _ = bool.TryParse(filterStatus, out bool boolFilterStatus);
+
             int totalCount = await _DbContext.Communications
-               .Where(c => c.Type == ContactType.Question)
+               .Where(c => c.Type == ContactType.Question && (filterStatus.Equals(CoreConst.GetAllRecords) || c.Status == boolFilterStatus))
                 .CountAsync(c => searchValue.Equals(CoreConst.GetAllRecords) || c.Id.Contains(searchValue)
                                                                                      || c.FullName.Contains(searchValue)
                                                                                      || c.Email.Contains(searchValue))
@@ -43,7 +46,7 @@ namespace OSnack.API.Controllers
 
             List<Communication> list = await _DbContext.Communications.Include(c => c.Order).ThenInclude(o => o.User)
                .Include(c => c.Messages)
-               .Where(c => c.Type == ContactType.Question)
+               .Where(c => c.Type == ContactType.Question && (filterStatus.Equals(CoreConst.GetAllRecords) || c.Status == boolFilterStatus))
                 .Where(c => searchValue.Equals(CoreConst.GetAllRecords) || c.Id.Contains(searchValue)
                                                                                      || c.FullName.Contains(searchValue)
                                                                                      || c.Email.Contains(searchValue))

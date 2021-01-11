@@ -29,7 +29,10 @@ export const ReviewModal = (props: IProps) => {
             if (isUnmounted.current) return;
             setCommment(result.data);
             errorAlert.clear();
-         }).catch(errors => { if (isUnmounted.current) return; errorAlert.set(errors); });
+         }).catch(errors => {
+            if (isUnmounted.current) return;
+            errorAlert.set(errors);
+         });
       }
       else {
          setCommment({ ...comment, rate: rate });
@@ -46,7 +49,10 @@ export const ReviewModal = (props: IProps) => {
          setCommment(result.data);
          errorAlert.clear();
          props.onClose();
-      }).catch(errors => { if (isUnmounted.current) return; errorAlert.set(errors); });
+      }).catch(errors => {
+         if (isUnmounted.current) return;
+         errorAlert.set(errors);
+      });
 
    };
 

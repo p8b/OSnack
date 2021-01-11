@@ -69,7 +69,7 @@ const EmailTemplatesEdit = (props: IProps) => {
       loadDesgin();
    }, [template]);
 
-   const saveTemplate = () => {
+   const saveTemplate = (loadingCallBack?: () => void) => {
       if (!isEditorLoaded) return;
       errorAlert.pleaseWait(isUnmounted);
 
@@ -83,16 +83,20 @@ const EmailTemplatesEdit = (props: IProps) => {
          if (template.id == 0)
             await usePostTemplateEmail(template).then((result) => {
                resultTemplate = result.data;
+               loadingCallBack!();
             }).catch((errors) => {
                errorAlert.set(errors);
                setIsOpenDetailsModal(true);
+               loadingCallBack!();
             });
          else if (template.id != null)
             await usePutTemplateEmail(template).then((result) => {
                resultTemplate = result.data;
+               loadingCallBack!();
             }).catch((errors) => {
                errorAlert.set(errors);
                setIsOpenDetailsModal(true);
+               loadingCallBack!();
             });
 
          if (resultTemplate != undefined) {
@@ -170,11 +174,16 @@ const EmailTemplatesEdit = (props: IProps) => {
       <>
          <PageHeader title={`${template.id == 0 ? "New Template" : "Edit " + EmailTemplateTypesList.find(e => e.Value == template.templateType)?.Name}`} className="line-header line-limit-1" />
          <div className="row col-12 mb-2" >
-            <Button onClick={() => history.push("/EmailTemplate")} children="Back" className="mr-auto btn-lg back-icon" />
+            <Button onClick={() => history.push("/EmailTemplate")}
+               children="Back" className="mr-auto btn-lg back-icon" />
             {renderInsertDefaultTemplateButton()}
-            <Button onClick={() => { setIsOpenDetailsModal(true); }} children="Details" className="btn-lg btn-white edit-icon" />
+            <Button onClick={() => { setIsOpenDetailsModal(true); }}
+               children="Details" className="btn-lg btn-white edit-icon" />
             {renderDeleteButton()}
-            <Button onClick={saveTemplate} children={`Save${isSaved ? "d" : ""}`} className={`btn-lg btn-green ${isSaved ? "tick-icon" : "save-icon"}`} />
+            <Button onClick={saveTemplate}
+               enableLoading={isUnmounted}
+               children={`Save${isSaved ? "d" : ""}`}
+               className={`btn-lg btn-green ${isSaved ? "tick-icon" : "save-icon"}`} />
          </div>
          <div className="row pm-0 pl-3 pr-3">
             {template.requiredClasses != undefined && template.requiredClasses!.length > 0 &&

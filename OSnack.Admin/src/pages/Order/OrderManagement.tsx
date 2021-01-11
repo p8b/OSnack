@@ -129,18 +129,6 @@ const OrderManagement = (props: IProps) => {
       }
       return `${order.user.firstName} ${order.user.surname}`;
    };
-   const UpdateOrder = (order: Order) => {
-      setIsOpenOrderModal(false);
-      usePutOrderStatusOrder!(order != undefined ? order : selectOrder).then(() => {
-         errorAlert.clear();
-         errorAlert.setSingleSuccess("updated", "Order Updated.");
-         onSearch();
-      }).catch(errors => {
-         if (isUnmounted.current) return;
-         errorAlert.set(errors);
-      });
-
-   };
 
    return (
       <Container className="container-fluid ">
@@ -194,7 +182,8 @@ const OrderManagement = (props: IProps) => {
                order={selectOrder}
                access={Access}
                onClose={() => setIsOpenOrderModal(false)}
-               onSave={UpdateOrder}
+               onSuccess={() => { setIsOpenOrderModal(false); onSearch(); }}
+               usePutOrderStatusOrder={usePutOrderStatusOrder}
                usePutSecretCommunication={usePutSecretCommunication} />
             <CommunicationModal isOpen={isOpenDisputeModal}
                communication={selectedDispute}

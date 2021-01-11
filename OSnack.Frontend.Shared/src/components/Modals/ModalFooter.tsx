@@ -7,14 +7,16 @@ const ModalFooter = (props: IProps) => {
          { props.onCreate &&
             <Button children={props.createText || "Create"}
                className={`col-12 col-md mt-2 btn-green btn-lg ${props.classNameCreate}`}
-               onClick={props.onCreate} />
+               onClick={props.onCreate}
+               enableLoading={props.enableLoadingCreate} />
          }
          { props.onUpdate &&
-            <ButtonPopupConfirm title={props.upatedText || "Update"}
-               popupMessage={props.deleteConfirmText || "Are you sure?"}
+            <ButtonPopupConfirm title={props.updateText || "Update"}
+               popupMessage={props.updateConfirmText || "Are you sure?"}
                className={`col-12 col-md mt-2 ${props.classNameUpdate}`}
                btnClassName="btn-green"
                onConfirmClick={props.onUpdate}
+               enableLoading={props.enableLoadingUpdate}
             />
          }
          { props.onDelete &&
@@ -23,6 +25,7 @@ const ModalFooter = (props: IProps) => {
                className={`col-12 col-md mt-2 ${props.deleteConfirmText}`}
                btnClassName="btn-red"
                onConfirmClick={props.onDelete}
+               enableLoading={props.enableLoadingDelete}
             />
          }
          { props.onCancel &&
@@ -36,18 +39,21 @@ const ModalFooter = (props: IProps) => {
 
 interface IProps {
    createText?: string;
-   upatedText?: string;
+   updateText?: string;
    deleteText?: string;
    cancelText?: string;
    classNameCreate?: string;
    classNameUpdate?: string;
    classNameDelete?: string;
+   enableLoadingCreate?: React.MutableRefObject<boolean>;
+   enableLoadingUpdate?: React.MutableRefObject<boolean>;
+   enableLoadingDelete?: React.MutableRefObject<boolean>;
    classNameCancel?: string;
    updateConfirmText?: string;
    deleteConfirmText?: string;
-   onCreate?: () => void;
-   onUpdate?: () => void;
-   onDelete?: () => void;
-   onCancel?: () => void;
+   onCreate?: (loadingCallBack?: () => void, event?: React.MouseEvent<HTMLButtonElement>) => void;
+   onUpdate?: (loadingCallBack?: () => void, event?: React.MouseEvent<HTMLButtonElement>) => void;
+   onDelete?: (loadingCallBack?: () => void, event?: React.MouseEvent<HTMLButtonElement>) => void;
+   onCancel?: (loadingCallBack?: () => void, event?: React.MouseEvent<HTMLButtonElement>) => void;
 }
 export default ModalFooter;

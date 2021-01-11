@@ -147,7 +147,7 @@ namespace OSnack.API.Controllers
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
 
             //   await _EmailService.EmailConfirmationAsync(orderData).ConfigureAwait(false);
-            return Created("", $"Your message submitted.Contact Referense : {newContact.Id }");
+            return Created("", $"Thank you for contacting us. We will contact you as soon as possible. ");
          }
          catch (Exception ex)
          {

@@ -1,10 +1,10 @@
 ﻿import React, { useState } from 'react';
 import Modal from '../../components/Modals/Modal';
-import { Button } from '../../components/Buttons/Button';
 import { TextArea } from '../../components/Inputs/TextArea';
 import { Input } from '../../components/Inputs/Input';
 import Alert, { AlertObj, useAlert } from '../../components/Texts/Alert';
 import { OrderStatusType } from '../../_core/apiModels';
+import ModalFooter from './ModalFooter';
 
 
 
@@ -63,13 +63,13 @@ const OrderMessageModal = (props: IProps) => {
                }
 
                {/***** buttons ****/}
-               < div className="row col-12 pm-0 pos-b-sticky bg-white pb-3">
-                  <Button children="Save"
-                     className={`col-12 col-md-6 mt-2 btn-green btn-lg col-sm-6"}`}
-                     onClick={onSave} />
-                  <Button children="Cancel"
-                     className={`col-12 col-md-6 mt-2 btn-white btn-lg col-sm-6"}`}
-                     onClick={() => { props.onClose(); }} />
+               <div className="row col-12 pm-0 pos-b-sticky bg-white pb-3">
+                  <ModalFooter
+                     createText="Save"
+                     onCreate={onSave}
+                     onCancel={() => { errorAlert.clear(); props.onClose(); }}
+                  />
+
                </div>
             </div >
          </>

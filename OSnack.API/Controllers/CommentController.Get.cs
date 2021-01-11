@@ -31,7 +31,8 @@ namespace OSnack.API.Controllers
       {
          try
          {
-            int totalCount = await _DbContext.Comments.CountAsync()
+            int totalCount = await _DbContext.Comments
+               .CountAsync(c => c.Product.Id == productId)
                 .ConfigureAwait(false);
 
 

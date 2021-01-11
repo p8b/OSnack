@@ -55,7 +55,7 @@ const ProductModal = (props: IProps) => {
          setNutritionalInfoModalIsOpen(false);
    }, [props.isOpen]);
 
-   const createProduct = async () => {
+   const createProduct = (loadingCallBack?: () => void) => {
       console.log(product);
       errorAlert.pleaseWait(isUnmounted);
       usePostProduct(product).then(result => {
@@ -64,13 +64,14 @@ const ProductModal = (props: IProps) => {
          resetImageUpload();
          props.onSuccess();
          errorAlert.clear();
+         loadingCallBack!();
       }).catch(errors => {
          if (isUnmounted.current) return;
-
          errorAlert.set(errors);
+         loadingCallBack!();
       });
    };
-   const updateProduct = async () => {
+   const updateProduct = (loadingCallBack?: () => void) => {
 
       let prod = product;
       if (!isNewImageSet) {
@@ -85,23 +86,27 @@ const ProductModal = (props: IProps) => {
          resetImageUpload();
          props.onSuccess();
          errorAlert.clear();
+         loadingCallBack!();
       }).catch(errors => {
          if (isUnmounted.current) return;
          errorAlert.set(errors);
+         loadingCallBack!();
       });
 
    };
 
-   const deleteProduct = async () => {
+   const deleteProduct = (loadingCallBack?: () => void) => {
       errorAlert.pleaseWait(isUnmounted);
       useDeleteProduct(product.id!).then(() => {
          if (isUnmounted.current) return;
          resetImageUpload();
          errorAlert.clear();
          props.onSuccess();
+         loadingCallBack!();
       }).catch(errors => {
          if (isUnmounted.current) return;
          errorAlert.set(errors);
+         loadingCallBack!();
       });
 
    };
@@ -249,6 +254,9 @@ const ProductModal = (props: IProps) => {
             onCreate={product.id != 0 ? undefined : createProduct}
             onUpdate={product.id === 0 ? undefined : updateProduct}
             onDelete={product.id === 0 ? undefined : deleteProduct}
+            enableLoadingCreate={isUnmounted}
+            enableLoadingUpdate={isUnmounted}
+            enableLoadingDelete={isUnmounted}
             onCancel={() => { errorAlert.clear(); resetImageUpload(); props.onClose(); }} />
       </Modal >
    );
