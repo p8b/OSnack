@@ -26,13 +26,13 @@ namespace OSnack.API.Database.Models
       [Column(TypeName = "decimal(7,2)")]
       [Required(ErrorMessage = "Price Is Required \n")]
       [PositiveDecimalIncludingZero(ErrorMessage = "Price should not be negative. \n")]
-      public decimal Price { get; set; }
+      public decimal? Price { get; set; }
 
 
       [Column(TypeName = "decimal(7,2)")]
       [Required(ErrorMessage = "Minimum Order Total Is Required \n")]
       [PositiveDecimalIncludingZero(ErrorMessage = "Minimum Order Total should not be negative. \n")]
-      public decimal MinimumOrderTotal { get; set; }
+      public decimal? MinimumOrderTotal { get; set; }
 
       public bool IsPremitive { get; set; } = false;
 

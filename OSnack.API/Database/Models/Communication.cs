@@ -35,6 +35,8 @@ namespace OSnack.API.Database.Models
       [Required(ErrorMessage = "Email is Required \n")]
       [RegularExpression(@"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$",
        ErrorMessage = "Invalid Email \n")]
+      [Column(TypeName = "nvarchar(256)")]
+      [StringLength(256, ErrorMessage = "Email Must be less than 256 Characters \n")]
       public string Email { get; set; }
 
 

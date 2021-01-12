@@ -44,7 +44,7 @@ namespace OSnack.API.Database.Models
       [Column(TypeName = "decimal(5,2)")]
       [Range(0, 999, ErrorMessage = "carbohydrateSugar Must be less than 999")]
       [PositiveDecimalIncludingZero(ErrorMessage = "Must be positive number \n", AllowNull = true)]
-      public decimal? carbohydrateSugar { get; set; }
+      public decimal? CarbohydrateSugar { get; set; }
 
       [Column(TypeName = "decimal(5,2)")]
       [Range(0, 999, ErrorMessage = "Fibre Must be less than 999")]

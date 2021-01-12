@@ -1,25 +1,22 @@
-﻿import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Communication, ContactType, Message, Order, OrderStatusType } from '../../_core/apiModels';
-import Modal from '../../components/Modals/Modal';
-import OrderDetails from '../../components/Order/OrderDetails';
-import PageHeader from '../../components/Texts/PageHeader';
-import { ClientAppAccess } from '../../_core/constant.Variables';
+﻿import React, { useEffect, useRef, useState } from 'react';
+import { Communication, Order, OrderStatusType } from 'osnack-frontend-shared/src/_core/apiModels';
+import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
+import OrderDetails from 'osnack-frontend-shared/src/components/Order/OrderDetails';
+import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import OrderMessageModal from './OrderMessageModal';
-import { AuthContext } from '../../_core/authenticationContext';
-import AddDisputeModal from './AddDisputeModal';
-import CommunicationModal from './CommunicationModal';
-import { IReturnUsePutOfficialCommunication } from '../../hooks/OfficialHooks/useCommunicationHook';
-import ModalFooter from './ModalFooter';
-import Alert, { AlertObj, useAlert } from '../Texts/Alert';
+import CommunicationModal from 'osnack-frontend-shared/src/components/Modals/CommunicationModal';
+import ModalFooter from 'osnack-frontend-shared/src/components/Modals/ModalFooter';
+import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import { usePutOrderStatusOrder } from '../../SecretHooks/useOrderHook';
+import { usePutSecretCommunication } from '../../SecretHooks/useCommunicationHook';
+import { Access } from '../../_core/appConstant.Variables';
 
 const OrderModal = (props: IProps) => {
-   const auth = useContext(AuthContext);
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
    const [selectedOrder, setSelectedOrder] = useState(new Order());
    const [isOpenMessageModal, setIsOpenMessageModal] = useState(false);
    const [isOpenDisputeModal, setIsOpenDisputeModal] = useState(false);
-   const [isOpenAddDisputeModal, setIsOpenAddDisputeModal] = useState(false);
 
    const [openMessageModalType, setOpenMessageModalType] = useState(OrderStatusType.InProgress);
    const [selectedDispute, setSelectedDispute] = useState(new Communication());
@@ -31,8 +28,6 @@ const OrderModal = (props: IProps) => {
    }, [props.order]);
 
    const getAvailabeType = () => {
-      if (props.access == ClientAppAccess.Official)
-         return [];
       switch (props.order.status) {
 
          case OrderStatusType.InProgress:
@@ -62,15 +57,8 @@ const OrderModal = (props: IProps) => {
          case OrderStatusType.Canceled:
          case OrderStatusType.PartialyRefunded:
          case OrderStatusType.FullyRefunded:
-            if (selectedOrder.dispute == undefined)
-               selectedOrder.dispute = {
-                  type: ContactType.Dispute,
-                  email: auth.state.user.email,
-                  status: false, messages: [{ body: message }]
-               };
-            else
-               selectedOrder.dispute.messages?.push({ body: message, isCustomer: false });
-            selectedOrder.refundValue = refundValue;
+            selectedOrder.payment.message = message;
+            selectedOrder.payment.refundAmount = refundValue;
             setSelectedOrder(selectedOrder);
             break;
          case OrderStatusType.Confirmed:
@@ -96,26 +84,17 @@ const OrderModal = (props: IProps) => {
    const saveChange = (loadingCallBack?: () => void) => {
       if (selectedOrder.status == props.order.status)
          props.onClose();
-      else {
-         switch (props.access) {
-            case ClientAppAccess.Official:
-               break;
-            case ClientAppAccess.Secret:
-               props.usePutOrderStatusOrder!(selectedOrder).then(() => {
-                  if (isUnmounted.current) return;
-                  errorAlert.clear();
-                  props.onSuccess();
-                  loadingCallBack!();
-               }).catch((errors) => {
-                  if (isUnmounted.current) return;
-                  errorAlert.set(errors);
-                  loadingCallBack!();
-               });
-               break;
-            default:
-               break;
-         };
-      }
+      else
+         usePutOrderStatusOrder!(selectedOrder).then(() => {
+            if (isUnmounted.current) return;
+            errorAlert.clear();
+            props.onSuccess();
+            loadingCallBack!();
+         }).catch((errors) => {
+            if (isUnmounted.current) return;
+            errorAlert.set(errors);
+            loadingCallBack!();
+         });
    };
 
    return (
@@ -123,9 +102,9 @@ const OrderModal = (props: IProps) => {
          bodyRef={props.modalRef}
          isOpen={props.isOpen}>
          <PageHeader title="Order Details" />
-         <OrderDetails order={selectedOrder} access={props.access}
+         <OrderDetails order={selectedOrder} access={Access}
             availabeType={getAvailabeType()}
-            statusChanged={statusChange} onDispute={() => { setIsOpenAddDisputeModal(true); }}
+            statusChanged={statusChange}
             showDispute={dispute => { setSelectedDispute(dispute); setIsOpenDisputeModal(true); }} />
 
          <Alert alert={errorAlert.alert}
@@ -134,8 +113,8 @@ const OrderModal = (props: IProps) => {
          />
          <ModalFooter
             updateText="Save"
-            cancelText={`${(props.access == ClientAppAccess.Official || getAvailabeType().length == 0) ? "Close" : "Cancel"}`}
-            onUpdate={(props.access == ClientAppAccess.Secret && getAvailabeType().length > 0) ? saveChange : undefined}
+            cancelText={`${getAvailabeType().length == 0 ? "Close" : "Cancel"}`}
+            onUpdate={getAvailabeType().length > 0 ? saveChange : undefined}
             enableLoadingUpdate={isUnmounted}
             onCancel={() => { props.onClose(); setSelectedOrder(props.order); }}
          />
@@ -146,16 +125,12 @@ const OrderModal = (props: IProps) => {
             totalPrice={selectedOrder.totalPrice}
             type={openMessageModalType}
          />
-         <AddDisputeModal isOpen={isOpenAddDisputeModal}
-            order={selectedOrder}
-            onClose={(dispute) => { setIsOpenAddDisputeModal(false); setSelectedOrder({ ...selectedOrder, dispute: dispute }); }}
-         />
 
          <CommunicationModal isOpen={isOpenDisputeModal}
             communication={selectedDispute}
-            access={props.access}
+            access={Access}
             onClose={() => { setIsOpenDisputeModal(false); }}
-            usePutSecretCommunication={props.usePutSecretCommunication}
+            usePutSecretCommunication={usePutSecretCommunication}
          />
       </Modal >
    );
@@ -166,10 +141,7 @@ declare type IProps = {
    isOpen: boolean;
    onClose: () => void;
    modalRef?: any;
-   access: ClientAppAccess;
    onSuccess: () => void;
    onDispute?: (order: Order) => void;
-   usePutSecretCommunication?: (message: Message, communicationId: string | null, status: boolean) => Promise<IReturnUsePutOfficialCommunication>;
-   usePutOrderStatusOrder?: (modifiedOrder: Order) => Promise<{ data: Order, status?: number; }>;
 };
 export default OrderModal;

@@ -1,23 +1,23 @@
-﻿import Table, { TableData, useTableData } from 'osnack-frontend-shared/src/components/Table/Table';
-import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRowButtons';
-import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
+﻿import React, { useEffect, useRef, useState } from 'react';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Communication, Order, OrderStatusType, OrderStatusTypeList, PaymentTypeList } from 'osnack-frontend-shared/src/_core/apiModels';
-import { checkUri, generateUri, getBadgeByOrderStatusType } from 'osnack-frontend-shared/src/_core/appFunc';
 import { GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
-import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import Container from '../../components/Container';
-import { IReturnUseAllOfficialOrder, useAllOfficialOrder } from 'osnack-frontend-shared/src/hooks/OfficialHooks/useOrderHook';
+import { checkUri, generateUri, getBadgeByOrderStatusType } from 'osnack-frontend-shared/src/_core/appFunc';
+import Table, { TableData, TableView, useTableData } from 'osnack-frontend-shared/src/components/Table/Table';
+import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRowButtons';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
-import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
-import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
-import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
-import OrderModal from './OrderModal';
+import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
+import OrderModal from '../../pages/Order/OrderModal';
 import CommunicationModal from 'osnack-frontend-shared/src/components/Modals/CommunicationModal';
+import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
+import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
+import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
+import { usePutSecretCommunication } from '../../SecretHooks/useCommunicationHook';
+import { useAllOrder, useAllUserOrder } from '../../SecretHooks/useOrderHook';
 import { Access } from '../../_core/appConstant.Variables';
 
-const MyOrders = (props: IProps) => {
+const ViewOrders = (props: IProps) => {
    const isUnmounted = useRef(false);
    const history = useHistory();
    const errorAlert = useAlert(new AlertObj());
@@ -28,11 +28,13 @@ const MyOrders = (props: IProps) => {
    const [selectOrder, setSelectOrder] = useState(new Order());
    const [selectType, setSelectType] = useState(GetAllRecords);
    const [isOpenOrderModal, setIsOpenOrderModal] = useState(false);
-   const [availableStatusTypeList, setavailableStatusTypeList] = useState<OrderStatusType[]>([]);
+   const [fullName, setFullName] = useState("");
+   const [availableStatusTypeList, setAvailableStatusTypeList] = useState<OrderStatusType[]>([]);
 
    useEffect(() => {
       onSearch(...checkUri(window.location.pathname,
          [tbl.selectedPage, tbl.maxItemsPerPage, selectType, tbl.isSortAsc, tbl.sortName, GetAllRecords]));
+
       return () => { isUnmounted.current = true; };
    }, []);
 
@@ -54,36 +56,46 @@ const MyOrders = (props: IProps) => {
       if (selectedPage != undefined && selectedPage != tbl.selectedPage) tbl.setSelectedPage(selectedPage);
       if (maxItemsPerPage != tbl.maxItemsPerPage) tbl.setMaxItemsPerPage(maxItemsPerPage);
 
+
       history.push(generateUri(window.location.pathname,
          [selectedPage,
             maxItemsPerPage,
             filterType === GetAllRecords ? -1 : filterType,
             Number(isSortAsc),
             sortName,
-            searchString != GetAllRecords ? searchString : ""]));
+            searchString != GetAllRecords ? searchString : ""]),
+         props.location?.state);
 
 
       errorAlert.pleaseWait(isUnmounted);
-      useAllOfficialOrder(selectedPage, maxItemsPerPage, searchString, filterType, isSortAsc, sortName)
-         .then(onGetUserOrderSuccess)
-         .catch(onGetUserOrderFailed);
-
-
-
+      if (props.location?.state?.userId == undefined)
+         useAllOrder(selectedPage, maxItemsPerPage, searchString, filterType, isSortAsc, sortName).then(result => {
+            if (isUnmounted.current) return;
+            tbl.setTotalItemCount(result.data.totalCount || 0);
+            setAvailableStatusTypeList(result.data.availableTypes!);
+            errorAlert.clear();
+            populateOrderTable(result.data.orderList!);
+         }).catch(errors => {
+            if (isUnmounted.current) return;
+            errorAlert.set(errors);
+         });
+      else
+         useAllUserOrder(props.location.state?.userId, selectedPage, maxItemsPerPage, searchString, filterType, isSortAsc, sortName)
+            .then((result) => {
+               if (isUnmounted.current) return;
+               tbl.setTotalItemCount(result.data.totalCount || 0);
+               setAvailableStatusTypeList(result.data.availableTypes!);
+               populateOrderTable(result.data.orderList!);
+               setFullName(result.data.fullName!);
+               errorAlert.clear();
+            })
+            .catch((errors) => {
+               if (isUnmounted.current) return;
+               errorAlert.set(errors);
+            });
    };
-   const onGetUserOrderSuccess = (result: IReturnUseAllOfficialOrder) => {
-      if (isUnmounted.current) return;
-      tbl.setTotalItemCount(result.data.totalCount || 0);
-      setavailableStatusTypeList(result.data.availableTypes!);
-      populateOrderTable(result.data.orderList!);
-      errorAlert.clear();
 
 
-   };
-   const onGetUserOrderFailed = (errors: AlertObj) => {
-      if (isUnmounted.current) return;
-      errorAlert.set(errors);
-   };
    const populateOrderTable = (orderList: Order[]) => {
 
       if (orderList.length == 0) {
@@ -129,18 +141,17 @@ const MyOrders = (props: IProps) => {
 
       tbl.setData(tData);
    };
+
+
    return (
-      <Container className="mt-2 mb-2">
-         <PageHeader title="My Orders" className="hr-section-sm line-limit-1" />
+      <>
+         <PageHeader title={`Orders ${props.location?.state?.userId == undefined ? "" : ` - ${fullName}`}`} className="hr-section-sm line-limit-1" />
          <Alert alert={errorAlert.alert}
             className="col-12 mb-2"
             onClosed={() => { errorAlert.clear(); }}
          />
-         {tbl.totalItemCount == 0 &&
-            <div className="row col-12 justify-content-center">
-               <div className="col-12 text-center mt-4">You do not have any orders. <br /> Let's do something about it.</div>
-               <Button className="btn btn-green col-auto mt-4" children="Shop now" onClick={() => { history.push("/Shop"); }} />
-            </div>
+         {props.location?.state?.backUrl != undefined &&
+            <Button onClick={() => history.push(props.location?.state?.backUrl!)} children="Back" className="col-auto mr-auto btn-lg back-icon" />
          }
          {tbl.totalItemCount > 0 &&
             <>
@@ -171,6 +182,7 @@ const MyOrders = (props: IProps) => {
                      defaultSortName={tbl.sortName}
                      data={tbl.data}
                      onSortChange={(selectedPage, isSortAsce, sortName) => { onSearch(selectedPage, undefined, undefined, isSortAsce, sortName); }}
+                     view={TableView.CardView}
                      listCount={tbl.totalItemCount}
                   />
                   <Pagination
@@ -185,18 +197,23 @@ const MyOrders = (props: IProps) => {
          }
          <OrderModal isOpen={isOpenOrderModal}
             order={selectOrder}
-            onClose={() => { setIsOpenOrderModal(false); onSearch(); }} />
+            onClose={() => { setIsOpenOrderModal(false); }}
+            onSuccess={() => { setIsOpenOrderModal(false); onSearch(); }}
+            onDispute={props.onDispute} />
          <CommunicationModal isOpen={isOpenDisputeModal}
             communication={selectedDispute}
             access={Access}
             onClose={() => { setIsOpenDisputeModal(false); onSearch(); }}
+            usePutSecretCommunication={usePutSecretCommunication}
          />
 
 
-      </Container>
+      </>
    );
 };
 
 declare type IProps = {
+   location?: any;
+   onDispute?: (order: Order) => void;
 };
-export default MyOrders;
+export default ViewOrders;

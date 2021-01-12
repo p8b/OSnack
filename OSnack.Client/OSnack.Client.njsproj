@@ -193,6 +193,8 @@
   <ItemGroup>
     <TypeScriptCompile Include="src\app.tsx" />
     <TypeScriptCompile Include="src\pages\Communication\ViewCommunication.tsx" />
+    <TypeScriptCompile Include="src\pages\MyAccount\AddDisputeModal.tsx" />
+    <TypeScriptCompile Include="src\pages\MyAccount\OrderModal.tsx" />
     <TypeScriptCompile Include="src\pages\ProductPage\ReviewModal.tsx" />
     <TypeScriptCompile Include="src\components\Container.tsx" />
     <TypeScriptCompile Include="src\components\Footer.tsx" />

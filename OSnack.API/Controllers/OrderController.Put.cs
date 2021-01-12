@@ -82,17 +82,14 @@ namespace OSnack.API.Controllers
       {
          try
          {
-
             Order originalOrder = await _DbContext.Orders.AsTracking()
                      .Include(o => o.Dispute).ThenInclude(c => c.Messages)
                      .Include(o => o.Payment).AsTracking()
                      .Include(o => o.OrderItems)
                      .SingleOrDefaultAsync(o => o.Id == modifiedOrder.Id).ConfigureAwait(false);
 
-
             if (originalOrder == null)
             {
-               /// extract the errors and return bad request containing the errors
                CoreFunc.Error(ref ErrorsList, "Order not exist");
                return StatusCode(412, ErrorsList);
             }
@@ -100,85 +97,58 @@ namespace OSnack.API.Controllers
             if (!originalOrder.ChangeStatus(modifiedOrder.Status))
             {
                _LoggingService.Log(Request.Path, AppLogType.OrderException,
-                        new { message = $"Order Status Mismatch.", originalOrder = originalOrder, modifiedOrder = modifiedOrder }, User);
+                        new { message = $"Order Status Mismatch.", originalOrder = originalOrder, modifiedOrder }, User);
                CoreFunc.Error(ref ErrorsList, "Cannot procces you order.Try again or contact Administrator.");
                return StatusCode(412, ErrorsList);
             }
 
-            if (originalOrder.Status == OrderStatusType.Canceled || originalOrder.Status == OrderStatusType.FullyRefunded
-               || originalOrder.Status == OrderStatusType.PartialyRefunded)
+            switch (originalOrder.Status)
             {
-               try
-               {
-                  string refundValue;
+               case OrderStatusType.Confirmed:
+                  originalOrder.ShippingReference = modifiedOrder.ShippingReference;
+                  break;
+               case OrderStatusType.Canceled:
+               case OrderStatusType.PartialyRefunded:
+               case OrderStatusType.FullyRefunded:
                   if (originalOrder.Status == OrderStatusType.PartialyRefunded)
                   {
-                     if (modifiedOrder.RefundValue > originalOrder.TotalPrice)
+                     if (modifiedOrder.Payment.RefundAmount > originalOrder.TotalPrice)
                      {
                         _LoggingService.Log(Request.Path, AppLogType.OrderException,
-                     new { message = $"Refund value is more than Total Price.", originalOrder = originalOrder, modifiedOrder = modifiedOrder }, User);
+                     new { message = $"Refund value is more than Total Price.", originalOrder, modifiedOrder }, User);
                         CoreFunc.Error(ref ErrorsList, "Cannot procces you order.Try again or contact Administrator.");
                         return StatusCode(412, ErrorsList);
                      }
-                     if (modifiedOrder.RefundValue == originalOrder.TotalPrice)
+                     if (modifiedOrder.Payment.RefundAmount == originalOrder.TotalPrice)
                         originalOrder.Status = OrderStatusType.FullyRefunded;
-                     refundValue = modifiedOrder.RefundValue.ToString("0.00");
                   }
-                  else
-                     refundValue = originalOrder.TotalPrice.ToString("0.00");
-
-
+                  originalOrder.Payment.RefundDateTime = DateTime.UtcNow;
+                  originalOrder.Payment.Message = modifiedOrder.Payment.Message;
+                  originalOrder.Payment.RefundAmount = originalOrder.Status == OrderStatusType.PartialyRefunded
+                                                                             ? modifiedOrder.Payment.RefundAmount : originalOrder.TotalPrice;
+                  originalOrder.Payment.Type = originalOrder.Status == OrderStatusType.PartialyRefunded
+                                                                     ? PaymentType.PartialyRefunded : PaymentType.FullyRefunded;
                   RefundRequest refundRequest = new RefundRequest()
                   {
                      Amount = new Money
                      {
                         CurrencyCode = AppConst.Settings.PayPal.CurrencyCode,
-                        Value = refundValue
+                        Value = originalOrder.Payment.RefundAmount.ToString("0.00")
                      },
-
-                     NoteToPayer = modifiedOrder.Dispute.Messages.LastOrDefault().Body
+                     NoteToPayer = modifiedOrder.Payment.Message
                   };
                   var request = new CapturesRefundRequest(originalOrder.Payment.Reference);
                   request.Prefer("return=representation");
                   request.RequestBody(refundRequest);
                   var response = await PayPalClient.client().Execute(request);
-                  originalOrder.Payment.RefundAmount = Convert.ToDecimal(refundValue);
-                  originalOrder.Payment.RefundDateTime = DateTime.UtcNow;
-                  originalOrder.Payment.Type = originalOrder.Status == OrderStatusType.PartialyRefunded
-                                                                     ? PaymentType.PartialyRefunded : PaymentType.FullyRefunded;
-
-                  if (originalOrder.Dispute == null)
-                  {
-                     var user = await _DbContext.Users.SingleOrDefaultAsync(u => u.Id == AppFunc.GetUserId(User)).ConfigureAwait(false);
-                     originalOrder.Dispute = new Communication()
-                     {
-                        Id = await FindDisputeId(0).ConfigureAwait(false),
-                        Email = user.Email,
-                        FullName = user.FullName,
-                        Messages = new List<Message>(),
-                        Order = originalOrder
-                     };
-                  }
-                  originalOrder.Dispute.Status = false;
-                  var newMessage = modifiedOrder.Dispute.Messages.Find(m => m.Id == 0);
-                  if (!string.IsNullOrEmpty(newMessage.Body))
-                  {
-                     newMessage.IsCustomer = false;
-                     originalOrder.Dispute.Messages.Add(newMessage);
-
-                  }
-                  await RestoreItemToProductQuantity(originalOrder);
-               }
-               catch (Exception ex)
-               {
-                  _LoggingService.Log(Request.Path, AppLogType.OrderException,
-                      new { message = $"Refund Proccess Failed.", ex = ex, modifiedOrder = modifiedOrder }, User);
-                  CoreFunc.Error(ref ErrorsList, "Refund Proccess Failed.");
-                  return StatusCode(412, ErrorsList);
-               }
+                  if (originalOrder.Status == OrderStatusType.Canceled)
+                     await RestoreItemToProductQuantity(originalOrder);
+                  break;
+               case OrderStatusType.Delivered:
+               case OrderStatusType.InProgress:
+               default:
+                  break;
             }
-            if (originalOrder.Status == OrderStatusType.Confirmed)
-               originalOrder.ShippingReference = modifiedOrder.ShippingReference;
 
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
 

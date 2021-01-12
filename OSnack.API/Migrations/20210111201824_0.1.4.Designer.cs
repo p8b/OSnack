@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OSnack.API.Database;
 
 namespace OSnack.API.Migrations
 {
     [DbContext(typeof(OSnackDbContext))]
-    partial class OSnackDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210111201824_0.1.4")]
+    partial class _014
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

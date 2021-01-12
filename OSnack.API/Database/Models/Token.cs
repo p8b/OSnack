@@ -44,6 +44,8 @@ namespace OSnack.API.Database.Models
       [ForeignKey("UserId")]
       public User User { get; set; }
 
+      [Column(TypeName = "nvarchar(256)")]
+      [StringLength(256, ErrorMessage = "Email Must be less than 256 Characters \n")]
       public string Email { get; set; }
 
       [NotMapped]

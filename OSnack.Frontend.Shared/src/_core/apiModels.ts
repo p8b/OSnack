@@ -163,7 +163,7 @@ export class Coupon {
     type!: CouponType;
     maxUseQuantity!: number;
     minimumOrderPrice!: number;
-    discountAmount?: number;
+    discountAmount?: number | undefined;
     expiryDate!: Date;
 
 }
@@ -216,6 +216,7 @@ export class Payment {
     type!: PaymentType;
     email?: string | undefined;
     dateTime!: Date;
+    message?: string | undefined;
     refundAmount?: number;
     refundDateTime?: Date | undefined;
 
@@ -594,7 +595,6 @@ export class Order extends OrderAddressBase {
     totalItemPrice!: number;
     shippingPrice!: number;
     totalDiscount!: number;
-    refundValue?: number;
 
 }
 export class Address extends OrderAddressBase {

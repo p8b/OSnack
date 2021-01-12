@@ -49,7 +49,7 @@ const OrderDetails = (props: IProps) => {
 
                {(props.access == ClientAppAccess.Official || props.availabeType!.length == 0) &&
                   <div className="row pm-0">
-                     <div className="col-8 pm-0 small-text text-gray" >Status:</div>
+                     <div className="col-7 pm-0 small-text text-gray" >Status:</div>
                      <span className={`${getBadgeByOrderStatusType(props.order.status)}`}
                         children={OrderStatusTypeList.find(o => o.Value == props.order.status)?.Name} />
                   </div>
@@ -78,6 +78,8 @@ const OrderDetails = (props: IProps) => {
                      <>
                         <div className="col-7 p-0 pm-0 font-weight-bold ">Refund Value:</div>
                         <div className="col-5 p-0 font-weight-bold">£{props.order.payment.refundAmount}</div>
+                        <div className="col-7 pm-0 small-text text-gray">Refunde date :</div>
+                        <div className="col-5 p-0 small-text">{new Date(props.order.payment.refundDateTime!).ToShortDate()}</div>
                      </>
                   }
                   {!props.disableDispute && props.access == ClientAppAccess.Official && props.order.dispute == undefined &&
