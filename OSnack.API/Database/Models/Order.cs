@@ -96,10 +96,6 @@ namespace OSnack.API.Database.Models
       [Required]
       public decimal TotalDiscount { get; set; }
 
-      [NotMapped]
-      public decimal RefundValue { get; set; }
-
-
       [EmailTemplateVariable(Name = "OrderStatus")]
       [JsonIgnore, NotMapped]
       public string StatusString { get { return Status.ToString(); } }
@@ -124,7 +120,7 @@ namespace OSnack.API.Database.Models
       internal void CalculateTotalPrice()
       {
          CalculateDiscount();
-         ShippingPrice = DeliveryOption.Price;
+         ShippingPrice = (decimal)DeliveryOption.Price;
          TotalPrice = TotalItemPrice + ShippingPrice - TotalDiscount;
       }
       internal void CalculateDiscount()
@@ -137,13 +133,13 @@ namespace OSnack.API.Database.Models
             switch (Coupon.Type)
             {
                case CouponType.FreeDelivery:
-                  TotalDiscount = DeliveryOption.Price;
+                  TotalDiscount = (decimal)DeliveryOption.Price;
                   break;
                case CouponType.DiscountPrice:
-                  TotalDiscount = Coupon.DiscountAmount;
+                  TotalDiscount = (decimal)Coupon.DiscountAmount;
                   break;
                case CouponType.PercentageOfTotal:
-                  TotalDiscount = Math.Round(((Coupon.DiscountAmount * TotalItemPrice) / 100), 2);
+                  TotalDiscount = Math.Round((((decimal)Coupon.DiscountAmount * TotalItemPrice) / 100), 2);
                   break;
                default:
                   break;

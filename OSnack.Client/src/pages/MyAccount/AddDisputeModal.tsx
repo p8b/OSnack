@@ -1,12 +1,12 @@
 ﻿import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Communication, ContactType, Order } from '../../_core/apiModels';
-import Modal from '../../components/Modals/Modal';
-import { usePostDisputeCommunication } from '../../hooks/OfficialHooks/useCommunicationHook';
-import PageHeader from '../../components/Texts/PageHeader';
-import { AuthContext } from '../../_core/authenticationContext';
-import { TextArea } from '../../components/Inputs/TextArea';
-import Alert, { AlertObj, useAlert } from '../../components/Texts/Alert';
-import ModalFooter from './ModalFooter';
+import { Communication, ContactType, Order } from 'osnack-frontend-shared/src/_core/apiModels';
+import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
+import { usePostDisputeCommunication } from 'osnack-frontend-shared/src/hooks/OfficialHooks/useCommunicationHook';
+import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
+import { AuthContext } from 'osnack-frontend-shared/src/_core/authenticationContext';
+import { TextArea } from 'osnack-frontend-shared/src/components/Inputs/TextArea';
+import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import ModalFooter from 'osnack-frontend-shared/src/components/Modals/ModalFooter';
 
 
 
@@ -40,25 +40,23 @@ const AddDisputeModal = (props: IProps) => {
    };
 
    return (
-      <Modal className="col-11 col-sm-10 col-lg-4 pm-0 pl-4 pr-4 pb-0"
+      <Modal className="col-12 col-sm-11 col-md-9 col-lg-6"
          bodyRef={props.modalRef}
          isOpen={props.isOpen}>
          <>
             <PageHeader title="Dispute" />
-            <div className="row  mt-1">
-               <TextArea className="col-12" label="Message*" rows={3} value={message}
-                  onChange={(i) => { setMessage(i.target.value); }} />
+            <TextArea className="col-12" label="Message*" rows={3} value={message}
+               onChange={(i) => { setMessage(i.target.value); }} />
 
-               <Alert alert={errorAlert.alert}
-                  className="col-12 mb-2"
-                  onClosed={() => errorAlert.clear()} />
-               <ModalFooter
-                  createText="Submit"
-                  onCreate={sendMessage}
-                  enableLoadingCreate={isUnmounted}
-                  onCancel={() => { errorAlert.clear(); props.onClose(); }}
-               />
-            </div >
+            <Alert alert={errorAlert.alert}
+               className="col-12 mb-2"
+               onClosed={() => errorAlert.clear()} />
+            <ModalFooter
+               createText="Submit"
+               onCreate={sendMessage}
+               enableLoadingCreate={isUnmounted}
+               onCancel={() => { errorAlert.clear(); props.onClose(); }}
+            />
          </>
       </Modal >
 

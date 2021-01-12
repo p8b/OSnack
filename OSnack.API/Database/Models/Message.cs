@@ -27,6 +27,9 @@ namespace OSnack.API.Database.Models
 
       public bool IsCustomer { get; set; }
 
+
+      [Column(TypeName = "nvarchar(500)")]
+      [StringLength(500, ErrorMessage = "Body Must be less than 500 Characters \n")]
       [EmailTemplateVariable(Name = "MessageBody")]
       public string Body { get; set; }
    }

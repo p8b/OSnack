@@ -1,11 +1,11 @@
 ﻿import React, { useState } from 'react';
-import Modal from '../../components/Modals/Modal';
-import { TextArea } from '../../components/Inputs/TextArea';
-import { Input } from '../../components/Inputs/Input';
-import Alert, { AlertObj, useAlert } from '../../components/Texts/Alert';
-import { OrderStatusType } from '../../_core/apiModels';
-import ModalFooter from './ModalFooter';
-import PageHeader from '../Texts/PageHeader';
+import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
+import { TextArea } from 'osnack-frontend-shared/src/components/Inputs/TextArea';
+import { Input } from 'osnack-frontend-shared/src/components/Inputs/Input';
+import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import { OrderStatusType } from 'osnack-frontend-shared/src/_core/apiModels';
+import ModalFooter from 'osnack-frontend-shared/src/components/Modals/ModalFooter';
+import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 
 
 

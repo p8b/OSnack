@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using OSnack.API.Extras.Attributes;
 using OSnack.API.Extras.CustomTypes;
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Attributes;
@@ -35,7 +34,7 @@ namespace OSnack.API.Database.Models
 
       [Column(TypeName = "decimal(7,2)")]
       [PositiveDecimalIncludingZero(ErrorMessage = "Discount Amount should not be negative. \n")]
-      public decimal DiscountAmount { get; set; }
+      public decimal? DiscountAmount { get; set; }
 
       [Column(TypeName = "nvarchar(50)")]
       [DataType(DataType.Date)]

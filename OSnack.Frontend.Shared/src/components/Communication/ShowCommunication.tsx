@@ -56,11 +56,14 @@ const ShowCommunication = (props: IProps) => {
             usePutOfficialCommunication({ body: message }, communication.id ?? null)
                .then((result) => onSuccess(result, loadingCallBack))
                .catch((errors) => onError(errors, loadingCallBack));
+            break;
          case ClientAppAccess.Secret:
             props.usePutSecretCommunication!({ body: message }, communication.id ?? null, communicationStatus)
                .then((result) => onSuccess(result, loadingCallBack))
                .catch((errors) => onError(errors, loadingCallBack));
+            break;
          default:
+            break;
       }
    };
 
@@ -70,6 +73,7 @@ const ShowCommunication = (props: IProps) => {
       setCommunication(result.data);
       errorAlert.setSingleSuccess("updated", `${result.data.type == ContactType.Dispute ? "Dispute" : "Question"} is Updated`);
       loadingCallBack!();
+      props.onClose && props.onClose!();
    };
 
    const onError = (errors: AlertObj, loadingCallBack?: () => void) => {

@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 
-using OSnack.API.Extras;
 using OSnack.API.Extras.Attributes;
 using OSnack.API.Extras.CustomTypes;
 
@@ -35,6 +34,8 @@ namespace OSnack.API.Database.Models
       [Required(ErrorMessage = "Email is Required \n")]
       [RegularExpression(@"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$",
        ErrorMessage = "Invalid Email \n")]
+      [Column(TypeName = "nvarchar(256)")]
+      [StringLength(256, ErrorMessage = "Email Must be less than 256 Characters \n")]
       public string Email { get; set; }
 
 
@@ -51,11 +52,15 @@ namespace OSnack.API.Database.Models
       public DateTime Date { get; set; } = DateTime.UtcNow;
 
 
-      [EmailTemplateVariable(Name = "CommunicationURL")]
-      [NotMapped]
+      [EmailTemplateVariable(Name = "CommunicationUrl")]
+      [NotMapped, JsonIgnore]
       public string URL { get; private set; }
 
-      public void SetURL(string url) => URL = $"{AppConst.Settings.AppDomains.ClientApp}{url}/{Id}";
+      [EmailTemplateVariable(Name = "Type")]
+      [NotMapped, JsonIgnore]
+      public string CommunicationType { get; private set; }
+
+      public void SetURL(string url) => URL = $"{url}/{Id}";
 
       [NotMapped]
       public string captchaToken { get; set; }

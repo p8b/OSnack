@@ -144,6 +144,7 @@
     <Folder Include="src\components\" />
     <Folder Include="src\components\NavMenu\" />
     <Folder Include="src\components\ImageUpload\" />
+    <Folder Include="src\components\Order\" />
     <Folder Include="src\pages\" />
     <Folder Include="src\pages\MessagesManagement\" />
     <Folder Include="src\pages\Dashboard\" />
@@ -187,6 +188,7 @@
     <TypeScriptCompile Include="src\components\ImageUpload\ImageUpload.tsx" />
     <TypeScriptCompile Include="src\components\NavMenu\NavMenu.tsx" />
     <TypeScriptCompile Include="src\components\NavMenu\NavMenuItems.tsx" />
+    <TypeScriptCompile Include="src\components\Order\ViewOrders.tsx" />
     <TypeScriptCompile Include="src\index.tsx" />
     <TypeScriptCompile Include="src\pages\CategoryManagement\CategoryManagement.tsx" />
     <TypeScriptCompile Include="src\pages\CategoryManagement\CategoryModal.tsx" />
@@ -202,6 +204,7 @@
     <TypeScriptCompile Include="src\pages\MyAccount\MyAccount.tsx" />
     <TypeScriptCompile Include="src\pages\OrderManagement\OrderManagement.tsx" />
     <TypeScriptCompile Include="src\pages\OrderManagement\OrderMessageModal.tsx" />
+    <TypeScriptCompile Include="src\pages\OrderManagement\OrderModal.tsx" />
     <TypeScriptCompile Include="src\pages\OrderManagement\ViewUserOrders.tsx" />
     <TypeScriptCompile Include="src\pages\ProductManagement\ReplyCommentModal.tsx" />
     <TypeScriptCompile Include="src\pages\ProductManagement\CommentModal.tsx" />

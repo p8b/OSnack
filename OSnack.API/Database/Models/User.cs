@@ -42,6 +42,8 @@ namespace OSnack.API.Database.Models
       public override string PasswordHash { get; set; }
 
       [RegularExpression(@"^\+?(?:\d\s?){10,12}$", ErrorMessage = "Invalid UK Phone Number \n")]
+      [Column(TypeName = "nvarchar(12)")]
+      [StringLength(12, ErrorMessage = "PhoneNumber Must be less than 12 Characters \n")]
       public override string PhoneNumber { get; set; }
 
       [Required(ErrorMessage = "Registration Info Required")]

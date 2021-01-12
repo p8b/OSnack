@@ -130,6 +130,41 @@ namespace OSnack.API.Controllers
             return StatusCode(417, ErrorsList);
          }
       }
+      #region *** ***
+      [ProducesResponseType(typeof(Communication), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
+      #endregion
+      [HttpGet("Get/[action]/{disputeKey}")]
+      [Authorize(AppConst.AccessPolicies.Secret)]
+      public async Task<IActionResult> GetDisputeSecret(string disputeKey)
+      {
+         try
+         {
+
+            Communication dispute = await _DbContext.Communications
+               .Include(c => c.Order)
+               .ThenInclude(o => o.User)
+               .Include(c => c.Order)
+               .ThenInclude(o => o.OrderItems)
+               .Include(c => c.Messages)
+               .SingleOrDefaultAsync(c => c.Type == ContactType.Dispute && c.Id == disputeKey)
+               .ConfigureAwait(false);
+
+            if (dispute is null)
+            {
+               CoreFunc.Error(ref ErrorsList, "Dispute Not Found.");
+               return StatusCode(412, ErrorsList);
+            }
+
+            return Ok(dispute);
+         }
+         catch (Exception ex)
+         {
+            CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
+            return StatusCode(417, ErrorsList);
+         }
+      }
 
 
    }

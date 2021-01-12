@@ -1,20 +1,12 @@
 ﻿import React from 'react';
 import Container from '../../components/Container';
-import { Access } from '../../_core/appConstant.Variables';
-import ViewOrders from 'osnack-frontend-shared/src/components/Order/ViewOrders';
-import { useAllUserOrder, usePutOrderStatusOrder } from '../../SecretHooks/useOrderHook';
-import { usePutSecretCommunication } from '../../SecretHooks/useCommunicationHook';
+import ViewOrders from '../../components/Order/ViewOrders';
+
 
 const ViewUserOrders = (props: IProps) => {
    return (
-      <Container>
-         <ViewOrders
-            access={Access}
-            useAllUserOrderSecret={useAllUserOrder}
-            usePutOrderStatusOrder={usePutOrderStatusOrder}
-            location={props.location}
-            usePutSecretCommunication={usePutSecretCommunication}
-         />
+      <Container className="container-fluid ">
+         <ViewOrders location={props.location} />
       </Container>
    );
 };

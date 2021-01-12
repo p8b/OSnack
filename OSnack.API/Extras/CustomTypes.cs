@@ -30,18 +30,20 @@ namespace OSnack.API.Extras.CustomTypes
       [EmailTemplateTypeRequiredClasses(typeof(User), typeof(Token))]
       PasswordReset = 5,
 
-      [EmailTemplateTypeRequiredClasses(typeof(Message))]
-      ReplayContactUsMessage = 6,
+      [EmailTemplateTypeRequiredClasses(typeof(Message), typeof(Communication))]
+      MessageToAdmin = 6,
+
+      [EmailTemplateTypeRequiredClasses(typeof(Message), typeof(Communication))]
+      MessageToUser = 7,
 
       [EmailTemplateTypeRequiredClasses(typeof(Order), typeof(Payment), typeof(OrderItem))]
-      OrderReceipt = 7,
+      OrderReceipt = 8,
 
-      [EmailTemplateTypeRequiredClasses(typeof(Order), typeof(Payment), typeof(Message))]
-      OrderCancellation = 8,
+      [EmailTemplateTypeRequiredClasses(typeof(Order), typeof(Payment))]
+      OrderCancellation = 9,
 
-      [EmailTemplateTypeRequiredClasses(typeof(Order), typeof(Communication))]
-      OrderDispute = 9,
-
+      [EmailTemplateTypeRequiredClasses(typeof(Order))]
+      OrderDispute = 10,
    }
 
    public enum TokenTypes

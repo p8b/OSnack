@@ -86,10 +86,11 @@ export enum EmailTemplateTypes {
     WelcomeExternalRegistration = 3,
     WelcomeNewEmployee = 4,
     PasswordReset = 5,
-    ReplayContactUsMessage = 6,
-    OrderReceipt = 7,
-    OrderCancellation = 8,
-    OrderDispute = 9,
+    MessageToAdmin = 6,
+    MessageToUser = 7,
+    OrderReceipt = 8,
+    OrderCancellation = 9,
+    OrderDispute = 10,
 }
 
 export const EmailTemplateTypesList=[
@@ -99,10 +100,11 @@ export const EmailTemplateTypesList=[
 {Id:3,Name:"WelcomeExternalRegistration".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.WelcomeExternalRegistration},
 {Id:4,Name:"WelcomeNewEmployee".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.WelcomeNewEmployee},
 {Id:5,Name:"PasswordReset".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.PasswordReset},
-{Id:6,Name:"ReplayContactUsMessage".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.ReplayContactUsMessage},
-{Id:7,Name:"OrderReceipt".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.OrderReceipt},
-{Id:8,Name:"OrderCancellation".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.OrderCancellation},
-{Id:9,Name:"OrderDispute".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.OrderDispute},
+{Id:6,Name:"MessageToAdmin".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.MessageToAdmin},
+{Id:7,Name:"MessageToUser".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.MessageToUser},
+{Id:8,Name:"OrderReceipt".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.OrderReceipt},
+{Id:9,Name:"OrderCancellation".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.OrderCancellation},
+{Id:10,Name:"OrderDispute".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.OrderDispute},
 ]
 export class Role {
     id?: number = 0;
@@ -163,7 +165,7 @@ export class Coupon {
     type!: CouponType;
     maxUseQuantity!: number;
     minimumOrderPrice!: number;
-    discountAmount?: number;
+    discountAmount?: number | undefined;
     expiryDate!: Date;
 
 }
@@ -216,6 +218,7 @@ export class Payment {
     type!: PaymentType;
     email?: string | undefined;
     dateTime!: Date;
+    message?: string | undefined;
     refundAmount?: number;
     refundDateTime?: Date | undefined;
 
@@ -292,7 +295,6 @@ export class Communication {
     order_Id?: string | undefined;
     messages?: Message[] | undefined;
     date?: Date;
-    url?: string | undefined;
     captchaToken?: string | undefined;
 
 }
@@ -594,7 +596,6 @@ export class Order extends OrderAddressBase {
     totalItemPrice!: number;
     shippingPrice!: number;
     totalDiscount!: number;
-    refundValue?: number;
 
 }
 export class Address extends OrderAddressBase {

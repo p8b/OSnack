@@ -159,7 +159,7 @@ namespace OSnack.API.Services
          {
             await SetUserTemplate(EmailTemplateTypes.OrderDispute).ConfigureAwait(false);
 
-            communication.SetURL(AppConst.Settings.EmailSettings.PathNames.Dispute);
+            communication.SetURL($"{AppConst.Settings.AppDomains.ClientApp}{AppConst.Settings.EmailSettings.PathNames.Dispute}");
             foreach (EmailTemplateRequiredClass serverClass in Template.RequiredClasses)
             {
                SetTemplateServerPropValue(serverClass, order);

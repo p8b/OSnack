@@ -25,9 +25,11 @@ namespace OSnack.API.Database.Models
       public int Id { get; set; }
 
       [Required(ErrorMessage = "Type Is Required \n")]
-      public EmailTemplateTypes TemplateType { get; set; }
+      public EmailTemplateTypes? TemplateType { get; set; }
 
       [Required(ErrorMessage = "Subject Is Required \n")]
+      [Column(TypeName = "nvarchar(50)")]
+      [StringLength(50, ErrorMessage = "Subject Must be less than 50 Characters \n")]
       public string Subject { get; set; } = "";
 
       [NotMapped]
