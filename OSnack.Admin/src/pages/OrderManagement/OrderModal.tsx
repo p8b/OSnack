@@ -7,7 +7,7 @@ import OrderMessageModal from './OrderMessageModal';
 import CommunicationModal from 'osnack-frontend-shared/src/components/Modals/CommunicationModal';
 import ModalFooter from 'osnack-frontend-shared/src/components/Modals/ModalFooter';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
-import { usePutOrderStatusOrder } from '../../SecretHooks/useOrderHook';
+import { usePutOrder } from '../../SecretHooks/useOrderHook';
 import { usePutSecretCommunication } from '../../SecretHooks/useCommunicationHook';
 import { Access } from '../../_core/appConstant.Variables';
 
@@ -85,7 +85,7 @@ const OrderModal = (props: IProps) => {
       if (selectedOrder.status == props.order.status)
          props.onClose();
       else
-         usePutOrderStatusOrder!(selectedOrder).then(() => {
+         usePutOrder!(selectedOrder).then(() => {
             if (isUnmounted.current) return;
             errorAlert.clear();
             props.onSuccess();
@@ -116,7 +116,7 @@ const OrderModal = (props: IProps) => {
             cancelText={`${getAvailabeType().length == 0 ? "Close" : "Cancel"}`}
             onUpdate={getAvailabeType().length > 0 ? saveChange : undefined}
             enableLoadingUpdate={isUnmounted}
-            onCancel={() => { props.onClose(); setSelectedOrder(props.order); }}
+            onCancel={() => { props.onClose(); errorAlert.clear(); setSelectedOrder(props.order); }}
          />
 
          <OrderMessageModal isOpen={isOpenMessageModal}

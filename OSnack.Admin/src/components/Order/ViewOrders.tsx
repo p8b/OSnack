@@ -153,31 +153,32 @@ const ViewOrders = (props: IProps) => {
          {props.location?.state?.backUrl != undefined &&
             <Button onClick={() => history.push(props.location?.state?.backUrl!)} children="Back" className="col-auto mr-auto btn-lg back-icon" />
          }
-         {tbl.totalItemCount > 0 &&
-            <>
-               <div className="col-12 bg-white pb-2 ">
-                  <div className="row col-12 pm-0 mb-3">
-                     <SearchInput
-                        value={searchValue}
-                        onChange={i => setSearchValue(i.target.value)}
-                        className="col-12 col-md-8"
-                        onSearch={() => { onSearch(1); }}
-                     />
-                     <DropDown title={`Status Type: ${OrderStatusTypeList.find((s) => s.Id?.toString() == selectType)?.Name || "All"}`}
-                        className="col-12 col-md-4 p-0"
-                        titleClassName="btn btn-white filter-icon">
-                        <button className="dropdown-item"
-                           onClick={() => { onSearch(1, undefined, GetAllRecords); }} >
-                           All
+
+         <div className="col-12 bg-white pb-2 ">
+            <div className="row col-12 pm-0 mb-3">
+               <SearchInput
+                  value={searchValue}
+                  onChange={i => setSearchValue(i.target.value)}
+                  className="col-12 col-md-8"
+                  onSearch={() => { onSearch(1); }}
+               />
+               <DropDown title={`Status Type: ${OrderStatusTypeList.find((s) => s.Id?.toString() == selectType)?.Name || "All"}`}
+                  className="col-12 col-md-4 p-0"
+                  titleClassName="btn btn-white filter-icon">
+                  <button className="dropdown-item"
+                     onClick={() => { onSearch(1, undefined, GetAllRecords); }} >
+                     All
                         </button>
-                        {OrderStatusTypeList.filter(o => availableStatusTypeList!.includes(o.Value))?.map(statusType =>
-                           <button className="dropdown-item" key={statusType.Id}
-                              onClick={() => { onSearch(1, undefined, statusType.Id?.toString()); }} >
-                              {statusType.Name}
-                           </button>
-                        )}
-                     </DropDown>
-                  </div>
+                  {OrderStatusTypeList.filter(o => availableStatusTypeList!.includes(o.Value))?.map(statusType =>
+                     <button className="dropdown-item" key={statusType.Id}
+                        onClick={() => { onSearch(1, undefined, statusType.Id?.toString()); }} >
+                        {statusType.Name}
+                     </button>
+                  )}
+               </DropDown>
+            </div>
+            {tbl.totalItemCount > 0 &&
+               <>
                   <Table className="col-12 text-center table-striped"
                      defaultSortName={tbl.sortName}
                      data={tbl.data}
@@ -192,9 +193,9 @@ const ViewOrders = (props: IProps) => {
                         onSearch(selectedPage, maxItemsPerPage);
                      }}
                      listCount={tbl.totalItemCount} />
-               </div>
-            </>
-         }
+               </>
+            }
+         </div>
          <OrderModal isOpen={isOpenOrderModal}
             order={selectOrder}
             onClose={() => { setIsOpenOrderModal(false); }}

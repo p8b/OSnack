@@ -146,6 +146,47 @@ namespace OSnack.API.Database.Models
             }
          }
       }
+
+      internal List<Item> ConvertItem()
+      {
+         List<Item> orderItems = new List<Item>();
+         foreach (var orderItem in OrderItems)
+         {
+            orderItems.Add(new PayPalCheckoutSdk.Orders.Item()
+            {
+               Name = orderItem.Name,
+               Quantity = orderItem.Quantity.ToString(),
+               UnitAmount = new PayPalCheckoutSdk.Orders.Money()
+               {
+                  CurrencyCode = AppConst.Settings.PayPal.CurrencyCode,
+                  Value = orderItem.Price?.ToString("0.00")
+               }
+            });
+         }
+         return orderItems;
+      }
+
+      internal void UpdatePayment(Payment payment)
+      {
+         if (payment.RefundAmount == TotalPrice)
+            Status = OrderStatusType.FullyRefunded;
+
+         Payment.RefundDateTime = DateTime.UtcNow;
+         Payment.Message = payment.Message;
+         Payment.RefundAmount = Status == OrderStatusType.PartialyRefunded ? payment.RefundAmount : TotalPrice;
+         Payment.Type = Status == OrderStatusType.PartialyRefunded ? PaymentType.PartialyRefunded : PaymentType.FullyRefunded;
+      }
+
+      internal void UpdateAddress(Address address)
+      {
+         Name = address.Name;
+         FirstLine = address.FirstLine;
+         SecondLine = address.SecondLine;
+         City = address.City;
+         Postcode = address.Postcode;
+         User = address.User;
+      }
+
       internal async Task<PayPalCheckoutSdk.Orders.Order> ConvertToPayPalOrder()
       {
 
@@ -157,8 +198,6 @@ namespace OSnack.API.Database.Models
             BrandName = AppConst.Settings.BrandName,
             UserAction = "CONTINUE",
             ShippingPreference = "SET_PROVIDED_ADDRESS",
-
-
          };
 
          orderRequest.PurchaseUnits = new List<PurchaseUnitRequest>()
@@ -193,13 +232,10 @@ namespace OSnack.API.Database.Models
                   }
                } ,
                Items = ConvertItem(),
-
-
             }
          };
          if (User != null)
          {
-
             orderRequest.PurchaseUnits.FirstOrDefault().ShippingDetail = new ShippingDetail()
             {
                Name = new Name()
@@ -208,7 +244,6 @@ namespace OSnack.API.Database.Models
                },
                AddressPortable = new AddressPortable()
                {
-
                   AddressLine1 = FirstLine,
                   AddressLine2 = SecondLine,
                   PostalCode = Postcode,
@@ -251,23 +286,60 @@ namespace OSnack.API.Database.Models
 
          return paypalOrder;
       }
-      internal List<Item> ConvertItem()
+
+      internal async Task<bool> CapturePaypalPayment(string paypalId)
       {
-         List<Item> orderItems = new List<Item>();
-         foreach (var orderItem in OrderItems)
+         Payment = new Payment()
          {
-            orderItems.Add(new PayPalCheckoutSdk.Orders.Item()
+            PaymentProvider = "PayPal",
+            Reference = paypalId,
+         };
+         var request = new OrdersCaptureRequest(paypalId);
+         request.Prefer("return=representation");
+         request.RequestBody(new OrderActionRequest());
+         var response = await PayPalClient.client().Execute(request);
+         var paypalOrder = response.Result<PayPalCheckoutSdk.Orders.Order>();
+         if (!paypalOrder.Status.Equals("COMPLETED"))
+            return false;
+         Status = OrderStatusType.InProgress;
+         Payment.Reference = paypalOrder.PurchaseUnits.FirstOrDefault().Payments.Captures.FirstOrDefault().Id;
+         Payment.DateTime = DateTime.Parse(paypalOrder.UpdateTime);
+         Payment.Type = PaymentType.Complete;
+         Payment.Email = paypalOrder.Payer.Email;
+         var purchaseUnit = paypalOrder.PurchaseUnits.FirstOrDefault();
+         Name = purchaseUnit.ShippingDetail.Name.FullName;
+         FirstLine = purchaseUnit.ShippingDetail.AddressPortable.AddressLine1;
+         SecondLine = purchaseUnit.ShippingDetail.AddressPortable.AddressLine2;
+         if (purchaseUnit.ShippingDetail.AddressPortable.AdminArea1 != null)
+            City = purchaseUnit.ShippingDetail.AddressPortable.AdminArea1;
+         if (purchaseUnit.ShippingDetail.AddressPortable.AdminArea2 != null)
+            City = purchaseUnit.ShippingDetail.AddressPortable.AdminArea2;
+         Postcode = purchaseUnit.ShippingDetail.AddressPortable.PostalCode;
+         return true;
+      }
+
+      internal async Task<bool> RefundOrder()
+      {
+         PayPalCheckoutSdk.Payments.RefundRequest refundRequest = new PayPalCheckoutSdk.Payments.RefundRequest()
+         {
+            Amount = new PayPalCheckoutSdk.Payments.Money
             {
-               Name = orderItem.Name,
-               Quantity = orderItem.Quantity.ToString(),
-               UnitAmount = new PayPalCheckoutSdk.Orders.Money()
-               {
-                  CurrencyCode = AppConst.Settings.PayPal.CurrencyCode,
-                  Value = orderItem.Price?.ToString("0.00")
-               }
-            });
-         }
-         return orderItems;
+               CurrencyCode = AppConst.Settings.PayPal.CurrencyCode,
+               Value = Payment.RefundAmount.ToString("0.00")
+            },
+            NoteToPayer = Payment.Message
+         };
+         var request = new PayPalCheckoutSdk.Payments.CapturesRefundRequest(Payment.Reference);
+         request.Prefer("return=representation");
+         request.RequestBody(refundRequest);
+         var response = await PayPalClient.client().Execute(request);
+         var refund = response.Result<PayPalCheckoutSdk.Payments.Refund>();
+         if (!refund.Status.Equals("COMPLETED"))
+            return false;
+         if (Dispute != null)
+            Dispute.Status = false;
+         return true;
+
       }
    }
 }

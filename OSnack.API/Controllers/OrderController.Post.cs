@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 using OSnack.API.Extras.CustomTypes;
-using OSnack.API.Extras.Paypal;
 
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Models;
@@ -65,7 +64,7 @@ namespace OSnack.API.Controllers
          {
             if (string.IsNullOrEmpty(paypalId))
             {
-               CoreFunc.Error(ref ErrorsList, "Cannot find your order.");
+               CoreFunc.Error(ref ErrorsList, "Cannot find your payment order.");
                return UnprocessableEntity(ErrorsList);
             }
 
@@ -74,45 +73,18 @@ namespace OSnack.API.Controllers
             {
                return UnprocessableEntity(ErrorsList);
             }
-            orderData.Payment = new Payment()
-            {
-               PaymentProvider = "PayPal",
-               Reference = paypalId,
-               DateTime = DateTime.UtcNow,
-            };
 
-
-            var request = new PayPalCheckoutSdk.Orders.OrdersCaptureRequest(paypalId);
-            request.Prefer("return=representation");
-            request.RequestBody(new PayPalCheckoutSdk.Orders.OrderActionRequest());
-            var response = await PayPalClient.client().Execute(request);
-            var paypalOrder = response.Result<PayPalCheckoutSdk.Orders.Order>();
-            if (!paypalOrder.Status.Equals("COMPLETED"))
+            if (!await orderData.CapturePaypalPayment(paypalId))
             {
                await _DbContext.SaveChangesAsync().ConfigureAwait(false);
-               CoreFunc.Error(ref ErrorsList, "Payment cannot be varified.");
+               CoreFunc.Error(ref ErrorsList, "Payment cannot be verified.");
                return UnprocessableEntity(ErrorsList);
             }
-            orderData.Status = OrderStatusType.InProgress;
-            orderData.Payment.Reference = paypalOrder.PurchaseUnits.FirstOrDefault().Payments.Captures.FirstOrDefault().Id;
-            orderData.Payment.DateTime = DateTime.Parse(paypalOrder.UpdateTime);
-            orderData.Payment.Type = PaymentType.Complete;
-            orderData.Payment.Email = paypalOrder.Payer.Email;
-
-
-            var purchaseUnit = paypalOrder.PurchaseUnits.FirstOrDefault();
-            orderData.Name = purchaseUnit.ShippingDetail.Name.FullName;
-            orderData.FirstLine = purchaseUnit.ShippingDetail.AddressPortable.AddressLine1;
-            orderData.SecondLine = purchaseUnit.ShippingDetail.AddressPortable.AddressLine2;
-            if (purchaseUnit.ShippingDetail.AddressPortable.AdminArea1 != null)
-               orderData.City = purchaseUnit.ShippingDetail.AddressPortable.AdminArea1;
-            if (purchaseUnit.ShippingDetail.AddressPortable.AdminArea2 != null)
-               orderData.City = purchaseUnit.ShippingDetail.AddressPortable.AdminArea2;
-            orderData.Postcode = purchaseUnit.ShippingDetail.AddressPortable.PostalCode;
 
             orderData = await TryToSave(orderData, 1);
 
             await _EmailService.OrderReceiptAsync(orderData).ConfigureAwait(false);
+
             return Created("Success", orderData);
          }
          catch (Exception ex)
@@ -129,9 +101,9 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
       #endregion
-      [HttpPost("[action]")]
+      [HttpPost("Post/[action]")]
       [Authorize(AppConst.AccessPolicies.Public)]
-      public async Task<IActionResult> VerifyOrder([FromBody] Order newOrder)
+      public async Task<IActionResult> Verify([FromBody] Order newOrder)
       {
          try
          {
@@ -153,20 +125,11 @@ namespace OSnack.API.Controllers
 
       private async Task<Order> CheckOrderDetail(Order orderData)
       {
-
-
-
-
          Address currentAddress = await _DbContext.Addresses.Include(a => a.User)
           .SingleOrDefaultAsync(a => a.Id == orderData.AddressId && a.User.Id == AppFunc.GetUserId(User));
          if (currentAddress != null)
          {
-            orderData.Name = currentAddress.Name;
-            orderData.FirstLine = currentAddress.FirstLine;
-            orderData.SecondLine = currentAddress.SecondLine;
-            orderData.City = currentAddress.City;
-            orderData.Postcode = currentAddress.Postcode;
-            orderData.User = currentAddress.User;
+            orderData.UpdateAddress(currentAddress);
          }
          orderData.DeliveryOption = await _DbContext.DeliveryOptions.AsTracking()
             .SingleOrDefaultAsync(a => a.Id == orderData.DeliveryOption.Id)
@@ -178,8 +141,8 @@ namespace OSnack.API.Controllers
          {
             if (
                   (key.StartsWith("Payment") || key.StartsWith("Coupon") || key.StartsWith("OrderItems") || key.StartsWith("User"))
-                  ||
-                  (AppFunc.GetUserId(User) == 0 && currentAddress == null && (key.StartsWith("Name") || key.StartsWith("City") || key.StartsWith("Postcode") || key.StartsWith("FirstLine")))
+                  || (AppFunc.GetUserId(User) == 0 && currentAddress == null &&
+                     (key.StartsWith("Name") || key.StartsWith("City") || key.StartsWith("Postcode") || key.StartsWith("FirstLine")))
                )
                ModelState.Remove(key);
          }
@@ -189,13 +152,12 @@ namespace OSnack.API.Controllers
             return null;
          }
 
-
-
          List<Product> productList = await _DbContext.Products.AsTracking()
            .Include(p => p.Category)
            .Where(p => orderData.OrderItems.Select(t => t.ProductId).ToList().Contains(p.Id))
            .ToListAsync()
            .ConfigureAwait(false);
+
          Product originalProduct;
          List<OrderItem> CheckedOrderItems = new List<OrderItem>();
          orderData.TotalItemPrice = 0;
@@ -231,8 +193,6 @@ namespace OSnack.API.Controllers
             orderData.TotalItemPrice += (orderItem.Quantity * originalProduct.Price ?? 0);
             originalProduct.StockQuantity -= orderItem.Quantity;
             CheckedOrderItems.Add(new OrderItem(originalProduct, orderItem.Quantity));
-
-
          }
 
          if (orderData.DeliveryOption.Price == 0
@@ -249,7 +209,10 @@ namespace OSnack.API.Controllers
             Coupon currentCoupon = await _DbContext.Coupons.AsTracking()
                            .SingleOrDefaultAsync(c => c.Code == orderData.Coupon.Code)
                            .ConfigureAwait(false);
-            if (currentCoupon == null || currentCoupon.MaxUseQuantity < 1 || currentCoupon.ExpiryDate < DateTime.UtcNow || orderData.TotalItemPrice < currentCoupon.MinimumOrderPrice)
+            if (currentCoupon == null ||
+               currentCoupon.MaxUseQuantity < 1 ||
+               currentCoupon.ExpiryDate < DateTime.UtcNow ||
+               orderData.TotalItemPrice < currentCoupon.MinimumOrderPrice)
             {
                _LoggingService.Log(Request.Path, AppLogType.OrderException,
                                  new { message = "Coupon Invalid", order = orderData }, User);
@@ -259,6 +222,7 @@ namespace OSnack.API.Controllers
             else
                orderData.Coupon = currentCoupon;
          }
+
          orderData.CalculateTotalPrice();
          return orderData;
       }

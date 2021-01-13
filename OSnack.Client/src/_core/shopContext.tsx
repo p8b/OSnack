@@ -96,7 +96,7 @@ const ShopContextContainer = ({ children }: Props): JSX.Element => {
    };
    const clear = () => {
       if (!isCleared.current) {
-         setState(initState);
+         setState({ List: [] });
          isCleared.current = true;
       }
    };

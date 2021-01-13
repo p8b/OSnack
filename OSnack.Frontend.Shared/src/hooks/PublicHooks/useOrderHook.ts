@@ -42,9 +42,9 @@ export const usePostOrder = async (paypalId: string | null, orderData: Order): P
         }
   
 }
-export type IReturnUseVerifyOrderOrder={ data:Order2 , status?: number;};
-export const useVerifyOrderOrder = async (newOrder: Order): Promise<IReturnUseVerifyOrderOrder> =>{
-        let url_ = API_URL + "/Order/VerifyOrder";
+export type IReturnUseVerifyOrder={ data:Order2 , status?: number;};
+export const useVerifyOrder = async (newOrder: Order): Promise<IReturnUseVerifyOrder> =>{
+        let url_ = API_URL + "/Order/Post/Verify";
         url_ = url_.replace(/[?&]$/, "");
         const content_ = newOrder;
         let response = await httpCaller.POST(url_, content_);

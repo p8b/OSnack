@@ -5,7 +5,7 @@ import InputDropDown from 'osnack-frontend-shared/src/components/Inputs/InputDro
 import { Address, Coupon, CouponType, DeliveryOption, Order, Order2 } from 'osnack-frontend-shared/src/_core/apiModels';
 import { useAllDeliveryOption } from 'osnack-frontend-shared/src/hooks/PublicHooks/useDeliveryOptionHook';
 import { useAllAddress } from 'osnack-frontend-shared/src/hooks/OfficialHooks/useAddressHook';
-import { usePostOrder, useVerifyOrderOrder } from 'osnack-frontend-shared/src/hooks/PublicHooks/useOrderHook';
+import { usePostOrder, useVerifyOrder } from 'osnack-frontend-shared/src/hooks/PublicHooks/useOrderHook';
 import { AuthContext } from 'osnack-frontend-shared/src/_core/authenticationContext';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import { useDetectOutsideClick } from 'osnack-frontend-shared/src/hooks/function/useDetectOutsideClick';
@@ -175,7 +175,7 @@ const Checkout = (props: IProps) => {
    const checkout = (loadingCallBack?: () => void) => {
       errorAlert.clear();
       errorAlert.pleaseWait(isUnmounted);
-      useVerifyOrderOrder(order).then(result => {
+      useVerifyOrder(order).then(result => {
          if (isUnmounted.current) return;
          setPaypalOrder(result.data);
          setIsOpenPayementModal(true);
@@ -198,8 +198,10 @@ const Checkout = (props: IProps) => {
          setIsOpenPayementModal(false);
       });
    };
-   if (isOrderCompleted)
+   if (isOrderCompleted) {
+      basket.clear();
       return <Redirect to={{ pathname: "/OrderSuccessful", state: { order } }} />;
+   }
    return (
       <div className={props.className}>
          <div className="col-12 m-0 pos-sticky">
