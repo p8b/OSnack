@@ -82,8 +82,10 @@ namespace OSnack.API.Controllers
 
             _DbContext.Communications.Update(originalCommunication);
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
-            /// return 201 created status with the new object
-            /// and success message
+            if (message.IsCustomer)
+               await _EmailService.MessageToAdminAsync(message, originalCommunication).ConfigureAwait(false);
+            else
+               await _EmailService.MessageToUser(message, originalCommunication).ConfigureAwait(false);
             return Ok(originalCommunication);
          }
          catch (Exception ex)

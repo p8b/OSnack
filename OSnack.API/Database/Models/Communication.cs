@@ -58,7 +58,22 @@ namespace OSnack.API.Database.Models
 
       [EmailTemplateVariable(Name = "Type")]
       [NotMapped, JsonIgnore]
-      public string CommunicationType { get; private set; }
+      public string CommunicationType
+      {
+         get
+         {
+            switch (this.Type)
+            {
+               case ContactType.Dispute:
+                  return Enum.Parse<ContactType>("Dispute").ToString("g");
+               case ContactType.Message:
+                  return Enum.Parse<ContactType>("Message").ToString("g");
+               default:
+                  return "";
+
+            }
+         }
+      }
 
       public void SetURL(string url) => URL = $"{url}/{Id}";
 

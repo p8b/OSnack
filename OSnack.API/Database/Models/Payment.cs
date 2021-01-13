@@ -49,6 +49,7 @@ namespace OSnack.API.Database.Models
       public string PaymentDate { get { return $"{DateTime.ToShortDateString()} {DateTime.ToShortTimeString()}"; } }
 
       [DataType(DataType.Currency, ErrorMessage = "Invalid Currency \n")]
+      [EmailTemplateVariable(Name = "RefundAmount")]
       [Column(TypeName = "decimal(7,2)")]
       public decimal RefundAmount { get; set; }
       public DateTime? RefundDateTime { get; set; }

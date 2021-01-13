@@ -2,13 +2,16 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 using OSnack.API.Extras.CustomTypes;
+
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Attributes;
 using P8B.Core.CSharp.Extentions;
 using P8B.Core.CSharp.Models;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +41,7 @@ namespace OSnack.API.Controllers
             _ = bool.TryParse(filterStatus, out bool boolFilterStatus);
 
             int totalCount = await _DbContext.Communications
-               .Where(c => c.Type == ContactType.Question && (filterStatus.Equals(CoreConst.GetAllRecords) || c.Status == boolFilterStatus))
+               .Where(c => c.Type == ContactType.Message && (filterStatus.Equals(CoreConst.GetAllRecords) || c.Status == boolFilterStatus))
                 .CountAsync(c => searchValue.Equals(CoreConst.GetAllRecords) || c.Id.Contains(searchValue)
                                                                                      || c.FullName.Contains(searchValue)
                                                                                      || c.Email.Contains(searchValue))
@@ -46,7 +49,7 @@ namespace OSnack.API.Controllers
 
             List<Communication> list = await _DbContext.Communications.Include(c => c.Order).ThenInclude(o => o.User)
                .Include(c => c.Messages)
-               .Where(c => c.Type == ContactType.Question && (filterStatus.Equals(CoreConst.GetAllRecords) || c.Status == boolFilterStatus))
+               .Where(c => c.Type == ContactType.Message && (filterStatus.Equals(CoreConst.GetAllRecords) || c.Status == boolFilterStatus))
                 .Where(c => searchValue.Equals(CoreConst.GetAllRecords) || c.Id.Contains(searchValue)
                                                                                      || c.FullName.Contains(searchValue)
                                                                                      || c.Email.Contains(searchValue))
@@ -78,7 +81,7 @@ namespace OSnack.API.Controllers
 
             Communication question = await _DbContext.Communications
                .Include(c => c.Messages)
-               .SingleOrDefaultAsync(c => c.Type == ContactType.Question && c.Id == questionKey)
+               .SingleOrDefaultAsync(c => c.Type == ContactType.Message && c.Id == questionKey)
                .ConfigureAwait(false);
 
             if (question is null)

@@ -15,8 +15,8 @@ namespace OSnack.API.Extras.CustomTypes
       [EmailTemplateTypeRequiredClasses]
       DefaultTemplate = 0,
 
-      [EmailTemplateTypeRequiredClasses]
-      Others = 1,
+      //[EmailTemplateTypeRequiredClasses]
+      //Others = 1,
 
       [EmailTemplateTypeRequiredClasses(typeof(User), typeof(Token))]
       EmailConfirmation = 2,
@@ -39,11 +39,17 @@ namespace OSnack.API.Extras.CustomTypes
       [EmailTemplateTypeRequiredClasses(typeof(Order), typeof(Payment), typeof(OrderItem))]
       OrderReceipt = 8,
 
+      [EmailTemplateTypeRequiredClasses(typeof(Order), typeof(Payment), typeof(OrderItem))]
+      OrderReceiptForAdmin = 11,
+
       [EmailTemplateTypeRequiredClasses(typeof(Order), typeof(Payment))]
       OrderCancellation = 9,
 
       [EmailTemplateTypeRequiredClasses(typeof(Order))]
       OrderDispute = 10,
+
+      [EmailTemplateTypeRequiredClasses(typeof(Order))]
+      OrderDisputeForAdmin = 12,
    }
 
    public enum TokenTypes
@@ -91,6 +97,6 @@ namespace OSnack.API.Extras.CustomTypes
    public enum ContactType
    {
       Dispute = 0,
-      Question = 1
+      Message = 1
    }
 }

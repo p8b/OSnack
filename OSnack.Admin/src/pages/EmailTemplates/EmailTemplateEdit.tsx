@@ -1,6 +1,5 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import EmailEditor from 'react-email-editor';
-import ButtonPopupConfirm from 'osnack-frontend-shared/src/components/Buttons/ButtonPopupConfirm';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { EmailTemplate, EmailTemplateRequiredClass, EmailTemplateTypes, EmailTemplateTypesList } from 'osnack-frontend-shared/src/_core/apiModels';
@@ -9,7 +8,7 @@ import CopyText from 'osnack-frontend-shared/src/components/Texts/CopyText';
 import { sleep } from 'osnack-frontend-shared/src/_core/appFunc';
 import EmailTemplateEditDetailsModal from './EmailTemplateEditDetailsModal';
 import { Redirect, useHistory } from 'react-router-dom';
-import { useDeleteTemplateEmail, useGetAllAvailableTemplateTypesEmail, useGetTemplateEmail, usePostTemplateEmail, usePutTemplateEmail } from '../../SecretHooks/useEmailHook';
+import { useGetTemplateEmail, usePostTemplateEmail, usePutTemplateEmail } from '../../SecretHooks/useEmailHook';
 import InputDropdown from 'osnack-frontend-shared/src/components/Inputs/InputDropDown';
 
 const EmailTemplatesEdit = (props: IProps) => {
@@ -20,14 +19,12 @@ const EmailTemplatesEdit = (props: IProps) => {
 
    const [template, setTemplate] = useState(new EmailTemplate());
    const [defaultTemplate, setDefaultTemplate] = useState(new EmailTemplate());
-   const [templateTypes, setTemplateTypes] = useState<EmailTemplateTypes[]>([]);
    const [selectedServerClass, setSelectedServerClass] = useState<EmailTemplateRequiredClass>();
    const [isSaved, setIsSaved] = useState(false);
    const [isEditorLoaded, setIsEditorLoaded] = useState(false);
    const [isOpenDetailsModal, setIsOpenDetailsModal] = useState(false);
    const [isTemplateRecognised, setIsTemplateRecognised] = useState(true);
    const [isDefaultTemplateUsed, setIsDefaultTemplateUsed] = useState(false);
-   const [initialLockedStatus, setInitialLockedStatus] = useState<boolean | undefined>(true);
 
    useEffect(() => {
       if (props.location.state == undefined) {
@@ -36,24 +33,16 @@ const EmailTemplatesEdit = (props: IProps) => {
       }
 
       setTemplate(props.location.state.emailTemplate);
-      setInitialLockedStatus(props.location.state.emailTemplate.templateType != EmailTemplateTypes.Others);
       setDefaultTemplate(props.location.state.defaultEmailTemplate);
 
       if (props.location.state.emailTemplate.id && props.location.state.emailTemplate.id > 0)
          useGetTemplateEmail(props.location.state.emailTemplate.id).then(
             result => {
                setTemplate(result.data.emailTemplate != undefined ? result.data.emailTemplate : new EmailTemplate());
-               setInitialLockedStatus(result.data.emailTemplate?.templateType != EmailTemplateTypes.Others);
                setDefaultTemplate(result.data.defaultEmailTemplate ? result.data.defaultEmailTemplate : new EmailTemplate());
             }).catch(errors => {
                errorAlert.set(errors);
             });
-      else
-         useGetAllAvailableTemplateTypesEmail().then(result => {
-            setTemplateTypes(result.data);
-         }).catch(errors => {
-            errorAlert.set(errors);
-         });
 
       if (props.location.state.emailTemplate.id == 0)
          setIsOpenDetailsModal(true);
@@ -104,21 +93,9 @@ const EmailTemplatesEdit = (props: IProps) => {
             errorAlert.clear();
             setIsSaved(true);
             setTemplate(resultTemplate);
-            setInitialLockedStatus(resultTemplate?.templateType != EmailTemplateTypes.Others);
+            // setInitialLockedStatus(resultTemplate?.templateType != EmailTemplateTypes.Others);
             sleep(3000, isUnmounted).then(() => { setIsSaved(false); });
          }
-      });
-   };
-   const onDelete = async () => {
-      errorAlert.pleaseWait(isUnmounted);
-      useDeleteTemplateEmail(template.id!).then(result => {
-         if (isUnmounted.current) return;
-         errorAlert.setSingleSuccess("Deleted", result.data);
-         sleep(3000, isUnmounted).then(() => { setIsTemplateRecognised(false); });
-      }).catch((alert) => {
-         if (isUnmounted.current) return;
-         errorAlert.clear();
-         setIsOpenDetailsModal(true);
       });
    };
 
@@ -157,15 +134,6 @@ const EmailTemplatesEdit = (props: IProps) => {
       else
          return <></>;
    };
-   const renderDeleteButton = () => {
-      if (template.templateType != EmailTemplateTypes.DefaultTemplate && template.id && template.id > 0 && !initialLockedStatus)
-         return <ButtonPopupConfirm title=""
-            popupMessage="Are your Sure?"
-            onConfirmClick={onDelete}
-            btnClassName="btn-lg btn-red delete-icon" />;
-      else
-         return <></>;
-   };
 
    if (!isTemplateRecognised) {
       return <Redirect to="/EmailTemplate" />;
@@ -179,7 +147,6 @@ const EmailTemplatesEdit = (props: IProps) => {
             {renderInsertDefaultTemplateButton()}
             <Button onClick={() => { setIsOpenDetailsModal(true); }}
                children="Details" className="btn-lg btn-white edit-icon" />
-            {renderDeleteButton()}
             <Button onClick={saveTemplate}
                enableLoading={isUnmounted}
                children={`Save${isSaved ? "d" : ""}`}
@@ -211,7 +178,7 @@ const EmailTemplatesEdit = (props: IProps) => {
                minHeight={(window.innerHeight - (document.getElementById("template-container")?.getBoundingClientRect().top || 0) - 30)} />
          </div>
          <EmailTemplateEditDetailsModal emailTemplate={template}
-            templateTypes={templateTypes}
+            templateTypes={props.location.state.templateTypes}
             alert={errorAlert.alert}
             clearAlert={() => errorAlert.clear()}
             isOpen={isOpenDetailsModal || (errorAlert.alert.List.length > 0)}
@@ -231,6 +198,7 @@ declare type IProps = {
       state: {
          defaultEmailTemplate: EmailTemplate,
          emailTemplate: EmailTemplate;
+         templateTypes: EmailTemplateTypes[];
       };
    };
 };

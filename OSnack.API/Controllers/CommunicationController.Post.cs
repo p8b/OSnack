@@ -125,7 +125,7 @@ namespace OSnack.API.Controllers
                newContact.FullName = $"{user.FirstName} {user.Surname}";
             }
             newContact.Status = true;
-            newContact.Type = ContactType.Question;
+            newContact.Type = ContactType.Message;
             newContact.Messages[0].IsCustomer = true;
             ModelState.Clear();
             TryValidateModel(newContact);

@@ -33,6 +33,12 @@ namespace OSnack.API.Extras
       public string BrandName { get; set; }
 
       /// <summary>
+      /// Admin Email
+      /// </summary>
+      [JsonProperty(PropertyName = "AdminEmail")]
+      public string AdminEmail { get; set; }
+
+      /// <summary>
       /// App Domains
       /// </summary>
       [JsonProperty(PropertyName = "AppDomains")]

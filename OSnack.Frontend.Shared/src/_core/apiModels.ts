@@ -13,12 +13,12 @@ export const CouponTypeList=[
 export enum ContactType {
 
     Dispute = 0,
-    Question = 1,
+    Message = 1,
 }
 
 export const ContactTypeList=[
 {Id:0,Name:"Dispute".replace(/([A-Z])/g, ' $1').trim(),Value:ContactType.Dispute},
-{Id:1,Name:"Question".replace(/([A-Z])/g, ' $1').trim(),Value:ContactType.Question},
+{Id:1,Name:"Message".replace(/([A-Z])/g, ' $1').trim(),Value:ContactType.Message},
 ]
 export enum PaymentType {
 
@@ -81,7 +81,6 @@ export const RegistrationTypesList=[
 export enum EmailTemplateTypes {
 
     DefaultTemplate = 0,
-    Others = 1,
     EmailConfirmation = 2,
     WelcomeExternalRegistration = 3,
     WelcomeNewEmployee = 4,
@@ -91,11 +90,12 @@ export enum EmailTemplateTypes {
     OrderReceipt = 8,
     OrderCancellation = 9,
     OrderDispute = 10,
+    OrderReceiptForAdmin = 11,
+    OrderDisputeForAdmin = 12,
 }
 
 export const EmailTemplateTypesList=[
 {Id:0,Name:"DefaultTemplate".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.DefaultTemplate},
-{Id:1,Name:"Others".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.Others},
 {Id:2,Name:"EmailConfirmation".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.EmailConfirmation},
 {Id:3,Name:"WelcomeExternalRegistration".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.WelcomeExternalRegistration},
 {Id:4,Name:"WelcomeNewEmployee".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.WelcomeNewEmployee},
@@ -105,6 +105,8 @@ export const EmailTemplateTypesList=[
 {Id:8,Name:"OrderReceipt".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.OrderReceipt},
 {Id:9,Name:"OrderCancellation".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.OrderCancellation},
 {Id:10,Name:"OrderDispute".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.OrderDispute},
+{Id:11,Name:"OrderReceiptForAdmin".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.OrderReceiptForAdmin},
+{Id:12,Name:"OrderDisputeForAdmin".replace(/([A-Z])/g, ' $1').trim(),Value:EmailTemplateTypes.OrderDisputeForAdmin},
 ]
 export class Role {
     id?: number = 0;

@@ -9,11 +9,25 @@ namespace OSnack.API.Services
 {
    public partial class EmailService
    {
-      public async Task<bool> Others()
+      public async Task<bool> EmailConfirmationAsync(User user, string DomainUrl)
       {
          try
          {
-            await SetUserTemplate(EmailTemplateTypes.Others).ConfigureAwait(false);
+            await SetUserTemplate(EmailTemplateTypes.EmailConfirmation).ConfigureAwait(false);
+
+            Token token = new Token()
+            {
+               Type = TokenTypes.ConfirmEmail,
+               UrlDomain = DomainUrl,
+            };
+            token.GenerateToken(user, DateTime.UtcNow.AddYears(1), _DbContext, AppConst.Settings.EmailSettings.PathNames.ConfirmEmail);
+            foreach (EmailTemplateRequiredClass serverClass in Template.RequiredClasses)
+            {
+               SetTemplateServerPropValue(serverClass, user);
+               SetTemplateServerPropValue(serverClass, token);
+            }
+
+            await SendEmailAsync($"{user.FirstName} {user.Surname}", user.Email).ConfigureAwait(false);
             return true;
          }
          catch (Exception ex)
@@ -32,34 +46,6 @@ namespace OSnack.API.Services
             {
                SetTemplateServerPropValue(serverClass, user);
                SetTemplateServerPropValue(serverClass, user.RegistrationMethod);
-            }
-
-            await SendEmailAsync($"{user.FirstName} {user.Surname}", user.Email).ConfigureAwait(false);
-            return true;
-         }
-         catch (Exception ex)
-         {
-            _LoggingService.LogEmailFailure(ex.Message, new { ex });
-            return false;
-         }
-      }
-
-      public async Task<bool> EmailConfirmationAsync(User user, string DomainUrl)
-      {
-         try
-         {
-            await SetUserTemplate(EmailTemplateTypes.EmailConfirmation).ConfigureAwait(false);
-
-            Token token = new Token()
-            {
-               Type = TokenTypes.ConfirmEmail,
-               UrlDomain = DomainUrl,
-            };
-            token.GenerateToken(user, DateTime.UtcNow.AddYears(1), _DbContext, AppConst.Settings.EmailSettings.PathNames.ConfirmEmail);
-            foreach (EmailTemplateRequiredClass serverClass in Template.RequiredClasses)
-            {
-               SetTemplateServerPropValue(serverClass, user);
-               SetTemplateServerPropValue(serverClass, token);
             }
 
             await SendEmailAsync($"{user.FirstName} {user.Surname}", user.Email).ConfigureAwait(false);
@@ -144,6 +130,17 @@ namespace OSnack.API.Services
             if (order.User != null)
                email = order.User.Email;
             await SendEmailAsync($"{order.Name}", email).ConfigureAwait(false);
+
+            await SetUserTemplate(EmailTemplateTypes.OrderReceiptForAdmin).ConfigureAwait(false);
+            foreach (EmailTemplateRequiredClass serverClass in Template.RequiredClasses)
+            {
+               SetTemplateServerPropValue(serverClass, order);
+               SetTemplateServerPropValue(serverClass, order.Payment);
+            }
+
+
+            await SendEmailAsync(AppConst.Settings.AdminEmail, AppConst.Settings.AdminEmail).ConfigureAwait(false);
+
             return true;
          }
          catch (Exception ex)
@@ -171,6 +168,19 @@ namespace OSnack.API.Services
             if (order.User != null)
                email = order.User.Email;
             await SendEmailAsync($"{order.Name}", email).ConfigureAwait(false);
+
+            await SetUserTemplate(EmailTemplateTypes.OrderDisputeForAdmin).ConfigureAwait(false);
+
+
+            communication.SetURL($"{AppConst.Settings.AppDomains.AdminApp}{AppConst.Settings.EmailSettings.PathNames.Dispute}");
+            foreach (EmailTemplateRequiredClass serverClass in Template.RequiredClasses)
+            {
+               SetTemplateServerPropValue(serverClass, order);
+               SetTemplateServerPropValue(serverClass, communication);
+            }
+
+            await SendEmailAsync(AppConst.Settings.AdminEmail, AppConst.Settings.AdminEmail).ConfigureAwait(false);
+
             return true;
          }
          catch (Exception ex)
@@ -179,6 +189,7 @@ namespace OSnack.API.Services
             return false;
          }
       }
+
       public async Task<bool> OrderCancelationAsync(Order order, Communication dispute)
       {
          try
@@ -195,6 +206,48 @@ namespace OSnack.API.Services
             if (order.User != null)
                email = order.User.Email;
             await SendEmailAsync($"{order.Name}", email).ConfigureAwait(false);
+            return true;
+         }
+         catch (Exception ex)
+         {
+            _LoggingService.LogEmailFailure(ex.Message, new { ex });
+            return false;
+         }
+      }
+
+      public async Task<bool> MessageToAdminAsync(Message message, Communication communication)
+      {
+         try
+         {
+            await SetUserTemplate(EmailTemplateTypes.MessageToAdmin).ConfigureAwait(false);
+            foreach (EmailTemplateRequiredClass serverClass in Template.RequiredClasses)
+            {
+               SetTemplateServerPropValue(serverClass, message);
+               SetTemplateServerPropValue(serverClass, communication);
+            }
+
+            await SendEmailAsync(AppConst.Settings.AdminEmail, AppConst.Settings.AdminEmail).ConfigureAwait(false);
+            return true;
+         }
+         catch (Exception ex)
+         {
+            _LoggingService.LogEmailFailure(ex.Message, new { ex });
+            return false;
+         }
+      }
+
+      public async Task<bool> MessageToUser(Message message, Communication communication)
+      {
+         try
+         {
+            await SetUserTemplate(EmailTemplateTypes.MessageToUser).ConfigureAwait(false);
+            foreach (EmailTemplateRequiredClass serverClass in Template.RequiredClasses)
+            {
+               SetTemplateServerPropValue(serverClass, message);
+               SetTemplateServerPropValue(serverClass, communication);
+            }
+
+            await SendEmailAsync(communication.FullName, communication.Email).ConfigureAwait(false);
             return true;
          }
          catch (Exception ex)

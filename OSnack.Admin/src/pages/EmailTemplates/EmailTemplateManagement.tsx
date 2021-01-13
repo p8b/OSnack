@@ -4,19 +4,26 @@ import ButtonCard from 'osnack-frontend-shared/src/components/Buttons/ButtonCard
 import { EmailTemplate, EmailTemplateTypes, EmailTemplateTypesList } from 'osnack-frontend-shared/src/_core/apiModels';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Redirect } from 'react-router-dom';
-import { useAllTemplateEmail } from '../../SecretHooks/useEmailHook';
+import { useAllTemplateEmail, useGetAllAvailableTemplateTypesEmail } from '../../SecretHooks/useEmailHook';
 import Container from '../../components/Container';
 
 const EmailTemplatePanel = (props: IProps) => {
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
    const [redirectToEditPage, setRedirectToEditPage] = useState(false);
+   const [templateTypes, setTemplateTypes] = useState<EmailTemplateTypes[]>([]);
    const [emailTemplate, setEmailTemplate] = useState(new EmailTemplate());
    const [tempList, setTempList] = useState<EmailTemplate[]>([]);
    const [defaultEmailTemplate, setDefaultEmailTemplate] = useState(new EmailTemplate());
 
    useEffect(() => {
       reloadTemplateList();
+
+      useGetAllAvailableTemplateTypesEmail().then(result => {
+         setTemplateTypes(result.data);
+      }).catch(errors => {
+         errorAlert.set(errors);
+      });
       return () => { isUnmounted.current = true; };
    }, []);
 
@@ -38,7 +45,7 @@ const EmailTemplatePanel = (props: IProps) => {
    };
 
    if (redirectToEditPage)
-      return <Redirect to={{ pathname: "/EmailTemplate/Edit", state: { emailTemplate, defaultEmailTemplate } }} />;
+      return <Redirect to={{ pathname: "/EmailTemplate/Edit", state: { emailTemplate, defaultEmailTemplate, templateTypes } }} />;
 
    return (
       <>
@@ -46,12 +53,14 @@ const EmailTemplatePanel = (props: IProps) => {
          <Container id="test" className="justify-content-center p-0">
             <Alert alert={errorAlert.alert} onClosed={errorAlert.clear}
                className="col-12 mb-2" />
-            <ButtonCard cardClassName="d-flex align-items-center" onClick={newTemplate}>
-               <div className="col ">
-                  <div className="col-12 fas add-icon" />
-                  <div children="New Template" />
-               </div>
-            </ButtonCard>
+            {templateTypes.length > 0 &&
+               <ButtonCard cardClassName="d-flex align-items-center" onClick={newTemplate}>
+                  <div className="col ">
+                     <div className="col-12 fas add-icon" />
+                     <div children="New Template" />
+                  </div>
+               </ButtonCard>
+            }
             {tempList.length > 0 &&
                tempList.map(temp => {
                   return (
@@ -62,7 +71,7 @@ const EmailTemplatePanel = (props: IProps) => {
                         }}>
 
                         <div className={`col-12`}>
-                           <div className={`col-12 ${temp.templateType != EmailTemplateTypes.Others ? "lock-icon" : "unlock-icon"}`} />
+                           <div className={`col-12`} />
                            {EmailTemplateTypesList.find(t => t.Value === temp.templateType)?.Name}
                         </div>
                      </ButtonCard>

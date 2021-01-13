@@ -32,7 +32,8 @@ namespace OSnack.API.Controllers
          {
             List<EmailTemplate> templateList = await _DbContext.EmailTemplates
                .OrderByDescending(et => et.TemplateType)
-               .ToListAsync().ConfigureAwait(false);
+               .ToListAsync()
+               .ConfigureAwait(false);
 
             EmailTemplate copyDefaultTemplate = null;
             foreach (EmailTemplate item in templateList)
@@ -88,7 +89,6 @@ namespace OSnack.API.Controllers
          }
       }
 
-
       #region *** ***                                                    
       [ProducesResponseType(typeof(List<EmailTemplateTypes>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
@@ -100,10 +100,11 @@ namespace OSnack.API.Controllers
          try
          {
             var typeList = Enum.GetValues(typeof(EmailTemplateTypes)).Cast<EmailTemplateTypes>().ToList();
-            foreach (var item in _DbContext.EmailTemplates.Where(et => et.TemplateType != EmailTemplateTypes.Others))
+            foreach (var item in _DbContext.EmailTemplates)
             {
                typeList.RemoveAll(t => t == item.TemplateType);
             }
+
             return Ok(typeList);
          }
          catch (Exception ex)
