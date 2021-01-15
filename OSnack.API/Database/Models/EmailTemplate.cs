@@ -28,8 +28,8 @@ namespace OSnack.API.Database.Models
       public EmailTemplateTypes? TemplateType { get; set; }
 
       [Required(ErrorMessage = "Subject Is Required \n")]
-      [Column(TypeName = "nvarchar(50)")]
-      [StringLength(50, ErrorMessage = "Subject Must be less than 50 Characters \n")]
+      [Column(TypeName = "nvarchar(100)")]
+      [StringLength(100, ErrorMessage = "Subject Must be less than 100 Characters \n")]
       public string Subject { get; set; } = "";
 
       [NotMapped]

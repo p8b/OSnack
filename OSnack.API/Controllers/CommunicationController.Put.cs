@@ -46,7 +46,10 @@ namespace OSnack.API.Controllers
       {
          try
          {
-            var originalCommunication = await _DbContext.Communications.Include(c => c.Messages).SingleOrDefaultAsync(c => c.Id == communicationId);
+            var originalCommunication = await _DbContext.Communications
+               .Include(c => c.Messages)
+               .SingleOrDefaultAsync(c => c.Id == communicationId);
+
             if (originalCommunication is null)
             {
                CoreFunc.Error(ref ErrorsList, "Dispute Not exists.");
@@ -63,6 +66,10 @@ namespace OSnack.API.Controllers
                CoreFunc.Error(ref ErrorsList, "Message is required.");
                return StatusCode(412, ErrorsList);
             }
+
+            if (!originalCommunication.Status)
+               message.Body = $"{originalCommunication.CommunicationType} was closed";
+
             message.IsCustomer = isCustomer;
             originalCommunication.Messages.Add(message);
 
@@ -74,6 +81,7 @@ namespace OSnack.API.Controllers
                if (key.StartsWith("User") || key.StartsWith("Messages") || key.StartsWith("Order") || key.StartsWith("OrderItem"))
                   ModelState.Remove(key);
             }
+
             if (!ModelState.IsValid)
             {
                CoreFunc.ExtractErrors(ModelState, ref ErrorsList);
@@ -82,10 +90,12 @@ namespace OSnack.API.Controllers
 
             _DbContext.Communications.Update(originalCommunication);
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
+
             if (message.IsCustomer)
                await _EmailService.MessageToAdminAsync(message, originalCommunication).ConfigureAwait(false);
-            else
+            else if (originalCommunication.Status)
                await _EmailService.MessageToUser(message, originalCommunication).ConfigureAwait(false);
+
             return Ok(originalCommunication);
          }
          catch (Exception ex)
@@ -94,7 +104,5 @@ namespace OSnack.API.Controllers
             return StatusCode(417, ErrorsList);
          }
       }
-
-
    }
 }

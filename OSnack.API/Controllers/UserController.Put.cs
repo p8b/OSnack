@@ -336,7 +336,6 @@ namespace OSnack.API.Controllers
          try
          {
             string passwordString = data.password;
-            string email = data.email;
             string pathName = data.pathName;
             bool justCheckToken = data.justCheckToken;
 
@@ -355,7 +354,6 @@ namespace OSnack.API.Controllers
                .SingleOrDefaultAsync(t => t.Value.Equals(tokenValue) && t.Url.Contains(pathName))
                .ConfigureAwait(false);
 
-
             if (token == null || token.Type != Extras.CustomTypes.TokenTypes.ChangePassword)
             {
                ErrorsList.Add(new Error("0", "Invalid Request/Token."));
@@ -370,14 +368,6 @@ namespace OSnack.API.Controllers
 
             if (justCheckToken)
                return Ok("👌");
-
-
-            if (!token.User.NormalizedEmail.Equals(email.ToUpper().Trim()))
-            {
-               ErrorsList.Add(new Error("Email", "Invalid Email."));
-               return StatusCode(412, ErrorsList);
-            }
-
 
 
             token.User.Password = passwordString;
