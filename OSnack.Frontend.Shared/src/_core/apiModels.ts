@@ -674,3 +674,7 @@ export class NewOrderCountAndOpenDisputeCountAndOpenMessageCount extends NewOrde
     openMessageCount?: number;
 
 }
+export class NewOrderCountAndOpenDisputeCountAndOpenMessageCountAndTotalSales extends NewOrderCountAndOpenDisputeCountAndOpenMessageCount {
+    totalSales?: number;
+
+}

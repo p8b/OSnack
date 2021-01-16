@@ -19,13 +19,13 @@ namespace OSnack.API.Controllers
    public partial class DashboardController
    {
       #region *** ***
-      [MultiResultPropertyNames("newOrderCount", "openDisputeCount", "openMessageCount")]
-      [ProducesResponseType(typeof(MultiResult<int, int, int>), StatusCodes.Status200OK)]
+      [MultiResultPropertyNames("newOrderCount", "openDisputeCount", "openMessageCount", "totalSales")]
+      [ProducesResponseType(typeof(MultiResult<int, int, int, decimal>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)]
-      public async Task<IActionResult> OrderDisputeMessageCount()
+      public async Task<IActionResult> Summary()
       {
          try
          {
@@ -35,7 +35,17 @@ namespace OSnack.API.Controllers
                .CountAsync(o => o.Type == ContactType.Dispute && o.Status == true).ConfigureAwait(false);
             int openMessageCount = await _DbContext.Communications
                .CountAsync(o => o.Type == ContactType.Message && o.Status == true).ConfigureAwait(false);
-            return Ok(new MultiResult<int, int, int>(newOrderCount, openDisputeCount, openMessageCount, CoreFunc.GetCustomAttributeTypedArgument(this.ControllerContext)));
+            decimal totalPrice = await _DbContext.Orders
+               .Where(o => o.Status == OrderStatusType.InProgress
+                    || o.Status == OrderStatusType.Confirmed
+                    || o.Status == OrderStatusType.Delivered
+                    || o.Status == OrderStatusType.PartialyRefunded)
+               .SumAsync(o => o.TotalPrice).ConfigureAwait(false);
+            decimal totalPartialRefund = await _DbContext.Payments
+               .Where(p => p.Type == PaymentType.PartialyRefunded)
+               .SumAsync(p => p.RefundAmount).ConfigureAwait(false);
+
+            return Ok(new MultiResult<int, int, int, decimal>(newOrderCount, openDisputeCount, openMessageCount, totalPrice - totalPartialRefund, CoreFunc.GetCustomAttributeTypedArgument(this.ControllerContext)));
          }
          catch (Exception ex)
          {

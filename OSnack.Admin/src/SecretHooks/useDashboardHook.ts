@@ -1,10 +1,10 @@
 import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/components/Texts/Alert";
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
-import { NewOrderCountAndOpenDisputeCountAndOpenMessageCount, SalePeriod, LableListAndPriceListAndCountList } from "osnack-frontend-shared/src/_core/apiModels";
-export type IReturnUseOrderDisputeMessageCountDashboard={ data:NewOrderCountAndOpenDisputeCountAndOpenMessageCount , status?: number;};
-export const useOrderDisputeMessageCountDashboard = async (): Promise<IReturnUseOrderDisputeMessageCountDashboard> =>{
-        let url_ = API_URL + "/Dashboard/Get/OrderDisputeMessageCount";
+import { NewOrderCountAndOpenDisputeCountAndOpenMessageCountAndTotalSales, SalePeriod, LableListAndPriceListAndCountList } from "osnack-frontend-shared/src/_core/apiModels";
+export type IReturnUseSummaryDashboard={ data:NewOrderCountAndOpenDisputeCountAndOpenMessageCountAndTotalSales , status?: number;};
+export const useSummaryDashboard = async (): Promise<IReturnUseSummaryDashboard> =>{
+        let url_ = API_URL + "/Dashboard/Get/Summary";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);
         if( response?.status === 400){
@@ -15,7 +15,7 @@ export const useOrderDisputeMessageCountDashboard = async (): Promise<IReturnUse
         switch(response?.status){
 
                 case 200: 
-                        var responseData: NewOrderCountAndOpenDisputeCountAndOpenMessageCount = await response?.json();
+                        var responseData: NewOrderCountAndOpenDisputeCountAndOpenMessageCountAndTotalSales = await response?.json();
                         return { data: responseData, status: response?.status };
 
                 case 417: 
