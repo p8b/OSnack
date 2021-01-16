@@ -10,6 +10,18 @@ export const CouponTypeList=[
 {Id:1,Name:"DiscountPrice".replace(/([A-Z])/g, ' $1').trim(),Value:CouponType.DiscountPrice},
 {Id:2,Name:"PercentageOfTotal".replace(/([A-Z])/g, ' $1').trim(),Value:CouponType.PercentageOfTotal},
 ]
+export enum SalePeriod {
+
+    Daily = 0,
+    Monthly = 1,
+    Yearly = 2,
+}
+
+export const SalePeriodList=[
+{Id:0,Name:"Daily".replace(/([A-Z])/g, ' $1').trim(),Value:SalePeriod.Daily},
+{Id:1,Name:"Monthly".replace(/([A-Z])/g, ' $1').trim(),Value:SalePeriod.Monthly},
+{Id:2,Name:"Yearly".replace(/([A-Z])/g, ' $1').trim(),Value:SalePeriod.Yearly},
+]
 export enum ContactType {
 
     Dispute = 0,
@@ -480,6 +492,11 @@ export class CommentListAndComment {
     comment?: Comment | undefined;
 
 }
+export class LableListAndPriceList {
+    lableList?: string[] | undefined;
+    priceList?: number[] | undefined;
+
+}
 export class UserListAndTotalCount {
     userList?: User[] | undefined;
     totalCount?: number;
@@ -559,6 +576,11 @@ export class DeliveryOptionListAndTotalCount {
     totalCount?: number;
 
 }
+export class NewOrderCountAndOpenDisputeCount {
+    newOrderCount?: number;
+    openDisputeCount?: number;
+
+}
 export class EmailTemplateAndDefaultEmailTemplate {
     emailTemplate?: EmailTemplate | undefined;
     defaultEmailTemplate?: EmailTemplate | undefined;
@@ -628,6 +650,10 @@ export class OrderItem extends OrderProductBase {
     quantity!: number;
 
 }
+export class LableListAndPriceListAndCountList extends LableListAndPriceList {
+    countList?: number[] | undefined;
+
+}
 export class CommentListAndCommentAndTotalCount extends CommentListAndComment {
     totalCount?: number;
 
@@ -642,5 +668,9 @@ export class OrderListAndAvailableTypesAndTotalCount extends OrderListAndAvailab
 }
 export class OrderListAndAvailableTypesAndFullNameAndTotalCount extends OrderListAndAvailableTypesAndFullName {
     totalCount?: number;
+
+}
+export class NewOrderCountAndOpenDisputeCountAndOpenMessageCount extends NewOrderCountAndOpenDisputeCount {
+    openMessageCount?: number;
 
 }

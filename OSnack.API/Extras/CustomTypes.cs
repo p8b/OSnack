@@ -99,4 +99,11 @@ namespace OSnack.API.Extras.CustomTypes
       Dispute = 0,
       Message = 1
    }
+
+   public enum SalePeriod
+   {
+      Daily = 0,
+      Monthly = 1,
+      Yearly = 2
+   }
 }
