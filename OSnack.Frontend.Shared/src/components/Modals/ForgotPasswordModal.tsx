@@ -2,9 +2,9 @@
 import Modal from "./Modal";
 import PageHeader from "../Texts/PageHeader";
 import { Input } from "../Inputs/Input";
-import { Button } from "../Buttons/Button";
 import Alert, { AlertObj, useAlert } from "../Texts/Alert";
 import { useRequestPasswordResetUser } from "../../hooks/PublicHooks/useUserHook";
+import ModalFooter from "./ModalFooter";
 
 const ForgotPasswordModal = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -45,18 +45,16 @@ const ForgotPasswordModal = (props: IProps) => {
                />
             </>
          }
-
          <Alert alert={errorAlert.alert}
             className="col-12 mb-2"
             onClosed={() => errorAlert.clear()}
          />
-
-         {!isTokenSent &&
-            <Button children="Continue" className="btn-lg col-12 col-sm-6 mt-2 btn-lg  btn-green"
-               onClick={onSubmit} enableLoading={isUnmounted} />
-         }
-         <Button children="Cancel" className="btn-lg col-12 col-sm-6 mt-2  btn-lg btn-white"
-            onClick={props.onCancel} />
+         <ModalFooter
+            createText="Submit"
+            onCreate={!isTokenSent ? onSubmit : undefined}
+            enableLoadingCreate={isUnmounted}
+            onCancel={props.onCancel}
+         />
       </Modal >
    );
 };

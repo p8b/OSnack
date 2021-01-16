@@ -337,7 +337,14 @@ namespace OSnack.API.Database.Models
          if (!refund.Status.Equals("COMPLETED"))
             return false;
          if (Dispute != null)
+         {
+            Dispute.Messages.Add(new Message()
+            {
+               Body = $"{Dispute.CommunicationType} was closed",
+               IsCustomer = false
+            });
             Dispute.Status = false;
+         }
          return true;
 
       }

@@ -94,7 +94,7 @@ const ShowCommunication = (props: IProps) => {
    };
    return (
       <>
-         <div className="col-12 pm-0 pos-t-sticky pt-3 bg-white">
+         <div className={`col-12 pm-0 ${props.isInModal && "pos-t-sticky"} pt-3 bg-white`}>
             <PageHeader title={`${communication.type === ContactType.Dispute ? "Dispute" : "Communication"} ${communication.status ? "" : "Closed"}`} />
             {props.access == ClientAppAccess.Secret &&
                <Toggler
@@ -125,7 +125,7 @@ const ShowCommunication = (props: IProps) => {
             </div>
          }
          {/***** buttons ****/}
-         <div className="col-12 pm-0 pos-b-sticky bg-white pb-3 pt-2">
+         <div className={`col-12 pm-0 ${props.isInModal && "pos-t-sticky"} bg-white pb-3 pt-2`}>
             {communicationStatus &&
                <TextArea className="col-12 mt-4 p-0" label="Message*" rows={3} value={message}
                   onChange={(i) => { setMessage(i.target.value); }} />

@@ -220,6 +220,7 @@ namespace OSnack.API.Services
          try
          {
             await SetUserTemplate(EmailTemplateTypes.MessageToAdmin).ConfigureAwait(false);
+            communication.SetURL($"{AppConst.Settings.AppDomains.AdminApp}{AppConst.Settings.EmailSettings.PathNames.Dispute}");
             foreach (EmailTemplateRequiredClass serverClass in Template.RequiredClasses)
             {
                SetTemplateServerPropValue(serverClass, message);
@@ -241,6 +242,7 @@ namespace OSnack.API.Services
          try
          {
             await SetUserTemplate(EmailTemplateTypes.MessageToUser).ConfigureAwait(false);
+            communication.SetURL($"{AppConst.Settings.AppDomains.ClientApp}{AppConst.Settings.EmailSettings.PathNames.Dispute}");
             foreach (EmailTemplateRequiredClass serverClass in Template.RequiredClasses)
             {
                SetTemplateServerPropValue(serverClass, message);

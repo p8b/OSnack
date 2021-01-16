@@ -45,10 +45,10 @@ namespace OSnack.API.Extras.CustomTypes
       [EmailTemplateTypeRequiredClasses(typeof(Order), typeof(Payment))]
       OrderCancellation = 9,
 
-      [EmailTemplateTypeRequiredClasses(typeof(Order))]
+      [EmailTemplateTypeRequiredClasses(typeof(Order), typeof(Communication))]
       OrderDispute = 10,
 
-      [EmailTemplateTypeRequiredClasses(typeof(Order))]
+      [EmailTemplateTypeRequiredClasses(typeof(Order), typeof(Communication))]
       OrderDisputeForAdmin = 12,
    }
 
