@@ -19,7 +19,7 @@ const CouponManagement = (props: IProps) => {
    const isUnmounted = useRef(false);
    const history = useHistory();
    const errorAlert = useAlert(new AlertObj());
-   const tbl = useTableData("Name", true);
+   const tbl = useTableData("Code", true);
    const [searchValue, setSearchValue] = useState("");
    const [selectedFilterType, setSelectedfilterType] = useState(GetAllRecords);
    const [selectedCoupon, setSelectedCoupon] = useState(new Coupon());
@@ -112,7 +112,7 @@ const CouponManagement = (props: IProps) => {
       setIsOpenCouponModal(false);
       setSelectedCoupon(new Coupon());
    };
-
+   console.log(tbl.sortName);
    return (
       <Container className="container-fluid ">
          <PageHeader title="Coupons" className="line-header" />

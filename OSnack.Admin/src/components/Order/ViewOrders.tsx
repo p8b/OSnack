@@ -26,14 +26,15 @@ const ViewOrders = (props: IProps) => {
    const [selectedDispute, setSelectedDispute] = useState(new Communication());
    const [isOpenDisputeModal, setIsOpenDisputeModal] = useState(false);
    const [selectOrder, setSelectOrder] = useState(new Order());
-   const [selectType, setSelectType] = useState(GetAllRecords);
+   const [selectOrderType, setSelectOrderType] = useState(GetAllRecords);
+   const [selectDisputeType, setSelectDisputeType] = useState(GetAllRecords);
    const [isOpenOrderModal, setIsOpenOrderModal] = useState(false);
    const [fullName, setFullName] = useState("");
    const [availableStatusTypeList, setAvailableStatusTypeList] = useState<OrderStatusType[]>([]);
 
    useEffect(() => {
       onSearch(...checkUri(window.location.pathname,
-         [tbl.selectedPage, tbl.maxItemsPerPage, selectType, tbl.isSortAsc, tbl.sortName, GetAllRecords]));
+         [tbl.selectedPage, tbl.maxItemsPerPage, selectOrderType, selectDisputeType, tbl.isSortAsc, tbl.sortName, GetAllRecords]));
 
       return () => { isUnmounted.current = true; };
    }, []);
@@ -41,7 +42,8 @@ const ViewOrders = (props: IProps) => {
    const onSearch = (
       selectedPage = tbl.selectedPage,
       maxItemsPerPage = tbl.maxItemsPerPage,
-      filterType = selectType,
+      filterOrderType = selectOrderType,
+      filterDisputeType = selectDisputeType,
       isSortAsc = tbl.isSortAsc,
       sortName = tbl.sortName,
       searchString = GetAllRecords
@@ -49,27 +51,30 @@ const ViewOrders = (props: IProps) => {
       if (searchValue != null && searchValue != "") searchString = searchValue;
       if (searchString != GetAllRecords) setSearchValue(searchString);
       if (selectedPage != tbl.selectedPage) tbl.setSelectedPage(selectedPage);
-      if (Number(filterType) == -1) filterType = GetAllRecords;
-      if (filterType != selectType) setSelectType(filterType);
+      if (Number(filterOrderType) == -1) filterOrderType = GetAllRecords;
+      if (filterOrderType != selectOrderType) setSelectOrderType(filterOrderType);
+      if (Number(filterDisputeType) == -1) filterDisputeType = GetAllRecords;
+      if (filterDisputeType != selectDisputeType) setSelectDisputeType(filterDisputeType);
       if (isSortAsc != tbl.isSortAsc) tbl.setIsSortAsc(isSortAsc);
       if (sortName != tbl.sortName) tbl.setSortName(sortName);
       if (selectedPage != undefined && selectedPage != tbl.selectedPage) tbl.setSelectedPage(selectedPage);
       if (maxItemsPerPage != tbl.maxItemsPerPage) tbl.setMaxItemsPerPage(maxItemsPerPage);
 
-
       history.push(generateUri(window.location.pathname,
          [selectedPage,
             maxItemsPerPage,
-            filterType === GetAllRecords ? -1 : filterType,
+            filterOrderType === GetAllRecords ? -1 : filterOrderType,
+            filterDisputeType === GetAllRecords ? -1 : filterDisputeType,
             Number(isSortAsc),
             sortName,
             searchString != GetAllRecords ? searchString : ""]),
          props.location?.state);
 
-
       errorAlert.pleaseWait(isUnmounted);
+
+
       if (props.location?.state?.userId == undefined)
-         useAllOrder(selectedPage, maxItemsPerPage, searchString, filterType, isSortAsc, sortName).then(result => {
+         useAllOrder(selectedPage, maxItemsPerPage, searchString, filterOrderType, isSortAsc, sortName, filterDisputeType).then(result => {
             if (isUnmounted.current) return;
             tbl.setTotalItemCount(result.data.totalCount || 0);
             setAvailableStatusTypeList(result.data.availableTypes!);
@@ -80,7 +85,7 @@ const ViewOrders = (props: IProps) => {
             errorAlert.set(errors);
          });
       else
-         useAllUserOrder(props.location.state?.userId, selectedPage, maxItemsPerPage, searchString, filterType, isSortAsc, sortName)
+         useAllUserOrder(props.location.state?.userId, selectedPage, maxItemsPerPage, searchString, filterOrderType, isSortAsc, sortName, filterDisputeType)
             .then((result) => {
                if (isUnmounted.current) return;
                tbl.setTotalItemCount(result.data.totalCount || 0);
@@ -94,7 +99,15 @@ const ViewOrders = (props: IProps) => {
                errorAlert.set(errors);
             });
    };
-
+   const getDisputeDisplayValue = () => {
+      switch (selectDisputeType) {
+         case "True":
+            return "Open ";
+         case "False":
+            return "Closed ";
+      }
+      return "All";
+   };
 
    const populateOrderTable = (orderList: Order[]) => {
 
@@ -159,16 +172,15 @@ const ViewOrders = (props: IProps) => {
                <SearchInput
                   value={searchValue}
                   onChange={i => setSearchValue(i.target.value)}
-                  className="col-12 col-md-8"
+                  className="col-12 "
                   onSearch={() => { onSearch(1); }}
                />
-               <DropDown title={`Status Type: ${OrderStatusTypeList.find((s) => s.Id?.toString() == selectType)?.Name || "All"}`}
-                  className="col-12 col-md-4 p-0"
-                  titleClassName="btn btn-white filter-icon">
-                  <button className="dropdown-item"
-                     onClick={() => { onSearch(1, undefined, GetAllRecords); }} >
-                     All
-                        </button>
+               <DropDown title={`Status Type: ${OrderStatusTypeList.find((s) => s.Id?.toString() == selectOrderType)?.Name || "All"}`}
+                  className="col-12 col-sm pm-0 mt-2"
+                  titleClassName="btn btn-white filter-icon mr-sm-1">
+                  <button children="All"
+                     className="dropdown-item"
+                     onClick={() => { onSearch(1, undefined, GetAllRecords); }} />
                   {OrderStatusTypeList.filter(o => availableStatusTypeList!.includes(o.Value))?.map(statusType =>
                      <button className="dropdown-item" key={statusType.Id}
                         onClick={() => { onSearch(1, undefined, statusType.Id?.toString()); }} >
@@ -176,13 +188,26 @@ const ViewOrders = (props: IProps) => {
                      </button>
                   )}
                </DropDown>
+               <DropDown title={`Dispute: ${getDisputeDisplayValue()}`}
+                  className="col-12 col-sm pm-0 mt-2"
+                  titleClassName="btn btn-white filter-icon ml-sm-1">
+                  <button children="All"
+                     onClick={() => onSearch(1, undefined, undefined, GetAllRecords)}
+                     className="dropdown-item" />
+                  <button children="Open Disputes"
+                     onClick={() => onSearch(1, undefined, undefined, "True")}
+                     className="dropdown-item" />
+                  <button children="Closed Disputes"
+                     onClick={() => onSearch(1, undefined, undefined, "False")}
+                     className="dropdown-item" />
+               </DropDown>
             </div>
             {tbl.totalItemCount > 0 &&
                <>
                   <Table className="col-12 text-center table-striped"
                      defaultSortName={tbl.sortName}
                      data={tbl.data}
-                     onSortChange={(selectedPage, isSortAsce, sortName) => { onSearch(selectedPage, undefined, undefined, isSortAsce, sortName); }}
+                     onSortChange={(selectedPage, isSortAsce, sortName) => { onSearch(selectedPage, undefined, undefined, undefined, isSortAsce, sortName); }}
                      view={TableView.CardView}
                      listCount={tbl.totalItemCount}
                   />

@@ -3,7 +3,7 @@ import React from 'react';
 
 const ButtonCard = (props: IProps) => {
    return (
-      <button className="btn btn-card" onClick={props.onClick}>
+      <button className={`btn btn-card ${props.className}`} onClick={props.onClick}>
          <div className={`${props?.cardClassName}`}>
             {props.children}
          </div>
@@ -13,6 +13,7 @@ const ButtonCard = (props: IProps) => {
 
 declare type IProps = {
    children?: any;
+   className?: string;
    cardClassName?: string;
    onClick?: () => void;
 };

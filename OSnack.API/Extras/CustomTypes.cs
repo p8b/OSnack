@@ -100,7 +100,7 @@ namespace OSnack.API.Extras.CustomTypes
       Message = 1
    }
 
-   public enum SalePeriod
+   public enum SalesPeriod
    {
       Daily = 0,
       Monthly = 1,

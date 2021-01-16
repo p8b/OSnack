@@ -2,11 +2,14 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 using OSnack.API.Extras;
 using OSnack.API.Extras.CustomTypes;
+
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Attributes;
 using P8B.Core.CSharp.Models;
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -61,20 +64,20 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpGet("Get/[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)]
-      public async Task<IActionResult> SaleState(SalePeriod salePeriod)
+      public async Task<IActionResult> SalesStatistics(SalesPeriod salePeriod)
       {
          try
          {
             MultiResult<List<string>, List<decimal>, List<int>> result = new MultiResult<List<string>, List<decimal>, List<int>>();
             switch (salePeriod)
             {
-               case SalePeriod.Daily:
+               case SalesPeriod.Daily:
                   result = await GetDaily(CoreFunc.GetCustomAttributeTypedArgument(this.ControllerContext));
                   break;
-               case SalePeriod.Monthly:
+               case SalesPeriod.Monthly:
                   result = await GetMonthly(CoreFunc.GetCustomAttributeTypedArgument(this.ControllerContext));
                   break;
-               case SalePeriod.Yearly:
+               case SalesPeriod.Yearly:
                   result = await GetYearly(CoreFunc.GetCustomAttributeTypedArgument(this.ControllerContext));
                   break;
                default:

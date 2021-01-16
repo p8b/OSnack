@@ -1,7 +1,7 @@
 import { AlertObj, AlertTypes, ErrorDto } from "osnack-frontend-shared/src/components/Texts/Alert";
 import { httpCaller } from "osnack-frontend-shared/src/_core/appFunc";
 import { API_URL, CommonErrors } from "osnack-frontend-shared/src/_core/constant.Variables";
-import { NewOrderCountAndOpenDisputeCountAndOpenMessageCountAndTotalSales, SalePeriod, LableListAndPriceListAndCountList } from "osnack-frontend-shared/src/_core/apiModels";
+import { NewOrderCountAndOpenDisputeCountAndOpenMessageCountAndTotalSales, SalesPeriod, LableListAndPriceListAndCountList } from "osnack-frontend-shared/src/_core/apiModels";
 export type IReturnUseSummaryDashboard={ data:NewOrderCountAndOpenDisputeCountAndOpenMessageCountAndTotalSales , status?: number;};
 export const useSummaryDashboard = async (): Promise<IReturnUseSummaryDashboard> =>{
         let url_ = API_URL + "/Dashboard/Get/Summary";
@@ -29,9 +29,9 @@ export const useSummaryDashboard = async (): Promise<IReturnUseSummaryDashboard>
         }
   
 }
-export type IReturnUseSaleStateDashboard={ data:LableListAndPriceListAndCountList , status?: number;};
-export const useSaleStateDashboard = async (salePeriod: SalePeriod | undefined): Promise<IReturnUseSaleStateDashboard> =>{
-        let url_ = API_URL + "/Dashboard/Get/SaleState?";
+export type IReturnUseSalesStatisticsDashboard={ data:LableListAndPriceListAndCountList , status?: number;};
+export const useSalesStatisticsDashboard = async (salePeriod: SalesPeriod | undefined): Promise<IReturnUseSalesStatisticsDashboard> =>{
+        let url_ = API_URL + "/Dashboard/Get/SalesStatistics?";
             url_ += "salePeriod=" + encodeURIComponent("" + salePeriod) + "&";
         url_ = url_.replace(/[?&]$/, "");
         let response = await httpCaller.GET(url_);

@@ -126,6 +126,7 @@
     <Content Include="src\styles\helpers\_functions.scss" />
     <Content Include="src\styles\helpers\_mixins.scss" />
     <Content Include="src\styles\helpers\_variables.scss" />
+    <Content Include="src\styles\modules\_background-colors.scss" />
     <Content Include="src\styles\modules\_fonts.scss" />
     <Content Include="src\styles\modules\_html.scss" />
     <Content Include="src\styles\modules\_container.scss" />

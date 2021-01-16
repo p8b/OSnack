@@ -11,7 +11,7 @@ const InputDropdown = (props: IProps) => {
          }
 
          <DropDown title={props.dropdownTitle}
-            className="w-100"
+            className={`w-100 ${props.dropdownClassName}`}
             disabled={props.disabled}
             preventCloseOnClickInsideMenu={props.preventCloseOnClickInsideMenu}
             titleClassName={`btn input-dropdown no-shadow dropdown-icon ${props.titleClassName} ${props.showDanger ? "danger" : ""}`}>
@@ -24,6 +24,7 @@ const InputDropdown = (props: IProps) => {
 interface IProps {
    label?: string;
    dropdownTitle: any;
+   dropdownClassName?: string;
    className?: string;
    labelClassName?: string;
    titleClassName?: string;

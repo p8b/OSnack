@@ -26,20 +26,22 @@ const MyOrders = (props: IProps) => {
    const [selectedDispute, setSelectedDispute] = useState(new Communication());
    const [isOpenDisputeModal, setIsOpenDisputeModal] = useState(false);
    const [selectOrder, setSelectOrder] = useState(new Order());
-   const [selectType, setSelectType] = useState(GetAllRecords);
+   const [selectOrderType, setSelectOrderType] = useState(GetAllRecords);
+   const [selectDisputeType, setSelectDisputeType] = useState(GetAllRecords);
    const [isOpenOrderModal, setIsOpenOrderModal] = useState(false);
    const [availableStatusTypeList, setavailableStatusTypeList] = useState<OrderStatusType[]>([]);
 
    useEffect(() => {
       onSearch(...checkUri(window.location.pathname,
-         [tbl.selectedPage, tbl.maxItemsPerPage, selectType, tbl.isSortAsc, tbl.sortName, GetAllRecords]));
+         [tbl.selectedPage, tbl.maxItemsPerPage, selectOrderType, selectDisputeType, tbl.isSortAsc, tbl.sortName, GetAllRecords]));
       return () => { isUnmounted.current = true; };
    }, []);
 
    const onSearch = (
       selectedPage = tbl.selectedPage,
       maxItemsPerPage = tbl.maxItemsPerPage,
-      filterType = selectType,
+      filterOrderType = selectOrderType,
+      filterDisputeType = selectDisputeType,
       isSortAsc = tbl.isSortAsc,
       sortName = tbl.sortName,
       searchString = GetAllRecords
@@ -47,8 +49,10 @@ const MyOrders = (props: IProps) => {
       if (searchValue != null && searchValue != "") searchString = searchValue;
       if (searchString != GetAllRecords) setSearchValue(searchString);
       if (selectedPage != tbl.selectedPage) tbl.setSelectedPage(selectedPage);
-      if (Number(filterType) == -1) filterType = GetAllRecords;
-      if (filterType != selectType) setSelectType(filterType);
+      if (Number(filterOrderType) == -1) filterOrderType = GetAllRecords;
+      if (filterOrderType != selectOrderType) setSelectOrderType(filterOrderType);
+      if (Number(filterDisputeType) == -1) filterDisputeType = GetAllRecords;
+      if (filterDisputeType != selectDisputeType) setSelectDisputeType(filterDisputeType);
       if (isSortAsc != tbl.isSortAsc) tbl.setIsSortAsc(isSortAsc);
       if (sortName != tbl.sortName) tbl.setSortName(sortName);
       if (selectedPage != undefined && selectedPage != tbl.selectedPage) tbl.setSelectedPage(selectedPage);
@@ -57,14 +61,15 @@ const MyOrders = (props: IProps) => {
       history.push(generateUri(window.location.pathname,
          [selectedPage,
             maxItemsPerPage,
-            filterType === GetAllRecords ? -1 : filterType,
+            filterOrderType === GetAllRecords ? -1 : filterOrderType,
+            filterDisputeType === GetAllRecords ? -1 : filterDisputeType,
             Number(isSortAsc),
             sortName,
             searchString != GetAllRecords ? searchString : ""]));
 
 
       errorAlert.pleaseWait(isUnmounted);
-      useAllOfficialOrder(selectedPage, maxItemsPerPage, searchString, filterType, isSortAsc, sortName)
+      useAllOfficialOrder(selectedPage, maxItemsPerPage, searchString, filterOrderType, isSortAsc, sortName, filterDisputeType)
          .then(onGetUserOrderSuccess)
          .catch(onGetUserOrderFailed);
 
@@ -129,6 +134,15 @@ const MyOrders = (props: IProps) => {
 
       tbl.setData(tData);
    };
+   const getDisputeDisplayValue = () => {
+      switch (selectDisputeType) {
+         case "True":
+            return "Open ";
+         case "False":
+            return "Closed ";
+      }
+      return "All";
+   };
    return (
       <Container className="mt-2 mb-2">
          <PageHeader title="My Orders" className="hr-section-sm line-limit-1" />
@@ -149,16 +163,15 @@ const MyOrders = (props: IProps) => {
                      <SearchInput
                         value={searchValue}
                         onChange={i => setSearchValue(i.target.value)}
-                        className="col-12 col-md-8"
+                        className="col-12"
                         onSearch={() => { onSearch(1); }}
                      />
-                     <DropDown title={`Status Type: ${OrderStatusTypeList.find((s) => s.Id?.toString() == selectType)?.Name || "All"}`}
-                        className="col-12 col-md-4 p-0"
-                        titleClassName="btn btn-white filter-icon">
-                        <button className="dropdown-item"
-                           onClick={() => { onSearch(1, undefined, GetAllRecords); }} >
-                           All
-                        </button>
+                     <DropDown title={`Status Type: ${OrderStatusTypeList.find((s) => s.Id?.toString() == selectOrderType)?.Name || "All"}`}
+                        className="col-12 col-sm pm-0 mt-2"
+                        titleClassName="btn btn-white filter-icon mr-sm-1">
+                        <button children="All"
+                           className="dropdown-item"
+                           onClick={() => { onSearch(1, undefined, GetAllRecords); }} />
                         {OrderStatusTypeList.filter(o => availableStatusTypeList!.includes(o.Value))?.map(statusType =>
                            <button className="dropdown-item" key={statusType.Id}
                               onClick={() => { onSearch(1, undefined, statusType.Id?.toString()); }} >
@@ -166,11 +179,24 @@ const MyOrders = (props: IProps) => {
                            </button>
                         )}
                      </DropDown>
+                     <DropDown title={`Dispute: ${getDisputeDisplayValue()}`}
+                        className="col-12 col-sm pm-0 mt-2"
+                        titleClassName="btn btn-white filter-icon ml-sm-1">
+                        <button children="All"
+                           onClick={() => onSearch(1, undefined, undefined, GetAllRecords)}
+                           className="dropdown-item" />
+                        <button children="Open Disputes"
+                           onClick={() => onSearch(1, undefined, undefined, "True")}
+                           className="dropdown-item" />
+                        <button children="Closed Disputes"
+                           onClick={() => onSearch(1, undefined, undefined, "False")}
+                           className="dropdown-item" />
+                     </DropDown>
                   </div>
                   <Table className="col-12 text-center table-striped"
                      defaultSortName={tbl.sortName}
                      data={tbl.data}
-                     onSortChange={(selectedPage, isSortAsce, sortName) => { onSearch(selectedPage, undefined, undefined, isSortAsce, sortName); }}
+                     onSortChange={(selectedPage, isSortAsce, sortName) => { onSearch(selectedPage, undefined, undefined, undefined, isSortAsce, sortName); }}
                      listCount={tbl.totalItemCount}
                   />
                   <Pagination

@@ -1,4 +1,4 @@
-﻿import React, { lazy, Suspense, useState } from "react";
+﻿import React, { lazy, Suspense, useEffect, useState } from "react";
 import { BrowserRouter, Switch } from "react-router-dom";
 
 import CustomRoute from "osnack-frontend-shared/src/_core/customRoute";
@@ -28,11 +28,17 @@ const ViewCommunication = lazy(() => import("./pages/Communication/ViewCommunica
 
 const App = () => {
    const [isOpenMainContainer, setIsOpenMainContainer] = useState(true);
+
+   useEffect(() => {
+      if (window.innerWidth < 768)
+         setIsOpenMainContainer(false);
+   }, []);
+
    return (
       <BrowserRouter>
          <AuthenticationContext>
             <div className={`sidenav-main-container ${isOpenMainContainer ? "show" : ""}`}>
-               <NavMenu mainContainerToggler={(isOpen) => setIsOpenMainContainer(isOpen)} />
+               <NavMenu mainContainerToggler={(isOpen) => setIsOpenMainContainer(isOpen)} isOpenMainContainer={isOpenMainContainer} />
                <Suspense fallback={<Loading />}>
                   <Switch>
                      {/***** Public Routes ****/}

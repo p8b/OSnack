@@ -52,8 +52,8 @@ const NavMenu = (props: IProps) => {
                            ${outsideClickSmallNav ? "show" : 'hide'}`} >
                <div className="ml-auto" />
                {/** user links */}
-               {currentNavItems.map(link =>
-                  <NavLink key={link.id} displayName={link.displayName} path={link.path}
+               {currentNavItems.map((link, index) =>
+                  <NavLink key={index} displayName={link.displayName} path={link.path}
                      className="col-12 col-md-auto" />
                )}
                {auth.state.isAuthenticated &&

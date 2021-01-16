@@ -57,8 +57,8 @@ namespace OSnack.API.Controllers
       {
          try
          {
-            bool.TryParse(filterStatus, out bool boolFilterStatus);
-            int.TryParse(filterCategory, out int filterProductCategoryId);
+            _ = bool.TryParse(filterStatus, out bool boolFilterStatus);
+            _ = int.TryParse(filterCategory, out int filterProductCategoryId);
 
             int totalCount = await _DbContext.Products
                 .Where(p => filterStatus.Equals(CoreConst.GetAllRecords) || p.Status == boolFilterStatus)

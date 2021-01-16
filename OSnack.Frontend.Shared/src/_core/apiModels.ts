@@ -10,18 +10,6 @@ export const CouponTypeList=[
 {Id:1,Name:"DiscountPrice".replace(/([A-Z])/g, ' $1').trim(),Value:CouponType.DiscountPrice},
 {Id:2,Name:"PercentageOfTotal".replace(/([A-Z])/g, ' $1').trim(),Value:CouponType.PercentageOfTotal},
 ]
-export enum SalePeriod {
-
-    Daily = 0,
-    Monthly = 1,
-    Yearly = 2,
-}
-
-export const SalePeriodList=[
-{Id:0,Name:"Daily".replace(/([A-Z])/g, ' $1').trim(),Value:SalePeriod.Daily},
-{Id:1,Name:"Monthly".replace(/([A-Z])/g, ' $1').trim(),Value:SalePeriod.Monthly},
-{Id:2,Name:"Yearly".replace(/([A-Z])/g, ' $1').trim(),Value:SalePeriod.Yearly},
-]
 export enum ContactType {
 
     Dispute = 0,
@@ -31,6 +19,18 @@ export enum ContactType {
 export const ContactTypeList=[
 {Id:0,Name:"Dispute".replace(/([A-Z])/g, ' $1').trim(),Value:ContactType.Dispute},
 {Id:1,Name:"Message".replace(/([A-Z])/g, ' $1').trim(),Value:ContactType.Message},
+]
+export enum SalesPeriod {
+
+    Daily = 0,
+    Monthly = 1,
+    Yearly = 2,
+}
+
+export const SalesPeriodList=[
+{Id:0,Name:"Daily".replace(/([A-Z])/g, ' $1').trim(),Value:SalesPeriod.Daily},
+{Id:1,Name:"Monthly".replace(/([A-Z])/g, ' $1').trim(),Value:SalesPeriod.Monthly},
+{Id:2,Name:"Yearly".replace(/([A-Z])/g, ' $1').trim(),Value:SalesPeriod.Yearly},
 ]
 export enum PaymentType {
 

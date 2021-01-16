@@ -31,7 +31,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(MultiResult<List<Order>, List<OrderStatusType>, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
-      [HttpGet("Get/[action]/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}")]
+      [HttpGet("Get/[action]/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}/{disputeFilter}")]
       [Authorize(AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> All(
           int selectedPage,
@@ -39,21 +39,29 @@ namespace OSnack.API.Controllers
           string searchValue = "",
           string filterStatus = CoreConst.GetAllRecords,
           bool isSortAsce = true,
-          string sortName = "Date")
+          string sortName = "Date",
+          string disputeFilter = CoreConst.GetAllRecords)
       {
          try
          {
-            int totalCount = await _DbContext.Orders.Include(o => o.User).Include(o => o.Payment)
-                .Where(o => filterStatus.Equals(CoreConst.GetAllRecords) ? true : o.Status.Equals((OrderStatusType)Enum.Parse(typeof(OrderStatusType), filterStatus, true)))
-                .CountAsync(o => searchValue.Equals(CoreConst.GetAllRecords) ? true : o.Name.Contains(searchValue)
-                                                                                     || o.User.FirstName.Contains(searchValue)
-                                                                                     || o.User.Surname.Contains(searchValue)
-                                                                                     || o.User.Email.Contains(searchValue)
-                                                                                     || o.Id.Contains(searchValue)
-                                                                                     || o.Postcode.Contains(searchValue)
-                                                                                     || o.Payment.Email.Contains(searchValue)
-                                                                                     || o.Payment.Reference.Contains(searchValue))
-                .ConfigureAwait(false);
+
+            _ = bool.TryParse(disputeFilter, out bool boolDisputeFilter);
+
+            int totalCount = await _DbContext.Orders
+               .Include(o => o.User)
+               .Include(o => o.Payment)
+               .Include(o => o.Dispute)
+               .Where(o => filterStatus.Equals(CoreConst.GetAllRecords) || o.Status.Equals((OrderStatusType)Enum.Parse(typeof(OrderStatusType), filterStatus, true)))
+               .Where(o => disputeFilter.Equals(CoreConst.GetAllRecords) || o.Dispute.Status == boolDisputeFilter)
+               .CountAsync(o => searchValue.Equals(CoreConst.GetAllRecords) || o.Name.Contains(searchValue)
+                                                                                  || o.User.FirstName.Contains(searchValue)
+                                                                                  || o.User.Surname.Contains(searchValue)
+                                                                                  || o.User.Email.Contains(searchValue)
+                                                                                  || o.Id.Contains(searchValue)
+                                                                                  || o.Postcode.Contains(searchValue)
+                                                                                  || o.Payment.Email.Contains(searchValue)
+                                                                                  || o.Payment.Reference.Contains(searchValue))
+               .ConfigureAwait(false);
 
             List<OrderStatusType> availebeStatusTypes = await _DbContext.Orders
                           .Select(o => o.Status)
@@ -66,16 +74,17 @@ namespace OSnack.API.Controllers
                 .Include(o => o.Payment)
                 .Include(o => o.Dispute)
                 .ThenInclude(c => c.Messages)
-                 .Where(o => filterStatus.Equals(CoreConst.GetAllRecords) ? true : o.Status.Equals((OrderStatusType)Enum.Parse(typeof(OrderStatusType), filterStatus, true)))
-                 .Where(o => searchValue.Equals(CoreConst.GetAllRecords) ? true : o.Name.Contains(searchValue)
-                                                                                     || o.User.FirstName.Contains(searchValue)
-                                                                                     || o.User.Surname.Contains(searchValue)
-                                                                                     || o.User.Email.Contains(searchValue)
-                                                                                     || o.Id.Contains(searchValue)
-                                                                                     || o.Postcode.Contains(searchValue)
-                                                                                     || o.Payment.Email.Contains(searchValue)
-                                                                                     || o.Payment.Reference.Contains(searchValue))
-                 .OrderByDynamic(sortName, isSortAsce)
+                .Where(o => filterStatus.Equals(CoreConst.GetAllRecords) || o.Status.Equals((OrderStatusType)Enum.Parse(typeof(OrderStatusType), filterStatus, true)))
+                .Where(o => disputeFilter.Equals(CoreConst.GetAllRecords) || o.Dispute.Status == boolDisputeFilter)
+                .Where(o => searchValue.Equals(CoreConst.GetAllRecords) || o.Name.Contains(searchValue)
+                                                                              || o.User.FirstName.Contains(searchValue)
+                                                                              || o.User.Surname.Contains(searchValue)
+                                                                              || o.User.Email.Contains(searchValue)
+                                                                              || o.Id.Contains(searchValue)
+                                                                              || o.Postcode.Contains(searchValue)
+                                                                              || o.Payment.Email.Contains(searchValue)
+                                                                              || o.Payment.Reference.Contains(searchValue))
+                .OrderByDynamic(sortName, isSortAsce)
                 .Skip((selectedPage - 1) * maxNumberPerItemsPage)
                 .Take(maxNumberPerItemsPage)
                 .Include(o => o.OrderItems)
@@ -100,7 +109,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(MultiResult<List<Order>, List<OrderStatusType>, string, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
-      [HttpGet("Get/[action]/{userId}/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}")]
+      [HttpGet("Get/[action]/{userId}/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}/{disputeFilter}")]
       [Authorize(AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> AllUser(int userId,
           int selectedPage,
@@ -108,8 +117,9 @@ namespace OSnack.API.Controllers
             string searchValue = "",
           string filterStatus = CoreConst.GetAllRecords,
           bool isSortAsce = true,
-          string sortName = "Date") =>
-        await AllOrder(userId, selectedPage, maxNumberPerItemsPage, searchValue, filterStatus, isSortAsce, sortName).ConfigureAwait(false);
+          string sortName = "Date",
+          string disputeFilter = CoreConst.GetAllRecords) =>
+        await AllOrder(userId, selectedPage, maxNumberPerItemsPage, searchValue, filterStatus, isSortAsce, sortName, disputeFilter).ConfigureAwait(false);
 
       /// <summary>
       /// Used to get a list of all Order with OrderItems
@@ -120,31 +130,36 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(MultiResult<List<Order>, List<OrderStatusType>, string, int>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
-      [HttpGet("Get/[action]/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}")]
+      [HttpGet("Get/[action]/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}/{disputeFilter}")]
       [Authorize(AppConst.AccessPolicies.Official)]
       public async Task<IActionResult> AllOfficial(int selectedPage,
           int maxNumberPerItemsPage,
            string searchValue = "",
           string filterStatus = CoreConst.GetAllRecords,
           bool isSortAsce = false,
-          string sortName = "Date") =>
-        await AllOrder(AppFunc.GetUserId(User), selectedPage, maxNumberPerItemsPage, searchValue, filterStatus, isSortAsce, sortName).ConfigureAwait(false);
+          string sortName = "Date",
+          string disputeFilter = CoreConst.GetAllRecords) =>
+        await AllOrder(AppFunc.GetUserId(User), selectedPage, maxNumberPerItemsPage, searchValue, filterStatus, isSortAsce, sortName, disputeFilter).ConfigureAwait(false);
 
       private async Task<IActionResult> AllOrder(int userId, int selectedPage,
           int maxNumberPerItemsPage,
            string searchValue = "",
           string filterStatus = CoreConst.GetAllRecords,
           bool isSortAsce = false,
-          string sortName = "Date")
+          string sortName = "Date",
+          string disputeFilter = CoreConst.GetAllRecords)
       {
          try
          {
+
+            _ = bool.TryParse(disputeFilter, out bool boolDisputeFilter);
             int totalCount = await _DbContext.Orders
                .Include(o => o.User)
                .Include(o => o.Payment)
                .Where(o => o.User.Id == userId)
-               .Where(o => filterStatus.Equals(CoreConst.GetAllRecords) ? true : o.Status.Equals((OrderStatusType)Enum.Parse(typeof(OrderStatusType), filterStatus, true)))
-               .CountAsync(o => searchValue.Equals(CoreConst.GetAllRecords) ? true : (o.Id.Contains(searchValue)
+               .Where(o => filterStatus.Equals(CoreConst.GetAllRecords) || o.Status.Equals((OrderStatusType)Enum.Parse(typeof(OrderStatusType), filterStatus, true)))
+               .Where(o => disputeFilter.Equals(CoreConst.GetAllRecords) || o.Dispute.Status == boolDisputeFilter)
+               .CountAsync(o => searchValue.Equals(CoreConst.GetAllRecords) || (o.Id.Contains(searchValue)
                                                                                      || o.Postcode.Contains(searchValue)
                                                                                      || o.Payment.Email.Contains(searchValue)
                                                                                      || o.Payment.Reference.Contains(searchValue)))
@@ -162,11 +177,12 @@ namespace OSnack.API.Controllers
                .Include(o => o.User)
                .Include(o => o.Dispute)
                .ThenInclude(c => c.Messages)
-                .Include(o => o.Payment)
+               .Include(o => o.Payment)
                .Where(o => o.User.Id == userId)
                .OrderByDynamic(sortName, isSortAsce)
-               .Where(o => filterStatus.Equals(CoreConst.GetAllRecords) ? true : o.Status.Equals((OrderStatusType)Enum.Parse(typeof(OrderStatusType), filterStatus, true)))
-               .Where(o => searchValue.Equals(CoreConst.GetAllRecords) ? true : (o.Id.Contains(searchValue)
+               .Where(o => filterStatus.Equals(CoreConst.GetAllRecords) || o.Status.Equals((OrderStatusType)Enum.Parse(typeof(OrderStatusType), filterStatus, true)))
+               .Where(o => disputeFilter.Equals(CoreConst.GetAllRecords) || o.Dispute.Status == boolDisputeFilter)
+               .Where(o => searchValue.Equals(CoreConst.GetAllRecords) || (o.Id.Contains(searchValue)
                                                                                      || o.Postcode.Contains(searchValue)
                                                                                      || o.Payment.Email.Contains(searchValue)
                                                                                      || o.Payment.Reference.Contains(searchValue)))

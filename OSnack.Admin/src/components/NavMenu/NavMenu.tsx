@@ -12,7 +12,6 @@ import Footer from "../Footer";
 // Navigation menu component
 const NavMenu = (props: IProps) => {
    const auth = useContext(AuthContext);
-   const [isOpenSideBar, setIsOpenSideBar] = useState(true);
    const [currentNavItems, setCurrentNavItems] = useState(DefaultNav);
 
    const logout = async () => {
@@ -30,9 +29,6 @@ const NavMenu = (props: IProps) => {
       else
          setCurrentNavItems(DefaultNav);
    }, [auth.state.isAuthenticated]);
-   useEffect(() => {
-      props.mainContainerToggler(isOpenSideBar && auth.state.isAuthenticated);
-   });
    return (
       <header>
          {!auth.state.isAuthenticated &&
@@ -46,10 +42,10 @@ const NavMenu = (props: IProps) => {
          }
          {auth.state.isAuthenticated &&
             <>
-               <div id="navbar" className={`bg-white top-navbar row pm-0 pb-1  ${isOpenSideBar ? "show" : "hide"}`}>
+               <div id="navbar" className={`bg-white top-navbar row pm-0 pb-1  ${props.isOpenMainContainer ? "show" : "hide"}`}>
                   <button type="button"
                      className={`fas toggler-icon pl-4`}
-                     onClick={() => { setIsOpenSideBar((prevVal) => !prevVal); }} />
+                     onClick={() => { props.mainContainerToggler(!props.isOpenMainContainer); }} />
                   <DropDown className="ml-auto " titleClassName={`user-circle-icon btn-no-style pr-3`} title={``}>
                      <Link className="dropdown-item"
                         to="/MyAccount"
@@ -60,14 +56,14 @@ const NavMenu = (props: IProps) => {
                   </DropDown>
 
                </div>
-               <nav className={`row text-center align-items-start sidenav pt-2 m-0 ${isOpenSideBar ? "show" : "hide"}`}>
+               <nav className={`row text-center align-items-start sidenav pt-2 m-0 ${props.isOpenMainContainer ? "show" : "hide"}`}>
                   <Link to="/" className="logo-container col-12">
                      <img id="logo" alt="Logo" className="Logo" src={`/public/images/logo.png`} />
                      <p className="col-12 text-dark text-center">Management</p>
                   </Link>
                   {/** user links */}
-                  {currentNavItems.map(link =>
-                     <NavLink key={link.id} displayName={link.displayName} path={link.path} className="w-100" />
+                  {currentNavItems.map((link, index) =>
+                     <NavLink key={index} displayName={link.displayName} path={link.path} className="w-100" />
                   )}
                   <Footer />
                </nav>
@@ -79,5 +75,6 @@ const NavMenu = (props: IProps) => {
 
 declare type IProps = {
    mainContainerToggler: (isOpen: boolean) => void;
+   isOpenMainContainer: boolean;
 };
 export default NavMenu;
