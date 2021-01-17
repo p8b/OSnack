@@ -1,4 +1,4 @@
-﻿import React, { lazy, Suspense, useEffect, useState } from "react";
+﻿import React, { lazy, Suspense, useState } from "react";
 import { BrowserRouter, Switch } from "react-router-dom";
 
 import CustomRoute from "osnack-frontend-shared/src/_core/customRoute";
@@ -27,12 +27,7 @@ const DeliveryOptionManagement = lazy(() => import("./pages/DeliveryOptionManage
 const ViewCommunication = lazy(() => import("./pages/Communication/ViewCommunication"));
 
 const App = () => {
-   const [isOpenMainContainer, setIsOpenMainContainer] = useState(true);
-
-   useEffect(() => {
-      if (window.innerWidth < 768)
-         setIsOpenMainContainer(false);
-   }, []);
+   const [isOpenMainContainer, setIsOpenMainContainer] = useState(false);
 
    return (
       <BrowserRouter>
@@ -42,7 +37,7 @@ const App = () => {
                <Suspense fallback={<Loading />}>
                   <Switch>
                      {/***** Public Routes ****/}
-                     <CustomRoute authenticate={useSilentSecretAuthentication} path="/Login" Render={(props: any) => <LoginPage {...props} />} />
+                     <CustomRoute authenticate={useSilentSecretAuthentication} path="/Login" Render={(props: any) => <LoginPage {...props} mainContainerToggler={(isOpen) => setIsOpenMainContainer(isOpen)} />} />
                      <CustomRoute authenticate={useSilentSecretAuthentication} path="/EmailConfirmation" Render={(props: any) => <ConfirmEmail {...props} />} />
                      <CustomRoute authenticate={useSilentSecretAuthentication} path="/ResetPassword" Render={(props: any) => <PasswordReset {...props} />} />
                      <CustomRoute authenticate={useSilentSecretAuthentication} path="/NewEmployee/SetupPassword" Render={(props: any) => <PasswordReset {...props} />} />

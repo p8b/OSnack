@@ -1,7 +1,7 @@
 ﻿import { ErrorDto } from "../components/Texts/Alert";
 
-export const API_URL: string = "https://localhost:44358";
-//export const API_URL: string = "https://testapi.osnack.co.uk";
+//export const API_URL: string = "https://localhost:44358";
+export const API_URL: string = "https://shopapi.osnack.co.uk";
 export const GetAllRecords: string = "***GET-ALL***";
 export const ConstMaxNumberOfPerItemsPage = 10;
 export const AntiforgeryTokenCookieName = "AF-TOKEN";

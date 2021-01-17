@@ -5,17 +5,21 @@ export const Button = (props: IProps) => {
    const [loading, setLoading] = useState(false);
    const [disable, setDisable] = useState(false);
    const isWait = useRef(false);
-   useEffect(() => () => { isWait.current = true; }, []);
+   const isUnmounted = useRef(false);
+   useEffect(() => () => {
+      isWait.current = false;
+      isUnmounted.current = true;
+   }, []);
    const onClick = (event: React.MouseEvent<HTMLButtonElement>) => {
       if (props.enableLoading) {
          setDisable(true);
          isWait.current = true;
          sleep(500, props.enableLoading).then(() => {
-            isWait.current &&
+            isWait.current && !isUnmounted.current &&
                setLoading(true);
          });
          props.onClick!(() => {
-            if (props.enableLoading?.current) return;
+            if (props.enableLoading?.current || isUnmounted.current) return;
             setLoading(false);
             setDisable(false);
             isWait.current = false;

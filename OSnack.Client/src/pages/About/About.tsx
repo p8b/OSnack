@@ -18,9 +18,11 @@ const About = (props: IProps) => {
       <>
          <PageHeader title="About Us" />
          <Container>
-            <div className="col-12 p-3 mb-5 bg-white ml-auto mr-auto">
+            <div className="row col-12 justify-content-center  p-3 mb-5 bg-white ml-auto mr-auto">
                <img className="col-12 pm-0 mb-4" src="public/images/stand.png" />
-               <ReactMarkdown>{aboutUs}</ReactMarkdown>
+               <div className="col-12 col-md-6 py-5 h6">
+                  <ReactMarkdown>{aboutUs}</ReactMarkdown>
+               </div>
             </div>
          </Container>
       </>

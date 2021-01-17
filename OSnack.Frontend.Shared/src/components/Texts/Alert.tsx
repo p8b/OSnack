@@ -45,47 +45,58 @@ export default Alert;
 export const useAlert: IUseAlert = (init) => {
    const [alert, setAlert] = useState(init);
    const isWait = useRef(false);
-
-   useEffect(() => () => { isWait.current = false; }, []);
+   const isUnmounted = useRef(false);
+   useEffect(() => () => {
+      isWait.current = false;
+      isUnmounted.current = true;
+   }, []);
 
    const pleaseWait = (isCanceled: React.MutableRefObject<boolean>, ms: number = 500) => {
       isWait.current = true;
       sleep(ms, isCanceled).then(() => {
-         if (alert.List.length === 0 && isWait.current)
+         if (alert.List.length === 0 && isWait.current && !isUnmounted.current)
             setAlert({ ...alert, List: [new ErrorDto("0", "Just a moment please...")], Type: AlertTypes.Warning });
       });
    };
    const setSingleSuccess = (key: string, value: string) => {
+      if (isUnmounted.current) return;
       isWait.current = false;
       setAlert({ ...alert, List: [new ErrorDto(key, value)], Type: AlertTypes.Success });
    };
    const setSingleWarning = (key: string, value: string) => {
+      if (isUnmounted.current) return;
       isWait.current = false;
       setAlert({ ...alert, List: [new ErrorDto(key, value)], Type: AlertTypes.Warning });
    };
    const setSingleError = (key: string, value: string) => {
+      if (isUnmounted.current) return;
       isWait.current = false;
       setAlert({ ...alert, List: [new ErrorDto(key, value)], Type: AlertTypes.Error });
    };
    const setSingleDefault = (key: string, value: string) => {
+      if (isUnmounted.current) return;
       isWait.current = false;
       setAlert({ ...alert, List: [new ErrorDto(key, value)], Type: AlertTypes.default });
    };
    const set = (value: AlertObj) => {
+      if (isUnmounted.current) return;
       isWait.current = false;
       setAlert({ ...alert, List: value.List, Type: value.Type });
    };
    const clear = () => {
+      if (isUnmounted.current) return;
       isWait.current = false;
       setAlert({ ...alert, List: [], Type: AlertTypes.default });
    };
 
    const checkExist = (inputName: string = "") => {
+      if (isUnmounted.current) return false;
       if (alert.List != undefined)
          return !!alert.List!.find(t => t.key?.toLowerCase() === inputName?.toLowerCase());
       return false;
    };
    const checkExistFilterRequired = (inputName: string = "") => {
+      if (isUnmounted.current) return false;
       const includesError = !!alert.List!.find(t => t.key!.toLowerCase() === inputName.toLowerCase() && (t.value as string).includes("Required" || "required"));
       const returnVal = !!alert.List!.find(t => t.key!.toLowerCase() === inputName.toLowerCase());
       var currentError = alert.List.find(t => t.key!.toLowerCase() == inputName.toLowerCase());

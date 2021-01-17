@@ -10,10 +10,6 @@ app.use(compression());
 /// Static file cache Age
 app.use(express.static(path.join(__dirname), { maxAge: "3.154e+10" /** One Year **/ }));
 
-//app.get("/public/EXAMPLE, function (req, res) {
-//   res.status(404)        // HTTP status 404: NotFound
-//      .send('Not found');
-//});
 /// Routing
 app.get("*", function (req, res) {
    res.sendFile(path.join(__dirname, "index.html"));
@@ -21,4 +17,3 @@ app.get("*", function (req, res) {
 
 /// Create Https Server
 app.listen(PORT);
-console.log(PORT);

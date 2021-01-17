@@ -33,6 +33,8 @@ namespace OSnack.API.Database.Models
       public AppLog() { }
       public AppLog(string message, AppLogType type, dynamic obj = null, User user = null)
       {
+         if (obj == null)
+            obj = new { };
          Message = message;
          Type = type;
          if (obj != null)

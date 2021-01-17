@@ -19,7 +19,6 @@ using OSnack.API.Database.Context.ClassOverrides;
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 
-using P8B.Core.CSharp.Extentions;
 using P8B.Core.CSharp.Models;
 using P8B.UK.API.Extras.Overrides;
 
@@ -78,14 +77,12 @@ namespace OSnack.API
             options.Password = new PasswordOptions
             {
                RequireDigit = true,
-               RequiredLength = 4,
+               RequiredLength = 8,
                RequiredUniqueChars = 1,
                RequireLowercase = true,
                RequireNonAlphanumeric = true,
                RequireUppercase = true
             };
-            //options.Stores.ProtectPersonalData = true;
-
          })
          .AddEntityFrameworkStores<OSnackDbContext>()// Add the custom db context class
          .AddSignInManager<OSnackSignInManager<User>>() // add the custom SignInManager class

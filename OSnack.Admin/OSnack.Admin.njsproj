@@ -39,6 +39,8 @@
     <Content Include="server\cert\exported-cert.cer" />
     <Content Include="server\cert\key.pem" />
     <Content Include="server\server-development.js" />
+    <Content Include="server\server.js" />
+    <Content Include="server\web.config" />
     <Content Include="src\pages\DeliveryOptionManagement\DeliveyOptionModal.tsx" />
     <Content Include="src\styles\animation\animations\attention_seekers\_bounce.scss" />
     <Content Include="src\styles\animation\animations\attention_seekers\_flash.scss" />

@@ -18,7 +18,6 @@
 
     @include animateLeftMargin;
 
-
     &.show {
         left: 0;
         box-shadow: -9px 3px 22px 3px rgba(0,0,0,0.75);
@@ -65,7 +64,6 @@
     position: relative;
     max-height: 5.5rem;
 }
-
 
 .toggler-icon {
     font-size: 2rem;

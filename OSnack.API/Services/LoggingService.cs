@@ -25,7 +25,8 @@ namespace P8B.UK.API.Services
       {
          AppLog log = new AppLog(message, type, obj, GetUser(userClaimsPrincipal));
          _DbContext.AppLogs.Add(log);
-         _DbContext.Entry(log.User).State = Microsoft.EntityFrameworkCore.EntityState.Unchanged;
+         if (log.User != null)
+            _DbContext.Entry(log.User).State = Microsoft.EntityFrameworkCore.EntityState.Unchanged;
          _DbContext.SaveChanges();
          return log;
       }

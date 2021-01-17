@@ -112,7 +112,7 @@ export const useExternalLoginOfficialAuthentication = async (externalLoginInfo: 
 
         switch(response?.status){
 
-                case 200: 
+                case 202: 
                         var responseData: User = await response?.json();
                         return { data: responseData, status: response?.status };
 
@@ -159,7 +159,7 @@ export const useExternalLoginSecretAuthentication = async (externalLoginInfo: Ex
 
         switch(response?.status){
 
-                case 200: 
+                case 202: 
                         var responseData: User = await response?.json();
                         return { data: responseData, status: response?.status };
 

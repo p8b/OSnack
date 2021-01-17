@@ -6,7 +6,7 @@ const HtmlWebPackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const WorkboxPlugin = require('workbox-webpack-plugin');
-const isDevelopment = true;
+const isDevelopment = false;
 const appName = "osnack";
 const outputPublicPath = "./build/public/";
 
@@ -88,7 +88,7 @@ module.exports = {
       },
    },
    plugins: [
-      // new CleanWebpackPlugin(),
+      new CleanWebpackPlugin(),
       new MiniCssExtractPlugin({
          filename: "public/styles/[name].css",
          chunkFilename: "[id].css",
@@ -101,6 +101,18 @@ module.exports = {
       }),
       new CopyPlugin({
          patterns: [
+            {
+               from: path.resolve(__dirname, "./package.json"),
+               to: path.resolve(__dirname, `./build/`)
+            },
+            {
+               from: path.resolve(__dirname, "./server/web.config"),
+               to: path.resolve(__dirname, `./build/`)
+            },
+            {
+               from: path.resolve(__dirname, "./server/server.js"),
+               to: path.resolve(__dirname, `./build/`)
+            },
             {
                from: path.resolve(__dirname, "node_modules/osnack-frontend-shared/public/favicon.ico"),
                to: path.resolve(__dirname, `${outputPublicPath}`)
