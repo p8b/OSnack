@@ -20,10 +20,11 @@ const UserAccount = (props: IProps) => {
 
    useEffect(() => () => { isUnmounted.current = true; }, []);
 
-   const onDetailsChange = (currentPass: string) => {
+   const onDetailsChange = (currentPass: string, loadingCallBack?: () => void) => {
       if (currentPass == "" && user.registrationMethod.type == RegistrationTypes.Application) {
          setIsOpenConfirmPassword(true);
          setSelectedAction("Details");
+         loadingCallBack!();
          return;
       }
 
@@ -36,20 +37,23 @@ const UserAccount = (props: IProps) => {
          setSelectedAction("Details");
          setCurrentPassword("");
          errorAlertAccountInfo.setSingleSuccess("Update", "Updated.");
+         loadingCallBack!();
       }).catch((alert) => {
          if (isUnmounted.current) return;
          errorAlertAccountInfo.set(alert);
+         loadingCallBack!();
       });
 
       setCurrentPassword(currentPass);
       setSelectedAction("");
    };
-   const onConfirmPassword = (currentPass: string) => {
+   const onConfirmPassword = (currentPass: string, loadingCallBack?: () => void) => {
       if (isExternalLogin) return;
 
       if (currentPass == "") {
          setIsOpenConfirmPassword(true);
          setSelectedAction("Password");
+         loadingCallBack!();
          return;
       }
 
@@ -64,6 +68,7 @@ const UserAccount = (props: IProps) => {
 
       if (errors.List.length > 0) {
          errorAlertPasswordInfo.set(errors);
+         loadingCallBack!();
          return;
       }
 
@@ -77,9 +82,11 @@ const UserAccount = (props: IProps) => {
             setIsOpenConfirmPassword(true);
             setSelectedAction("Password");
             setCurrentPassword("");
+            loadingCallBack!();
          }).catch((alert) => {
             if (isUnmounted.current) return;
             errorAlertPasswordInfo.set(alert);
+            loadingCallBack!();
          });
    };
 
@@ -123,11 +130,12 @@ const UserAccount = (props: IProps) => {
                   onChange={(i) => { setUser({ ...user, email: i.target.value }); }}
                />
             }
-            <Alert alert={errorAlertAccountInfo.alert} onClosed={() => errorAlertAccountInfo.clear()} />
             <div className="col-12">
+               <Alert alert={errorAlertAccountInfo.alert} onClosed={() => errorAlertAccountInfo.clear()} />
                <Button children="Confirm Changes"
                   className="col-auto btn-lg btn-green"
-                  onClick={() => { onDetailsChange(currentPassword); }}
+                  onClick={(loadingCallBack) => { onDetailsChange(currentPassword, loadingCallBack); }}
+                  enableLoading={isUnmounted}
                />
             </div>
          </div>
@@ -164,8 +172,8 @@ const UserAccount = (props: IProps) => {
                      onChange={i => setConfirmPassword(i.target.value)}
                   />
 
-                  <Alert alert={errorAlertPasswordInfo.alert} onClosed={errorAlertPasswordInfo.clear} />
                   <div className="col-12">
+                     <Alert alert={errorAlertPasswordInfo.alert} onClosed={errorAlertPasswordInfo.clear} />
                      <Button children="Change Password"
                         className="col-auto btn-lg btn-green"
                         onClick={() => { onConfirmPassword(currentPassword); }}
@@ -176,11 +184,11 @@ const UserAccount = (props: IProps) => {
          </div>
          <ConfirmPasswordModal
             isOpen={isOpenConfirmPassword}
-            onSuccess={(currentPassword) => {
+            onSuccess={(currentPassword, loadingCallBack) => {
                if (selectedAction == "Details")
-                  onDetailsChange(currentPassword);
+                  onDetailsChange(currentPassword, loadingCallBack);
                if (selectedAction == "Password")
-                  onConfirmPassword(currentPassword);
+                  onConfirmPassword(currentPassword, loadingCallBack);
             }}
             onClose={() => {
                setSelectedAction("");

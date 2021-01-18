@@ -5,10 +5,10 @@ import { CommonRegex } from "osnack-frontend-shared/src/_core/constant.Variables
 import PageHeader from "osnack-frontend-shared/src/components/Texts/PageHeader";
 import { Input } from "osnack-frontend-shared/src/components/Inputs/Input";
 import { CheckBox } from "osnack-frontend-shared/src/components/Inputs/CheckBox";
-import { Button } from "osnack-frontend-shared/src/components/Buttons/Button";
 import { useCreateCustomerUser } from "osnack-frontend-shared/src/hooks/PublicHooks/useUserHook";
 import Modal from "osnack-frontend-shared/src/components/Modals/Modal";
 import Alert, { AlertObj, AlertTypes, ErrorDto, useAlert } from "osnack-frontend-shared/src/components/Texts/Alert";
+import ModalFooter from "osnack-frontend-shared/src/components/Modals/ModalFooter";
 
 const NewCustomerModal = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -77,25 +77,29 @@ const NewCustomerModal = (props: IProps) => {
          isOpen={props.isOpen}>
          <PageHeader title="New Customer" />
          <div className="row">
-            <Input label="Name *" className="col-6" key="name"
+            <Input label="Name *"
+               className="col-12 col-sm-6"
                value={user.firstName}
                showDanger={errorAlert.checkExist("firstname")}
                onChange={i => setUser({ ...user, firstName: i.target.value })}
             />
 
-            <Input label="Surname *" className="col-6" key="surname"
+            <Input label="Surname *"
+               className="col-12 col-sm-6"
                showDanger={errorAlert.checkExist("surname")}
                value={user.surname}
                onChange={i => setUser({ ...user, surname: i.target.value })}
             />
-            <Input label="Phone Number" className="col-6" key="phoneNumber"
+            <Input label="Phone Number"
+               className="col-12 col-sm-6"
                value={user.phoneNumber}
                showDanger={errorAlert.checkExist("phoneNumber")}
                validationPattern={CommonRegex.UkNumber}
                onChange={i => setUser({ ...user, phoneNumber: i.target.value })}
             />
 
-            <Input label={`Email ${getRegistrationType()}`} className="col-6" key="email1"
+            <Input label={`Email ${getRegistrationType()}`}
+               className="col-12 col-sm-6"
                showDanger={errorAlert.checkExist("email")}
                showValid={externalLogin}
                value={user.email}
@@ -106,29 +110,27 @@ const NewCustomerModal = (props: IProps) => {
             {!externalLogin &&
                <>
                   <Input label={"Password*"}
+                     className="col-12 col-sm-6"
                      type="password"
                      value={user.password}
-                     className="col-6" key="password"
                      showDanger={errorAlert.checkExist("passwordhash")}
                      onChange={i => setUser({ ...user, password: i.target.value })}
                   />
 
                   <Input label={"Confirm Password*"}
+                     className="col-12 col-sm-6"
                      type="password"
                      value={confirmPassword}
-                     className="col-6" key="confirmPassword"
                      showDanger={errorAlert.checkExist("passwordhash")}
                      onChange={i => setConfirmPassword(i.target.value)}
                   />
                </>
             }
             <div className="col-12">
-               <CheckBox className="mt-1 color-style-checked"
+               <CheckBox className=" mt-1 color-style-checked"
                   onChange={checked => setSubscribeNewsLetter(checked)}
                   label="Subscribe to our news letter to receive latest promotions"
                />
-            </div>
-            <div className="col-12">
                <CheckBox className="mt-1 color-style"
                   onChange={checked => setTermsAndCondition(checked)}
                   label={<>
@@ -136,16 +138,17 @@ const NewCustomerModal = (props: IProps) => {
                      </>}
                />
             </div>
-            <div className="col-12 mt-2">
-               <Alert alert={errorAlert.alert} className="col-12 mb-1"
-                  onClosed={() => errorAlert.clear()}
-               />
-               <Button children="Submit" className="btn-lg col-12 col-sm-6 mt-2 btn-green"
-                  onClick={createNewCustomer} enableLoading={isUnmounted} />
-               <Button children="Cancel" className="btn-lg col-12 col-sm-6 mt-2 btn-white"
-                  onClick={() => { errorAlert.clear(); props.onCancel(); }} />
-            </div>
          </div>
+         <Alert alert={errorAlert.alert} className="col-12 mb-1"
+            onClosed={() => errorAlert.clear()}
+         />
+         <ModalFooter
+            createText="Submit"
+            onCreate={createNewCustomer}
+            enableLoadingCreate={isUnmounted}
+            onCancel={() => { errorAlert.clear(); props.onCancel(); }}
+
+         />
       </Modal >
    );
 };

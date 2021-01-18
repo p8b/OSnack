@@ -204,83 +204,86 @@ const Checkout = (props: IProps) => {
    }
    return (
       <div className={props.className}>
-         <div className="col-12 m-0 pos-sticky">
+         <div className="row pm-0 col-12 px-0 pos-sticky">
             <Alert className="col-12 mb-2"
                alert={errorAlert.alert}
                onClosed={() => { errorAlert.clear(); }} />
-            <div className="col-12">
-               {order.totalDiscount <= 0 &&
-                  <BasketCoupon coupon={order.coupon || new Coupon()}
-                     totalPrice={order.totalItemPrice}
-                     acceptFreeCoupon={(order.deliveryOption?.price! > 0 && order.deliveryOption?.isPremitive) || false}
-                     setCoupon={(val) => { recalculateBasket(deliveryOptionList, order.deliveryOption, val); errorAlert.clear(); }}
-                     alert={errorAlert} />
-               }
+            {order.totalDiscount <= 0 &&
+               <BasketCoupon coupon={order.coupon || new Coupon()}
+                  totalPrice={order.totalItemPrice}
+                  acceptFreeCoupon={(order.deliveryOption?.price! > 0 && order.deliveryOption?.isPremitive) || false}
+                  setCoupon={(val) => { recalculateBasket(deliveryOptionList, order.deliveryOption, val); errorAlert.clear(); }}
+                  alert={errorAlert} />
+            }
 
-               <div className="col-12 pm-0 small-text"> Subtotal : <b>£{order.totalItemPrice?.toFixed(2)}</b></div>
-               {order.totalDiscount > 0 &&
-                  <div className="col-12 pm-0 pb-2 small-text"> Discount : <b>-£{parseFloat(order.totalDiscount.toString()).toFixed(2)}</b>
-                     <span className="float-right edit-icon" onClick={() => { setOrder(prev => { return { ...prev, totalDiscount: 0 }; }); recalculateBasket(deliveryOptionList, order.deliveryOption, new Coupon()); }} /></div>
-               }
-               <DropDown title={<><span>Shipping: <b>{order.deliveryOption?.name} £{order.deliveryOption?.price?.toFixed(2)}</b></span> <span className="float-right edit-icon" /></>}
-                  titleClassName="text-left small-text"
-                  className="col-12 pm-0"
-                  children={availableDeliveryList.map(delivery =>
-                     <a className="dropdown-item p-1 text-nav" key={delivery?.name}
-                        onClick={() => { recalculateBasket(deliveryOptionList, delivery); }}
-                        children={<div children={`${delivery?.name} - £${delivery?.price?.toFixed(2)}`} />}
-                     />)
-                  } />
-               <div className="h5 mb-0 pb-0"> Total : <b >£{order.totalPrice?.toFixed(2)}</b> </div>
-               <p className="col-12 p-0 m-0 small-text text-gray" >Total Items: {basket.getTotalItems()}</p>
-            </div>
+            <div className="col-12 pm-0 small-text"> Subtotal : <b>£{order.totalItemPrice?.toFixed(2)}</b></div>
+            {order.totalDiscount > 0 &&
+               <div className="col-12 pm-0 pb-2 small-text">
+                  Discount : <b>-£{parseFloat(order.totalDiscount.toString()).toFixed(2)}</b>
+                  <span className="float-right edit-icon"
+                     onClick={() => {
+                        setOrder(prev => { return { ...prev, totalDiscount: 0 }; });
+                        recalculateBasket(deliveryOptionList, order.deliveryOption, new Coupon());
+                     }} />
+               </div>
+            }
+            <DropDown title={<><span>Shipping: <b>{order.deliveryOption?.name} £{order.deliveryOption?.price?.toFixed(2)}</b></span> <span className="float-right edit-icon" /></>}
+               titleClassName="text-left small-text"
+               className="col-12 pm-0 pb-1"
+               children={availableDeliveryList.map(delivery =>
+                  <a className="dropdown-item p-1 text-nav" key={delivery?.name}
+                     onClick={() => { recalculateBasket(deliveryOptionList, delivery); }}
+                     children={<div children={`${delivery?.name} - £${delivery?.price?.toFixed(2)}`} />}
+                  />)
+               } />
+            <div className="col-12 h5 pm-0"> Total : <b >£{order.totalPrice?.toFixed(2)}</b> </div>
+            <p className="col-12 pm-0 small-text text-gray" >Total Items: {basket.getTotalItems()}</p>
             {auth.state.isAuthenticated &&
                <>
-                  <div className="row col-12 pm-0 mt-5">
-                     <InputDropDown dropdownTitle={selectAddress.name || "My Addresses"}
-                        className="col-12  align-self-end "
-                        label="Shipping Address"
-                        children={
-                           <div className="p-0 m-0">
-                              {addressList.map(addr =>
-                                 <a className="dropdown-item text-nav" key={addr.id}
-                                    onClick={() => { setSelectAddress(addr); }}
-                                    children={<div className="col" children={`${addr.name}`} />}
-                                 />)
-                              }
-                              <a className="dropdown-item text-nav" key="newAddress"
-                                 children='New Address'
-                                 onClick={() => {
-                                    setSelectAddress(new Address());
-                                    setIsOpenAddressModal(true);
-                                 }} />
-                           </div>
-                        } />
-                     <div className="col-10 pm-0">
-                        <div className="col-12 line-limit-2" children={selectAddress.firstLine} key="FirstLine_Checkout" />
-                        <div className="col-12 line-limit-2" children={selectAddress.secondLine} key="SecondLine_Checkout" />
-                        <div className="col-12 line-limit-1" children={selectAddress.city} key="City_Checkout" />
-                        <div className="col-12 line-limit-1" children={selectAddress.postcode} key="Postcode_Checkout" />
-                     </div>
-                     {(selectAddress.id || 0) > 0 &&
-                        <Button className="col-2 col-md-1 btn-sm edit-icon  mb-auto ml-auto"
-                           onClick={() => { setIsOpenAddressModal(true); }} />
-                     }
-                     <Button className="col-12 btn-lg btn-green mb-4 mt-4" children="Checkout" onClick={checkout} enableLoading={isUnmounted} />
+                  <InputDropDown dropdownTitle={selectAddress.name || "My Addresses"}
+                     className="col-12 pm-0 mt-5 align-self-end "
+                     label="Shipping Address"
+                     children={
+                        <div className="p-0 m-0">
+                           {addressList.map(addr =>
+                              <a className="dropdown-item text-nav" key={addr.id}
+                                 onClick={() => { setSelectAddress(addr); }}
+                                 children={<div className="col" children={`${addr.name}`} />}
+                              />)
+                           }
+                           <a className="dropdown-item text-nav" key="newAddress"
+                              children='New Address'
+                              onClick={() => {
+                                 setSelectAddress(new Address());
+                                 setIsOpenAddressModal(true);
+                              }} />
+                        </div>
+                     } />
+                  <div className="col pm-0">
+                     <div className="col-12 pm-0 line-limit-2" children={selectAddress.firstLine} key="FirstLine_Checkout" />
+                     <div className="col-12 pm-0 line-limit-2" children={selectAddress.secondLine} key="SecondLine_Checkout" />
+                     <div className="col-12 pm-0 line-limit-1" children={selectAddress.city} key="City_Checkout" />
+                     <div className="col-12 pm-0 line-limit-1" children={selectAddress.postcode} key="Postcode_Checkout" />
                   </div>
+                  {(selectAddress.id || 0) > 0 &&
+                     <Button className="col-auto btn-sm edit-icon  mb-auto ml-auto"
+                        onClick={() => { setIsOpenAddressModal(true); }} />
+                  }
+                  <Button className="col-12 btn-lg btn-green mb-4 mt-4" children="Checkout" onClick={checkout} enableLoading={isUnmounted} />
                </>
             }
             {!auth.state.isAuthenticated &&
                <>
-                  <Link className="col-12 btn btn-lg btn-green mb-4 mt-4" children="Login" to={{ pathname: "/Login", state: { fromPath: "/Checkout" } }} />
-                  <PageHeader title="OR" />
+                  <Link className="col-12 btn btn-lg btn-green mt-5" children="Login" to={{ pathname: "/Login", state: { fromPath: "/Checkout" } }} />
+                  <PageHeader title="OR" className="my-3" />
 
-                  <Button className="col-12 btn-lg btn-green mb-4 mt-4" children="Guest Checkout" onClick={checkout} enableLoading={isUnmounted} />
+                  <Button className="col-12 btn-lg btn-green mb-5" children="Guest Checkout" onClick={checkout} enableLoading={isUnmounted} />
                </>
             }
-            <div className="row justify-content-center">
-               <img src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/cc-badges-ppcmcvdam.png" alt="Pay with PayPal Credit or any major credit card" />
-            </div>
+            <img src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/cc-badges-ppcmcvdam.png"
+               alt="Pay with PayPal Credit or any major credit card"
+               className="col-12 p-0 justify-content-center"
+            />
          </div>
          {/***** Add/ modify category modal  ****/}
          {auth.state.isAuthenticated &&

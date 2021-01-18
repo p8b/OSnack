@@ -17,12 +17,12 @@ const LoginPage = (props: IProps) => {
    };
    return (
       <>
-         <PageHeader title="Login" className="row pt-0 " />
+         <PageHeader title="Login" />
          <Container className="mb-5">
-            <div className="row justify-content-sm-center">
-               <div className="col-sm-10 col-md-8 col-lg-6 bg-white p-sm-5 pt-4 pb-4">
+            <div className="row justify-content-sm-center pb-3">
+               <div className="col-sm-10 col-md-8 col-lg-6 bg-white py-5">
                   <Login externalLoginFailed={externalLoginFailed} fromPath={props.location.state?.fromPath} access={Access} />
-                  <Button children="New Customer" className="btn-lg btn-white col-12 mt-2"
+                  <Button children="New Customer" className="btn-lg btn-white col-12 my-2"
                      onClick={() => {
                         setIsOpenNewCustomer((prev) => !prev);
                      }}

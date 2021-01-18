@@ -144,55 +144,55 @@ const MyOrders = (props: IProps) => {
       return "All";
    };
    return (
-      <Container className="mt-2 mb-2">
+      <>
          <PageHeader title="My Orders" className="hr-section-sm line-limit-1" />
-         <Alert alert={errorAlert.alert}
-            className="col-12 mb-2"
-            onClosed={() => { errorAlert.clear(); }}
-         />
-         {tbl.totalItemCount == 0 &&
-            <div className="row col-12 justify-content-center">
-               <div className="col-12 text-center mt-4">You do not have any orders. <br /> Let's do something about it.</div>
-               <Button className="btn btn-green col-auto mt-4" children="Shop now" onClick={() => { history.push("/Shop"); }} />
+         <Container className="bg-white py-3">
+            <Alert alert={errorAlert.alert}
+               className="col-12 mb-2"
+               onClosed={() => { errorAlert.clear(); }}
+            />
+            <div className="row col-12 pm-0 mb-3">
+               <SearchInput
+                  value={searchValue}
+                  onChange={i => setSearchValue(i.target.value)}
+                  className="col-12"
+                  onSearch={() => { onSearch(1); }}
+               />
+               <DropDown title={`Status Type: ${OrderStatusTypeList.find((s) => s.Id?.toString() == selectOrderType)?.Name || "All"}`}
+                  className="col-12 col-sm pm-0 mt-2"
+                  titleClassName="btn btn-white filter-icon mr-sm-1">
+                  <button children="All"
+                     className="dropdown-item"
+                     onClick={() => { onSearch(1, undefined, GetAllRecords); }} />
+                  {OrderStatusTypeList.filter(o => availableStatusTypeList!.includes(o.Value))?.map(statusType =>
+                     <button className="dropdown-item" key={statusType.Id}
+                        onClick={() => { onSearch(1, undefined, statusType.Id?.toString()); }} >
+                        {statusType.Name}
+                     </button>
+                  )}
+               </DropDown>
+               <DropDown title={`Dispute: ${getDisputeDisplayValue()}`}
+                  className="col-12 col-sm pm-0 mt-2"
+                  titleClassName="btn btn-white filter-icon ml-sm-1">
+                  <button children="All"
+                     onClick={() => onSearch(1, undefined, undefined, GetAllRecords)}
+                     className="dropdown-item" />
+                  <button children="Open Disputes"
+                     onClick={() => onSearch(1, undefined, undefined, "True")}
+                     className="dropdown-item" />
+                  <button children="Closed Disputes"
+                     onClick={() => onSearch(1, undefined, undefined, "False")}
+                     className="dropdown-item" />
+               </DropDown>
             </div>
-         }
-         {tbl.totalItemCount > 0 &&
-            <>
-               <div className="col-12 bg-white pb-2 ">
-                  <div className="row col-12 pm-0 mb-3">
-                     <SearchInput
-                        value={searchValue}
-                        onChange={i => setSearchValue(i.target.value)}
-                        className="col-12"
-                        onSearch={() => { onSearch(1); }}
-                     />
-                     <DropDown title={`Status Type: ${OrderStatusTypeList.find((s) => s.Id?.toString() == selectOrderType)?.Name || "All"}`}
-                        className="col-12 col-sm pm-0 mt-2"
-                        titleClassName="btn btn-white filter-icon mr-sm-1">
-                        <button children="All"
-                           className="dropdown-item"
-                           onClick={() => { onSearch(1, undefined, GetAllRecords); }} />
-                        {OrderStatusTypeList.filter(o => availableStatusTypeList!.includes(o.Value))?.map(statusType =>
-                           <button className="dropdown-item" key={statusType.Id}
-                              onClick={() => { onSearch(1, undefined, statusType.Id?.toString()); }} >
-                              {statusType.Name}
-                           </button>
-                        )}
-                     </DropDown>
-                     <DropDown title={`Dispute: ${getDisputeDisplayValue()}`}
-                        className="col-12 col-sm pm-0 mt-2"
-                        titleClassName="btn btn-white filter-icon ml-sm-1">
-                        <button children="All"
-                           onClick={() => onSearch(1, undefined, undefined, GetAllRecords)}
-                           className="dropdown-item" />
-                        <button children="Open Disputes"
-                           onClick={() => onSearch(1, undefined, undefined, "True")}
-                           className="dropdown-item" />
-                        <button children="Closed Disputes"
-                           onClick={() => onSearch(1, undefined, undefined, "False")}
-                           className="dropdown-item" />
-                     </DropDown>
-                  </div>
+            {tbl.totalItemCount == 0 &&
+               <div className="row col-12 justify-content-center">
+                  <div className="col-12 text-center mt-4">You do not have any orders. <br /> Let's do something about it.</div>
+                  <Button className="btn btn-green col-auto mt-4" children="Shop now" onClick={() => { history.push("/Shop"); }} />
+               </div>
+            }
+            {tbl.totalItemCount > 0 &&
+               <div className="col-12 pb-5 ">
                   <Table className="col-12 text-center table-striped"
                      defaultSortName={tbl.sortName}
                      data={tbl.data}
@@ -207,19 +207,17 @@ const MyOrders = (props: IProps) => {
                      }}
                      listCount={tbl.totalItemCount} />
                </div>
-            </>
-         }
-         <OrderModal isOpen={isOpenOrderModal}
-            order={selectOrder}
-            onClose={() => { setIsOpenOrderModal(false); onSearch(); }} />
-         <CommunicationModal isOpen={isOpenDisputeModal}
-            communication={selectedDispute}
-            access={Access}
-            onClose={() => { setIsOpenDisputeModal(false); onSearch(); }}
-         />
-
-
-      </Container>
+            }
+            <OrderModal isOpen={isOpenOrderModal}
+               order={selectOrder}
+               onClose={() => { setIsOpenOrderModal(false); onSearch(); }} />
+            <CommunicationModal isOpen={isOpenDisputeModal}
+               communication={selectedDispute}
+               access={Access}
+               onClose={() => { setIsOpenDisputeModal(false); onSearch(); }}
+            />
+         </Container>
+      </>
    );
 };
 

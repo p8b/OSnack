@@ -19,9 +19,12 @@ const ContactUs = (props: IProps) => {
    const [contact, setContact] = useState(new Communication());
    const [message, setMessage] = useState("");
 
-   useEffect(() => () => {
-      isUnmounted.current = true;
-      document.body.removeChild(document.getElementsByClassName("grecaptcha-badge")[0]!.parentNode!);
+   useEffect(() => {
+      window.scrollTo(0, 0);
+      return () => {
+         isUnmounted.current = true;
+         document.body.removeChild(document.getElementsByClassName("grecaptcha-badge")[0]!.parentNode!);
+      };
    }, []);
 
    const sendMessage = (loadingCallBack?: () => void) => {

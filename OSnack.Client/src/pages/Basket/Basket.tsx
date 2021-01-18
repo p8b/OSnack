@@ -14,7 +14,7 @@ const Basket = (props: IProps) => {
    const [refreshBasket, setRefreshBasket] = useState(false);
 
    return (
-      <Container className="wide-container pm-0">
+      <>
          <PageHeader title="Basket" className="hr-section-sm" />
          <Container className="bg-white">
             <div className="row">
@@ -27,7 +27,7 @@ const Basket = (props: IProps) => {
                {basket.state.List.length > 0 &&
                   <>
                      {/* Basket info */}
-                     < div className="col-12 col-md-7 m-0 pb-4">
+                     < div className="col-12 col-md-7 m-0 pb-5">
                         {basket.state.List.map(orderItem =>
                            <BasketItem
                               key={orderItem.productId}
@@ -38,13 +38,13 @@ const Basket = (props: IProps) => {
                      </div>
 
                      {/* User info */}
-                     <Checkout className="col-12 col-md-5 pm-0 pt-3 pb-4 shadow"
+                     <Checkout className="col-12 col-md-5 m-0 shadow py-5"
                         refresh={refreshBasket} setRefresh={setRefreshBasket} />
                   </>
                }
             </div>
          </Container>
-      </Container >
+      </>
    );
 };
 

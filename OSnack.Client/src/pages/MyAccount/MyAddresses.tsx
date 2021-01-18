@@ -55,7 +55,7 @@ const MyAddresses = (props: IProps) => {
    return (
       <>
          <PageHeader title="My Addresses" className="line-header-lg" />
-         <div className="row justify-content-center pm-0">
+         <div className="row justify-content-center pm-0 pb-5 mb-5">
             <Alert alert={errorAlert.alert}
                className="col-12 mb-2"
                onClosed={() => { errorAlert.clear(); }}

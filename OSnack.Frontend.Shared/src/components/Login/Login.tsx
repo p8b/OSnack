@@ -20,7 +20,7 @@ const Login = (props: IProps) => {
    const auth = useContext(AuthContext);
 
    useEffect(() => {
-      document.getElementById("email")?.focus();
+      window.scrollTo(0, 0);
       return () => {
          isUnmounted.current = true;
       };

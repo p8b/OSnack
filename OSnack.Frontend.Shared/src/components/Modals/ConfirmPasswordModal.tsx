@@ -21,9 +21,8 @@ const ConfirmPasswordModal = (props: IProps) => {
       useConfirmCurrentUserPasswordAuthentication(password).then(user => {
          if (isUnmounted.current) return;
          errorAlert.clear();
-         props.onSuccess(password);
+         props.onSuccess(password, loadingCallBack);
          setPassword("");
-         loadingCallBack!();
       }).catch(errors => {
          if (isUnmounted.current) return;
          errorAlert.set(errors);
@@ -50,7 +49,7 @@ const ConfirmPasswordModal = (props: IProps) => {
 };
 declare type IProps = {
    isOpen: boolean,
-   onSuccess: (currentPassword: string) => void;
+   onSuccess: (currentPassword: string, loadingCallBack?: () => void) => void;
    onClose: () => void;
 };
 
