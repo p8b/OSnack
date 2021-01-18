@@ -1,7 +1,7 @@
 ﻿import { Product, Comment } from 'osnack-frontend-shared/src/_core/apiModels';
 import React, { useEffect, useRef, useState } from 'react';
 import { useGetComment } from 'osnack-frontend-shared/src/hooks/PublicHooks/useCommentHook';
-import { StarRating } from 'osnack-frontend-shared/src/components/Inputs/StarRating';
+import ProductComment from 'osnack-frontend-shared/src/components/ProductComment/ProductComment';
 import { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import { ReviewModal } from './ReviewModal';
@@ -39,7 +39,7 @@ const Tabs = (props: IProps) => {
          setSelectedNav(productTabs.Comments);
          setShowNutritionalInfo(false);
       }
-      reloadComments(undefined, undefined);
+      reloadComments(1);
    }, [props.product.id]);
 
    const reloadComments = (selectedPage = tbl.selectedPage,
@@ -52,7 +52,6 @@ const Tabs = (props: IProps) => {
          tbl.setMaxItemsPerPage(maxItemsPerPage);
          selectedPage = 1;
       }
-
       errorAlert.pleaseWait(isUnmounted);
       useGetComment(props.product.id!, selectedPage, maxItemsPerPage).then(result => {
          if (isUnmounted.current) return;
@@ -70,7 +69,7 @@ const Tabs = (props: IProps) => {
    };
 
    return (
-      <>
+      <div className="col-12 py-5 px-0">
          <ul className="nav nav-tabs">
             {showNutritionalInfo &&
                <li className="nav-item">
@@ -83,11 +82,11 @@ const Tabs = (props: IProps) => {
             <li className="nav-item">
                <a onClick={() => { setSelectedNav(productTabs.Comments); }}
                   className={`nav-link ${selectedNav === productTabs.Comments ? "active" : ""} `}>
-                  Comments ({commentList?.length || 0})
+                  Reviews ({commentList?.length})
                </a>
             </li>
          </ul>
-         <div className="col-12">
+         <div className="col-12 p-4 bg-light-gray common-border-bottom">
             {showNutritionalInfo && selectedNav === productTabs.NutritionalInfo &&
                <>
                   <p>Per 100g</p>
@@ -122,24 +121,7 @@ const Tabs = (props: IProps) => {
                   {comment &&
                      <Button className="btn-white mt-1" children={comment.id == 0 ? "Write a review" : "Edit a review"} onClick={() => setIsOpenReviewModal(true)} />
                   }
-                  {commentList.map(comment =>
-                     <div key={comment.id} className="comment">
-                        <div className="row">
-                           <div className="col-6 small-text text-gray">{comment.name}</div>
-                           <div className="col-6">
-                              <StarRating className="float-right" rate={comment.rate} readonly />
-                           </div>
-                        </div>
-                        <div className="col-12">{comment.description}</div>
-                        {comment.reply && comment.reply != "" &&
-                           <div className="reply">
-                              <div className="col-12 row small-text text-gray" children="Customer Support" />
-                              <div className="col-12">{comment.reply}</div>
-                           </div>
-                        }
-                     </div>
-                  )
-                  }
+                  {commentList.map(comment => <ProductComment comment={comment} />)}
                   <LoadMore maxItemsPerPage={tbl.maxItemsPerPage}
                      selectedPage={tbl.selectedPage}
                      onChange={(selectedPage, maxItemsPerPage) => { reloadComments(selectedPage, maxItemsPerPage); }}
@@ -147,12 +129,11 @@ const Tabs = (props: IProps) => {
                </>
             }
          </div>
-
          <ReviewModal isOpen={isOpenReviewModal}
-            onClose={() => { setIsOpenReviewModal(false); props.refreshProduct(); reloadComments(); }}
+            onClose={() => { setIsOpenReviewModal(false); props.refreshProduct(); reloadComments(1); }}
             comment={comment!}
          />
-      </>
+      </div>
    );
 };
 

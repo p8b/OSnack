@@ -25,7 +25,7 @@ const LoadMore = (props: IProps) => {
          props.onChange(pendingSelectedPage, props.maxItemsPerPage);
       }
    };
-   const CalculateVisibleButtons = async () => {
+   const CalculateVisibleButtons = () => {
 
       let selectedPage = props.selectedPage; /// currently selected page
       let TOTALpages = 0; /// Total Number of Pages
@@ -47,6 +47,8 @@ const LoadMore = (props: IProps) => {
 
       if (props.selectedPage >= TOTALpages) {
          selectedPage = TOTALpages;
+         if (selectedPage === 0)
+            selectedPage = 1;
          props.onChange(selectedPage, props.maxItemsPerPage);
       }
       setTotalPages(TOTALpages);
@@ -63,7 +65,7 @@ const LoadMore = (props: IProps) => {
       <>
          { totalPages <= props.selectedPage && <></>}
          { totalPages > props.selectedPage &&
-            <div className="row col-12 p-0 m-0">
+            <div className="row col-12 pm-0">
                <button ref={btnLoadMore} className="btn col-auto pl-4 pr-4 ml-auto mr-auto" children="Load More" onClick={() => onPageAdd()} />
             </div>
          }

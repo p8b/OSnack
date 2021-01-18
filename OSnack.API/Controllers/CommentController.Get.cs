@@ -2,12 +2,15 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 using OSnack.API.Extras.CustomTypes;
+
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Attributes;
 using P8B.Core.CSharp.Models;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,11 +29,14 @@ namespace OSnack.API.Controllers
       [HttpGet("[action]/{productId}/{selectedPage}/{maxItemsPerPage}")]
       [Authorize(AppConst.AccessPolicies.Public)]
       public async Task<IActionResult> Get(int productId,
-          int selectedPage,
-          int maxItemsPerPage)
+          int selectedPage = 1,
+          int maxItemsPerPage = 5)
       {
          try
          {
+            if (selectedPage == 0) selectedPage = 1;
+            if (maxItemsPerPage == 0) maxItemsPerPage = 5;
+
             int totalCount = await _DbContext.Comments
                .CountAsync(c => c.Product.Id == productId)
                 .ConfigureAwait(false);

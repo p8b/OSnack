@@ -5,7 +5,7 @@ import { StarRating } from '../Inputs/StarRating';
 
 const ProductComment = (props: IProps) => {
    return (
-      <div className="row comment">
+      <div className="row col-12 mx-0 bg-white comment">
          <div className="col small-text text-gray">{props.comment.name}</div>
          <StarRating className="col-auto" rate={props.comment.rate} readonly />
          <div className="col-12">{props.comment.description}</div>

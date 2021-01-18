@@ -59,7 +59,9 @@ const Home = (props: IProps) => {
    const onSubscribe = () => {
       if (email == "")
          return;
-      usePostNewsletter({ email: email }).then(result => errorAlert.setSingleSuccess("", result.data)).catch(alert => errorAlert.set(alert));
+      usePostNewsletter({ email: email })
+         .then(result => errorAlert.setSingleSuccess("", result.data))
+         .catch(errors => { errorAlert.set(errors); });
    };
 
    return (
@@ -73,11 +75,11 @@ const Home = (props: IProps) => {
                <Link to="/Shop" className='btn btn-orange'>Shop now</Link>
             </div>
          </div>
-         <div className="col-12 mt-5 mb-5 pt-5 pb-5">
-            <div className="h2 text-center">
+         <div className="col-12 my-5 py-5">
+            <div className="col-12 display-4 mt-5 text-center">
                Treat yourself with <i style={{ fontFamily: "'Courgette', cursive" }}> delicious </i> and <i style={{ fontFamily: "'Courgette', cursive" }}> healthy </i> snacks.
             </div>
-            <div className="mt-3 text-center">
+            <div className="col-12 col-md-7 display-6 my-5 mx-auto text-center">
                Here at OSnack, we aim to select and provide the best quality snack
                so you can just enjoy the wonderful taste.
             </div>
@@ -89,7 +91,7 @@ const Home = (props: IProps) => {
             </div>
          }
          <Container >
-            <div className="row mt-5 mb-5 pt-3 pb-3 justify-content-center">
+            <div className="row my-5 py-5 justify-content-center">
                <div><img src="public/images/Satisfactionpng.png" /></div>
                <div style={{ fontFamily: "'Courgette', cursive" }} className="col-12 text-center h1">Your Satisfation is our piority</div>
             </div>
@@ -101,18 +103,24 @@ const Home = (props: IProps) => {
          <div className="col-12 sign-up-bg pt-4 pb-4 mt-4 mb-4">
             <Container >
                <div className="row pt-5 pb-5">
-                  <div className="col-12 col-md-6 h5 text-center mt-auto mb-auto">Stay up to date with our latest promotions and products</div>
-                  <div className="col-12 col-md-6">
+                  <div className="col-12 col-md-6 mt-auto">
+                     <div className="col-12 h2 px-0">Newsletter</div>
+                     <div className="col-12 display-6 my-3 mt-md-5 px-0">
+                        Stay up to date with our latest promotions and products
+                     </div>
+                  </div>
+                  <div className="col-12 col-md-6 my-auto">
                      <Alert alert={errorAlert.alert}
                         className="col-12"
                         onClosed={() => { errorAlert.clear(); }}
                      />
-                     <Input className="col-12 pm-0"
+                     <Input className="col-12 p-0"
                         placeholder="Email"
                         value={email}
+                        showDanger={errorAlert.checkExist("email")}
                         onChange={(e) => setEmail(e.target.value)}
                      />
-                     <Button className="col-12 btn-white" children="Sign up" onClick={onSubscribe} />
+                     <Button className="col-12  btn-white" children="Sign up" onClick={onSubscribe} />
                   </div>
                </div>
             </Container>

@@ -53,7 +53,7 @@ const ProductPage = (props: IProps) => {
    const getCarouselItems = (productList: Product[]) => {
       let arr: any[] = [];
       productList.map((product => {
-         arr.push(<ShopItem className="col-12 no-border" key={product.id} product={product} />);
+         arr.push(<ShopItem className="col-12 mx-auto no-border" key={product.id} product={product} />);
       }));
       return arr;
    };
@@ -63,11 +63,11 @@ const ProductPage = (props: IProps) => {
    return (
       <Container className="wide-container m-0">
          <PageHeader title="Product Details" />
-         <Alert className="col-12" alert={errorAlert.alert} />
-         <Container className="bg-white">
-            {product.id && product.id > 0 &&
+         <Container className="bg-white px-0">
+            <Alert className="col-12" alert={errorAlert.alert} />
+            {product.id! > 0 &&
                <div className="col-12 p-3 ">
-                  <nav >
+                  <nav>
                      <ol className="breadcrumb">
                         <li className="breadcrumb-item" onClick={() => { history.push("/Shop"); }}>Shop</li>
                         <li className="breadcrumb-item" onClick={() => { history.push(`/Shop/Category/${product.category.name}`); }}>{product.category.name}</li>
@@ -75,13 +75,15 @@ const ProductPage = (props: IProps) => {
                      </ol>
                   </nav>
                   <div className="row ">
-                     <div className="col-12 col-sm-4 pb-4 p-sm-4 justify-text-center">
-                        <img className="shop-card-img" src={`${API_URL}/${product.imagePath}`} alt={product.name} />
+                     <div className="row pm-0 col-12 col-sm-5 p-4 justify-text-center">
+                        <div className="col-12 pm-0 mx-auto">
+                           <img className="shop-card-img" src={`${API_URL}/${product.imagePath}`} alt={product.name} />
+                        </div>
                         {product.score != -1 &&
-                           <StarRating className="col-auto pm-0 ml-auto" rate={product.score} readonly />
+                           <StarRating className="col-auto pm-0 mx-auto stars-lg" rate={product.score} readonly />
                         }
                      </div>
-                     <div className="col-12 col-sm-8 p-sm-4 pl-md-5">
+                     <div className="col-12 col-sm-7 p-4 pl-md-5">
                         <h1>{product.name}</h1>
                         <p>Category: {product.category.name}</p>
                         <p className="pt-4 pb-4">{product.description}</p>
@@ -93,17 +95,15 @@ const ProductPage = (props: IProps) => {
                            btnPlusClassName=""
                            value={basket.getQuantity(product)}
                            onChange={(val) => { basket.set(product, val); }}
-                           className="w-50 pt-3 pb-3"
+                           className="col-12 col-md-6 pt-3 pb-3"
                            isDisabled={product.stockQuantity <= 0}
                            disabledMessage="out of stock"
                         />
                      </div>
                   </div>
-                  <div className="row">
-                     <Tabs product={product} refreshProduct={loadProduct} />
-                  </div>
-                  <div className="row justify-content-center">
-                     <PageHeader title="Related Products" className="line-header-lg col-12" />
+                  <Tabs product={product} refreshProduct={loadProduct} />
+                  <div className="row pm-0 col-12 justify-content-center py-5">
+                     <PageHeader title="Related Products" className="line-header-lg col-12 p-0" />
                      {carousel}
                   </div>
                </div>

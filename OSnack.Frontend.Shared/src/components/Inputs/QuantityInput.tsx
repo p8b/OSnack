@@ -30,8 +30,8 @@ const QuantityInput = (props: IProps) => {
                         onClick={MinusOne} />
                   }
                   <Input id={id} type="number" positiveNumbersOnly value={props.value}
-                     className="col-6 p-0 mb-0 d-flex align-items-end bg-white "
-                     inputClassName={`text-center ${props.inputClassName!}`}
+                     className="col-6 p-0 mb-0 d-flex align-items-end"
+                     inputClassName={`text-center h-100 ${props.inputClassName!}`}
                      onBlur={(i) => { manualChanged(i.target.value as unknown as number); }}
                      onChange={(i) => { props.onChange(i.target.value as unknown as number); }}
                   />

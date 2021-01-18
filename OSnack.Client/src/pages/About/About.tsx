@@ -20,7 +20,7 @@ const About = (props: IProps) => {
          <Container>
             <div className="row col-12 justify-content-center  p-3 mb-5 bg-white ml-auto mr-auto">
                <img className="col-12 pm-0 mb-4" src="public/images/stand.png" />
-               <div className="col-12 col-md-6 py-5 h6">
+               <div className="col-12 col-md-6 py-5 about-us-text">
                   <ReactMarkdown>{aboutUs}</ReactMarkdown>
                </div>
             </div>

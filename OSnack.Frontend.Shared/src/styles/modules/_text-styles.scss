@@ -100,3 +100,13 @@ label {
         cursor: text;
     }
 }
+
+.display-5 {
+    @extend .display-4;
+    font-size: 2.5rem;
+}
+
+.display-6 {
+    @extend .display-4;
+    font-size: 1.5rem;
+}

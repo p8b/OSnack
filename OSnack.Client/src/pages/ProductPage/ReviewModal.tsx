@@ -38,9 +38,10 @@ export const ReviewModal = (props: IProps) => {
          setCommment({ ...comment, rate: rate });
       }
    };
-   const updateDescription = () => {
+   const updateDescription = (loadingCallBack?: () => void) => {
       if (comment.rate == 0) {
          errorAlert.setSingleError("rate", "Rating is required");
+         loadingCallBack!();
          return;
       }
       errorAlert.pleaseWait(isUnmounted);
@@ -48,38 +49,35 @@ export const ReviewModal = (props: IProps) => {
          if (isUnmounted.current) return;
          setCommment(result.data);
          errorAlert.clear();
+         loadingCallBack!();
          props.onClose();
       }).catch(errors => {
          if (isUnmounted.current) return;
          errorAlert.set(errors);
+         loadingCallBack!();
       });
-
    };
 
 
    return (
-      <Modal className="col-11 col-sm-10 col-lg-5 pm-0 pl-4 pr-4 pb-0"
+      <Modal className="col-12 col-sm-11 col-md-9 col-lg-6"
          bodyRef={props.modalRef}
          isOpen={props.isOpen}>
          <PageHeader children="Review" />
+         <div className="col-12 mb-2" children="How much do you like this product? Rate it!" />
+         <StarRating className="col-12" onRateChanged={rate => changeRate(rate)} rate={comment.rate != 0 ? comment.rate : undefined} />
 
-         <div className="col-12  mt-1 pb-3">
-            <div className="col-12 row">
-               <div className="mt-auto mb-auto" children="How much do you like this product? Rate it!" />
-               <StarRating className="ml-1" onRateChanged={rate => changeRate(rate)} rate={comment.rate != 0 ? comment.rate : undefined} />
-            </div>
+         <TextArea className="col-12 p-0" label="Review :" rows={4} value={comment.description}
+            onChange={(e) => setCommment({ ...comment, description: e.target.value })} />
 
-            <TextArea className="col-12 p-0" label="Review :" rows={4} value={comment.description}
-               onChange={(e) => setCommment({ ...comment, description: e.target.value })} />
-
-            <Alert className="col-12" alert={errorAlert.alert} />
-            {/***** buttons ****/}
-            <ModalFooter
-               onUpdate={updateDescription}
-               upatedText="Submit"
-               onCancel={() => { errorAlert.clear(); props.onClose(); }}
-            />
-         </div >
+         <Alert className="col-12" alert={errorAlert.alert} />
+         {/***** buttons ****/}
+         <ModalFooter
+            updateText="Submit"
+            onUpdate={updateDescription}
+            onCancel={() => { errorAlert.clear(); props.onClose(); }}
+            enableLoadingUpdate={isUnmounted}
+         />
       </Modal >
    );
 };

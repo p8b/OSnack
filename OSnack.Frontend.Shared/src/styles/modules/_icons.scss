@@ -256,6 +256,7 @@
 
 .cart-icon {
     &:before {
+        padding-right: .2rem;
         text-decoration: none;
         content: "\f291";
         display: inline;
