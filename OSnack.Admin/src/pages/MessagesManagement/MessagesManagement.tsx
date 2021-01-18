@@ -21,7 +21,7 @@ const MessagesManagement = (props: IProps) => {
    const isUnmounted = useRef(false);
    const history = useHistory();
    const errorAlert = useAlert(new AlertObj());
-   const tbl = useTableData("Date", true);
+   const tbl = useTableData("Date", false);
    const [searchValue, setSearchValue] = useState("");
    const [selectCommunication, setSelectCommunication] = useState(new Communication());
    const [isOpenMessageModal, setIsOpenMessageModal] = useState(false);

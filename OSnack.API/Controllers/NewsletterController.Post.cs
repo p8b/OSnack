@@ -30,7 +30,7 @@ namespace OSnack.API.Controllers
          try
          {
             if (_DbContext.Newsletters.Find(newsletter.Email) != null)
-               return Created("Success", "Your email added to Newsletter");
+               return Created("Success", "Thank you for your subscription.");
 
             TryValidateModel(newsletter);
             if (!ModelState.IsValid)
@@ -42,7 +42,7 @@ namespace OSnack.API.Controllers
             await _DbContext.Newsletters.AddAsync(newsletter).ConfigureAwait(false);
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
 
-            return Created("Success", "Your email subscribed.");
+            return Created("Success", "Thank you for your subscription.");
          }
          catch (Exception ex)
          {

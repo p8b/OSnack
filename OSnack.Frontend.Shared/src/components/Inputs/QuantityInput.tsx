@@ -20,23 +20,23 @@ const QuantityInput = (props: IProps) => {
       <div className={props.className}>
          <div className="row">
             {!props.isDisabled && props.btnOnZeroTitle != undefined && (props.value == 0 || props.value == undefined) && document.activeElement?.id !== id &&
-               <Button className={`col-12 btn-sm m-0 ${props.btnOnZeroClassName}`}
+               <Button className={`col-12 m-0 common-border-bottom ${props.btnOnZeroClassName}`}
                   onClick={PlusOne} children={props.btnOnZeroTitle} />
             }
             {!props.isDisabled && (props.value && props.value > 0 || document.activeElement?.id === id) &&
                <>
                   {!props.disabled &&
-                     <Button className={`col btn-sm btn-red-light minus-icon mr-n1 common-boarder-bottom ${props.btnMinusClassName}`}
+                     <Button className={`col  btn-red-light minus-icon mr-n1 common-border-bottom ${props.btnMinusClassName}`}
                         onClick={MinusOne} />
                   }
                   <Input id={id} type="number" positiveNumbersOnly value={props.value}
-                     className="col-6 p-0 mb-0 d-flex align-items-end"
-                     inputClassName={`text-center  ${props.inputClassName}`}
+                     className="col-6 p-0 mb-0 d-flex align-items-end bg-white "
+                     inputClassName={`text-center ${props.inputClassName!}`}
                      onBlur={(i) => { manualChanged(i.target.value as unknown as number); }}
                      onChange={(i) => { props.onChange(i.target.value as unknown as number); }}
                   />
                   {!props.disabled &&
-                     <Button className={`col btn-sm btn-green-light plus-icon ml-n1 common-boarder-bottom ${props.btnPlusClassName}`}
+                     <Button className={`col btn-green-light plus-icon ml-n1 common-border-bottom ${props.btnPlusClassName}`}
                         onClick={PlusOne}
                      />
                   }

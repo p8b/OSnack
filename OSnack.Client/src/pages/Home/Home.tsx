@@ -57,6 +57,8 @@ const Home = (props: IProps) => {
    };
 
    const onSubscribe = () => {
+      if (email == "")
+         return;
       usePostNewsletter({ email: email }).then(result => errorAlert.setSingleSuccess("", result.data)).catch(alert => errorAlert.set(alert));
    };
 
@@ -80,18 +82,20 @@ const Home = (props: IProps) => {
                so you can just enjoy the wonderful taste.
             </div>
          </div>
-         <div className="col-12 categories-section bg-white">
-            <PageHeader className="line-header-lg" title="Categories" />
-            <Carousel items={carouselItems} />
-         </div>
+         {carouselItems.length > 0 &&
+            <div className="col-12 categories-section bg-white">
+               <PageHeader className="line-header-lg" title="Categories" />
+               <Carousel items={carouselItems} />
+            </div>
+         }
          <Container >
             <div className="row mt-5 mb-5 pt-3 pb-3 justify-content-center">
                <div><img src="public/images/Satisfactionpng.png" /></div>
-               <div style={{ fontFamily: "'Righteous', cursive" }} className="col-12 text-center h1">Your Satisfation is our piority</div>
+               <div style={{ fontFamily: "'Courgette', cursive" }} className="col-12 text-center h1">Your Satisfation is our piority</div>
             </div>
             <div className="row  mt-5 mb-5 pt-3 pb-3 justify-content-center">
                <div><img className="ml-auto mr-auto" src="public/images/QualityFood.png" /></div>
-               <div style={{ fontFamily: "'Courgette', cursive" }} className="col-12 text-center h1">Quality snacks is our mission</div>
+               <div style={{ fontFamily: "'Courgette', cursive" }} className="col-12 text-center h1">Our mission is to provide quality snacks</div>
             </div>
          </Container>
          <div className="col-12 sign-up-bg pt-4 pb-4 mt-4 mb-4">
@@ -104,7 +108,7 @@ const Home = (props: IProps) => {
                         onClosed={() => { errorAlert.clear(); }}
                      />
                      <Input className="col-12 pm-0"
-                        label="Email"
+                        placeholder="Email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                      />

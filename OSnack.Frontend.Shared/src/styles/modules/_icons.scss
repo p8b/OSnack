@@ -116,7 +116,7 @@
     &:before {
         text-decoration: none;
         content: "\f067";
-        display: inline-block;
+        display: inline;
         font-family: "FA5 Solid" !important;
     }
 }
@@ -125,7 +125,7 @@
     &:before {
         text-decoration: none;
         content: "\f068";
-        display: inline-block;
+        display: inline;
         font-family: "FA5 Solid" !important;
     }
 }
@@ -256,7 +256,6 @@
 
 .cart-icon {
     &:before {
-        padding: 0.2rem .3rem;
         text-decoration: none;
         content: "\f291";
         display: inline;

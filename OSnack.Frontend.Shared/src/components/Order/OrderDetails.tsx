@@ -1,5 +1,5 @@
 ﻿import React, { useEffect, useState } from 'react';
-import { Communication, Order, OrderStatusType, OrderStatusTypeList, ProductUnitType } from '../../_core/apiModels';
+import { Communication, Order, OrderStatusType, OrderStatusTypeList, PaymentType, ProductUnitType } from '../../_core/apiModels';
 import { getBadgeByOrderStatusType, onImageError } from '../../_core/appFunc';
 import { API_URL, ClientAppAccess } from '../../_core/constant.Variables';
 import InputDropdown from '../Inputs/InputDropDown';
@@ -76,9 +76,9 @@ const OrderDetails = (props: IProps) => {
                   <div className="col-7 p-0 pm-0 font-weight-bold ">Total Price:</div>
                   <div className="col-5 p-0 font-weight-bold">£{props.order.totalPrice}</div>
 
-                  {props.order.payment.refundAmount != 0 &&
+                  {props.order.payment.type == PaymentType.PartialyRefunded &&
                      <>
-                        <div className="col-7 p-0 pm-0 font-weight-bold ">Refund Value:</div>
+                        <div className="col-7 p-0 pm-0 font-weight-bold ">Total refund:</div>
                         <div className="col-5 p-0 font-weight-bold">£{props.order.payment.refundAmount}</div>
                      </>
                   }
