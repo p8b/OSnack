@@ -24,10 +24,9 @@ const DeliveyOptionModal = (props: IProps) => {
       usePostDeliveryOption(deliveryOption).then(result => {
          if (isUnmounted.current) return;
          setDeliveyOption(result.data);
-         props.onSuccess();
          errorAlert.clear();
-         errorAlert.setSingleSuccess("", "Delivery Option Created.");
          loadingCallBack!();
+         props.onSuccess();
       }).catch(errors => {
          if (isUnmounted.current) return;
          errorAlert.set(errors);
@@ -35,15 +34,13 @@ const DeliveyOptionModal = (props: IProps) => {
       });
    };
    const updateDeliveryOption = (loadingCallBack?: () => void) => {
-
       errorAlert.pleaseWait(isUnmounted);
       usePutDeliveryOption(deliveryOption).then(result => {
          if (isUnmounted.current) return;
          setDeliveyOption(result.data);
-         props.onSuccess();
-         errorAlert.clear();
-         errorAlert.setSingleSuccess("", "Delivery Option Updated.");
          loadingCallBack!();
+         errorAlert.clear();
+         props.onSuccess();
       }).catch(errors => {
          if (isUnmounted.current) return;
          errorAlert.set(errors);
@@ -79,7 +76,7 @@ const DeliveyOptionModal = (props: IProps) => {
             />
             <Input label="Price*"
                type="number"
-               disabled={(deliveryOption.isPremitive && deliveryOption.price == 0)}
+               disabled={(deliveryOption.isPremitive && (deliveryOption.price == 0 && deliveryOption.minimumOrderTotal != 0))}
                positiveNumbersOnly
                value={deliveryOption.price}
                onChange={i => { setDeliveyOption({ ...deliveryOption, price: i.target.value as unknown as number }); }}
@@ -90,7 +87,7 @@ const DeliveyOptionModal = (props: IProps) => {
                type="number"
                positiveNumbersOnly
                value={deliveryOption.minimumOrderTotal}
-               disabled={(deliveryOption.isPremitive && deliveryOption.minimumOrderTotal == 0)}
+               disabled={(deliveryOption.isPremitive && (deliveryOption.minimumOrderTotal == 0 && deliveryOption.price != 0))}
                onChange={i => { setDeliveyOption({ ...deliveryOption, minimumOrderTotal: i.target.value as unknown as number }); }}
                className="col-12 col-sm-6"
                showDanger={errorAlert.checkExistFilterRequired("minimumOrderTotal")}

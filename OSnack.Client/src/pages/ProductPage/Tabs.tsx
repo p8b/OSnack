@@ -56,6 +56,7 @@ const Tabs = (props: IProps) => {
       useGetComment(props.product.id!, selectedPage, maxItemsPerPage).then(result => {
          if (isUnmounted.current) return;
          setComment(result.data.comment);
+         console.log(result.data.comment);
          tbl.setTotalItemCount(result.data.totalCount!);
 
          let list: Comment[] = commentList;
