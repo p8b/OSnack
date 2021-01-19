@@ -127,7 +127,7 @@ const DeliveryOptionManagement = (props: IProps) => {
 
             {/***** Category Table  ****/}
             {tbl.totalItemCount > 0 &&
-               <div className="row col-12 pm-0">
+               <div className="row col-12 mt-3 pm-0">
                   <Table className="col-12 text-center table-striped"
                      defaultSortName={tbl.sortName}
                      data={tbl.data}

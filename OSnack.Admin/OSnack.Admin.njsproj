@@ -149,6 +149,7 @@
     <Folder Include="src\components\ImageUpload\" />
     <Folder Include="src\components\Order\" />
     <Folder Include="src\pages\" />
+    <Folder Include="src\pages\Communication\" />
     <Folder Include="src\pages\MessagesManagement\" />
     <Folder Include="src\pages\Dashboard\" />
     <Folder Include="src\pages\LoginPage\" />
@@ -195,6 +196,7 @@
     <TypeScriptCompile Include="src\index.tsx" />
     <TypeScriptCompile Include="src\pages\CategoryManagement\CategoryManagement.tsx" />
     <TypeScriptCompile Include="src\pages\CategoryManagement\CategoryModal.tsx" />
+    <TypeScriptCompile Include="src\pages\Communication\ViewCommunication.tsx" />
     <TypeScriptCompile Include="src\pages\MessagesManagement\MessagesManagement.tsx" />
     <TypeScriptCompile Include="src\pages\CouponManagement\CouponManagement.tsx" />
     <TypeScriptCompile Include="src\pages\CouponManagement\CouponModel.tsx" />
@@ -208,6 +210,7 @@
     <TypeScriptCompile Include="src\pages\OrderManagement\OrderManagement.tsx" />
     <TypeScriptCompile Include="src\pages\OrderManagement\OrderMessageModal.tsx" />
     <TypeScriptCompile Include="src\pages\OrderManagement\OrderModal.tsx" />
+    <TypeScriptCompile Include="src\pages\OrderManagement\ViewOrders.tsx" />
     <TypeScriptCompile Include="src\pages\OrderManagement\ViewUserOrders.tsx" />
     <TypeScriptCompile Include="src\pages\ProductManagement\ReplyCommentModal.tsx" />
     <TypeScriptCompile Include="src\pages\ProductManagement\CommentModal.tsx" />
@@ -221,6 +224,7 @@
     <TypeScriptCompile Include="src\SecretHooks\useCommentHook.ts" />
     <TypeScriptCompile Include="src\SecretHooks\useCommunicationHook.ts" />
     <TypeScriptCompile Include="src\SecretHooks\useCouponHook.ts" />
+    <TypeScriptCompile Include="src\SecretHooks\useDashboardHook.ts" />
     <TypeScriptCompile Include="src\SecretHooks\useDeliveryOptionHook.ts" />
     <TypeScriptCompile Include="src\SecretHooks\useEmailHook.ts" />
     <TypeScriptCompile Include="src\SecretHooks\useOrderHook.ts" />

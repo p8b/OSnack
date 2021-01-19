@@ -1,4 +1,4 @@
-﻿import React, { lazy, Suspense, useState } from "react";
+﻿import React, { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { BrowserRouter, Switch } from "react-router-dom";
 
 import CustomRoute from "osnack-frontend-shared/src/_core/customRoute";
@@ -8,6 +8,7 @@ import AuthenticationContext from "osnack-frontend-shared/src/_core/authenticati
 // Main Components such as pages, navbar, footer
 import NavMenu from "./components/NavMenu/NavMenu";
 import { useSilentSecretAuthentication } from "./SecretHooks/useAuthenticationHook";
+import { extractUri } from "osnack-frontend-shared/src/_core/appFunc";
 const Dashboard = lazy(() => import("./pages/Dashboard/Dashboard"));
 const MyAccount = lazy(() => import("./pages/MyAccount/MyAccount"));
 const LoginPage = lazy(() => import("./pages/LoginPage/LoginPage"));
@@ -28,12 +29,53 @@ const ViewCommunication = lazy(() => import("./pages/Communication/ViewCommunica
 
 const App = () => {
    const [isOpenMainContainer, setIsOpenMainContainer] = useState(false);
+   const isOpenRef = useRef(false);
+   const breakSize = 768;
+   useEffect(() => {
+      sizeChange();
+      if (window.innerWidth <= breakSize)
+         setIsOpenMainContainer(false);
+      window.addEventListener("resize", sizeChange);
+
+      return () => {
+         window.removeEventListener("resize", sizeChange);
+      };
+   }, []);
+
+   useEffect(() => {
+      isOpenRef.current = isOpenMainContainer;
+      sizeChange();
+   }, [isOpenMainContainer]);
+
+   const sizeChange = () => {
+      var mainContainer = document.getElementById("main-container");
+      console.log(mainContainer!.onclick);
+      if (mainContainer?.onclick == null && window.innerWidth <= breakSize) {
+         mainContainer!.onclick = (e: Event) => { if (isOpenRef.current) e.stopImmediatePropagation(); setIsOpenMainContainer(false); };
+      }
+      else if (mainContainer?.onclick != null && window.innerWidth > breakSize) {
+         if (extractUri(document.location.pathname)![0].toLowerCase() != "login")
+            setIsOpenMainContainer(true);
+         mainContainer!.onclick = null;
+      }
+
+      if (mainContainer?.onclick != null && isOpenRef.current && window.innerWidth <= breakSize) {
+         console.log(1);
+         document.body.style.backgroundColor = "rgba(0,0,0,1)";
+         mainContainer!.style.opacity = ".3";
+      }
+      else {
+         document.body.style.backgroundColor = "rgba(0,0,0,0)";
+         mainContainer!.style.opacity = "1";
+
+      }
+   };
 
    return (
       <BrowserRouter>
          <AuthenticationContext>
-            <div className={`sidenav-main-container ${isOpenMainContainer ? "show" : ""}`}>
-               <NavMenu mainContainerToggler={(isOpen) => setIsOpenMainContainer(isOpen)} isOpenMainContainer={isOpenMainContainer} />
+            <NavMenu mainContainerToggler={(isOpen) => setIsOpenMainContainer(isOpen)} isOpenMainContainer={isOpenMainContainer} />
+            <div id="main-container" className={`sidenav-main-container ${isOpenMainContainer ? "show" : ""}`}>
                <Suspense fallback={<Loading />}>
                   <Switch>
                      {/***** Public Routes ****/}

@@ -16,8 +16,6 @@ const Dashboard = (props: IProps) => {
    const [selectedPeriodOrders, setSelectedPeriodOrders] = useState(SalesPeriod.Daily);
 
    useEffect(() => {
-      //setSalesData();
-      //   setOrdersData();
       useSummaryDashboard()
          .then(result => {
             setTotalSales(result.data.totalSales!);
@@ -129,26 +127,30 @@ const Dashboard = (props: IProps) => {
          <PageHeader title="Dashboard" className="line-header" />
          <div className="row justify-content-center">
             <ButtonCard className="col-12 col-md-6 col-lg cursor-normal" cardClassName="d-flex align-items-center w-100  cursor-normal zig-zag-bg ">
-               <div className="col-12 text-center font-weight-bold text-white">
-                  Total Sales £{totalSales}
+               <div className="col-12 text-center h3 text-white">
+                  <div>Total Sales</div>
+                  <div>£{totalSales}</div>
                </div>
             </ButtonCard>
             <ButtonCard className="col-12 col-md-6 col-lg" cardClassName="d-flex align-items-center w-100 large-triangles-bg"
                onClick={() => history.push("Orders/1/10/0/-1/0/Date/")}>
-               <div className="col-12 text-center font-weight-bold text-white">
-                  New Orders ({totalNewOrders})
+               <div className="col-12 text-center h3 text-white">
+                  <div>New Orders</div>
+                  <div>{totalNewOrders}</div>
                </div>
             </ButtonCard>
             <ButtonCard className="col-12 col-md-6 col-lg" cardClassName="d-flex align-items-center w-100 repeating-chevrons-bg"
                onClick={() => history.push("Orders/1/10/-1/1/0/Date/")}>
-               <div className="col-12 text-center font-weight-bold">
-                  Open Disputes ({totalOpenDisputes})
+               <div className="col-12 text-center h3">
+                  <div>Open Disputes</div>
+                  <div>{totalOpenDisputes}</div>
                </div>
             </ButtonCard>
             <ButtonCard className="col-12 col-md-6 col-lg" cardClassName="d-flex align-items-center w-100 alternating-arrowhead-bg"
                onClick={() => history.push("Messages/1/10/1/0/Date/")}>
-               <div className="col-12 text-center font-weight-bold">
-                  New Messages ({totalNewMessages})
+               <div className="col-12 text-center h3">
+                  <div>New Messages</div>
+                  <div>{totalNewMessages}</div>
                </div>
             </ButtonCard>
          </div>

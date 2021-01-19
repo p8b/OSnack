@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 import Container from '../../components/Container';
-import ViewOrders from '../../components/Order/ViewOrders';
+import ViewOrders from './ViewOrders';
 
 
 const OrderManagement = (props: IProps) => {

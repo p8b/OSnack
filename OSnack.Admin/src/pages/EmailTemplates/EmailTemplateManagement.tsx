@@ -50,12 +50,18 @@ const EmailTemplatePanel = (props: IProps) => {
    return (
       <>
          <PageHeader title="Email Templates" className="line-header" />
-         <Container id="test" className="justify-content-center p-0">
+         <div className="col-12 text-center my-5 py-5 d-block d-md-none" style={{
+            'backgroundColor': 'rgb(255, 221, 70)',
+            'fontWeight': 600,
+            'color': 'black',
+            'padding': '5px',
+         }}>This Page is only functional on large screen size.</div>
+         <Container className="row col-12 justify-content-center pm-0 d-none d-md-flex">
             <Alert alert={errorAlert.alert} onClosed={errorAlert.clear}
                className="col-12 mb-2" />
             {templateTypes.length > 0 &&
                <ButtonCard cardClassName="d-flex align-items-center" onClick={newTemplate}>
-                  <div className="col ">
+                  <div className="col">
                      <div className="col-12 fas add-icon" />
                      <div children="New Template" />
                   </div>

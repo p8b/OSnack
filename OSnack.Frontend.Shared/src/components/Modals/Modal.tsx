@@ -1,12 +1,6 @@
 ﻿import React, { useEffect, useRef } from 'react';
 const Modal = (props: IProps) => {
    const modalRow = useRef<HTMLDivElement | null>(null);
-
-   //if (props.isOpen)
-   //   document.getElementsByTagName("footer")[0]?.classList.add("footer-behind");
-   //else
-   //   document.getElementsByTagName("footer")[0]?.classList.remove("footer-behind");
-
    useEffect(() => {
       if (props.isOpen) {
          document.body.classList.add("remove-scroll");
@@ -15,7 +9,8 @@ const Modal = (props: IProps) => {
          document.body.classList.remove("remove-scroll");
       }
       document.addEventListener("keyup", keydownHander);
-      setfocusToFirstElement();
+      if (props.setfocusToFirstElement)
+         setfocusToFirstElement();
       return () => {
          document.removeEventListener("keyup", keydownHander);
       };
@@ -56,5 +51,6 @@ interface IProps {
    className?: string;
    isOpen: boolean;
    bodyRef?: any;
+   setfocusToFirstElement?: boolean;
 }
 export default Modal;

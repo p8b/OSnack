@@ -227,8 +227,8 @@ const Checkout = (props: IProps) => {
                      }} />
                </div>
             }
-            <DropDown title={<><span>Shipping: <b>{order.deliveryOption?.name} £{order.deliveryOption?.price?.toFixed(2)}</b></span> <span className="float-right edit-icon" /></>}
-               titleClassName="text-left small-text"
+            <DropDown title={<div className="col-12 pm-0 text-left"><span>Shipping: <b>{order.deliveryOption?.name} £{order.deliveryOption?.price?.toFixed(2)}</b></span> <span className="float-right edit-icon" /></div>}
+               titleClassName="col small-text "
                className="col-12 pm-0 pb-1"
                children={availableDeliveryList.map(delivery =>
                   <a className="dropdown-item p-1 text-nav" key={delivery?.name}

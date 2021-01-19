@@ -442,3 +442,14 @@
         font-family: "FA5 Solid" !important;
     }
 }
+
+.dropdown-icon {
+    &:after {
+        text-align: right;
+        float: right;
+        text-decoration: none;
+        padding-left: 0.5rem;
+        content: "\f0d7";
+        font-family: "FA5 Solid" !important;
+    }
+}

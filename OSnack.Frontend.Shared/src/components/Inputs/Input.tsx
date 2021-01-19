@@ -1,8 +1,9 @@
 ﻿import React, { useEffect, useState } from 'react';
 
 export const Input = (props: IProps) => {
-   const id: string = props.id === undefined ? Math.random().toString() : props.id!;
+   const [id] = useState(props.id ?? Math.random().toString());
    const [lblPos, setLblPos] = useState("lower");
+   const [lblInvalidInput, setLblInvalidInput] = useState("");
 
    const validationClassName = (targetInput: EventTarget & HTMLInputElement) => {
       const regex = RegExp(props.validationPattern || "");
@@ -19,7 +20,9 @@ export const Input = (props: IProps) => {
    };
 
    const lblPosition = (val: string) => {
-      if (val === "")
+
+      //@ts-ignore
+      if (val === "" && document.getElementById(id).checkValidity())
          setLblPos("lower");
       else
          setLblPos("");
@@ -30,7 +33,7 @@ export const Input = (props: IProps) => {
    return (
       <div className={`mb-3 ${props.className}`}>
          {  props.label != undefined &&
-            <label children={props.label} htmlFor={id} onClick={() => { document.getElementById(id)?.focus(); }}
+            <label children={`${props.label} ${lblInvalidInput}`} htmlFor={id} onClick={() => { document.getElementById(id)?.focus(); }}
                className={`col-form-label pm-0 ${lblPos}`} />
          }
          <input id={id} ref={props.ref} type={props?.type || "text"}
@@ -55,6 +58,14 @@ export const Input = (props: IProps) => {
                const invalidChars = ["-", "+", "e", "E"];
                if (props.positiveNumbersOnly && invalidChars.includes(e.key)) {
                   e.preventDefault();
+               }
+            }}
+            onKeyUp={() => {
+               //@ts-ignore
+               if (!document.getElementById(id).checkValidity()) {
+                  setLblInvalidInput("(Invalid Value)");
+               } else {
+                  setLblInvalidInput("");
                }
             }}
          />

@@ -141,54 +141,63 @@ const EmailTemplatesEdit = (props: IProps) => {
    return (
       <>
          <PageHeader title={`${template.id == 0 ? "New Template" : "Edit " + EmailTemplateTypesList.find(e => e.Value == template.templateType)?.Name}`} className="line-header line-limit-1" />
-         <div className="row col-12 mb-2" >
-            <Button onClick={() => history.push("/EmailTemplate")}
-               children="Back" className="mr-auto btn-lg back-icon" />
-            {renderInsertDefaultTemplateButton()}
-            <Button onClick={() => { setIsOpenDetailsModal(true); }}
-               children="Details" className="btn-lg btn-white edit-icon" />
-            <Button onClick={saveTemplate}
-               enableLoading={isUnmounted}
-               children={`Save${isSaved ? "d" : ""}`}
-               className={`btn-lg btn-green ${isSaved ? "tick-icon" : "save-icon"}`} />
-         </div>
-         <div className="row pm-0 pl-3 pr-3">
-            {template.requiredClasses != undefined && template.requiredClasses!.length > 0 &&
-               <InputDropdown dropdownTitle={`Server Model${selectedServerClass == undefined ? "s" : ": " + selectedServerClass.value}`}
-                  className="col-auto pb-0">
-                  {template.requiredClasses?.map(sc =>
-                     <div className="dropdown-item cursor-pointer pl-0 pr-0" key={Math.random()}
-                        onClick={() => { setSelectedServerClass(sc); }}>
-                        {sc.value}
+         <div className="col-12 text-center my-5 py-5 d-block d-md-none" style={{
+            'backgroundColor': 'rgb(255, 221, 70)',
+            'fontWeight': 600,
+            'color': 'black',
+            'padding': '5px',
+         }}>This Page is only functional on large screen size.</div>
+         <div className=" d-none d-md-block">
+            <div className="row col-12 mb-2" >
+               <Button onClick={() => history.push("/EmailTemplate")}
+                  children="Back" className="col-auto mr-auto btn-lg back-icon" />
+               {renderInsertDefaultTemplateButton()}
+               <Button onClick={() => { setIsOpenDetailsModal(true); }}
+                  children="Details" className="col-auto btn-lg btn-white edit-icon" />
+               <Button onClick={saveTemplate}
+                  enableLoading={isUnmounted}
+                  children={`Save${isSaved ? "d" : ""}`}
+                  className={`col-auto btn-lg btn-green ${isSaved ? "tick-icon" : "save-icon"}`} />
+            </div>
+            <div className="row pm-0 px-3">
+               {template.requiredClasses != undefined && template.requiredClasses!.length > 0 &&
+                  <InputDropdown dropdownTitle={`Server Model${selectedServerClass == undefined ? "s" : ": " + selectedServerClass.value}`}
+                     className="col-auto pb-0">
+                     {template.requiredClasses?.map(sc =>
+                        <div className="dropdown-item cursor-pointer pl-0 pr-0" key={Math.random()}
+                           onClick={() => { setSelectedServerClass(sc); }}>
+                           {sc.value}
+                        </div>
+                     )}
+                  </InputDropdown>
+               }
+               {selectedServerClass != undefined &&
+                  selectedServerClass.classProperties?.map(v =>
+                     <div className="col-auto pm-0 mt-auto mb-auto" key={Math.random()}>
+                        <CopyText className="badge blue pl-2 pr-2 ml-1 mr-1" text={v.templateName?.ReplaceAll('@@', '').replace(/([A-Z])/g, ' $1') || ''} copyValue={v.templateName} />
                      </div>
-                  )}
-               </InputDropdown>
-            }
-            {selectedServerClass != undefined &&
-               selectedServerClass.classProperties?.map(v =>
-                  <div className="col-auto pm-0 mt-auto mb-auto" key={Math.random()}>
-                     <CopyText className="badge blue pl-2 pr-2 ml-1 mr-1" text={v.templateName?.ReplaceAll('@@', '').replace(/([A-Z])/g, ' $1') || ''} copyValue={v.templateName} />
-                  </div>
-               )
-            }
-         </div>
+                  )
+               }
+            </div>
 
-         <div id="template-container" className="container-width-scroll">
-            <EmailEditor ref={emailEditorRef} onLoad={UnlayerLoaded}
-               minHeight={(window.innerHeight - (document.getElementById("template-container")?.getBoundingClientRect().top || 0) - 30)} />
+            <div id="template-container" className="container-width-scroll ">
+               <EmailEditor ref={emailEditorRef} onLoad={UnlayerLoaded}
+                  minHeight={(window.innerHeight - (document.getElementById("template-container")?.getBoundingClientRect().top || 0) - 30)}
+               />
+            </div>
+            <EmailTemplateEditDetailsModal emailTemplate={template}
+               templateTypes={props.location.state.templateTypes}
+               alert={errorAlert.alert}
+               clearAlert={() => errorAlert.clear()}
+               isOpen={isOpenDetailsModal || (errorAlert.alert.List.length > 0)}
+               onCancel={() => { setIsOpenDetailsModal(false); errorAlert.clear(); }}
+               onSubmit={(temp) => {
+                  errorAlert.clear();
+                  setIsOpenDetailsModal(false);
+                  setTemplate(temp);
+               }}
+            />
          </div>
-         <EmailTemplateEditDetailsModal emailTemplate={template}
-            templateTypes={props.location.state.templateTypes}
-            alert={errorAlert.alert}
-            clearAlert={() => errorAlert.clear()}
-            isOpen={isOpenDetailsModal || (errorAlert.alert.List.length > 0)}
-            onCancel={() => { setIsOpenDetailsModal(false); errorAlert.clear(); }}
-            onSubmit={(temp) => {
-               errorAlert.clear();
-               setIsOpenDetailsModal(false);
-               setTemplate(temp);
-            }}
-         />
       </>
    );
 };

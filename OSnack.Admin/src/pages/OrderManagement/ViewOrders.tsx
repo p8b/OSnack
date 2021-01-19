@@ -161,7 +161,7 @@ const ViewOrders = (props: IProps) => {
 
    return (
       <>
-         <PageHeader title={`Orders ${props.location?.state?.userId == undefined ? "" : ` - ${fullName}`}`} className="hr-section-sm line-limit-1" />
+         <PageHeader title={<>Orders <span className="line-limit-1 pl-1">{props.location?.state?.userId == undefined ? "" : ` - ${fullName}`}</span></>} className="hr-section-sm" />
          {props.location?.state?.backUrl != undefined &&
             <Button onClick={() => history.push(props.location?.state?.backUrl!)} children="Back" className="col-auto mr-auto btn-lg back-icon" />
          }

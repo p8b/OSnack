@@ -1,4 +1,5 @@
 ﻿import React, { useEffect, useState } from 'react';
+import ReactToPrint from 'react-to-print';
 import { Communication, Order, OrderStatusType, OrderStatusTypeList, PaymentType, ProductUnitType } from '../../_core/apiModels';
 import { getBadgeByOrderStatusType, onImageError } from '../../_core/appFunc';
 import { API_URL, ClientAppAccess } from '../../_core/constant.Variables';
@@ -6,6 +7,7 @@ import InputDropdown from '../Inputs/InputDropDown';
 import Alert, { AlertObj, useAlert } from '../Texts/Alert';
 
 const OrderDetails = (props: IProps) => {
+   const [containerRef] = useState(React.createRef<HTMLDivElement>());
    const errorAlert = useAlert(new AlertObj());
    const [selectedStatus, SetSelectStatus] = useState(OrderStatusType.InProgress);
    useEffect(() => {
@@ -22,9 +24,9 @@ const OrderDetails = (props: IProps) => {
    };
 
    return (
-      <div className="row pm-0 mt-1">
+      <div className="row pm-0 mt-1" ref={containerRef}>
          <Alert alert={errorAlert.alert}
-            className="col-12 mb-2"
+            className="d-print-none col-12 mb-2"
             onClosed={() => { errorAlert.clear(); }} />
          {/***** OrderDetails ****/}
          <div className="col-12 col-md-6 col-lg-5">
@@ -52,8 +54,9 @@ const OrderDetails = (props: IProps) => {
                      <>
                         <div className="col-7 pm-0 small-text text-gray mt-auto" children="Status:" />
                         <div className="col-5 p-0">
-                           <span className={`${getBadgeByOrderStatusType(props.order.status)}`}
+                           <span className={`d-print-none ${getBadgeByOrderStatusType(props.order.status)}`}
                               children={OrderStatusTypeList.find(o => o.Value == props.order.status)?.Name} />
+                           <span className="d-none d-print-block">{OrderStatusTypeList.find(o => o.Value == props.order.status)?.Name}</span>
                         </div>
                      </>
                   }
@@ -90,9 +93,15 @@ const OrderDetails = (props: IProps) => {
                   {props.order.dispute != undefined &&
                      <div className="col-12 pm-0 cursor-pointer small-text text-primary" onClick={() => props.showDispute!(props.order.dispute!)}>View Dispute History.</div>
                   }
-
-                  <div className="pm-0 mt-3">
-                     <div className="col-12 p-0 font-weight-bold ">Shipping Address :</div>
+                  <div className="row pm-0 mt-3">
+                     <div className="col p-0 font-weight-bold ">Shipping Address :</div>
+                     <ReactToPrint
+                        documentTitle={`Order Receipt`}
+                        bodyClass={"p-5"}
+                        pageStyle={"p-5 "}
+                        trigger={() => <button className="btn-sm btn-blue col-auto d-print-none">Print</button>}
+                        content={() => containerRef.current}
+                     />
                      <div className="col-12 p-0 line-limit-1">{props.order.name}</div>
                      <div className="col-12 p-0 line-limit-2">{props.order.firstLine}</div>
                      <div className="col-12 p-0 line-limit-2">{props.order.secondLine}</div>

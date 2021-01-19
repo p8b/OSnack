@@ -31,9 +31,11 @@ const DropDown = (props: IProps) => {
          <button disabled={props.disabled} className={`col p-0 btn-no-style ${isOpen ? "show" : ""}`}
             onClick={() => setIsOpen((prev) => !prev)}
             ref={(props.buttonRef || dropDownButton)}>
-            <div className={`line-limit-1 ${props?.titleClassName} ${props.disabled ? "disabled" : ""}`}>
-               {props.title}
-            </div>
+            {React.isValidElement(props.title) ? props.title :
+               <span className={`line-limit-1  ${props?.titleClassName} ${props.disabled ? "disabled" : ""}`}
+                  children={props.title}
+               />
+            }
          </button>
          <span className={`col dropdown-menu text-center dropdown-menu-right bg-white ${isOpen ? " show" : ""}`}>
             {props.children}
