@@ -9,7 +9,7 @@ import { usePostOrder, useVerifyOrder } from 'osnack-frontend-shared/src/hooks/P
 import { AuthContext } from 'osnack-frontend-shared/src/_core/authenticationContext';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import { useDetectOutsideClick } from 'osnack-frontend-shared/src/hooks/function/useDetectOutsideClick';
-import AddressModal from '../MyAccount/AddressModal';
+import AddressModal from '../../components/Modal/AddressModal';
 import BasketCoupon from './BasketCoupon';
 import PaymentModal from './PaymentModal';
 import useScript from 'osnack-frontend-shared/src/hooks/function/useScript';

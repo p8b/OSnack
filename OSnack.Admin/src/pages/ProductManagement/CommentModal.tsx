@@ -1,7 +1,7 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
-import ProductComment from 'osnack-frontend-shared/src/components/Comment/Comment';
+import ProductComment from 'osnack-frontend-shared/src/components/ProductComment/ProductComment';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Comment } from 'osnack-frontend-shared/src/_core/apiModels';

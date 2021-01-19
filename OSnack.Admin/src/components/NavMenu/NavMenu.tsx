@@ -44,7 +44,7 @@ const NavMenu = (props: IProps) => {
                   <button type="button"
                      className={`fas toggler-icon pl-4`}
                      onClick={() => { props.mainContainerToggler(!props.isOpenMainContainer); }} />
-                  <DropDown className="ml-auto " titleClassName={`user-circle-icon btn-no-style pr-3`} title={``}>
+                  <DropDown className="col-auto pm-0 ml-auto " titleClassName={`user-circle-icon btn-no-style pr-3`} title={``}>
                      <button className="dropdown-item"
                         onClick={() => history.push("/MyAccount")}
                         children="My Account" />
@@ -52,7 +52,6 @@ const NavMenu = (props: IProps) => {
                         onClick={logout}
                         children="Logout" />
                   </DropDown>
-
                </div>
                <nav className={`row text-center align-items-start sidenav pt-2 m-0 ${props.isOpenMainContainer ? "show" : "hide"}`}>
                   <div onClick={() => history.push("/")} className="logo-container col-12 cursor-pointer">

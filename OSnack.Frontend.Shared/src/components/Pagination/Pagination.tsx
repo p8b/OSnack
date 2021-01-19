@@ -111,6 +111,22 @@ const Pagination = (props: IProps) => {
 
    const btnClassName = "col-auto btn  boarder-radius-none outline-none ";
 
+   const getMaxItemPerPageItems = () => {
+      let list = [1, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+      if (list.find(n => n == props.maxItemsPerPage))
+         return list;
+      let result: number[] = [];
+      let isfind = false;
+      list.map((number) => {
+         if (number > props.maxItemsPerPage && !isfind) {
+            result.push(props.maxItemsPerPage);
+            isfind = true;
+         }
+         result.push(number);
+      });
+      return result;
+   };
+
    return (
       <>
          { arrayOfPageNumbers.length == 0 && <></>}
@@ -145,18 +161,7 @@ const Pagination = (props: IProps) => {
                <select className="w-auto form-control outline-none" defaultValue={props.maxItemsPerPage}
                   onChange={(i) => { onMaxItemPerPageChange(i.target.value as unknown as number); }}
                >
-                  <option value="1" children="1" />
-                  <option value="5" children="5" />
-                  <option value="10" children="10" />
-                  <option value="20" children="20" />
-                  <option value="30" children="30" />
-                  <option value="40" children="40" />
-                  <option value="50" children="50" />
-                  <option value="60" children="60" />
-                  <option value="70" children="70" />
-                  <option value="80" children="80" />
-                  <option value="90" children="90" />
-                  <option value="100" children="100" />
+                  {getMaxItemPerPageItems().map((number) => <option value={number} children={number} />)}
                </select>
                {props.showCount &&
                   <div className="col-auto align-self-center mr-auto mr-md-0 ml-0 ml-md-auto"

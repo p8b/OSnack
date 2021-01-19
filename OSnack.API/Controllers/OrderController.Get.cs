@@ -27,8 +27,8 @@ namespace OSnack.API.Controllers
       /// </summary>
       #region *** 200 OK, 417 ExpectationFailed ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [MultiResultPropertyNames(new string[] { "orderList", "availableTypes", "totalCount" })]
-      [ProducesResponseType(typeof(MultiResult<List<Order>, List<OrderStatusType>, int>), StatusCodes.Status200OK)]
+      [MultiResultPropertyNames(new string[] { "orderList", "availableTypes", "totalCount", "disputeFilterType" })]
+      [ProducesResponseType(typeof(MultiResult<List<Order>, List<OrderStatusType>, int, DisputeFilterTypes>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]/{selectedPage}/{maxNumberPerItemsPage}/{searchValue}/{filterStatus}/{isSortAsce}/{sortName}/{disputeFilter}")]
@@ -46,6 +46,13 @@ namespace OSnack.API.Controllers
          {
 
             _ = bool.TryParse(disputeFilter, out bool boolDisputeFilter);
+
+
+            bool closeDisput = await _DbContext.Orders.Include(o => o.Dispute)
+               .AnyAsync(o => !o.Dispute.Status).ConfigureAwait(false);
+            bool openDisput = await _DbContext.Orders.Include(o => o.Dispute)
+               .AnyAsync(o => o.Dispute.Status).ConfigureAwait(false);
+
 
             int totalCount = await _DbContext.Orders
                .Include(o => o.User)
@@ -90,7 +97,8 @@ namespace OSnack.API.Controllers
                 .Include(o => o.OrderItems)
                 .ToListAsync()
                 .ConfigureAwait(false);
-            return Ok(new MultiResult<List<Order>, List<OrderStatusType>, int>(list, availebeStatusTypes, totalCount,
+            return Ok(new MultiResult<List<Order>, List<OrderStatusType>, int, DisputeFilterTypes>(list, availebeStatusTypes, totalCount,
+              AppFunc.GetDisputeFilterTypes(closeDisput, openDisput),
                CoreFunc.GetCustomAttributeTypedArgument(this.ControllerContext)));
          }
          catch (Exception ex)
@@ -105,8 +113,8 @@ namespace OSnack.API.Controllers
       /// </summary>
       #region ***  ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [MultiResultPropertyNames("orderList", "availableTypes", "fullName", "totalCount")]
-      [ProducesResponseType(typeof(MultiResult<List<Order>, List<OrderStatusType>, string, int>), StatusCodes.Status200OK)]
+      [MultiResultPropertyNames("orderList", "availableTypes", "fullName", "totalCount", "disputeFilterType")]
+      [ProducesResponseType(typeof(MultiResult<List<Order>, List<OrderStatusType>, string, int, DisputeFilterTypes>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]/{userId}/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}/{disputeFilter}")]
@@ -126,8 +134,8 @@ namespace OSnack.API.Controllers
       /// </summary>
       #region *** 200 OK, 417 ExpectationFailed ***
       [Consumes(MediaTypeNames.Application.Json)]
-      [MultiResultPropertyNames("orderList", "availableTypes", "fullName", "totalCount")]
-      [ProducesResponseType(typeof(MultiResult<List<Order>, List<OrderStatusType>, string, int>), StatusCodes.Status200OK)]
+      [MultiResultPropertyNames("orderList", "availableTypes", "fullName", "totalCount", "disputeFilterType")]
+      [ProducesResponseType(typeof(MultiResult<List<Order>, List<OrderStatusType>, string, int, DisputeFilterTypes>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("Get/[action]/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}/{disputeFilter}")]
@@ -153,6 +161,18 @@ namespace OSnack.API.Controllers
          {
 
             _ = bool.TryParse(disputeFilter, out bool boolDisputeFilter);
+
+            bool closeDisput = await _DbContext.Orders
+               .Include(o => o.Dispute)
+               .Include(o => o.User)
+               .Where(o => o.User.Id == userId)
+               .AnyAsync(o => !o.Dispute.Status).ConfigureAwait(false);
+            bool openDisput = await _DbContext.Orders
+               .Include(o => o.Dispute)
+               .Include(o => o.User)
+               .Where(o => o.User.Id == userId)
+               .AnyAsync(o => o.Dispute.Status).ConfigureAwait(false);
+
             int totalCount = await _DbContext.Orders
                .Include(o => o.User)
                .Include(o => o.Payment)
@@ -196,8 +216,9 @@ namespace OSnack.API.Controllers
 
             User user = _DbContext.Users.SingleOrDefault(u => u.Id == userId);
 
-            return Ok(new MultiResult<List<Order>, List<OrderStatusType>, string, int>
+            return Ok(new MultiResult<List<Order>, List<OrderStatusType>, string, int, DisputeFilterTypes>
                (list, availebeStatusTypes, $"{user.FirstName} {user.Surname}", totalCount,
+               AppFunc.GetDisputeFilterTypes(closeDisput, openDisput),
                CoreFunc.GetCustomAttributeTypedArgument(this.ControllerContext)));
          }
          catch (Exception ex)

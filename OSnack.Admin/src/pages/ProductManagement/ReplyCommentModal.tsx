@@ -6,7 +6,7 @@ import { Comment } from 'osnack-frontend-shared/src/_core/apiModels';
 import { useAddReplyComment } from '../../SecretHooks/useCommentHook';
 import ModalFooter from 'osnack-frontend-shared/src/components/Modals/ModalFooter';
 import { TextArea } from 'osnack-frontend-shared/src/components/Inputs/TextArea';
-import ProductComment from 'osnack-frontend-shared/src/components/Comment/Comment';
+import ProductComment from 'osnack-frontend-shared/src/components/ProductComment/ProductComment';
 
 const ReplyCommentModal = (props: IProps) => {
    const isUnmounted = useRef(false);

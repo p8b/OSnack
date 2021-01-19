@@ -106,4 +106,12 @@ namespace OSnack.API.Extras.CustomTypes
       Monthly = 1,
       Yearly = 2
    }
+
+   public enum DisputeFilterTypes
+   {
+      None = 0,
+      Open = 1,
+      Close = 2,
+      OpenAndClose = 3
+   }
 }

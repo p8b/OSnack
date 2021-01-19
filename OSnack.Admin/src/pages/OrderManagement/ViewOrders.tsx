@@ -1,23 +1,23 @@
-﻿import Table, { TableData, useTableData } from 'osnack-frontend-shared/src/components/Table/Table';
-import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRowButtons';
-import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
+﻿import React, { useEffect, useRef, useState } from 'react';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
-import { Communication, Order, OrderStatusType, OrderStatusTypeList, PaymentTypeList } from 'osnack-frontend-shared/src/_core/apiModels';
-import { checkUri, generateUri, getBadgeByOrderStatusType } from 'osnack-frontend-shared/src/_core/appFunc';
+import { Communication, Order, OrderStatusType, OrderStatusTypeList, PaymentTypeList, DisputeFilterTypes } from 'osnack-frontend-shared/src/_core/apiModels';
 import { GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
-import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import Container from '../../components/Container';
-import { IReturnUseAllOfficialOrder, useAllOfficialOrder } from 'osnack-frontend-shared/src/hooks/OfficialHooks/useOrderHook';
+import { checkUri, convertUriParamToBool, generateUri, getBadgeByOrderStatusType } from 'osnack-frontend-shared/src/_core/appFunc';
+import Table, { TableData, TableView, useTableData } from 'osnack-frontend-shared/src/components/Table/Table';
+import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRowButtons';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
-import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
-import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
-import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
-import OrderModal from './OrderModal';
+import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
+import OrderModal from '../../pages/OrderManagement/OrderModal';
 import CommunicationModal from 'osnack-frontend-shared/src/components/Modals/CommunicationModal';
+import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
+import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
+import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
+import { usePutSecretCommunication } from '../../SecretHooks/useCommunicationHook';
+import { useAllOrder, useAllUserOrder } from '../../SecretHooks/useOrderHook';
 import { Access } from '../../_core/appConstant.Variables';
 
-const MyOrders = (props: IProps) => {
+const ViewOrders = (props: IProps) => {
    const isUnmounted = useRef(false);
    const history = useHistory();
    const errorAlert = useAlert(new AlertObj());
@@ -29,11 +29,14 @@ const MyOrders = (props: IProps) => {
    const [selectOrderType, setSelectOrderType] = useState(GetAllRecords);
    const [selectDisputeType, setSelectDisputeType] = useState(GetAllRecords);
    const [isOpenOrderModal, setIsOpenOrderModal] = useState(false);
-   const [availableStatusTypeList, setavailableStatusTypeList] = useState<OrderStatusType[]>([]);
+   const [fullName, setFullName] = useState("");
+   const [disputeFilterTypes, setDisputeFilterTypes] = useState(DisputeFilterTypes.None);
+   const [availableStatusTypeList, setAvailableStatusTypeList] = useState<OrderStatusType[]>([]);
 
    useEffect(() => {
       onSearch(...checkUri(window.location.pathname,
          [tbl.selectedPage, tbl.maxItemsPerPage, selectOrderType, selectDisputeType, tbl.isSortAsc, tbl.sortName, GetAllRecords]));
+
       return () => { isUnmounted.current = true; };
    }, []);
 
@@ -51,7 +54,7 @@ const MyOrders = (props: IProps) => {
       if (selectedPage != tbl.selectedPage) tbl.setSelectedPage(selectedPage);
       if (Number(filterOrderType) == -1) filterOrderType = GetAllRecords;
       if (filterOrderType != selectOrderType) setSelectOrderType(filterOrderType);
-      if (Number(filterDisputeType) == -1) filterDisputeType = GetAllRecords;
+      filterDisputeType = convertUriParamToBool(filterDisputeType);
       if (filterDisputeType != selectDisputeType) setSelectDisputeType(filterDisputeType);
       if (isSortAsc != tbl.isSortAsc) tbl.setIsSortAsc(isSortAsc);
       if (sortName != tbl.sortName) tbl.setSortName(sortName);
@@ -62,33 +65,53 @@ const MyOrders = (props: IProps) => {
          [selectedPage,
             maxItemsPerPage,
             filterOrderType === GetAllRecords ? -1 : filterOrderType,
-            filterDisputeType === GetAllRecords ? -1 : filterDisputeType,
+            filterDisputeType === GetAllRecords ? -1 : (filterDisputeType == 'true' ? 1 : 0),
             Number(isSortAsc),
             sortName,
-            searchString != GetAllRecords ? searchString : ""]));
-
+            searchString != GetAllRecords ? searchString : ""]),
+         props.location?.state);
 
       errorAlert.pleaseWait(isUnmounted);
-      useAllOfficialOrder(selectedPage, maxItemsPerPage, searchString, filterOrderType, isSortAsc, sortName, filterDisputeType)
-         .then(onGetUserOrderSuccess)
-         .catch(onGetUserOrderFailed);
 
 
-
+      if (props.location?.state?.userId == undefined)
+         useAllOrder(selectedPage, maxItemsPerPage, searchString, filterOrderType, isSortAsc, sortName, filterDisputeType).then(result => {
+            if (isUnmounted.current) return;
+            tbl.setTotalItemCount(result.data.totalCount || 0);
+            setAvailableStatusTypeList(result.data.availableTypes!);
+            setDisputeFilterTypes(result.data.disputeFilterType!);
+            errorAlert.clear();
+            populateOrderTable(result.data.orderList!);
+         }).catch(errors => {
+            if (isUnmounted.current) return;
+            errorAlert.set(errors);
+         });
+      else
+         useAllUserOrder(props.location.state?.userId, selectedPage, maxItemsPerPage, searchString, filterOrderType, isSortAsc, sortName, filterDisputeType)
+            .then((result) => {
+               if (isUnmounted.current) return;
+               tbl.setTotalItemCount(result.data.totalCount || 0);
+               setAvailableStatusTypeList(result.data.availableTypes!);
+               setDisputeFilterTypes(result.data.disputeFilterType!);
+               setFullName(result.data.fullName!);
+               errorAlert.clear();
+               populateOrderTable(result.data.orderList!);
+            })
+            .catch((errors) => {
+               if (isUnmounted.current) return;
+               errorAlert.set(errors);
+            });
    };
-   const onGetUserOrderSuccess = (result: IReturnUseAllOfficialOrder) => {
-      if (isUnmounted.current) return;
-      tbl.setTotalItemCount(result.data.totalCount || 0);
-      setavailableStatusTypeList(result.data.availableTypes!);
-      populateOrderTable(result.data.orderList!);
-      errorAlert.clear();
-
-
+   const getDisputeDisplayValue = () => {
+      switch (selectDisputeType) {
+         case "true":
+            return "Open ";
+         case "false":
+            return "Closed ";
+      }
+      return "All";
    };
-   const onGetUserOrderFailed = (errors: AlertObj) => {
-      if (isUnmounted.current) return;
-      errorAlert.set(errors);
-   };
+
    const populateOrderTable = (orderList: Order[]) => {
 
       if (orderList.length == 0) {
@@ -134,33 +157,26 @@ const MyOrders = (props: IProps) => {
 
       tbl.setData(tData);
    };
-   const getDisputeDisplayValue = () => {
-      switch (selectDisputeType) {
-         case "True":
-            return "Open ";
-         case "False":
-            return "Closed ";
-      }
-      return "All";
-   };
+
+
    return (
       <>
-         <PageHeader title="My Orders" className="hr-section-sm line-limit-1" />
-         <Container className="bg-white py-3">
-            <Alert alert={errorAlert.alert}
-               className="col-12 mb-2"
-               onClosed={() => { errorAlert.clear(); }}
-            />
+         <PageHeader title={`Orders ${props.location?.state?.userId == undefined ? "" : ` - ${fullName}`}`} className="hr-section-sm line-limit-1" />
+         {props.location?.state?.backUrl != undefined &&
+            <Button onClick={() => history.push(props.location?.state?.backUrl!)} children="Back" className="col-auto mr-auto btn-lg back-icon" />
+         }
+
+         <div className="col-12 bg-white pb-2 ">
             <div className="row col-12 pm-0 mb-3">
                <SearchInput
                   value={searchValue}
                   onChange={i => setSearchValue(i.target.value)}
-                  className="col-12"
+                  className="col-12 "
                   onSearch={() => { onSearch(1); }}
                />
                <DropDown title={`Status Type: ${OrderStatusTypeList.find((s) => s.Id?.toString() == selectOrderType)?.Name || "All"}`}
-                  className="col-12 col-sm pm-0 mt-2"
-                  titleClassName="btn btn-white filter-icon mr-sm-1">
+                  className={`col-12 ${disputeFilterTypes != DisputeFilterTypes.None ? "col-sm" : ""} pm-0 mt-2`}
+                  titleClassName={`btn btn-white filter-icon ${disputeFilterTypes != DisputeFilterTypes.None ? "mr-sm-1" : ""}`}>
                   <button children="All"
                      className="dropdown-item"
                      onClick={() => { onSearch(1, undefined, GetAllRecords); }} />
@@ -171,32 +187,38 @@ const MyOrders = (props: IProps) => {
                      </button>
                   )}
                </DropDown>
-               <DropDown title={`Dispute: ${getDisputeDisplayValue()}`}
-                  className="col-12 col-sm pm-0 mt-2"
-                  titleClassName="btn btn-white filter-icon ml-sm-1">
-                  <button children="All"
-                     onClick={() => onSearch(1, undefined, undefined, GetAllRecords)}
-                     className="dropdown-item" />
-                  <button children="Open Disputes"
-                     onClick={() => onSearch(1, undefined, undefined, "True")}
-                     className="dropdown-item" />
-                  <button children="Closed Disputes"
-                     onClick={() => onSearch(1, undefined, undefined, "False")}
-                     className="dropdown-item" />
-               </DropDown>
+               {disputeFilterTypes != DisputeFilterTypes.None &&
+                  <DropDown title={`Dispute: ${getDisputeDisplayValue()}`}
+                     className="col-12 col-sm pm-0 mt-2"
+                     titleClassName="btn btn-white filter-icon ml-sm-1">
+                     <button children="All"
+                        onClick={() => onSearch(1, undefined, undefined, GetAllRecords)}
+                        className="dropdown-item" />
+                     {(disputeFilterTypes == DisputeFilterTypes.Open || disputeFilterTypes == DisputeFilterTypes.OpenAndClose) &&
+                        <button children="Open Disputes"
+                           onClick={() => onSearch(1, undefined, undefined, "true")}
+                           className="dropdown-item" />
+                     }
+                     {(disputeFilterTypes == DisputeFilterTypes.Close || disputeFilterTypes == DisputeFilterTypes.OpenAndClose) &&
+                        <button children="Closed Disputes"
+                           onClick={() => onSearch(1, undefined, undefined, "false")}
+                           className="dropdown-item" />
+                     }
+                  </DropDown>
+               }
+
             </div>
-            {tbl.totalItemCount == 0 &&
-               <div className="row col-12 justify-content-center">
-                  <div className="col-12 text-center mt-4">You do not have any orders. <br /> Let's do something about it.</div>
-                  <Button className="btn btn-green col-auto mt-4" children="Shop now" onClick={() => { history.push("/Shop"); }} />
-               </div>
-            }
+            <Alert alert={errorAlert.alert}
+               className="col-12 mb-2"
+               onClosed={() => { errorAlert.clear(); }}
+            />
             {tbl.totalItemCount > 0 &&
-               <div className="col-12 pb-5 ">
+               <>
                   <Table className="col-12 text-center table-striped"
                      defaultSortName={tbl.sortName}
                      data={tbl.data}
                      onSortChange={(selectedPage, isSortAsce, sortName) => { onSearch(selectedPage, undefined, undefined, undefined, isSortAsce, sortName); }}
+                     view={TableView.CardView}
                      listCount={tbl.totalItemCount}
                   />
                   <Pagination
@@ -206,21 +228,28 @@ const MyOrders = (props: IProps) => {
                         onSearch(selectedPage, maxItemsPerPage);
                      }}
                      listCount={tbl.totalItemCount} />
-               </div>
+               </>
             }
-            <OrderModal isOpen={isOpenOrderModal}
-               order={selectOrder}
-               onClose={() => { setIsOpenOrderModal(false); onSearch(); }} />
-            <CommunicationModal isOpen={isOpenDisputeModal}
-               communication={selectedDispute}
-               access={Access}
-               onClose={() => { setIsOpenDisputeModal(false); onSearch(); }}
-            />
-         </Container>
+         </div>
+         <OrderModal isOpen={isOpenOrderModal}
+            order={selectOrder}
+            onClose={() => { setIsOpenOrderModal(false); }}
+            onSuccess={() => { setIsOpenOrderModal(false); onSearch(); }}
+            onDispute={props.onDispute} />
+         <CommunicationModal isOpen={isOpenDisputeModal}
+            communication={selectedDispute}
+            access={Access}
+            onClose={() => { setIsOpenDisputeModal(false); onSearch(); }}
+            usePutSecretCommunication={usePutSecretCommunication}
+         />
+
+
       </>
    );
 };
 
 declare type IProps = {
+   location?: any;
+   onDispute?: (order: Order) => void;
 };
-export default MyOrders;
+export default ViewOrders;

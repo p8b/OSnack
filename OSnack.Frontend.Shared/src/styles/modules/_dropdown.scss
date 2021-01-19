@@ -23,6 +23,7 @@
     border-bottom: 0.15rem solid rgb(128, 128, 128);
     font-size: 1.2rem !important;
     text-align: left;
+    display: inline-block !important;
     @extend .radius-none;
 
     &:focus {

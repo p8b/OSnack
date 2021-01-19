@@ -38,7 +38,7 @@ const ProductModal = (props: IProps) => {
             .then(imgBase64 => {
                if (isUnmounted.current) return;
                setImageBase64(imgBase64 as string);
-            });
+            }).catch(error => { if (isUnmounted.current) return; console.log(error); });
          getBase64fromUrlImage(`${API_URL}/${props.product.originalImagePath}`)
             .then(originalImgBase64 => {
                if (isUnmounted.current) return;

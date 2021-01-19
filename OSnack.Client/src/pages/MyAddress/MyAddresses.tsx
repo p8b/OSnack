@@ -3,7 +3,7 @@ import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import ButtonCard from 'osnack-frontend-shared/src/components/Buttons/ButtonCard';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Address } from 'osnack-frontend-shared/src/_core/apiModels';
-import AddressModal from './AddressModal';
+import AddressModal from '../../components/Modal/AddressModal';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import { useAllAddress, useSetDefaultAddress } from 'osnack-frontend-shared/src/hooks/OfficialHooks/useAddressHook';
 

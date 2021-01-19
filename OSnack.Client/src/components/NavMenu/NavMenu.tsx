@@ -58,7 +58,8 @@ const NavMenu = (props: IProps) => {
                )}
                {auth.state.isAuthenticated &&
                   <DropDown buttonRef={accountDropdownButtonRef}
-                     titleClassName={`btn-no-style ${selectedNav === "/MyAccount" ? "visited" : ""}`}
+                     className="col-auto pm-0 "
+                     titleClassName={` btn-no-style ${selectedNav === "/MyAccount" ? "visited" : ""}`}
                      forceOpen={outsideClickSmallNav}
                      title={<div className="user-circle-icon" />}>
                      <NavLink className="dropdown-item"

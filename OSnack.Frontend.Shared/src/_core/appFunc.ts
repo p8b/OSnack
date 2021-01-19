@@ -1,6 +1,6 @@
 ﻿import 'whatwg-fetch';
 import { OrderStatusType } from './apiModels';
-import { AntiforgeryTokenCookieName, API_URL } from "./constant.Variables";
+import { AntiforgeryTokenCookieName, API_URL, GetAllRecords } from "./constant.Variables";
 
 //#region *** 'Cookie Management' ***
 /**
@@ -137,7 +137,7 @@ export const getBase64fromUrlImage = (url: string) =>
    new Promise((resolve, reject) => {
       try {
          const image = new Image();
-         image.crossOrigin = "Anonymous";
+         image.crossOrigin = "anonymous";
          image.src = url;
          image.onload = () => {
             var canvas = document.createElement('canvas');
@@ -267,4 +267,14 @@ export const generateUri = (patheName: string, values: any[]) => {
    let uri = `/${extractUri(patheName)[0]}`;
    values.map(value => uri += `/${value}`);
    return uri;
+};
+
+export const convertUriParamToBool = (value: string) => {
+   if (Number(value) == 1)
+      return 'true';
+   if (Number(value) == 0)
+      return 'false';
+   if (Number(value) == -1)
+      return GetAllRecords;
+   return value;
 };

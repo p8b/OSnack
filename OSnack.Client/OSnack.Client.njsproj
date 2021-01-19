@@ -156,6 +156,7 @@
     <Folder Include="server\" />
     <Folder Include="public\" />
     <Folder Include="src\components\" />
+    <Folder Include="src\components\Modal\" />
     <Folder Include="src\components\NavMenu\" />
     <Folder Include="src\pages\Home\" />
     <Folder Include="src\pages\Login\" />
@@ -164,6 +165,8 @@
     <Folder Include="src\pages\ContactUs\" />
     <Folder Include="src\pages\Basket\" />
     <Folder Include="src\pages\Communication\" />
+    <Folder Include="src\pages\MyAddress\" />
+    <Folder Include="src\pages\MyOrder\" />
     <Folder Include="src\pages\Newsletter\" />
     <Folder Include="src\pages\PrivacyPolicy\" />
     <Folder Include="src\pages\ProductPage\" />
@@ -194,9 +197,12 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\app.tsx" />
+    <TypeScriptCompile Include="src\components\Modal\AddressModal.tsx" />
     <TypeScriptCompile Include="src\pages\Communication\ViewCommunication.tsx" />
-    <TypeScriptCompile Include="src\pages\MyAccount\AddDisputeModal.tsx" />
-    <TypeScriptCompile Include="src\pages\MyAccount\OrderModal.tsx" />
+    <TypeScriptCompile Include="src\pages\MyAddress\MyAddresses.tsx" />
+    <TypeScriptCompile Include="src\pages\MyOrder\AddDisputeModal.tsx" />
+    <TypeScriptCompile Include="src\pages\MyOrder\MyOrders.tsx" />
+    <TypeScriptCompile Include="src\pages\MyOrder\OrderModal.tsx" />
     <TypeScriptCompile Include="src\pages\ProductPage\ReviewModal.tsx" />
     <TypeScriptCompile Include="src\components\Container.tsx" />
     <TypeScriptCompile Include="src\components\Footer.tsx" />
@@ -215,10 +221,7 @@
     <TypeScriptCompile Include="src\index.tsx" />
     <TypeScriptCompile Include="src\pages\Home\Home.tsx" />
     <TypeScriptCompile Include="src\pages\Login\LoginPage.tsx" />
-    <TypeScriptCompile Include="src\pages\MyAccount\AddressModal.tsx" />
     <TypeScriptCompile Include="src\pages\MyAccount\MyAccount.tsx" />
-    <TypeScriptCompile Include="src\pages\MyAccount\MyAddresses.tsx" />
-    <TypeScriptCompile Include="src\pages\MyAccount\MyOrders.tsx" />
     <TypeScriptCompile Include="src\pages\Newsletter\Unsubscribe.tsx" />
     <TypeScriptCompile Include="src\pages\PrivacyPolicy\PrivacyPolicy.tsx" />
     <TypeScriptCompile Include="src\pages\ProductPage\ProductPage.tsx" />

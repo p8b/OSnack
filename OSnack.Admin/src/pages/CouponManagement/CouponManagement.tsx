@@ -112,7 +112,6 @@ const CouponManagement = (props: IProps) => {
       setIsOpenCouponModal(false);
       setSelectedCoupon(new Coupon());
    };
-   console.log(tbl.sortName);
    return (
       <Container className="container-fluid ">
          <PageHeader title="Coupons" className="line-header" />

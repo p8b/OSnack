@@ -27,19 +27,17 @@ const DropDown = (props: IProps) => {
    }, [props.forceOpen]);
 
    return (
-      <div className={`dropdown ${props.className}`} ref={dropDown}>
-         <div className="col p-0">
-            <button disabled={props.disabled} className={`col p-0 btn-no-style ${isOpen ? "show" : ""}`}
-               onClick={() => setIsOpen((prev) => !prev)}
-               ref={(props.buttonRef || dropDownButton)}>
-               <div className={`line-limit-1 ${props?.titleClassName} ${props.disabled ? "disabled" : ""}`}>
-                  {props.title}
-               </div>
-            </button>
-            <span className={`col dropdown-menu text-center dropdown-menu-right bg-white ${isOpen ? " show" : ""}`}>
-               {props.children}
-            </span>
-         </div>
+      <div className={`col p-0 dropdown ${props.className}`} ref={dropDown}>
+         <button disabled={props.disabled} className={`col p-0 btn-no-style ${isOpen ? "show" : ""}`}
+            onClick={() => setIsOpen((prev) => !prev)}
+            ref={(props.buttonRef || dropDownButton)}>
+            <div className={`line-limit-1 ${props?.titleClassName} ${props.disabled ? "disabled" : ""}`}>
+               {props.title}
+            </div>
+         </button>
+         <span className={`col dropdown-menu text-center dropdown-menu-right bg-white ${isOpen ? " show" : ""}`}>
+            {props.children}
+         </span>
       </div>
    );
 };

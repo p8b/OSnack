@@ -13,7 +13,7 @@ import { useSearchSecretProduct } from '../../SecretHooks/useProductHook';
 import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
 import { useAllSecretCategory } from '../../SecretHooks/useCategoryHook';
 import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRowButtons';
-import { checkUri, generateUri } from 'osnack-frontend-shared/src/_core/appFunc';
+import { checkUri, convertUriParamToBool, generateUri } from 'osnack-frontend-shared/src/_core/appFunc';
 import { useHistory } from 'react-router-dom';
 import CommentModal from './CommentModal';
 
@@ -62,7 +62,7 @@ const ProductManagement = (props: IProps) => {
       if (sortName != tbl.sortName) tbl.setSortName(sortName);
       if (maxItemsPerPage != tbl.maxItemsPerPage) tbl.setMaxItemsPerPage(maxItemsPerPage);
       if (Number(categoryFilter) == -1) categoryFilter = GetAllRecords;
-      if (Number(statusFilter) == -1) statusFilter = GetAllRecords;
+      statusFilter = convertUriParamToBool(statusFilter);
       if (statusFilter != selectedStatusFilter) setSelectedStatusFilter(statusFilter);
       if (categoryFilter != selectedCategoryFilter) setSelectedCategoryFilter(categoryFilter);
       if (selectedPage != tbl.selectedPage) tbl.setSelectedPage(selectedPage);
@@ -70,7 +70,7 @@ const ProductManagement = (props: IProps) => {
       history.push(generateUri(window.location.pathname,
          [selectedPage || tbl.selectedPage,
             maxItemsPerPage,
-         statusFilter == GetAllRecords ? -1 : statusFilter,
+         statusFilter == GetAllRecords ? -1 : (statusFilter == 'true' ? 1 : 0),
          categoryFilter == GetAllRecords ? -1 : categoryFilter,
          Number(isSortAsc),
             sortName,
@@ -144,9 +144,9 @@ const ProductManagement = (props: IProps) => {
    };
    const getStatusDisplayValue = () => {
       switch (selectedStatusFilter) {
-         case "True":
+         case "true":
             return "Active";
-         case "False":
+         case "false":
             return "Disabled";
       }
       return "All";
@@ -188,11 +188,11 @@ const ProductManagement = (props: IProps) => {
                   All
                   </button>
                <button className="dropdown-item"
-                  onClick={() => { onSearch(1, undefined, "True"); }} >
+                  onClick={() => { onSearch(1, undefined, "true"); }} >
                   Active
                   </button>
                <button className="dropdown-item"
-                  onClick={() => { onSearch(1, undefined, "False"); }} >
+                  onClick={() => { onSearch(1, undefined, "false"); }} >
                   Disabled
                   </button>
             </DropDown>

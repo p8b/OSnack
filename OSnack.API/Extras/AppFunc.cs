@@ -2,7 +2,7 @@
 using NSwag.CodeGeneration.TypeScript;
 
 using OSnack.API.Database.Models;
-
+using OSnack.API.Extras.CustomTypes;
 using P8B.Core.CSharp;
 
 using System;
@@ -168,6 +168,19 @@ namespace OSnack.API.Extras
          return cencoredWord;
       }
 
+
+      public static DisputeFilterTypes GetDisputeFilterTypes(bool hasClose, bool hasOpen)
+      {
+
+         return (hasClose, hasOpen) switch
+         {
+            (true, true) => DisputeFilterTypes.OpenAndClose,
+            (true, false) => DisputeFilterTypes.Close,
+            (false, true) => DisputeFilterTypes.Open,
+            (_, _) => DisputeFilterTypes.None
+         };
+
+      }
 
    }
 }

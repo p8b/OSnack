@@ -16,8 +16,8 @@ const Dashboard = (props: IProps) => {
    const [selectedPeriodOrders, setSelectedPeriodOrders] = useState(SalesPeriod.Daily);
 
    useEffect(() => {
-      setSalesData();
-      setOrdersData();
+      //setSalesData();
+      //   setOrdersData();
       useSummaryDashboard()
          .then(result => {
             setTotalSales(result.data.totalSales!);
@@ -50,8 +50,9 @@ const Dashboard = (props: IProps) => {
 
    };
    const setTotalOrdersChart = (lables: string[], data: number[]) => {
+      var canvas = document.createElement('canvas');
       //@ts-ignore
-      var myChart = new Chart(document.getElementById('total-orders'), {
+      var myChart = new Chart(canvas, {
          type: 'line',
          data: {
             labels: lables,
@@ -81,10 +82,13 @@ const Dashboard = (props: IProps) => {
             }
          }
       });
+      document.getElementById('total-orders')!.innerHTML = '';
+      document.getElementById('total-orders')!.appendChild(canvas);
    };
    const setTotalSalesChart = (lables: string[], data: number[]) => {
+      var canvas = document.createElement('canvas');
       //@ts-ignore
-      var myChart = new Chart(document.getElementById('total-sales'), {
+      var myChart = new Chart(canvas, {
          type: 'line',
          data: {
             labels: lables,
@@ -117,6 +121,8 @@ const Dashboard = (props: IProps) => {
             }
          }
       });
+      document.getElementById('total-sales')!.innerHTML = '';
+      document.getElementById('total-sales')!.appendChild(canvas);
    };
    return (
       <Container className="container-fluid ">
@@ -134,13 +140,13 @@ const Dashboard = (props: IProps) => {
                </div>
             </ButtonCard>
             <ButtonCard className="col-12 col-md-6 col-lg" cardClassName="d-flex align-items-center w-100 repeating-chevrons-bg"
-               onClick={() => history.push("Orders/1/10/-1/True/0/Date/")}>
+               onClick={() => history.push("Orders/1/10/-1/1/0/Date/")}>
                <div className="col-12 text-center font-weight-bold">
                   Open Disputes ({totalOpenDisputes})
                </div>
             </ButtonCard>
             <ButtonCard className="col-12 col-md-6 col-lg" cardClassName="d-flex align-items-center w-100 alternating-arrowhead-bg"
-               onClick={() => history.push("Messages/1/10/True/1/Date/")}>
+               onClick={() => history.push("Messages/1/10/1/0/Date/")}>
                <div className="col-12 text-center font-weight-bold">
                   New Messages ({totalNewMessages})
                </div>
@@ -149,9 +155,9 @@ const Dashboard = (props: IProps) => {
          <div className="row justify-content-center">
             <div className="col-12 col-lg-6 ">
                <div className="row col-12 mx-0 py-4 my-2 bg-white shadow ">
-                  <div className="col-12 my-0 mb-n5 text-center h4 font-weight-bold">Total Sales</div>
+                  <div className="col-12 my-0 mb-n5 text-md-center h4 font-weight-bold">Total Sales</div>
                   <InputDropdown dropdownTitle={`${SalesPeriodList.find(s => s.Value === selectedPeriodSales)?.Name}`}
-                     className="col-auto m-0 ml-auto pb-0"
+                     className="col-auto m-0 ml-auto pb-0 mt-n2"
                      titleClassName={`btn`}>
                      {SalesPeriodList.map((option, index) =>
                         <button key={index} className={`dropdown-item `}
@@ -160,14 +166,14 @@ const Dashboard = (props: IProps) => {
                         </button>
                      )}
                   </InputDropdown>
-                  <canvas id="total-sales" className="col my-3" />
+                  <div id="total-sales" className="col-12 pm-0 my-3" />
                </div>
             </div>
             <div className="col-12 col-lg-6">
                <div className="row col-12 mx-0 py-4 my-2 bg-white shadow">
-                  <div className="col-12 my-0 mb-n5 text-center h4 font-weight-bold">Total Orders</div>
+                  <div className="col-12 my-0 mb-n5 text-md-center h4 font-weight-bold">Total Orders</div>
                   <InputDropdown dropdownTitle={`${SalesPeriodList.find(s => s.Value === selectedPeriodOrders)?.Name}`}
-                     className="col-auto m-0 ml-auto pb-0"
+                     className="col-auto m-0 ml-auto pb-0 mt-n2"
                      titleClassName={`btn`}>
                      {SalesPeriodList.map((option, index) =>
                         <button key={index} className={`dropdown-item `}
@@ -176,7 +182,7 @@ const Dashboard = (props: IProps) => {
                         </button>
                      )}
                   </InputDropdown>
-                  <canvas id="total-orders" className="col my-3" />
+                  <div id="total-orders" className="col-12 pm-0 my-3" />
                </div>
             </div>
          </div>

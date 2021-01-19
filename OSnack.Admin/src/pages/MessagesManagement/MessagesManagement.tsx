@@ -4,7 +4,7 @@ import Table, { TableData, TableView, useTableData } from 'osnack-frontend-share
 import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRowButtons';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
-import { checkUri, generateUri } from 'osnack-frontend-shared/src/_core/appFunc';
+import { checkUri, generateUri, convertUriParamToBool } from 'osnack-frontend-shared/src/_core/appFunc';
 import { GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -25,7 +25,7 @@ const MessagesManagement = (props: IProps) => {
    const [searchValue, setSearchValue] = useState("");
    const [selectCommunication, setSelectCommunication] = useState(new Communication());
    const [isOpenMessageModal, setIsOpenMessageModal] = useState(false);
-   const [selectedStatusFilter, setSelectedStatusFilter] = useState("True");
+   const [selectedStatusFilter, setSelectedStatusFilter] = useState("true");
 
    useEffect(() => {
       onSearch(...checkUri(window.location.pathname,
@@ -63,13 +63,13 @@ const MessagesManagement = (props: IProps) => {
 
       if (maxItemsPerPage != tbl.maxItemsPerPage)
          tbl.setMaxItemsPerPage(maxItemsPerPage);
-      if (Number(statusFilter) == -1) statusFilter = GetAllRecords;
+      statusFilter = convertUriParamToBool(statusFilter);
       if (statusFilter != selectedStatusFilter) setSelectedStatusFilter(statusFilter);
 
       history.push(generateUri(window.location.pathname,
          [selectedPage || tbl.selectedPage,
             maxItemsPerPage,
-         statusFilter == GetAllRecords ? -1 : statusFilter,
+         statusFilter == GetAllRecords ? -1 : (statusFilter == 'true' ? 1 : 0),
          Number(isSortAsc),
             sortName,
          searchString != GetAllRecords ? searchString : ""]));
@@ -116,9 +116,9 @@ const MessagesManagement = (props: IProps) => {
 
    const getStatusDisplayValue = () => {
       switch (selectedStatusFilter) {
-         case "True":
+         case "true":
             return "Open";
-         case "False":
+         case "false":
             return "Close";
       }
       return "All";
@@ -143,11 +143,11 @@ const MessagesManagement = (props: IProps) => {
                   All
                   </button>
                <button className="dropdown-item"
-                  onClick={() => { onSearch(1, undefined, "True"); }} >
+                  onClick={() => { onSearch(1, undefined, "true"); }} >
                   Open
                   </button>
                <button className="dropdown-item"
-                  onClick={() => { onSearch(1, undefined, "False"); }} >
+                  onClick={() => { onSearch(1, undefined, "false"); }} >
                   Close
                   </button>
             </DropDown>

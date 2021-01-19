@@ -1,8 +1,8 @@
 import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
-import { OrderListAndAvailableTypesAndFullNameAndTotalCount } from "../../_core/apiModels";
-export type IReturnUseAllOfficialOrder={ data:OrderListAndAvailableTypesAndFullNameAndTotalCount , status?: number;};
+import { OrderListAndAvailableTypesAndFullNameAndTotalCountAndDisputeFilterType } from "../../_core/apiModels";
+export type IReturnUseAllOfficialOrder={ data:OrderListAndAvailableTypesAndFullNameAndTotalCountAndDisputeFilterType , status?: number;};
 export const useAllOfficialOrder = async (selectedPage: number, maxNumberPerItemsPage: number, searchValue: string | null | undefined, filterStatus: string | null, isSortAsce: boolean | undefined, sortName: string | null | undefined, disputeFilter: string | null): Promise<IReturnUseAllOfficialOrder> =>{
         let url_ = API_URL + "/Order/Get/AllOfficial/{selectedPage}/{maxNumberPerItemsPage}/{filterStatus}/{disputeFilter}?";
         if (selectedPage !== null && selectedPage !== undefined)
@@ -26,7 +26,7 @@ export const useAllOfficialOrder = async (selectedPage: number, maxNumberPerItem
         switch(response?.status){
 
                 case 200: 
-                        var responseData: OrderListAndAvailableTypesAndFullNameAndTotalCount = await response?.json();
+                        var responseData: OrderListAndAvailableTypesAndFullNameAndTotalCountAndDisputeFilterType = await response?.json();
                         return { data: responseData, status: response?.status };
 
                 case 417: 
