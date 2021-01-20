@@ -65,7 +65,7 @@ namespace OSnack.API.Controllers
 
             foreach (var key in ModelState.Keys)
             {
-               if (key.StartsWith("User") || key.StartsWith("Messages") || key.StartsWith("Order") || key.StartsWith("OrderItem"))
+               if (key.StartsWith("User") || key.StartsWith("Order") || key.StartsWith("OrderItem"))
                   ModelState.Remove(key);
             }
 
@@ -129,12 +129,6 @@ namespace OSnack.API.Controllers
             newContact.Messages[0].IsCustomer = true;
             ModelState.Clear();
             TryValidateModel(newContact);
-
-            foreach (var key in ModelState.Keys)
-            {
-               if (key.StartsWith("User") || key.StartsWith("Messages"))
-                  ModelState.Remove(key);
-            }
 
             if (!ModelState.IsValid)
             {

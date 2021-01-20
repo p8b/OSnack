@@ -20,7 +20,7 @@ namespace OSnack.API.Database.Models
       [EmailTemplateVariable(Name = "Date")]
       public DateTime Date { get; set; } = DateTime.UtcNow;
 
-      [Required(ErrorMessage = "Communication is Required \n")]
+
       [JsonIgnore, ForeignKey("CommunicationId")]
       public Communication Communication { get; set; }
 

@@ -75,7 +75,7 @@ namespace OSnack.API.Database
          builder.Entity<Coupon>().HasMany(u => u.Orders).WithOne(o => o.Coupon).OnDelete(DeleteBehavior.SetNull);
          builder.Entity<DeliveryOption>().HasMany(u => u.Orders).WithOne(o => o.DeliveryOption).OnDelete(DeleteBehavior.SetNull);
          builder.Entity<Order>().HasOne(c => c.Dispute).WithOne(o => o.Order).OnDelete(DeleteBehavior.SetNull);
-         builder.Entity<Communication>().HasMany(c => c.Messages).WithOne(r => r.Communication).OnDelete(DeleteBehavior.Cascade);
+         builder.Entity<Communication>().HasMany(c => c.Messages).WithOne(r => r.Communication).OnDelete(DeleteBehavior.Cascade).IsRequired(true);
 
 
          builder.Entity<Token>().HasOne(t => t.User).WithMany().OnDelete(DeleteBehavior.Cascade);

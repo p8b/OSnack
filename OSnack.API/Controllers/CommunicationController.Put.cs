@@ -52,7 +52,7 @@ namespace OSnack.API.Controllers
 
             if (originalCommunication is null)
             {
-               CoreFunc.Error(ref ErrorsList, "Dispute Not exists.");
+               CoreFunc.Error(ref ErrorsList, "Communication Not exists.");
                return StatusCode(412, ErrorsList);
             }
 
@@ -78,7 +78,7 @@ namespace OSnack.API.Controllers
 
             foreach (var key in ModelState.Keys)
             {
-               if (key.StartsWith("User") || key.StartsWith("Messages") || key.StartsWith("Order") || key.StartsWith("OrderItem"))
+               if (key.StartsWith("User") || key.StartsWith("Order") || key.StartsWith("OrderItem"))
                   ModelState.Remove(key);
             }
 
