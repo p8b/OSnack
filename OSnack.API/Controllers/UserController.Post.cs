@@ -13,7 +13,6 @@ using P8B.Core.CSharp.Models;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Mime;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -22,7 +21,7 @@ namespace OSnack.API.Controllers
 {
    public partial class UserController
    {
-      private bool isUserCreated { get; set; }
+      private bool IsUserCreated { get; set; }
 
       #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
@@ -32,7 +31,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPost("Post/[action]")]
-      [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test 
+      [Authorize(AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> CreateUser([FromBody] User newUser)
       {
          try
@@ -58,11 +57,11 @@ namespace OSnack.API.Controllers
 
             IActionResult result = await PrivateCreateUser(newUser).ConfigureAwait(false);
 
-            if (isUserCreated)
+            if (IsUserCreated)
             {
-               Request.Headers.TryGetValue("Origin", out StringValues Originvalue);
+               Request.Headers.TryGetValue("Origin", out StringValues OriginValue);
                await _EmailService
-                  .WelcomeNewEmployeeAsync(newUser, Originvalue)
+                  .WelcomeNewEmployeeAsync(newUser, OriginValue)
                   .ConfigureAwait(false);
             }
             newUser.Password = string.Empty;
@@ -73,7 +72,7 @@ namespace OSnack.API.Controllers
          {
             CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
 
-            if (isUserCreated)
+            if (IsUserCreated)
             {
                _DbContext.Remove(newUser);
                await _DbContext.SaveChangesAsync().ConfigureAwait(false);
@@ -82,9 +81,7 @@ namespace OSnack.API.Controllers
          }
       }
 
-      /// <summary>
-      ///     Create a new Customer
-      /// </summary>
+
       #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
       [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
@@ -110,36 +107,32 @@ namespace OSnack.API.Controllers
 
             IActionResult result = await PrivateCreateUser(newCustomer).ConfigureAwait(false);
 
-            if (isUserCreated)
-            {
-               switch (newCustomer.RegistrationMethod.Type)
-               {
-                  case RegistrationTypes.Application:
-                     Request.Headers.TryGetValue("Origin", out StringValues Originvalue);
-                     await _EmailService.EmailConfirmationAsync(newCustomer, Originvalue)
-                        .ConfigureAwait(false);
-                     break;
-                  case RegistrationTypes.Facebook:
-                  case RegistrationTypes.Google:
-                     newCustomer.RegistrationMethod.RegistrationType = Enum.GetName(newCustomer.RegistrationMethod.Type);
-                     await _EmailService.WelcomeExternalRegistrationAsync(newCustomer)
-                        .ConfigureAwait(false);
-                     break;
-               }
-
-               if (subscribeNewsLetter)
-               {
-                  _DbContext.DetachAllEntities();
-                  _DbContext.Newsletters.Add(new Newsletter { Email = newCustomer.Email });
-                  await _DbContext.SaveChangesAsync().ConfigureAwait(false);
-               }
-
-               await _SignInManager.SignInAsync(newCustomer, false).ConfigureAwait(false);
-            }
-            else
-            {
+            if (!IsUserCreated)
                return result;
+
+            switch (newCustomer.RegistrationMethod.Type)
+            {
+               case RegistrationTypes.Application:
+                  Request.Headers.TryGetValue("Origin", out StringValues OriginValue);
+                  await _EmailService.EmailConfirmationAsync(newCustomer, OriginValue)
+                     .ConfigureAwait(false);
+                  break;
+               case RegistrationTypes.Facebook:
+               case RegistrationTypes.Google:
+                  newCustomer.RegistrationMethod.RegistrationType = Enum.GetName(newCustomer.RegistrationMethod.Type);
+                  await _EmailService.WelcomeExternalRegistrationAsync(newCustomer)
+                     .ConfigureAwait(false);
+                  break;
             }
+
+            if (subscribeNewsLetter)
+            {
+               _DbContext.DetachAllEntities();
+               _DbContext.Newsletters.Add(new Newsletter { Email = newCustomer.Email });
+               await _DbContext.SaveChangesAsync().ConfigureAwait(false);
+            }
+
+            await _SignInManager.SignInAsync(newCustomer, false).ConfigureAwait(false);
             newCustomer.Password = string.Empty;
 
             return Created("", newCustomer);
@@ -148,7 +141,7 @@ namespace OSnack.API.Controllers
          catch (Exception ex)
          {
             CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
-            if (isUserCreated)
+            if (IsUserCreated)
             {
                _DbContext.Remove(newCustomer);
                await _DbContext.SaveChangesAsync().ConfigureAwait(false);
@@ -157,9 +150,6 @@ namespace OSnack.API.Controllers
          }
       }
 
-      /// <summary>
-      ///     Create a Password reset token which is emailed to the intended user
-      /// </summary>
       #region *** ***
       [ProducesResponseType(StatusCodes.Status201Created)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
@@ -171,60 +161,49 @@ namespace OSnack.API.Controllers
       {
          try
          {
-            /// If email parameter is empty
-            /// return "unauthorized" response (stop code execution)
             if (string.IsNullOrWhiteSpace(email))
             {
-               /// in the case any exceptions return the following error
                CoreFunc.Error(ref ErrorsList, "Email is required!");
                return StatusCode(412, ErrorsList);
             }
 
-            /// Find the user with the provided email address
             User user = await _UserManager
                     .FindByEmailAsync(email).ConfigureAwait(false);
 
-            /// if no user is found on the database
             if (user == null)
             {
-               /// in the case any exceptions return the following error
                CoreFunc.Error(ref ErrorsList, "Email not registered");
                return StatusCode(412, ErrorsList);
             }
             RegistrationMethod registrationMethod = await _DbContext.RegistrationMethods.FirstOrDefaultAsync(rm => rm.User.Id == user.Id).ConfigureAwait(false);
             if (registrationMethod.Type != RegistrationTypes.Application)
             {
-               /// in the case any exceptions return the following error
                CoreFunc.Error(ref ErrorsList, $"Your account is linked to your {registrationMethod.Type} account.");
                return StatusCode(412, ErrorsList);
             }
 
-            /// Check if user's account is locked
             if (user.LockoutEnabled)
             {
-               /// get the current lockout end dateTime
                var currentLockoutDate =
                    await _UserManager.GetLockoutEndDateAsync(user).ConfigureAwait(false);
 
-               /// if the user's lockout is not expired (stop code execution)
                if (user.LockoutEnd > DateTimeOffset.UtcNow)
                {
-                  /// in the case any exceptions return the following error
                   CoreFunc.Error(ref ErrorsList, string.Format("Account Locked for {0}"
                       , CoreFunc.CompareWithCurrentTime(user.LockoutEnd)));
                   return StatusCode(412, ErrorsList);
                }
-               /// else lockout time has expired
-               // disable user lockout
                await _UserManager.SetLockoutEnabledAsync(user, false).ConfigureAwait(false);
                await _UserManager.ResetAccessFailedCountAsync(user).ConfigureAwait(false);
             }
-            Request.Headers.TryGetValue("Origin", out StringValues Originvalue);
-            if (!await _EmailService.PasswordResetAsync(user, Originvalue).ConfigureAwait(false))
+
+            Request.Headers.TryGetValue("Origin", out StringValues OriginValue);
+            if (!await _EmailService.PasswordResetAsync(user, OriginValue).ConfigureAwait(false))
             {
                CoreFunc.Error(ref ErrorsList, "Unable to send email.");
                return StatusCode(417, ErrorsList);
             }
+
             return Created("", "Created");
          }
 
@@ -246,53 +225,41 @@ namespace OSnack.API.Controllers
                newUser.EmailConfirmed = true;
             }
             ModelState.Clear();
-            /// if model validation failed
             if (!TryValidateModel(newUser))
             {
                CoreFunc.ExtractErrors(ModelState, ref ErrorsList);
-               /// return bad request with all the errors
                return UnprocessableEntity(ErrorsList);
             }
-            /// check the database to see if a user with the same email exists
-            if (_DbContext.Users.Any(d => d.Email == newUser.Email))
+            if (await _DbContext.Users.AnyAsync(u => u.NormalizedEmail == newUser.Email.ToUpper()).ConfigureAwait(false))
             {
-               /// extract the errors and return bad request containing the errors
-               CoreFunc.Error(ref ErrorsList, "You are already registered.");
+               CoreFunc.Error(ref ErrorsList, "This email is already registered.");
                return StatusCode(412, ErrorsList);
             }
 
             newUser.Id = 0;
-            /// Create the new user
             IdentityResult newUserResult = await _UserManager.CreateAsync(newUser, newUser.PasswordHash)
                                                             .ConfigureAwait(false);
-            /// If result failed
             if (!newUserResult.Succeeded)
             {
-               /// Add the error below to the error list and return bad request
                foreach (var error in newUserResult.Errors)
                {
                   CoreFunc.Error(ref ErrorsList, error.Description, error.Code);
                }
                return StatusCode(417, ErrorsList);
             }
-            /// else result is successful the try to add the access claim for the user
             IdentityResult addedClaimResult = await _UserManager.AddClaimAsync(
                     newUser,
                     new Claim(AppConst.AccessClaims.Type, newUser.Role.AccessClaim)
                 ).ConfigureAwait(false);
-            /// if claim failed to be created
             if (!addedClaimResult.Succeeded)
             {
-               /// remove the user account and return appropriate error
                _DbContext.Users.Remove(newUser);
                await _DbContext.SaveChangesAsync().ConfigureAwait(false);
                CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, null, User));
                return StatusCode(417, ErrorsList);
             }
             await _UserManager.SetLockoutEnabledAsync(newUser, false);
-            isUserCreated = true;
-            /// return 201 created status with the new object
-            /// and success message
+            IsUserCreated = true;
             return Created("Success", newUser);
          }
          catch (Exception ex)

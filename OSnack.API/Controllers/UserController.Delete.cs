@@ -15,16 +15,13 @@ namespace OSnack.API.Controllers
 {
    public partial class UserController
    {
-      /// <summary>
-      /// Delete a user (Manager & Admin)
-      /// </summary>
       #region *** ***
       [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpDelete("[action]/{userId}")]
-      [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test 
+      [Authorize(AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> Delete(int userId)
       {
          try
@@ -35,12 +32,10 @@ namespace OSnack.API.Controllers
                CoreFunc.Error(ref ErrorsList, "User not found");
                return StatusCode(412, ErrorsList);
             }
-            /// else the User is found
-            /// now delete the user record
+
             _DbContext.Users.Remove(user);
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
 
-            /// return 200 OK status
             return Ok($"User ID ('{user.Id}') was deleted");
          }
          catch (Exception ex)

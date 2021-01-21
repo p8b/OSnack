@@ -54,6 +54,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Controllers\UserController.Get.cs~RF25fb5fb7.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MailKit" Version="2.10.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="4.2.0" />

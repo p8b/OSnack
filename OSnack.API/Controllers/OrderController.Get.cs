@@ -95,6 +95,7 @@ namespace OSnack.API.Controllers
                 .Skip((selectedPage - 1) * maxNumberPerItemsPage)
                 .Take(maxNumberPerItemsPage)
                 .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
                 .ToListAsync()
                 .ConfigureAwait(false);
             return Ok(new MultiResult<List<Order>, List<OrderStatusType>, int, DisputeFilterTypes>(list, availebeStatusTypes, totalCount,
@@ -209,6 +210,7 @@ namespace OSnack.API.Controllers
                .Skip((selectedPage - 1) * maxNumberPerItemsPage)
                 .Take(maxNumberPerItemsPage)
                 .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
                 .Include(o => o.Payment)
                 .Include(o => o.DeliveryOption)
                 .ToListAsync()

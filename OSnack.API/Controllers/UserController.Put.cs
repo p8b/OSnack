@@ -29,7 +29,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPut("Put/[action]")]
-      [Authorize(AppConst.AccessPolicies.Secret)]  /// Ready For Test  
+      [Authorize(AppConst.AccessPolicies.Secret)]
       public async Task<IActionResult> UpdateUser([FromBody] User modifiedUser)
       {
          try
@@ -51,24 +51,30 @@ namespace OSnack.API.Controllers
             modifiedUser.Role = await _DbContext.Roles.AsTracking().SingleOrDefaultAsync(r => r.Id == modifiedUser.Role.Id).ConfigureAwait(false);
 
             ModelState.Clear();
-            /// Try to validate the model
             TryValidateModel(modifiedUser);
 
-            /// remove the passwordHash since
-            /// the password update gets handled by another method in this class
             ModelState.Remove("PasswordHash");
             if (!ModelState.IsValid)
             {
-               /// extract the errors and return bad request containing the errors
                CoreFunc.ExtractErrors(ModelState, ref ErrorsList);
                return UnprocessableEntity(ErrorsList);
             }
 
-            /// update the user details with the new details
             user.FirstName = modifiedUser.FirstName;
             user.Surname = modifiedUser.Surname;
-            if (user.RegistrationMethod.Type == RegistrationTypes.Application)
+            if (user.RegistrationMethod.Type == RegistrationTypes.Application && user.Email != modifiedUser.Email)
             {
+               if (await _DbContext.Users.AnyAsync(d => d.NormalizedEmail == modifiedUser.Email.ToUpper()).ConfigureAwait(false))
+               {
+                  CoreFunc.Error(ref ErrorsList, "This email is already registered.");
+                  return StatusCode(412, ErrorsList);
+               }
+
+               await _DbContext.Communications.Where(c => c.Email == user.Email)
+                  .ForEachAsync(c => c.Email = modifiedUser.Email).ConfigureAwait(false);
+               await _DbContext.Newsletters.Where(c => c.Email == user.Email)
+                  .ForEachAsync(c => c.Email = modifiedUser.Email).ConfigureAwait(false);
+
                user.Email = modifiedUser.Email;
                user.NormalizedEmail = modifiedUser.Email.ToUpper();
             }
@@ -81,9 +87,7 @@ namespace OSnack.API.Controllers
                user.Role = modifiedUser.Role;
             }
 
-            /// thus update user in the context
             _DbContext.Users.Update(user);
-            /// save the changes to the database
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
             if (!string.IsNullOrEmpty(oldAccessClaim))
             {
@@ -100,8 +104,6 @@ namespace OSnack.API.Controllers
                }
             }
 
-
-            /// thus return 200 ok status with the updated object
             return Ok(user);
          }
          catch (Exception ex)
@@ -111,9 +113,6 @@ namespace OSnack.API.Controllers
          }
       }
 
-      /// <summary>
-      /// Update user current record
-      /// </summary>
       #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
       [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
@@ -122,19 +121,17 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpPut("Put/UpdateCurrent")]
-      [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test  
+      [Authorize(AppConst.AccessPolicies.Official)]
       public async Task<IActionResult> UpdateCurrentUser([FromBody] UpdateCurrentUserData currentUserData)
       {
          try
          {
-            /// find the current user details from the database
-            int.TryParse(User.Claims.FirstOrDefault(c => c.Type == "UserId").Value, out int userId);
+            _ = int.TryParse(User.Claims.FirstOrDefault(c => c.Type == "UserId").Value, out int userId);
             User user = await _DbContext.Users
                .Include(u => u.RegistrationMethod)
                .FirstOrDefaultAsync(u => u.Id == userId)
                .ConfigureAwait(false);
 
-            /// If the user is not the currently signed in user
             if (user == null || currentUserData.User.Id != user.Id)
             {
                CoreFunc.Error(ref ErrorsList, "Information access is denied.");
@@ -142,14 +139,10 @@ namespace OSnack.API.Controllers
             }
 
             ModelState.Clear();
-            /// Try to validate the model
             TryValidateModel(currentUserData.User);
-            /// remove the passwordHash since
-            /// the password update gets handled by another method in this class
             ModelState.Remove("PasswordHash");
             if (!ModelState.IsValid)
             {
-               /// extract the errors and return bad request containing the errors
                CoreFunc.ExtractErrors(ModelState, ref ErrorsList);
                return UnprocessableEntity(ErrorsList);
             }
@@ -160,20 +153,28 @@ namespace OSnack.API.Controllers
                return StatusCode(412, ErrorsList);
             }
 
-            /// update the user details with the new details
             user.FirstName = currentUserData.User.FirstName;
             user.Surname = currentUserData.User.Surname;
-            if (user.RegistrationMethod.Type == RegistrationTypes.Application)
+            if (user.RegistrationMethod.Type == RegistrationTypes.Application && user.Email != currentUserData.User.Email)
             {
+               if (await _DbContext.Users.AnyAsync(d => d.NormalizedEmail == currentUserData.User.Email.ToUpper()).ConfigureAwait(false))
+               {
+                  CoreFunc.Error(ref ErrorsList, "This email is already registered.");
+                  return StatusCode(412, ErrorsList);
+               }
+
+               await _DbContext.Communications.Where(c => c.Email == user.Email)
+                  .ForEachAsync(c => c.Email = currentUserData.User.Email).ConfigureAwait(false);
+               await _DbContext.Newsletters.Where(c => c.Email == user.Email)
+                  .ForEachAsync(c => c.Email = currentUserData.User.Email).ConfigureAwait(false);
+
                user.Email = currentUserData.User.Email;
                user.NormalizedEmail = currentUserData.User.Email.ToUpper();
             }
             user.PhoneNumber = currentUserData.User.PhoneNumber;
-            /// thus update user in the context
             _DbContext.Users.Update(user);
-            /// save the changes to the database
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
-            /// thus return 200 ok status with the updated object
+
             return Ok(user);
          }
          catch (Exception ex)
@@ -183,9 +184,6 @@ namespace OSnack.API.Controllers
          }
       }
 
-      /// <summary>
-      /// Check if the user exists then block the user
-      /// </summary>
       #region ***  ***
       [Consumes(MediaTypeNames.Application.Json)]
       [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
@@ -193,12 +191,11 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [Authorize(AppConst.AccessPolicies.Secret)]
-      [HttpPut("Put/[action]/{userId}/{lockoutEnabled}")]  /// Ready For Test
+      [HttpPut("Put/[action]/{userId}/{lockoutEnabled}")]
       public async Task<IActionResult> UserLockout(int userId, bool lockoutEnabled)
       {
          try
          {
-            /// if the user with the same id is not found
             User user = await _DbContext.Users.FindAsync(userId).ConfigureAwait(false);
             if (user == null)
             {
@@ -206,11 +203,8 @@ namespace OSnack.API.Controllers
                return StatusCode(412, ErrorsList);
             }
             user.LockoutEnabled = lockoutEnabled;
-            /// update user in the context
             _DbContext.Users.Update(user);
-            /// save the changes to the database
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);
-            /// thus return 200 ok status with the updated object
             return Ok(user);
          }
          catch (Exception ex)
@@ -290,13 +284,13 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
-      [Authorize(AppConst.AccessPolicies.Official)]  /// Ready For Test 
+      [Authorize(AppConst.AccessPolicies.Official)]
       [HttpPut("Put/UpdateCurrentUser")]
       public async Task<IActionResult> UpdateCurrentUserPassword([FromBody] UpdateCurrentUserData data)
       {
          try
          {
-            int.TryParse(User.Claims.FirstOrDefault(c => c.Type == "UserId").Value, out int userId);
+            _ = int.TryParse(User.Claims.FirstOrDefault(c => c.Type == "UserId").Value, out int userId);
             User user = _DbContext.Users.Find(userId);
 
 
@@ -328,7 +322,7 @@ namespace OSnack.API.Controllers
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status412PreconditionFailed)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
-      [HttpPut("Put/[action]")] /// Ready For Test             
+      [HttpPut("Put/[action]")]
       [Authorize(AppConst.AccessPolicies.Public)]
       public async Task<IActionResult> UpdatePasswordWithToken([FromBody] dynamic data)
       {
@@ -401,26 +395,23 @@ namespace OSnack.API.Controllers
 
       private async Task<User> UpdatePassword(User selectedUser)
       {
-         /// find the current user details from the database
-         User userDetails = _DbContext.Users.Find(selectedUser.Id);
+         User userDetails = await _DbContext.Users.FindAsync(selectedUser.Id).ConfigureAwait(false);
          if (userDetails == null)
          {
             CoreFunc.Error(ref ErrorsList, "User not found!");
             return null;
          }
-         /// generate new password reset token
          string passResetToken = await _UserManager.GeneratePasswordResetTokenAsync(userDetails).ConfigureAwait(false);
-         /// reset user's password
          IdentityResult result = await _UserManager.ResetPasswordAsync(
                      userDetails, passResetToken, selectedUser.Password).ConfigureAwait(false);
-         /// if result is Failed
+
          if (!result.Succeeded)
          {
-            foreach (var item in result.Errors)
-               ErrorsList.Add(new Error(item.Code, item.Description));
+            foreach (var error in result.Errors)
+               ErrorsList.Add(new Error(error.Code, error.Description));
             return null;
          }
-         /// else the result is a success.
+
          return userDetails;
       }
    }

@@ -1,5 +1,5 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
-import { useUpdateCurrentUserPasswordUser, useUpdateCurrentUserUser } from '../../hooks/OfficialHooks/useUserHook';
+import { useDownloadDataUser, useUpdateCurrentUserPasswordUser, useUpdateCurrentUserUser } from '../../hooks/OfficialHooks/useUserHook';
 import { User, RegistrationTypes } from '../../_core/apiModels';
 import { CommonRegex } from '../../_core/constant.Variables';
 import { Button } from '../Buttons/Button';
@@ -99,6 +99,22 @@ const UserAccount = (props: IProps) => {
       return "";
    };
 
+   const DownloadData = () => {
+      errorAlertPasswordInfo.pleaseWait(isUnmounted);
+      useDownloadDataUser().then(data => {
+         if (isUnmounted.current) return;
+         const blob = new Blob([JSON.stringify(data.data)], { type: "text/plain" });
+         const url = URL.createObjectURL(blob);
+         const link = document.createElement('a');
+         link.download = `${user.fullName}.json`;
+         link.href = url;
+         link.click();
+      }).catch((alert) => {
+         if (isUnmounted.current) return;
+         errorAlertPasswordInfo.set(alert);
+      });
+   };
+
    return (
       <div className="row">
          <div className="row col-12 col-md-6 m-0">
@@ -139,6 +155,11 @@ const UserAccount = (props: IProps) => {
                   onClick={(loadingCallBack) => { onDetailsChange(currentPassword, loadingCallBack); }}
                   enableLoading={isUnmounted}
                />
+
+               <div className="col-12 pm-0 row small-text mt-5">
+                  If you want to download the data we hold About you <div className="cursor-pointer text-primary ml-1"
+                     children="Click here." onClick={DownloadData} />
+               </div>
             </div>
          </div>
          <div className="row col-12 col-md-6 m-0 mt-5 mt-md-0 mb-auto">

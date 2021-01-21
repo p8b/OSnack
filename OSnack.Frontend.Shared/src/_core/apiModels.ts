@@ -449,7 +449,6 @@ export abstract class OrderProductBase {
     price!: number;
     unitQuantity!: number;
     unitType!: ProductUnitType;
-    imagePath?: string | undefined;
 
 }
 export class PayeeDisplayable {
@@ -651,6 +650,7 @@ export class Address extends OrderAddressBase {
 export class Product extends OrderProductBase {
     id?: number = 0;
     description?: string | undefined;
+    imagePath?: string | undefined;
     originalImagePath?: string | undefined;
     imageBase64!: string;
     originalImageBase64!: string;
@@ -667,6 +667,7 @@ export class OrderItem extends OrderProductBase {
     productCategoryName!: string;
     productId?: number | undefined;
     quantity!: number;
+    imagePath?: string | undefined;
 
 }
 export class LableListAndPriceListAndCountList extends LableListAndPriceList {

@@ -56,6 +56,7 @@ namespace OSnack.API.Database.Models
       public string ShippingReference { get; set; }
 
       [ForeignKey("UserId")]
+      [JsonIgnore]
       public User User { get; set; }
 
       [Column(Order = 0)]

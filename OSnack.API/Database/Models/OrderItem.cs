@@ -25,7 +25,6 @@ namespace OSnack.API.Database.Models
          Quantity = quantity;
          UnitType = originalProduct.UnitType;
          UnitQuantity = originalProduct.UnitQuantity;
-         ImagePath = originalProduct.ImagePath;
       }
 
       [Key]
@@ -56,5 +55,8 @@ namespace OSnack.API.Database.Models
       [EmailTemplateVariable(Name = "TotalOrderItemPrice")]
       [JsonIgnore, NotMapped]
       public string TotalPrice { get { return ((decimal)(Price * Quantity)).ToString("0.00"); } }
+
+      [NotMapped]
+      public string ImagePath { get { return Product != null ? Product.ImagePath : ""; } }
    }
 }

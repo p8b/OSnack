@@ -58,6 +58,7 @@ namespace OSnack.API.Database.Models
       public override string Email { get; set; }
 
       [InverseProperty("User")]
+      [JsonIgnore]
       public ICollection<Address> Addresses { get; set; }
 
       [InverseProperty("User")]

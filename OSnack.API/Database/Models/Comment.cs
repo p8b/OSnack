@@ -41,6 +41,7 @@ namespace OSnack.API.Database.Models
 
 
       [ForeignKey("ProductId")]
+      [JsonIgnore]
       public Product Product { get; set; }
 
       public async Task CencoredDescription()

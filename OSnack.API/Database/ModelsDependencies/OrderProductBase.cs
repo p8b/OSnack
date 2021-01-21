@@ -25,15 +25,13 @@ namespace OSnack.API.Database.ModelsDependencies
       [Range(0, 99999, ErrorMessage = "Price Must be less than 99999")]
       public decimal? Price { get; set; }
 
+      [EmailTemplateVariable(Name = "UnitQuantity")]
       [Required(ErrorMessage = "Unit Quantity is Required \n")]
       [JsonConverter(typeof(StrictIntConverter))]
       public int? UnitQuantity { get; set; }
 
+      [EmailTemplateVariable(Name = "UnitType")]
       [Required(ErrorMessage = "Unit Type is Required \n")]
       public ProductUnitType? UnitType { get; set; }
-
-      [Display(Name = "Display Image")]
-      [StringLength(50, ErrorMessage = "Must be less than 50 Characters \n")]
-      public string ImagePath { get; set; }
    }
 }

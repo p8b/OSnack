@@ -8,7 +8,6 @@ using OSnack.API.Database.Models;
 using OSnack.API.Extras.CustomTypes;
 
 using P8B.Core.CSharp;
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -160,6 +159,7 @@ namespace OSnack.API.Extras
             throw;
          }
       }
+
 
       internal static IEnumerable<string> GetCurrentRequestPolicies(HttpRequest request) => GetCurrentRequestPolicies(request, out AppTypes _);
 
