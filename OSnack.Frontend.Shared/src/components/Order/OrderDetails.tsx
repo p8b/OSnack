@@ -2,7 +2,8 @@
 import ReactToPrint from 'react-to-print';
 import { Communication, Order, OrderStatusType, OrderStatusTypeList, PaymentType, ProductUnitType } from '../../_core/apiModels';
 import { getBadgeByOrderStatusType, onImageError } from '../../_core/appFunc';
-import { API_URL, ClientAppAccess } from '../../_core/constant.Variables';
+import { API_URL, AppAccess } from '../../_core/constant.Variables';
+import { Button } from '../Buttons/Button';
 import InputDropdown from '../Inputs/InputDropDown';
 import Alert, { AlertObj, useAlert } from '../Texts/Alert';
 
@@ -31,7 +32,7 @@ const OrderDetails = (props: IProps) => {
          {/***** OrderDetails ****/}
          <div className="col-12 col-md-6 col-lg-5">
             <div className=" pos-sticky t-0">
-               {props.access == ClientAppAccess.Secret &&
+               {props.access == AppAccess.Admin &&
                   props.availabeType!.length > 0 &&
                   <InputDropdown
                      dropdownTitle={<span className={`${getBadgeByOrderStatusType(selectedStatus)}`}
@@ -50,7 +51,7 @@ const OrderDetails = (props: IProps) => {
                }
 
                <div className="row pm-0 ">
-                  {(props.access == ClientAppAccess.Official || props.availabeType!.length == 0) &&
+                  {(props.access == AppAccess.Client || props.availabeType!.length == 0) &&
                      <>
                         <div className="col-7 pm-0 small-text text-gray mt-auto" children="Status:" />
                         <div className="col-5 p-0">
@@ -85,7 +86,7 @@ const OrderDetails = (props: IProps) => {
                         <div className="col-5 p-0 font-weight-bold">£{props.order.payment.refundAmount}</div>
                      </>
                   }
-                  {!props.disableDispute && props.access == ClientAppAccess.Official && props.order.dispute == undefined &&
+                  {!props.disableDispute && props.access == AppAccess.Client && props.order.dispute == undefined &&
                      (props.order.status == OrderStatusType.InProgress || props.order.status == OrderStatusType.Confirmed || props.order.status == OrderStatusType.Delivered) &&
                      <div className="col-12 pm-0 cursor-pointer small-text text-primary" onClick={props.onDispute}>I have issue with this order.</div>
                   }
@@ -99,7 +100,7 @@ const OrderDetails = (props: IProps) => {
                         documentTitle={`Order Receipt`}
                         bodyClass={"p-5"}
                         pageStyle={"p-5 "}
-                        trigger={() => <button className="btn-sm btn-blue col-auto d-print-none">Print</button>}
+                        trigger={() => <Button className="btn-sm btn-blue col-auto d-print-none" children="Print" />}
                         content={() => containerRef.current}
                      />
                      <div className="col-12 p-0 line-limit-1">{props.order.name}</div>
@@ -137,7 +138,7 @@ const OrderDetails = (props: IProps) => {
 
 declare type IProps = {
    order: Order;
-   access: ClientAppAccess;
+   access: AppAccess;
    statusChanged?: (status: OrderStatusType) => void;
    availabeType?: OrderStatusType[];
    disableDispute?: boolean;

@@ -8,9 +8,9 @@ using Newtonsoft.Json;
 
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
+using OSnack.API.Extras.CustomTypes;
 
 using P8B.Core.CSharp;
-using P8B.Core.CSharp.Extentions;
 using P8B.Core.CSharp.Models;
 
 using System;
@@ -28,30 +28,6 @@ namespace OSnack.API.Controllers
       #region *** ***
       [Consumes(MediaTypeNames.Application.Json)]
       [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
-      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status401Unauthorized)]
-      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status403Forbidden)]
-      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
-      #endregion
-      [HttpPost("Post/[action]")]
-      [Authorize(AppConst.AccessPolicies.Public)]
-      public async Task<IActionResult> LoginOfficial([FromBody] LoginInfo loginInfo) =>
-         await Login(loginInfo, AppConst.AccessPolicies.Official).ConfigureAwait(false);
-
-      #region *** ***
-      [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
-      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status401Unauthorized)]
-      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status403Forbidden)]
-      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
-      #endregion
-      [HttpPost("Post/[action]")]
-      [Authorize(AppConst.AccessPolicies.Public)]
-      public async Task<IActionResult> LoginSecret([FromBody] LoginInfo loginInfo) =>
-         await Login(loginInfo, AppConst.AccessPolicies.Secret).ConfigureAwait(false);
-
-      #region *** ***
-      [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(User), StatusCodes.Status206PartialContent)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status403Forbidden)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
@@ -60,26 +36,18 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpPost("Post/[action]")]
       [Authorize(AppConst.AccessPolicies.Public)]
-      public async Task<IActionResult> ExternalLoginOfficial([FromBody] ExternalLoginDetails externalLoginInfo) =>
-         await ExternalLogin(externalLoginInfo, AppConst.AccessPolicies.Official).ConfigureAwait(false);
-      #region *** ***
-      [Consumes(MediaTypeNames.Application.Json)]
-      [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
-      [ProducesResponseType(typeof(User), StatusCodes.Status206PartialContent)]
-      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status403Forbidden)]
-      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status422UnprocessableEntity)]
-      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status401Unauthorized)]
-      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
-      #endregion
-      [HttpPost("Post/[action]")]
-      [Authorize(AppConst.AccessPolicies.Public)]
-      public async Task<IActionResult> ExternalLoginSecret([FromBody] ExternalLoginDetails externalLoginInfo) =>
-         await ExternalLogin(externalLoginInfo, AppConst.AccessPolicies.Secret).ConfigureAwait(false);
-
-      private async Task<IActionResult> ExternalLogin(ExternalLoginDetails externalLoginInfo, string Access)
+      public async Task<IActionResult> ExternalLogin(ExternalLoginDetails externalLoginInfo)
       {
          try
          {
+
+            IEnumerable<string> policies = AppFunc.GetCurrentRequestPolicies(Request, out AppTypes apptype);
+            if (apptype == AppTypes.Invalid)
+            {
+               CoreFunc.Error(ref ErrorsList, "Unauthorised Application Access. 🤔");
+               return Unauthorized(ErrorsList);
+            }
+
             if (!TryValidateModel(externalLoginInfo))
             {
                CoreFunc.ExtractErrors(ModelState, ref ErrorsList);
@@ -97,7 +65,6 @@ namespace OSnack.API.Controllers
                   break;
             }
 
-
             // Check if the user is already registered 
             User registeredUser = await _DbContext.Users
                .Include(u => u.Role)
@@ -105,24 +72,24 @@ namespace OSnack.API.Controllers
                .SingleOrDefaultAsync(u => u.RegistrationMethod.Type == externalLoginInfo.Type
                && u.RegistrationMethod.ExternalLinkedId == externalLoginUser.RegistrationMethod.ExternalLinkedId)
                .ConfigureAwait(false);
+
             // if the user is already registered
             if (registeredUser != null)
             {
-               if (Access == AppConst.AccessPolicies.Secret
-                  && !registeredUser.Role.AccessClaim.Equals(AppConst.AccessClaims.Admin)
-                  && !registeredUser.Role.AccessClaim.Equals(AppConst.AccessClaims.Manager))
+               if (!await IsUserPolicyAccepted(registeredUser, policies).ConfigureAwait(false))
                {
-                  CoreFunc.Error(ref ErrorsList, "Permission Denied.");
+                  CoreFunc.Error(ref ErrorsList, "You do not have permission to login here.");
                   return Unauthorized(ErrorsList);
                }
+
                // sign the user in without any password
                await _SignInManager.SignInAsync(registeredUser, externalLoginInfo.RememberMe).ConfigureAwait(false);
                return Ok(registeredUser);
             }
 
-            if (Access == AppConst.AccessPolicies.Secret)
+            if (apptype == AppTypes.Admin)
             {
-               CoreFunc.Error(ref ErrorsList, "Cannot Create new external user.");
+               CoreFunc.Error(ref ErrorsList, "You do not have permission to login here. Please contact administrator.");
                return Unauthorized(ErrorsList);
             }
             /// check if the user is registered using other methods
@@ -157,11 +124,26 @@ namespace OSnack.API.Controllers
             return StatusCode(417, ErrorsList);
          }
       }
-      private async Task<IActionResult> Login(LoginInfo loginInfo, string Access)
+      #region *** ***
+      [Consumes(MediaTypeNames.Application.Json)]
+      [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status401Unauthorized)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status403Forbidden)]
+      [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
+      #endregion
+      [HttpPost("Post/[action]")]
+      [Authorize(AppConst.AccessPolicies.Public)]
+      public async Task<IActionResult> Login(LoginInfo loginInfo)
       {
 
          try
          {
+            IEnumerable<string> policies = AppFunc.GetCurrentRequestPolicies(Request, out AppTypes apptype);
+            if (apptype == AppTypes.Invalid)
+            {
+               CoreFunc.Error(ref ErrorsList, "Unauthorised Application Access. 🤔");
+               return Unauthorized(ErrorsList);
+            }
             /// If email parameter is empty
             /// return "unauthorized" response (stop code execution)
             if (string.IsNullOrWhiteSpace(loginInfo.Email))
@@ -184,29 +166,16 @@ namespace OSnack.API.Controllers
                CoreFunc.Error(ref ErrorsList, "Email not registered");
                return Unauthorized(ErrorsList);
             }
-
-            // Check the access policy
-            switch (Access)
+            if (!await IsUserPolicyAccepted(user, policies).ConfigureAwait(false))
             {
-               case AppConst.AccessPolicies.Official:
-                  break;
-               case AppConst.AccessPolicies.Secret:
-                  if (user.Role.AccessClaim != AppConst.AccessClaims.Admin && user.Role.AccessClaim != AppConst.AccessClaims.Manager)
-                     CoreFunc.Error(ref ErrorsList, "Permission Denied");
-                  break;
-               default:
-                  CoreFunc.Error(ref ErrorsList, "Permission Denied");
-                  break;
-            }
-            /// if there are any errors add
-            if (ErrorsList.Count > 0)
+               CoreFunc.Error(ref ErrorsList, "You do not have permission to login here.");
                return Unauthorized(ErrorsList);
-
+            }
 
             if (user.RegistrationMethod.Type != RegistrationTypes.Application)
             {
                /// in the case any exceptions return the following error
-               CoreFunc.Error(ref ErrorsList, $"Please use {user.RegistrationMethod.Type} account to login.");
+               CoreFunc.Error(ref ErrorsList, $"Please use {user.RegistrationMethod.Type} to login.");
                return StatusCode(403, ErrorsList);
             }
 
@@ -303,7 +272,7 @@ namespace OSnack.API.Controllers
                return Unauthorized(ErrorsList);
             }
 
-            int.TryParse(User.Claims
+            _ = int.TryParse(User.Claims
                 .FirstOrDefault(c => c.Type == "UserId")?.Value, out int userId);
 
             User user = await _DbContext.Users.Include(u => u.Role)
@@ -315,7 +284,6 @@ namespace OSnack.API.Controllers
 
             if (result.Succeeded)
             {
-
                return Ok(user);
             }
             else
@@ -331,7 +299,7 @@ namespace OSnack.API.Controllers
          }
       }
 
-      private async Task<User> GetGoogleUserInfo(P8B.Core.CSharp.Models.ExternalLoginDetails externalLoginInfo)
+      private static async Task<User> GetGoogleUserInfo(ExternalLoginDetails externalLoginInfo)
       {
          ExternalEmailSecret googleSecrets = AppConst.Settings.ExternalLoginSecrets.FindObj(e => e.Provider.EqualCurrentCultureIgnoreCase("Google"));
          var caller = new HttpClient();
@@ -363,7 +331,7 @@ namespace OSnack.API.Controllers
          };
       }
 
-      private async Task<User> GetFacebookUserInfo(P8B.Core.CSharp.Models.ExternalLoginDetails externalLoginInfo)
+      private static async Task<User> GetFacebookUserInfo(ExternalLoginDetails externalLoginInfo)
       {
          ExternalEmailSecret facebookSecrets = AppConst.Settings.ExternalLoginSecrets.FindObj(e => e.Provider.EqualCurrentCultureIgnoreCase("Facebook"));
 

@@ -21,6 +21,9 @@ const CommentModal = (props: IProps) => {
    useEffect(() => () => { isUnmounted.current = true; }, []);
    useEffect(() => { reload(); }, [props.productId]);
 
+   useEffect(() => {
+      errorAlert.clear();
+   }, [props.isOpen]);
    const reload = (selectedPage = tbl.selectedPage, maxItemsPerPage = tbl.maxItemsPerPage) => {
       if (selectedPage != tbl.selectedPage)
          tbl.setSelectedPage(selectedPage);

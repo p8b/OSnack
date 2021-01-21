@@ -42,6 +42,9 @@ const CategoryModal = (props: IProps) => {
             });
       }
    }, [props.category]);
+   useEffect(() => {
+      errorAlert.clear();
+   }, [props.isOpen]);
 
    const createCategory = (loadingCallBack?: () => void) => {
       let errors = new AlertObj([], AlertTypes.Error);

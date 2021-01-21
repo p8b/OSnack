@@ -18,7 +18,9 @@ const UserAccount = (props: IProps) => {
    const [selectedAction, setSelectedAction] = useState("");
    const isExternalLogin = props.user.registrationMethod?.type !== RegistrationTypes.Application;
 
-   useEffect(() => () => { isUnmounted.current = true; }, []);
+   useEffect(() => {
+      return () => { isUnmounted.current = true; };
+   }, []);
 
    const onDetailsChange = (currentPass: string, loadingCallBack?: () => void) => {
       if (currentPass == "" && user.registrationMethod.type == RegistrationTypes.Application) {

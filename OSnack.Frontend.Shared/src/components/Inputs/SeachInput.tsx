@@ -5,6 +5,7 @@ export const SearchInput = (props: IProps) => {
       <div className={`${props.className || ""}`}>
          <div className={`row`}>
             <input type="text"
+               name="Search"
                placeholder="Search"
                value={props.value}
                className="col pm-0"
@@ -15,6 +16,7 @@ export const SearchInput = (props: IProps) => {
             <button className={`col-auto m-0 btn-green btn radius-none-l 
                               ${props.value === '' ? 'search-all-icon' : "search-icon"}
                               ${props.btnClassName || ""}`}
+               name="Search"
                onClick={props.onSearch}
             />
 

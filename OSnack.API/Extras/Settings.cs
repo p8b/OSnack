@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 
 using OSnack.API.Extras.Paypal;
+using OSnack.API.Services;
 
 using P8B.Core.CSharp.Models;
 
@@ -18,6 +19,7 @@ namespace OSnack.API.Extras
       /// </summary>
       [JsonProperty(PropertyName = "OpenCors")]
       public string[] OpenCors { get; set; }
+
       /// <summary>
       /// Exclude specific routes from CORs check.
       /// Must provide the URI <br/>
@@ -32,11 +34,6 @@ namespace OSnack.API.Extras
       [JsonProperty(PropertyName = "BrandName")]
       public string BrandName { get; set; }
 
-      /// <summary>
-      /// Admin Email
-      /// </summary>
-      [JsonProperty(PropertyName = "AdminEmail")]
-      public string AdminEmail { get; set; }
 
       /// <summary>
       /// App Domains
@@ -44,25 +41,28 @@ namespace OSnack.API.Extras
       [JsonProperty(PropertyName = "AppDomains")]
       public AppDomains AppDomains { get; set; }
 
-
       /// <summary>
       /// Email settings 
       /// </summary>
       [JsonProperty(PropertyName = "EmailSettings")]
       public EmailSettings EmailSettings { get; set; }
-
+      /// <summary>
+      /// Path names required for email templates
+      /// </summary>
+      [JsonProperty(PropertyName = "EmailServicePathNames")]
+      public EmailServicePathNames EmailServicePathNames { get; set; }
       /// <summary>
       /// PayPal Settings
       /// </summary>
       [JsonProperty(PropertyName = "PayPal")]
       public PayPalSettings PayPal { get; set; }
 
-      [JsonProperty(PropertyName = "DbConnectionStrings")]
-      private string[] _DbConnectionStrings { get; set; }
-
       public ExternalEmailSecret[] ExternalLoginSecrets { get; set; }
 
-      public string DbConnectionString()
+
+      [JsonProperty(PropertyName = "DbConnectionStrings")]
+      private string[] _DbConnectionStrings { get; set; }
+      public string DbConnectionString
       {
          //static bool checkConnection(string connectionString)
          //{
@@ -90,13 +90,12 @@ namespace OSnack.API.Extras
          //   }
          //}
          //return SelectedConnection;
-         return _DbConnectionStrings[0];
+         get => _DbConnectionStrings[0];
       }
    }
 
    public class AppDomains
    {
-
       /// <summary>
       /// Use for setting the domain of antiforgery token cookie
       /// </summary>
@@ -105,7 +104,12 @@ namespace OSnack.API.Extras
 
       [JsonProperty(PropertyName = "ClientApp")]
       public string ClientApp { get; set; }
+      [JsonProperty(PropertyName = "ClientAppPolicies")]
+      public string[] ClientAppPolicies { get; set; }
+
       [JsonProperty(PropertyName = "AdminApp")]
       public string AdminApp { get; set; }
+      [JsonProperty(PropertyName = "AdminAppPolicies")]
+      public string[] AdminAppPolicies { get; set; }
    }
 }

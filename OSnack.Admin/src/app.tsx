@@ -4,11 +4,10 @@ import { BrowserRouter, Switch } from "react-router-dom";
 import CustomRoute from "osnack-frontend-shared/src/_core/customRoute";
 import { Loading } from "osnack-frontend-shared/src/components/Loading/Loading";
 import AuthenticationContext from "osnack-frontend-shared/src/_core/authenticationContext";
+import { extractUri } from "osnack-frontend-shared/src/_core/appFunc";
 
 // Main Components such as pages, navbar, footer
 import NavMenu from "./components/NavMenu/NavMenu";
-import { useSilentSecretAuthentication } from "./SecretHooks/useAuthenticationHook";
-import { extractUri } from "osnack-frontend-shared/src/_core/appFunc";
 const Dashboard = lazy(() => import("./pages/Dashboard/Dashboard"));
 const MyAccount = lazy(() => import("./pages/MyAccount/MyAccount"));
 const LoginPage = lazy(() => import("./pages/LoginPage/LoginPage"));
@@ -36,7 +35,6 @@ const App = () => {
       if (window.innerWidth <= breakSize)
          setIsOpenMainContainer(false);
       window.addEventListener("resize", sizeChange);
-
       return () => {
          window.removeEventListener("resize", sizeChange);
       };
@@ -49,7 +47,6 @@ const App = () => {
 
    const sizeChange = () => {
       var mainContainer = document.getElementById("main-container");
-      console.log(mainContainer!.onclick);
       if (mainContainer?.onclick == null && window.innerWidth <= breakSize) {
          mainContainer!.onclick = (e: Event) => { if (isOpenRef.current) e.stopImmediatePropagation(); setIsOpenMainContainer(false); };
       }
@@ -60,14 +57,12 @@ const App = () => {
       }
 
       if (mainContainer?.onclick != null && isOpenRef.current && window.innerWidth <= breakSize) {
-         console.log(1);
          document.body.style.backgroundColor = "rgba(0,0,0,1)";
          mainContainer!.style.opacity = ".3";
       }
       else {
          document.body.style.backgroundColor = "rgba(0,0,0,0)";
          mainContainer!.style.opacity = "1";
-
       }
    };
 
@@ -79,28 +74,29 @@ const App = () => {
                <Suspense fallback={<Loading />}>
                   <Switch>
                      {/***** Public Routes ****/}
-                     <CustomRoute authenticate={useSilentSecretAuthentication} path="/Login" Render={(props: any) => <LoginPage {...props} mainContainerToggler={(isOpen) => setIsOpenMainContainer(isOpen)} />} />
-                     <CustomRoute authenticate={useSilentSecretAuthentication} path="/EmailConfirmation" Render={(props: any) => <ConfirmEmail {...props} />} />
-                     <CustomRoute authenticate={useSilentSecretAuthentication} path="/ResetPassword" Render={(props: any) => <PasswordReset {...props} />} />
-                     <CustomRoute authenticate={useSilentSecretAuthentication} path="/NewEmployee/SetupPassword" Render={(props: any) => <PasswordReset {...props} />} />
+                     <CustomRoute path="/Login" render={(props: any) => <LoginPage {...props} mainContainerToggler={(isOpen) => setIsOpenMainContainer(isOpen)} />} />
+                     <CustomRoute path="/EmailConfirmation" render={(props: any) => <ConfirmEmail {...props} />} />
+                     <CustomRoute path="/ResetPassword" render={(props: any) => <PasswordReset {...props} />} />
+                     <CustomRoute path="/NewEmployee/SetupPassword" render={(props: any) => <PasswordReset {...props} />} />
 
                      {/***** Protected Routes  ****/}
-                     <CustomRoute authenticate={useSilentSecretAuthentication} exact AuthRequired path="/" Render={(props: any) => <Dashboard {...props} />} />
-                     <CustomRoute authenticate={useSilentSecretAuthentication} exact AuthRequired path="/MyAccount" Render={(props: any) => <MyAccount {...props} />} />
-                     <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="/Categories" Render={(props: any) => <CategoryManagement {...props} />} />
-                     <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="/Coupons" Render={(props: any) => <CouponManagement {...props} />} />
-                     <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="/Products" Render={(props: any) => <ProductManagement {...props} />} />
-                     <CustomRoute authenticate={useSilentSecretAuthentication} exact AuthRequired path="/EmailTemplate" Render={(props: any) => <EmailTemplateManagement {...props} />} />
-                     <CustomRoute authenticate={useSilentSecretAuthentication} exact AuthRequired path="/EmailTemplate/Edit" Render={(props: any) => <EmailTemplateEdit {...props} />} />
-                     <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="/Users" Render={(props: any) => <UserManagement {...props} />} />
-                     <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="/ViewUserOrders" Render={(props: any) => <ViewUserOrders {...props} />} />
-                     <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="/Messages" Render={(props: any) => <MessagesManagement {...props} />} />
-                     <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="/Orders" Render={(props: any) => <OrderManagement {...props} />} />
-                     <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="/DeliveryOptions" Render={(props: any) => <DeliveryOptionManagement {...props} />} />
-                     <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="/ViewDispute" Render={(props: any) => <ViewCommunication {...props} />} />
-                     <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="/ViewCommunication" Render={(props: any) => <ViewCommunication {...props} />} />
+                     <CustomRoute authRequired exact path="/" render={(props: any) => <Dashboard {...props} />} />
+                     <CustomRoute authRequired exact path="/MyAccount" render={(props: any) => <MyAccount {...props} />} />
+                     <CustomRoute authRequired path="/Categories" render={(props: any) => <CategoryManagement {...props} />} />
+                     <CustomRoute authRequired path="/Coupons" render={(props: any) => <CouponManagement {...props} />} />
+                     <CustomRoute authRequired path="/Products" render={(props: any) => <ProductManagement {...props} />} />
+                     <CustomRoute authRequired exact path="/EmailTemplate" render={(props: any) => <EmailTemplateManagement {...props} />} />
+                     <CustomRoute authRequired exact path="/EmailTemplate/Edit" render={(props: any) => <EmailTemplateEdit {...props} />} />
+                     <CustomRoute authRequired path="/Users" render={(props: any) => <UserManagement {...props} />} />
+                     <CustomRoute authRequired path="/ViewUserOrders" render={(props: any) => <ViewUserOrders {...props} />} />
+                     <CustomRoute authRequired path="/Messages" render={(props: any) => <MessagesManagement {...props} />} />
+                     <CustomRoute authRequired path="/Orders" render={(props: any) => <OrderManagement {...props} />} />
+                     <CustomRoute authRequired path="/DeliveryOptions" render={(props: any) => <DeliveryOptionManagement {...props} />} />
+                     <CustomRoute authRequired path="/ViewDispute" render={(props: any) => <ViewCommunication {...props} />} />
+                     <CustomRoute authRequired path="/ViewCommunication" render={(props: any) => <ViewCommunication {...props} />} />
+
                      {/***** Route Not Found  ****/}
-                     <CustomRoute authenticate={useSilentSecretAuthentication} AuthRequired path="*" Render={(props: any) => <PageNotFound {...props} />} />
+                     <CustomRoute authRequired path="*" render={(props: any) => <PageNotFound {...props} />} />
                   </Switch>
                </Suspense>
             </div>

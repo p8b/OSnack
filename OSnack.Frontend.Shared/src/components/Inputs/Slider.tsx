@@ -2,7 +2,7 @@
 
 const Slider = (props: IProps) => {
    return (
-      <input type="range" min={props.min} max={props.max} step={props.step} defaultValue={props.value} className={`slider ${props.className}`}
+      <input type="range" min={props.min} max={props.max} step={props.step} value={props.value} className={`slider ${props.className}`}
          onChange={(i) => { props.onChange(i.target.value as unknown as number); }} />
    );
 };

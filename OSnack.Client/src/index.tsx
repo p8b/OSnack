@@ -4,15 +4,15 @@ import App from "./app";
 import "osnack-frontend-shared/src/_core/type.Extensions";
 import "osnack-frontend-shared/src/index";
 
-if (('serviceWorker' in navigator)) {
-   navigator.serviceWorker.register('service-worker.js').then(swRegistration => {
-      swRegistration.addEventListener('fetch', (event: any) => {
-         if (event.request.mode === 'navigate')
-            event.respondWith(caches.match('/index.html'));
-      });
-   });
-}
-
+// serve index.html only for SPA
+//if (('serviceWorker' in navigator)) {
+//   navigator.serviceWorker.register('service-worker.js').then(swRegistration => {
+//      swRegistration.addEventListener('fetch', (event: any) => {
+//         if (event.request.mode === 'navigate')
+//            event.respondWith(caches.match('/index.html'));
+//      });
+//   });
+//}
 
 
 render(<App />, document.getElementById("rootDiv"));

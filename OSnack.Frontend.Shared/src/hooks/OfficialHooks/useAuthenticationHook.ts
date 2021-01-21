@@ -3,93 +3,54 @@ import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { User } from "../../_core/apiModels";
 export type IReturnUseLogoutAuthentication={ data: null , status?: number;};
-export const useLogoutAuthentication = async (): Promise<IReturnUseLogoutAuthentication> =>{
-        let url_ = API_URL + "/Authentication/Get/Logout";
-        url_ = url_.replace(/[?&]$/, "");
-        let response = await httpCaller.GET(url_);
-        if( response?.status === 400){
-            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
-            response = await httpCaller.GET(url_);
-        }
+export const useLogoutAuthentication = (): Promise<IReturnUseLogoutAuthentication> =>{
+    let url_ = API_URL + "/Authentication/Get/Logout";
+    url_ = url_.replace(/[?&]$/, "");
+    return httpCaller.GET(url_).then(response => {
 
         switch(response?.status){
 
-                case 200: 
-                        return { data: null, status: 200 };
+            case 200: 
+                return { data: null, status: 200 };
 
-                case 417: 
-                        return response?.json().then((data: ErrorDto[]) => {
-                                throw new AlertObj(data, AlertTypes.Error, response?.status);
-                        });
+            case 417: 
+                return response?.json().then((data: ErrorDto[]) => {
+                   throw new AlertObj(data, AlertTypes.Error, response?.status);
+                });
 
-                default:
-                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
-                        throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
+            default:
+                CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
+                throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
-  
-}
-export type IReturnUseSilentOfficialAuthentication={ data:User , status?: number;};
-export const useSilentOfficialAuthentication = async (): Promise<IReturnUseSilentOfficialAuthentication> =>{
-        let url_ = API_URL + "/Authentication/Post/SilentOfficial";
-        url_ = url_.replace(/[?&]$/, "");
-        let response = await httpCaller.POST(url_);
-        if( response?.status === 400){
-            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
-            response = await httpCaller.POST(url_);
-        }
-
-        switch(response?.status){
-
-                case 200: 
-                        var responseData: User = await response?.json();
-                        return { data: responseData, status: response?.status };
-
-                case 401: 
-                        return response?.json().then((data: ErrorDto[]) => {
-                                throw new AlertObj(data, AlertTypes.Error, response?.status);
-                        });
-
-                case 417: 
-                        return response?.json().then((data: ErrorDto[]) => {
-                                throw new AlertObj(data, AlertTypes.Error, response?.status);
-                        });
-
-                default:
-                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
-                        throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
-        }
-  
+    });
 }
 export type IReturnUseConfirmCurrentUserPasswordAuthentication={ data:User , status?: number;};
-export const useConfirmCurrentUserPasswordAuthentication = async (password: string): Promise<IReturnUseConfirmCurrentUserPasswordAuthentication> =>{
-        let url_ = API_URL + "/Authentication/Post/ConfirmCurrentUserPassword";
-        url_ = url_.replace(/[?&]$/, "");
-        const content_ = password;
-        let response = await httpCaller.POST(url_, content_);
-        if( response?.status === 400){
-            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
-            response = await httpCaller.POST(url_, content_);
-        }
+export const useConfirmCurrentUserPasswordAuthentication = (password: string): Promise<IReturnUseConfirmCurrentUserPasswordAuthentication> =>{
+    let url_ = API_URL + "/Authentication/Post/ConfirmCurrentUserPassword";
+    url_ = url_.replace(/[?&]$/, "");
+    const content_ = password;
+    return httpCaller.POST(url_, content_).then(response => {
 
         switch(response?.status){
 
-                case 200: 
-                        var responseData: User = await response?.json();
-                        return { data: responseData, status: response?.status };
+            case 200: 
+                return response?.json().then((data:User) => {
+                    return { data: data, status: response?.status };
+                });
 
-                case 401: 
-                        return response?.json().then((data: ErrorDto[]) => {
-                                throw new AlertObj(data, AlertTypes.Error, response?.status);
-                        });
+            case 401: 
+                return response?.json().then((data: ErrorDto[]) => {
+                   throw new AlertObj(data, AlertTypes.Error, response?.status);
+                });
 
-                case 417: 
-                        return response?.json().then((data: ErrorDto[]) => {
-                                throw new AlertObj(data, AlertTypes.Error, response?.status);
-                        });
+            case 417: 
+                return response?.json().then((data: ErrorDto[]) => {
+                   throw new AlertObj(data, AlertTypes.Error, response?.status);
+                });
 
-                default:
-                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
-                        throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
+            default:
+                CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
+                throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
-  
+    });
 }

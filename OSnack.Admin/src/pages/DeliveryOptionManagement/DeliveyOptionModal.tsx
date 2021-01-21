@@ -16,6 +16,9 @@ const DeliveyOptionModal = (props: IProps) => {
       return () => { isUnmounted.current = true; };
    }, []);
    useEffect(() => {
+      errorAlert.clear();
+   }, [props.isOpen]);
+   useEffect(() => {
       setDeliveyOption(props.deliveryOption);
    }, [props.deliveryOption]);
 

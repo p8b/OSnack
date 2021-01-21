@@ -19,6 +19,10 @@ const UserModal = (props: IProps) => {
       setUser(props.user);
    }, [props.user]);
 
+   useEffect(() => {
+      errorAlert.clear();
+   }, [props.isOpen]);
+
    const createUser = (loadingCallBack?: () => void) => {
       errorAlert.pleaseWait(isUnmounted);
       useCreateUserUser(user).then(result => {

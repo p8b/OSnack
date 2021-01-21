@@ -28,7 +28,6 @@ const ProductModal = (props: IProps) => {
    useEffect(() => {
       return () => { isUnmounted.current = true; };
    }, []);
-
    useEffect(() => {
       setProduct(props.product);
       if (props.product.id && props.product.id > 0) {
@@ -53,6 +52,7 @@ const ProductModal = (props: IProps) => {
    useEffect(() => {
       if (!props.isOpen)
          setNutritionalInfoModalIsOpen(false);
+      errorAlert.clear();
    }, [props.isOpen]);
 
    const createProduct = (loadingCallBack?: () => void) => {
@@ -202,7 +202,6 @@ const ProductModal = (props: IProps) => {
                onChange={i => { setProduct({ ...product, price: i.target.value as unknown as number }); }}
                className="col-12 col-sm-6"
                showDanger={errorAlert.checkExistFilterRequired("Price")}
-
             />
             <div className="col-12 col-sm-6 m-auto">
                <Button className="btn btn-lg btn-blue col-12 pb-sm-2"
@@ -210,7 +209,8 @@ const ProductModal = (props: IProps) => {
                   onClick={() => { setNutritionalInfoModalIsOpen(true); }}
                />
             </div>
-            <ProductNutritionalInfoModal isOpen={nutritionalInfoModalIsOpen}
+            <ProductNutritionalInfoModal
+               isOpen={nutritionalInfoModalIsOpen}
                alert={errorAlert}
                nutritionalInfo={product.nutritionalInfo}
                onSubmit={(info) => { setProduct({ ...product, nutritionalInfo: info }); setNutritionalInfoModalIsOpen(false); }}
@@ -231,8 +231,6 @@ const ProductModal = (props: IProps) => {
             />
 
          </div>
-
-
          <Alert alert={errorAlert.alert}
             className="col-12 mb-2"
             onClosed={() => { errorAlert.clear(); }}

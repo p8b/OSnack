@@ -3,10 +3,10 @@ const Modal = (props: IProps) => {
    const modalRow = useRef<HTMLDivElement | null>(null);
    useEffect(() => {
       if (props.isOpen) {
-         document.body.classList.add("remove-scroll");
+         !props.hasParentModal && document.body.classList.add("remove-scroll");
       }
       else {
-         document.body.classList.remove("remove-scroll");
+         !props.hasParentModal && document.body.classList.remove("remove-scroll");
       }
       document.addEventListener("keyup", keydownHander);
       if (props.setfocusToFirstElement)
@@ -52,5 +52,6 @@ interface IProps {
    isOpen: boolean;
    bodyRef?: any;
    setfocusToFirstElement?: boolean;
+   hasParentModal?: boolean;
 }
 export default Modal;

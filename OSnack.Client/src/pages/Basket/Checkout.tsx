@@ -15,7 +15,7 @@ import PaymentModal from './PaymentModal';
 import useScript from 'osnack-frontend-shared/src/hooks/function/useScript';
 import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
-import { Link, Redirect } from 'react-router-dom';
+import { div, Redirect } from 'react-router-dom';
 
 const Checkout = (props: IProps) => {
    const clientID = "AUc_fJXtMhI3ugArGsxZur6ej0GP4Pb_usigBXwK9qvtUKByaJWEf7HNrUBSMHaYSiBq6Cg5nOf4_Tq_";
@@ -216,19 +216,27 @@ const Checkout = (props: IProps) => {
                   alert={errorAlert} />
             }
 
-            <div className="col-12 pm-0 small-text"> Subtotal : <b>£{order.totalItemPrice?.toFixed(2)}</b></div>
+            <div className="row col-12 pm-0">
+               <span className="col-3 col-md-4 col-lg-3 pm-0" children="Subtotal: " />
+               <b className="col pm-0">£{order.totalItemPrice?.toFixed(2)}</b>
+            </div>
             {order.totalDiscount > 0 &&
-               <div className="col-12 pm-0 pb-2 small-text">
-                  Discount : <b>-£{parseFloat(order.totalDiscount.toString()).toFixed(2)}</b>
-                  <span className="float-right edit-icon"
+               <div className="row col-12 pm-0 text-left">
+                  <span className="col-3 col-md-4 col-lg-3 pm-0" children="Discount: " />
+                  <b className="col pm-0" >-£{parseFloat(order.totalDiscount.toString()).toFixed(2)}</b>
+                  <span className="col-auto pm-0 ml-auto edit-icon"
                      onClick={() => {
                         setOrder(prev => { return { ...prev, totalDiscount: 0 }; });
                         recalculateBasket(deliveryOptionList, order.deliveryOption, new Coupon());
                      }} />
                </div>
             }
-            <DropDown title={<div className="col-12 pm-0 text-left"><span>Shipping: <b>{order.deliveryOption?.name} £{order.deliveryOption?.price?.toFixed(2)}</b></span> <span className="float-right edit-icon" /></div>}
-               titleClassName="col small-text "
+            <DropDown title={
+               <div className="row pm-0 text-left">
+                  <span className="col-3 col-md-4 col-lg-3 pm-0" children="Shipping:" />
+                  <b className="col pm-0 text-nowrap line-limit-1" >£{order.deliveryOption?.price?.toFixed(2)} {order.deliveryOption?.name}</b>
+                  <span className="col-auto pm-0 ml-auto edit-icon" />
+               </div>}
                className="col-12 pm-0 pb-1"
                children={availableDeliveryList.map(delivery =>
                   <a className="dropdown-item p-1 text-nav" key={delivery?.name}
@@ -236,7 +244,10 @@ const Checkout = (props: IProps) => {
                      children={<div children={`${delivery?.name} - £${delivery?.price?.toFixed(2)}`} />}
                   />)
                } />
-            <div className="col-12 h5 pm-0"> Total : <b >£{order.totalPrice?.toFixed(2)}</b> </div>
+            <div className="row col-12 h5 pm-0">
+               <span className="col-3 col-md-4 col-lg-3 pm-0" children="Total:" />
+               <b className="col pm-0" >£{order.totalPrice?.toFixed(2)}</b>
+            </div>
             <p className="col-12 pm-0 small-text text-gray" >Total Items: {basket.getTotalItems()}</p>
             {auth.state.isAuthenticated &&
                <>
@@ -266,7 +277,7 @@ const Checkout = (props: IProps) => {
                      <div className="col-12 pm-0 line-limit-1" children={selectAddress.postcode} key="Postcode_Checkout" />
                   </div>
                   {(selectAddress.id || 0) > 0 &&
-                     <Button className="col-auto btn-sm edit-icon  mb-auto ml-auto"
+                     <Button className="col-auto pm-0 edit-icon  mb-auto ml-auto"
                         onClick={() => { setIsOpenAddressModal(true); }} />
                   }
                   <Button className="col-12 btn-lg btn-green mb-4 mt-4" children="Checkout" onClick={checkout} enableLoading={isUnmounted} />
@@ -274,7 +285,7 @@ const Checkout = (props: IProps) => {
             }
             {!auth.state.isAuthenticated &&
                <>
-                  <Link className="col-12 btn btn-lg btn-green mt-5" children="Login" to={{ pathname: "/Login", state: { fromPath: "/Checkout" } }} />
+                  <div className="col-12 btn btn-lg btn-green mt-5" children="Login" to={{ pathname: "/Login", state: { fromPath: "/Checkout" } }} />
                   <PageHeader title="OR" className="my-3" />
 
                   <Button className="col-12 btn-lg btn-green mb-5" children="Guest Checkout" onClick={checkout} enableLoading={isUnmounted} />

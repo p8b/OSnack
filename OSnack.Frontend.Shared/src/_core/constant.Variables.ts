@@ -1,14 +1,15 @@
 ﻿import { ErrorDto } from "../components/Texts/Alert";
 
-export const API_URL: string = "https://localhost:44358";
-//export const API_URL: string = "https://shopapi.osnack.co.uk";
+export const API_URL: string = window.location.hostname === "localhost" ?
+   "https://localhost:44358" : "https://shopapi.osnack.co.uk";
+
 export const GetAllRecords: string = "***GET-ALL***";
 export const ConstMaxNumberOfPerItemsPage = 10;
 export const AntiforgeryTokenCookieName = "AF-TOKEN";
 
-export enum ClientAppAccess {
-   Official = 0,
-   Secret = 1,
+export enum AppAccess {
+   Client = 0,
+   Admin = 1,
 };
 
 export class CommonRegex {

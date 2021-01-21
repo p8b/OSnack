@@ -19,6 +19,7 @@ const BasketCoupon = (props: IProps) => {
       props.alert.pleaseWait(isUnmounted);
       useValidateCoupon(code).then(result => {
          if (isUnmounted.current) return;
+         loadingCallBack!();
          if (result.data.type == CouponType.FreeDelivery && !props.acceptFreeCoupon) {
             props.alert.setSingleError("Access Denied", "Only apply to \"standard\" delivery.");
             return;
@@ -29,7 +30,6 @@ const BasketCoupon = (props: IProps) => {
             return;
          }
          props.setCoupon(result.data);
-         loadingCallBack!();
       }).catch(errors => {
          if (isUnmounted.current) return;
          props.alert.set(errors);
@@ -37,7 +37,7 @@ const BasketCoupon = (props: IProps) => {
       });
    };
    return (
-      <div className="row col-12 pm-0 pb-2">
+      <div className="row col-12 pm-0 pb-3">
          <Input placeholder="Discount Code"
             value={code}
             onChange={i => setCode(i.target.value)}

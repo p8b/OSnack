@@ -6,9 +6,9 @@ import { User } from "osnack-frontend-shared/src/_core/apiModels";
 import { useDetectOutsideClick } from "osnack-frontend-shared/src/hooks/function/useDetectOutsideClick";
 import DropDown from "osnack-frontend-shared/src/components/Buttons/DropDown";
 import NavLink from "osnack-frontend-shared/src/components/Buttons/NavLink";
-import { Link } from "react-router-dom";
 import CartIcon from "./CartIcon";
 import { useLogoutAuthentication } from "osnack-frontend-shared/src/hooks/OfficialHooks/useAuthenticationHook";
+import { useHistory } from "react-router-dom";
 
 // Navigation menu component
 const NavMenu = (props: IProps) => {
@@ -18,6 +18,7 @@ const NavMenu = (props: IProps) => {
    const [outsideClickSmallNav, setOutsideClickSmallNav] = useDetectOutsideClick([navDropdownRef, accountDropdownButtonRef], false);
    const [currentNavItems, setCurrentNavItems] = useState(DefaultNav);
    const [selectedNav] = useState(window.location.pathname);
+   const history = useHistory();
 
    useEffect(() => {
       if (auth.state.isAuthenticated)
@@ -38,12 +39,12 @@ const NavMenu = (props: IProps) => {
          <nav id="navbar" className="navbar p-0">
             <div className="row col-12 p-0 m-0 ">
                {/** Logo & toggler icon */}
-               <Link to="/" className="logo-container ml-md-auto mr-auto pt-1 pl-2 pl-md-0">
+               <div onClick={() => history.push("/")} className="logo-container ml-md-auto mr-auto pt-1 pl-2 pl-md-0">
                   <img id="logo" alt="Logo" className="Logo" src="/public/images/logo.png" />
-               </Link>
+               </div>
                <CartIcon />
                <span ref={navDropdownRef}>
-                  <button type="button" name="toggler"
+                  <button type="button" name="menu toggler" aria-label="menu toggler"
                      className={`fas toggler-icon ${outsideClickSmallNav ? "show" : "hide"}`}
                      onClick={() => { setOutsideClickSmallNav((prevVal) => !prevVal); }} />
                </span>
@@ -59,9 +60,9 @@ const NavMenu = (props: IProps) => {
                {auth.state.isAuthenticated &&
                   <DropDown buttonRef={accountDropdownButtonRef}
                      className="col-auto pm-0 "
+                     menuClassName="mt-n1 mt-md-0"
                      titleClassName={` btn-no-style ${selectedNav === "/MyAccount" ? "visited" : ""}`}
-                     forceOpen={outsideClickSmallNav}
-                     title={<div className="user-circle-icon" />}>
+                     title={<><div className="user-circle-icon" /><span className="d-block d-md-none pb-2" children="My Account" /></>}>
                      <NavLink className="dropdown-item"
                         path={"/MyAccount"}
                         displayName="Account" />

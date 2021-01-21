@@ -2,6 +2,7 @@
 import React, { RefObject, useEffect, useState } from 'react';
 import { useDetectOutsideClick } from '../../hooks/function/useDetectOutsideClick';
 const DropDown = (props: IProps) => {
+   const [btnName] = useState(typeof (props.children) == "string" ? props.children : "Button");
    const [dropDown] = useState(React.createRef<HTMLDivElement>());
    const [dropDownButton] = useState(React.createRef<HTMLButtonElement>());
    const [outsideClickDropDownButton, setOutsideClickDropDownButton] = useDetectOutsideClick([props.buttonRef || dropDownButton], false);
@@ -27,17 +28,18 @@ const DropDown = (props: IProps) => {
    }, [props.forceOpen]);
 
    return (
-      <div className={`col p-0 dropdown ${props.className}`} ref={dropDown}>
+      <div className={`col p-0 dropdown ${props.className!}`} ref={dropDown}>
          <button disabled={props.disabled} className={`col p-0 btn-no-style ${isOpen ? "show" : ""}`}
+            name={btnName}
             onClick={() => setIsOpen((prev) => !prev)}
             ref={(props.buttonRef || dropDownButton)}>
             {React.isValidElement(props.title) ? props.title :
-               <span className={`line-limit-1  ${props?.titleClassName} ${props.disabled ? "disabled" : ""}`}
+               <span className={`line-limit-1  ${props?.titleClassName!} ${props.disabled ? "disabled" : ""}`}
                   children={props.title}
                />
             }
          </button>
-         <span className={`col dropdown-menu text-center dropdown-menu-right bg-white ${isOpen ? " show" : ""}`}>
+         <span className={`col dropdown-menu text-center dropdown-menu-right bg-white ${props.menuClassName ?? ""} ${isOpen ? " show" : ""}`}>
             {props.children}
          </span>
       </div>
@@ -47,6 +49,7 @@ const DropDown = (props: IProps) => {
 declare type IProps = {
    className?: string;
    titleClassName?: string;
+   menuClassName?: string;
    preventCloseOnClickInsideMenu?: boolean;
    title: any;
    children: any;

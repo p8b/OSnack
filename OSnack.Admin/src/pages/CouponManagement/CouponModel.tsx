@@ -21,6 +21,9 @@ const CouponModel = (props: IProps) => {
    }, []);
 
    useEffect(() => {
+      errorAlert.clear();
+   }, [props.isOpen]);
+   useEffect(() => {
       if (props.coupon.code == undefined)
          setCoupon({ ...props.coupon, expiryDate: getNextDate(31) });
       else {

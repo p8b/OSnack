@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
-using OSnack.API.Extras.AppInterfaces;
 
 using P8B.Core.CSharp;
 using P8B.Core.CSharp.Models;

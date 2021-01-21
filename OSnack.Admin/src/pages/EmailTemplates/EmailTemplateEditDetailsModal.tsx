@@ -25,7 +25,7 @@ const EmailTemplateEditDetailsModal = (props: IProps) => {
       errorAlert.set(props.alert || new AlertObj());
    }, [props.alert]);
 
-   const onSubmit = async () => {
+   const onSubmit = () => {
       props.onSubmit(template);
    };
 
@@ -45,8 +45,8 @@ const EmailTemplateEditDetailsModal = (props: IProps) => {
                label="Type *"
                disabled={template.templateType != undefined && template.id! > 0}
                className="col-12 col-sm-6">
-               {props.templateTypes && props.templateTypes.map(t =>
-                  <div className="dropdown-item cursor-pointer" key={Math.random()}
+               {props.templateTypes && props.templateTypes.map((t, index) =>
+                  <div className="dropdown-item cursor-pointer" key={index}
                      onClick={() => {
                         setTemplate({ ...template, templateType: t });
                      }} >

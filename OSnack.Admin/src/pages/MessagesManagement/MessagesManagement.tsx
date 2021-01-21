@@ -95,7 +95,7 @@ const MessagesManagement = (props: IProps) => {
       tData.AddHeader("Date", "Date")
          .AddHeader("FullName", "FullName")
          .AddHeader("Email", "Email")
-         .AddHeader("Status", "IsOpen");
+         .AddHeader("Status", "Status");
 
       communicationList.map(message =>
          tData.AddRow([
@@ -136,7 +136,7 @@ const MessagesManagement = (props: IProps) => {
             />
 
             <DropDown title={`Status: ${getStatusDisplayValue()}`}
-               className="col-12 col-md-3 pm-0"
+               className="col-12 col-md-3 pm-0 mt-2 mt-md-0"
                titleClassName="btn btn-white filter-icon ml-sm-1">
                <button className="dropdown-item"
                   onClick={() => { onSearch(1, undefined, GetAllRecords); }} >

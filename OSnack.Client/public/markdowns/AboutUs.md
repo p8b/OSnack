@@ -1,1 +1,5 @@
-﻿We’re an independent, family-run business and have been running since 2017 and are eager to bring our customers a selection of delicious high quality Mediterranean snacks: Olives, Nuts, dried fruits, Baklava, Turkish delight, Fudge, liquorice, Italian biscuits (cannoli etc…).
+﻿We are an independent, family-run business in operation since 2017. 
+
+We provide a selection of Olives, Nuts, Dried Fruits, Baklava, Turkish Delight, Fudge, Liquorice and wide variety of Italian Biscuits for your to enjoy. We can't wait to see you at one our stores through out the United Kingdom or send you our flavourful packages.
+
+We would love to bring you our delicious and finest Mediterranean snacks via high-street markets, shopping centres, food festivals or simply deliver it to your door. 

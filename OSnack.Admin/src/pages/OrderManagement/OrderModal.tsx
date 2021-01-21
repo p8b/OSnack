@@ -27,6 +27,10 @@ const OrderModal = (props: IProps) => {
       setSelectedOrder(props.order);
    }, [props.order]);
 
+   useEffect(() => {
+      errorAlert.clear();
+   }, [props.isOpen]);
+
    const getAvailabeType = () => {
       switch (props.order.status) {
 

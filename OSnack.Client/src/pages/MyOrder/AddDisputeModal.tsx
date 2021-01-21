@@ -8,9 +8,6 @@ import { TextArea } from 'osnack-frontend-shared/src/components/Inputs/TextArea'
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import ModalFooter from 'osnack-frontend-shared/src/components/Modals/ModalFooter';
 
-
-
-
 const AddDisputeModal = (props: IProps) => {
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
@@ -41,23 +38,22 @@ const AddDisputeModal = (props: IProps) => {
 
    return (
       <Modal className="col-12 col-sm-11 col-md-9 col-lg-6"
+         hasParentModal
          bodyRef={props.modalRef}
          isOpen={props.isOpen}>
-         <>
-            <PageHeader title="Dispute" />
-            <TextArea className="col-12" label="Message*" rows={3} value={message}
-               onChange={(i) => { setMessage(i.target.value); }} />
+         <PageHeader title="Dispute" />
+         <TextArea className="col-12" label="Message*" rows={3} value={message}
+            onChange={(i) => { setMessage(i.target.value); }} />
 
-            <Alert alert={errorAlert.alert}
-               className="col-12 mb-2"
-               onClosed={() => errorAlert.clear()} />
-            <ModalFooter
-               createText="Submit"
-               onCreate={sendMessage}
-               enableLoadingCreate={isUnmounted}
-               onCancel={() => { errorAlert.clear(); props.onClose(); }}
-            />
-         </>
+         <Alert alert={errorAlert.alert}
+            className="col-12 mb-2"
+            onClosed={() => errorAlert.clear()} />
+         <ModalFooter
+            createText="Submit"
+            onCreate={sendMessage}
+            enableLoadingCreate={isUnmounted}
+            onCancel={() => { errorAlert.clear(); props.onClose(); }}
+         />
       </Modal >
 
    );

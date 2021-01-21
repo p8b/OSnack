@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 using MimeKit;
 
+using Newtonsoft.Json;
+
 using OSnack.API.Database;
 using OSnack.API.Database.Models;
 using OSnack.API.Extras.CustomTypes;
@@ -183,7 +185,7 @@ namespace OSnack.API.Services
       {
          try
          {
-            if (serverClass.Value.ToString().Equals(obj.GetType().Name))
+            if (serverClass.Value.ToString().Replace(" ", "").Equals(obj.GetType().Name))
             {
                foreach (var prop in serverClass.ClassProperties)
                {
@@ -248,5 +250,18 @@ namespace OSnack.API.Services
       }
 
 
+   }
+   public struct EmailServicePathNames
+   {
+      [JsonProperty(PropertyName = "PasswordReset")]
+      public string PasswordReset { get; set; }
+      [JsonProperty(PropertyName = "ConfirmEmail")]
+      public string ConfirmEmail { get; set; }
+      [JsonProperty(PropertyName = "NewEmployee")]
+      public string NewEmployee { get; set; }
+      [JsonProperty(PropertyName = "Communication")]
+      public string Communication { get; set; }
+      [JsonProperty(PropertyName = "Dispute")]
+      public string Dispute { get; set; }
    }
 }

@@ -1,5 +1,5 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import Container from '../../components/Container';
 import { API_URL } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import { Category } from 'osnack-frontend-shared/src/_core/apiModels';
@@ -21,7 +21,6 @@ const Home = (props: IProps) => {
    const history = useHistory();
 
    useEffect(() => {
-      window.scrollTo(0, 0);
       var img = new Image();
       img.src = "public/images/hero-img.png";
       img.onload = () => {
@@ -67,12 +66,12 @@ const Home = (props: IProps) => {
    return (
       <Container className="wide-container pl-0 pr-0">
          <div className={`hero-container ${heroImgLoaded ? "imgLoaded" : ""} row`}>
-            <h1 className="text-white col-12 text-center">Ready to osnack?</h1>
-            <h3 className="text-white col-12 text-center">
+            <h1 className="text-white col-12  text-center">Ready to osnack?</h1>
+            <div className="text-white col-12 h3 text-center">
                We provide quality mediterranean products for you to enjoy.
-            </h3>
+            </div>
             <div className="col-12 text-center">
-               <Link to="/Shop" className='btn btn-orange'>Shop now</Link>
+               <Button onClick={() => history.push("/Shop")} className='btn btn-orange'>Shop now</Button>
             </div>
          </div>
          <div className="col-12 my-5 py-5">
@@ -92,11 +91,11 @@ const Home = (props: IProps) => {
          }
          <Container >
             <div className="row my-5 py-5 justify-content-center">
-               <div><img src="public/images/Satisfactionpng.png" /></div>
+               <div><img src="public/images/Satisfactionpng.png" alt="Satisfaction" /></div>
                <div style={{ fontFamily: "'Courgette', cursive" }} className="col-12 text-center h1">Your Satisfation is our piority</div>
             </div>
             <div className="row  mt-5 mb-5 pt-3 pb-3 justify-content-center">
-               <div><img className="ml-auto mr-auto" src="public/images/QualityFood.png" /></div>
+               <div><img src="public/images/QualityFood.png" alt="Quality Food" /></div>
                <div style={{ fontFamily: "'Courgette', cursive" }} className="col-12 text-center h1">Our mission is to provide quality snacks</div>
             </div>
          </Container>

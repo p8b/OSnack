@@ -15,8 +15,8 @@ const LoginPage = (props: IProps) => {
       };
    }, []);
    return (
-      <div className="row justify-content-sm-center">
-         <div className="row col-12 pm-0 ">
+      <div className="row pm-0 justify-content-sm-center">
+         <div className="row col-12">
             <div className="m-auto">
                <img id="logo" alt="Logo" className="Logo pm-0" src={`/public/images/logo.png`} />
                <p className="text-center">Management</p>

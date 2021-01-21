@@ -10,7 +10,6 @@ import Container from "./components/Container";
 // Main Components such as pages, navbar, footer
 import NavMenu from "./components/NavMenu/NavMenu";
 import Footer from "./components/Footer";
-import { useSilentOfficialAuthentication } from "osnack-frontend-shared/src/hooks/OfficialHooks/useAuthenticationHook";
 const Home = lazy(() => import("./pages/Home/Home"));
 const OrderSuccess = lazy(() => import("./pages/Basket/OrderSuccess"));
 const Shop = lazy(() => import("./pages/Shop/Shop"));
@@ -40,29 +39,29 @@ const App = () => {
                   <Suspense fallback={<Loading />}>
                      <Switch>
                         {/***** Public Routes ****/}
-                        <CustomRoute authenticate={useSilentOfficialAuthentication} exact path="/" Render={(props: any) => <Home {...props} />} />
-                        <CustomRoute authenticate={useSilentOfficialAuthentication} path="/Login" Render={(props: any) => <LoginPage {...props} />} />
-                        <CustomRoute authenticate={useSilentOfficialAuthentication} path="/EmailConfirmation" Render={(props: any) => <ConfirmEmail {...props} />} />
-                        <CustomRoute authenticate={useSilentOfficialAuthentication} path="/ResetPassword" Render={(props: any) => <PasswordReset {...props} />} />
-                        <CustomRoute authenticate={useSilentOfficialAuthentication} path="/Shop/Product" Render={(props: any) => <ProductPage {...props} />} />
-                        <CustomRoute authenticate={useSilentOfficialAuthentication} path="/Shop" Render={(props: any) => <Shop {...props} />} />
-                        <CustomRoute authenticate={useSilentOfficialAuthentication} path="/Checkout" Render={(props: any) => <Basket {...props} />} />
-                        <CustomRoute authenticate={useSilentOfficialAuthentication} path="/About" Render={(props: any) => <About {...props} />} />
-                        <CustomRoute authenticate={useSilentOfficialAuthentication} path="/Contact" Render={(props: any) => <ContactUs {...props} />} />
-                        <CustomRoute authenticate={useSilentOfficialAuthentication} path="/OrderSuccessful" Render={(props: any) => <OrderSuccess {...props} />} />
-                        <CustomRoute authenticate={useSilentOfficialAuthentication} path="/PrivacyPolicy" Render={(props: any) => <PrivacyPolicy {...props} />} />
-                        <CustomRoute authenticate={useSilentOfficialAuthentication} path="/TermsAndConditions" Render={(props: any) => <TermsAndConditions {...props} />} />
-                        <CustomRoute authenticate={useSilentOfficialAuthentication} path="/Unsubscribe" Render={(props: any) => <Unsubscribe {...props} />} />
-                        <CustomRoute authenticate={useSilentOfficialAuthentication} path="/ViewCommunication" Render={(props: any) => <ViewCommunication {...props} />} />
+                        <CustomRoute exact path="/" render={(props: any) => <Home {...props} />} />
+                        <CustomRoute path="/Login" render={(props: any) => <LoginPage {...props} />} />
+                        <CustomRoute path="/EmailConfirmation" render={(props: any) => <ConfirmEmail {...props} />} />
+                        <CustomRoute path="/ResetPassword" render={(props: any) => <PasswordReset {...props} />} />
+                        <CustomRoute path="/Shop/Product" render={(props: any) => <ProductPage {...props} />} />
+                        <CustomRoute path="/Shop" render={(props: any) => <Shop {...props} />} />
+                        <CustomRoute path="/Checkout" render={(props: any) => <Basket {...props} />} />
+                        <CustomRoute path="/About" render={(props: any) => <About {...props} />} />
+                        <CustomRoute path="/Contact" render={(props: any) => <ContactUs {...props} />} />
+                        <CustomRoute path="/OrderSuccessful" render={(props: any) => <OrderSuccess {...props} />} />
+                        <CustomRoute path="/PrivacyPolicy" render={(props: any) => <PrivacyPolicy {...props} />} />
+                        <CustomRoute path="/TermsAndConditions" render={(props: any) => <TermsAndConditions {...props} />} />
+                        <CustomRoute path="/Unsubscribe" render={(props: any) => <Unsubscribe {...props} />} />
+                        <CustomRoute path="/ViewCommunication" render={(props: any) => <ViewCommunication {...props} />} />
 
                         {/***** Protected Routes  ****/}
-                        <CustomRoute authenticate={useSilentOfficialAuthentication} exact AuthRequired path="/MyAccount" Render={(props: any) => <MyAccount {...props} />} />
-                        <CustomRoute authenticate={useSilentOfficialAuthentication} AuthRequired path="/MyOrders" Render={(props: any) => <ViewOrders {...props} />} />
-                        <CustomRoute authenticate={useSilentOfficialAuthentication} exact AuthRequired path="/MyAddresses" Render={(props: any) => <MyAddresses {...props} />} />
-                        <CustomRoute authenticate={useSilentOfficialAuthentication} AuthRequired path="/ViewDispute" Render={(props: any) => <ViewCommunication {...props} />} />
+                        <CustomRoute authRequired exact path="/MyAccount" render={(props: any) => <MyAccount {...props} />} />
+                        <CustomRoute authRequired path="/MyOrders" render={(props: any) => <ViewOrders {...props} />} />
+                        <CustomRoute authRequired exact path="/MyAddresses" render={(props: any) => <MyAddresses {...props} />} />
+                        <CustomRoute authRequired path="/ViewDispute" render={(props: any) => <ViewCommunication {...props} />} />
 
                         {/***** Route Not Found  ****/}
-                        <CustomRoute authenticate={useSilentOfficialAuthentication} path="*" Render={(props: any) => <PageNotFound {...props} />} />
+                        <CustomRoute path="*" render={(props: any) => <PageNotFound {...props} />} />
                      </Switch>
                   </Suspense>
                </Container>

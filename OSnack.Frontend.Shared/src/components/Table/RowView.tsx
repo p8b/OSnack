@@ -32,17 +32,17 @@ const RowView = (props: IProps) => {
             <thead>
                <tr>
                   {props.data.headers().length > 0 &&
-                     props.data.headers().map(header =>
+                     props.data.headers().map((header, index) =>
                         header.sortName != undefined ?
-                           <th key={Math.random()}>
+                           <th key={index}>
                               <span onClick={() => sort(header.sortName!)}
                                  className={`col ${getSortedColCss(header.sortName)}`}>
-                                 <span className="table-header-sort">{header.name}</span>
+                                 <span className="table-header-sort text-nowrap">{header.name}</span>
                               </span>
                            </th>
                            :
-                           <th key={Math.random()}>
-                              <span className="col table-header" >{header.name}</span>
+                           <th key={index}>
+                              <span className="col table-header text-nowrap" >{header.name}</span>
                            </th>
                      )
                   }
@@ -50,14 +50,16 @@ const RowView = (props: IProps) => {
             </thead>
             {props.data.rows().length > 0 &&
                <tbody>
-                  {props.data.rows().map(row =>
-                     <tr key={Math.random()}>
-                        {row.data.map(d =>
-                           <td className="align-middle" key={Math.random()} >
-                              {(typeof d === "string") &&
-                                 <span data-toggle="tooltip" data-placement="top" title={d} className="select-all-text line-limit-1">{d}</span>
+                  {props.data.rows().map((row, index) =>
+                     <tr key={index}>
+                        {row.data.map((d, index1) =>
+                           <td className="align-middle" key={index1} >
+                              {React.isValidElement(d) ? d :
+                                 <span data-toggle="tooltip" data-placement="top"
+                                    title={d}
+                                    className="select-all-text line-limit-1"
+                                    children={d} />
                               }
-                              {(typeof d !== "string") && d}
                            </td>
                         )}
                      </tr>
@@ -69,7 +71,6 @@ const RowView = (props: IProps) => {
       </div >
    );
 };
-
 
 interface IProps {
    onSortClick?: (selectedPage: number, isSortAsce: boolean, selectedSortName: string) => void;

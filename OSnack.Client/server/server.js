@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 5000;
 app.use(compression());
 
 /// Static file cache Age
-app.use(express.static(path.join(__dirname), { maxAge: "3.154e+10" /** One Year **/ }));
+app.use(express.static(path.join(__dirname), { maxAge: "86400" /** One Year **/ }));
 
 /// Routing
 app.get("*", function (req, res) {

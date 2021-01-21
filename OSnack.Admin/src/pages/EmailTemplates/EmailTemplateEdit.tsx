@@ -53,7 +53,6 @@ const EmailTemplatesEdit = (props: IProps) => {
          isUnmounted.current = true;
       };
    }, []);
-
    useEffect(() => {
       loadDesgin();
    }, [template]);
@@ -163,8 +162,8 @@ const EmailTemplatesEdit = (props: IProps) => {
                {template.requiredClasses != undefined && template.requiredClasses!.length > 0 &&
                   <InputDropdown dropdownTitle={`Server Model${selectedServerClass == undefined ? "s" : ": " + selectedServerClass.value}`}
                      className="col-auto pb-0">
-                     {template.requiredClasses?.map(sc =>
-                        <div className="dropdown-item cursor-pointer pl-0 pr-0" key={Math.random()}
+                     {template.requiredClasses?.map((sc, index) =>
+                        <div className="dropdown-item cursor-pointer pl-0 pr-0" key={index}
                            onClick={() => { setSelectedServerClass(sc); }}>
                            {sc.value}
                         </div>
@@ -172,8 +171,8 @@ const EmailTemplatesEdit = (props: IProps) => {
                   </InputDropdown>
                }
                {selectedServerClass != undefined &&
-                  selectedServerClass.classProperties?.map(v =>
-                     <div className="col-auto pm-0 mt-auto mb-auto" key={Math.random()}>
+                  selectedServerClass.classProperties?.map((v, index) =>
+                     <div className="col-auto pm-0 mt-auto mb-auto" key={index}>
                         <CopyText className="badge blue pl-2 pr-2 ml-1 mr-1" text={v.templateName?.ReplaceAll('@@', '').replace(/([A-Z])/g, ' $1') || ''} copyValue={v.templateName} />
                      </div>
                   )

@@ -15,9 +15,10 @@ const NavMenu = (props: IProps) => {
    const auth = useContext(AuthContext);
    const [currentNavItems, setCurrentNavItems] = useState(DefaultNav);
    const history = useHistory();
+   const breakSize = 768;
 
    useEffect(() => {
-      if (window.innerWidth > 768 && extractUri(window.location.pathname)[0] != "Login")
+      if (window.innerWidth > breakSize && extractUri(window.location.pathname)[0] != "Login")
          props.mainContainerToggler(true);
    }, []);
 
@@ -60,7 +61,7 @@ const NavMenu = (props: IProps) => {
                   </div>
                   {/** user links */}
                   {currentNavItems.map((link, index) =>
-                     <NavLink key={index} displayName={link.displayName} path={link.path} className="w-100" />
+                     <NavLink key={index} displayName={link.displayName} path={link.path} className="w-100" onClick={() => { if (window.innerWidth <= breakSize) props.mainContainerToggler(false); }} />
                   )}
                   <Footer />
                </nav>

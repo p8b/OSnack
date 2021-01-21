@@ -8,11 +8,13 @@
     <meta name="keywords" content="OSnack, Snack, Baklava, Olives, Olive, Turkish Delight" />
     <title id="browser-title">OSnack</title>
 
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Courgette&family=Righteous&family=Rubik:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="apple-touch-icon" href="/public/images/icons-192.png">
-    <link rel="icon" type="image/png" href="/public/favicon.ico" />
-    <link rel="manifest" href="/public/manifest.json">
+    <link async rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preload" as="font" href="https://fonts.googleapis.com/css2?family=Courgette&family=Righteous&family=Rubik:wght@300;400;500;600;700;800;900&display=swap">
+    <link async rel="apple-touch-icon" href="/public/images/icons-192.png">
+    <link async rel="icon" type="image/png" href="/public/favicon.ico" />
+    <link async rel="manifest" href="/public/manifest.json">
+    <link rel="preload" crossorigin="" href="/public/fonts/fa-solid-900.woff2" as="font" />
+    <link rel="preload" crossorigin="" href="/public/fonts/fa-brands-400.woff2" as="font" />
     <style type="text/css">
         .skip-link {
             position: absolute;
@@ -49,7 +51,7 @@
         </div>
     </main>
     <script>
-        ((url) => {
+        (async (url) => {
             var image = new Image();
             image.onload = () => {
                 var style = [
@@ -66,9 +68,9 @@
             image.src = url;
         })('https://p8b.uk/public/images/console.png');
     </script>
-    <script defer crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react-router/5.2.0/react-router.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
     <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react-router-dom/5.2.0/react-router-dom.min.js"></script>
+    <script defer crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react-router/5.2.0/react-router.min.js"></script>
 </body>
 </html>

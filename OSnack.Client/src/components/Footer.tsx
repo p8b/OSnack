@@ -10,8 +10,10 @@ const Footer = () => {
                <div className="row col-12 justify-content-center pm-0 mt-2  mb-2 ">
                   <div className="col-12 col-md-6 mt-4 text-center mt-auto mb-auto">
                      <div className="h2" children="Follow Us!" />
-                     <a className="col-12 facebook-icon-contact-page" href="https://www.facebook.com/OSNACK.CO.UK/" target="_blank" />
-                     <a className="col-12 instagram-icon-contact-page" href="https://www.instagram.com/osnack.co.uk/" target="_blank" />
+                     <a className="col-12 facebook-icon-contact-page" href="https://www.facebook.com/OSNACK.CO.UK/" target="_blank"
+                        rel="noreferrer" />
+                     <a className="col-12 instagram-icon-contact-page" href="https://www.instagram.com/osnack.co.uk/" target="_blank"
+                        rel="noreferrer" />
                   </div>
                   <div className="row col-12 col-md-6 h5 pl-2 pr-2 m-0 mt-4 text-center">
                      <div className="col-12 h5">

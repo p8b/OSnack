@@ -147,7 +147,6 @@
     <Folder Include="src\components\" />
     <Folder Include="src\components\NavMenu\" />
     <Folder Include="src\components\ImageUpload\" />
-    <Folder Include="src\components\Order\" />
     <Folder Include="src\pages\" />
     <Folder Include="src\pages\Communication\" />
     <Folder Include="src\pages\MessagesManagement\" />
@@ -192,7 +191,6 @@
     <TypeScriptCompile Include="src\components\ImageUpload\ImageUpload.tsx" />
     <TypeScriptCompile Include="src\components\NavMenu\NavMenu.tsx" />
     <TypeScriptCompile Include="src\components\NavMenu\NavMenuItems.tsx" />
-    <TypeScriptCompile Include="src\components\Order\ViewOrders.tsx" />
     <TypeScriptCompile Include="src\index.tsx" />
     <TypeScriptCompile Include="src\pages\CategoryManagement\CategoryManagement.tsx" />
     <TypeScriptCompile Include="src\pages\CategoryManagement\CategoryModal.tsx" />

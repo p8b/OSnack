@@ -8,7 +8,7 @@ import { Input } from './Input';
 import { useDetectOutsideClick } from '../../hooks/function/useDetectOutsideClick';
 
 export const DatePicker = (props: IProps) => {
-   const id: string = props.id === undefined ? Math.random().toString() : props.id!;
+   const [id] = useState(props.id ?? Math.random().toString());
    const [value, setValue] = useState(new Date());
    const [inputValue, setInputValue] = useState("");
    const [DateModal] = useState(React.createRef<HTMLDivElement>());

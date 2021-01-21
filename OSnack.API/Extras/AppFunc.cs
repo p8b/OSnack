@@ -1,8 +1,12 @@
-﻿using NSwag;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
+
+using NSwag;
 using NSwag.CodeGeneration.TypeScript;
 
 using OSnack.API.Database.Models;
 using OSnack.API.Extras.CustomTypes;
+
 using P8B.Core.CSharp;
 
 using System;
@@ -17,14 +21,14 @@ namespace OSnack.API.Extras
 {
    public static class AppFunc
    {
-      public static int GetUserId(ClaimsPrincipal userClaimsPrincipal)
+      internal static int GetUserId(ClaimsPrincipal userClaimsPrincipal)
       {
          int.TryParse(userClaimsPrincipal.Claims.FirstOrDefault(
                         c => c.Type == "UserId")?.Value, out int userId);
          return userId;
       }
 
-      public static void MakeClientZipFile(OpenApiDocument document, string webHostRoot, bool zipIt = false)
+      internal static void MakeClientZipFile(OpenApiDocument document, string webHostRoot, bool zipIt = false)
       {
          try
          {
@@ -136,7 +140,7 @@ namespace OSnack.API.Extras
                      tempScrtip = tempScrtip.Replace("../../", modelsPath);
                   }
                   using FileStream fs = File.Create($"{zipFolder}\\use{hook.TypeName}Hook.ts");
-                  byte[] info = new UTF8Encoding(true).GetBytes(tempScrtip.Replace("@@Models@@", hook.BaseTypeName.Replace("@", "")));
+                  byte[] info = new UTF8Encoding(true).GetBytes(tempScrtip.Replace("@@Models@@", hook.BaseTypeName.Replace("@", "").Replace("string,", "")));
                   // Add some information to the file.
                   fs.Write(info, 0, info.Length);
 
@@ -157,8 +161,29 @@ namespace OSnack.API.Extras
          }
       }
 
+      internal static IEnumerable<string> GetCurrentRequestPolicies(HttpRequest request) => GetCurrentRequestPolicies(request, out AppTypes _);
 
-      public static string GetCencoredWord(int length)
+      internal static IEnumerable<string> GetCurrentRequestPolicies(HttpRequest request, out AppTypes appTypes)
+      {
+         request.Headers.TryGetValue("Origin", out StringValues Originvalue);
+         if (AppConst.Settings.AppDomains.ClientApp.EqualCurrentCultureIgnoreCase(Originvalue))
+         {
+            appTypes = AppTypes.Client;
+            return AppConst.Settings.AppDomains.ClientAppPolicies;
+         }
+         else if (AppConst.Settings.AppDomains.AdminApp.EqualCurrentCultureIgnoreCase(Originvalue))
+         {
+            appTypes = AppTypes.Admin;
+            return AppConst.Settings.AppDomains.AdminAppPolicies;
+         }
+         else
+         {
+            appTypes = AppTypes.Invalid;
+            return Array.Empty<string>();
+         }
+      }
+
+      internal static string GetCencoredWord(int length)
       {
          string cencoredWord = "";
          for (int i = 0; i < length; i++)
@@ -168,8 +193,7 @@ namespace OSnack.API.Extras
          return cencoredWord;
       }
 
-
-      public static DisputeFilterTypes GetDisputeFilterTypes(bool hasClose, bool hasOpen)
+      internal static DisputeFilterTypes GetDisputeFilterTypes(bool hasClose, bool hasOpen)
       {
 
          return (hasClose, hasOpen) switch

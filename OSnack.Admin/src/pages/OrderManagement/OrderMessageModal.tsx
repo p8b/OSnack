@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
 import { TextArea } from 'osnack-frontend-shared/src/components/Inputs/TextArea';
 import { Input } from 'osnack-frontend-shared/src/components/Inputs/Input';
@@ -7,13 +7,14 @@ import { OrderStatusType } from 'osnack-frontend-shared/src/_core/apiModels';
 import ModalFooter from 'osnack-frontend-shared/src/components/Modals/ModalFooter';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 
-
-
-
 const OrderMessageModal = (props: IProps) => {
    const [message, setMessage] = useState("");
    const [refundValue, setRefundValue] = useState(0);
    const errorAlert = useAlert(new AlertObj());
+
+   useEffect(() => {
+      errorAlert.clear();
+   }, [props.isOpen]);
 
    const onSave = () => {
       if (message.trim() == "") {
@@ -30,6 +31,7 @@ const OrderMessageModal = (props: IProps) => {
 
    return (
       <Modal className="col-12 col-sm-11 col-lg-9 m-0"
+         hasParentModal
          bodyRef={props.modalRef}
          isOpen={props.isOpen}>
 
@@ -74,7 +76,6 @@ const OrderMessageModal = (props: IProps) => {
       </Modal >
    );
 };
-
 
 declare type IProps = {
    isOpen: boolean;

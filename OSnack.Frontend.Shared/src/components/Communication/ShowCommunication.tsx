@@ -4,7 +4,7 @@ import { IReturnUsePutOfficialCommunication, usePutOfficialCommunication } from 
 import PageHeader from '../Texts/PageHeader';
 import { TextArea } from '../Inputs/TextArea';
 import Alert, { AlertObj, useAlert } from '../Texts/Alert';
-import { ClientAppAccess } from '../../_core/constant.Variables';
+import { AppAccess } from '../../_core/constant.Variables';
 import { Toggler } from '../Inputs/Toggler';
 import ModalFooter from '../Modals/ModalFooter';
 
@@ -52,12 +52,12 @@ const ShowCommunication = (props: IProps) => {
    const sendMessage = (loadingCallBack?: () => void) => {
       errorAlert.pleaseWait(isUnmounted);
       switch (props.access) {
-         case ClientAppAccess.Official:
+         case AppAccess.Client:
             usePutOfficialCommunication({ body: message }, communication.id ?? null)
                .then((result) => onSuccess(result, loadingCallBack))
                .catch((errors) => onError(errors, loadingCallBack));
             break;
-         case ClientAppAccess.Secret:
+         case AppAccess.Admin:
             props.usePutSecretCommunication!({ body: message }, communication.id ?? null, communicationStatus)
                .then((result) => onSuccess(result, loadingCallBack))
                .catch((errors) => onError(errors, loadingCallBack));
@@ -84,9 +84,9 @@ const ShowCommunication = (props: IProps) => {
 
    const getChatCss = (isCustomer?: boolean) => {
       switch (props.access) {
-         case ClientAppAccess.Secret:
+         case AppAccess.Admin:
             return isCustomer ? "incoming" : "outgoing";
-         case ClientAppAccess.Official:
+         case AppAccess.Client:
             return !isCustomer ? "incoming" : "outgoing";
          default:
             return "";
@@ -96,7 +96,7 @@ const ShowCommunication = (props: IProps) => {
       <>
          <div className={`col-12 pm-0 ${props.isInModal && "pos-t-sticky"} pt-3 bg-white`}>
             <PageHeader title={`${communication.type === ContactType.Dispute ? "Dispute" : "Communication"} ${communication.status ? "" : "Closed"}`} />
-            {props.access == ClientAppAccess.Secret &&
+            {props.access == AppAccess.Admin &&
                <Toggler
                   className="toggler-lg circle col pb-3"
                   lblValueTrue={`${communication.type === ContactType.Dispute ? "Dispute" : "Communication"} Open`}
@@ -139,7 +139,7 @@ const ShowCommunication = (props: IProps) => {
                cancelText="Close"
                classNameCreate={props.isInModal ? undefined : "col-md-auto ml-auto"}
                onCreate={(communicationStatus || communication.status) ? sendMessage : undefined}
-               onDelete={(communication.type != ContactType.Dispute && props.access === ClientAppAccess.Secret && !communication.status) ? deleteCommunication : undefined}
+               onDelete={(communication.type != ContactType.Dispute && props.access === AppAccess.Admin && !communication.status) ? deleteCommunication : undefined}
                enableLoadingCreate={isUnmounted}
                enableLoadingDelete={isUnmounted}
                onCancel={props.onClose}
@@ -153,7 +153,7 @@ const ShowCommunication = (props: IProps) => {
 declare type IProps = {
    usePutSecretCommunication?: (message: Message, communicationId: string | null, status: boolean) => Promise<{ data: Communication, status?: number; }>;
    useDeleteCommunication?: (communicationId: string | null) => Promise<{ data: string, status?: number; }>;
-   access: ClientAppAccess;
+   access: AppAccess;
    communication: Communication;
    onClose?: () => void;
    isInModal?: boolean;

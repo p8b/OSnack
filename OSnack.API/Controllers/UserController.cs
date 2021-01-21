@@ -38,4 +38,9 @@ namespace OSnack.API.Controllers
          _EmailService = new EmailService(AppConst.Settings.EmailSettings, _LoggingService, webEnv, _DbContext);
       }
    }
+   public struct UpdateCurrentUserData
+   {
+      public User User { get; set; }
+      public string CurrentPassword { get; set; }
+   }
 }

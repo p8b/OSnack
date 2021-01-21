@@ -20,7 +20,7 @@ namespace OSnack.API.Services
                Type = TokenTypes.ConfirmEmail,
                UrlDomain = DomainUrl,
             };
-            token.GenerateToken(user, DateTime.UtcNow.AddYears(1), _DbContext, AppConst.Settings.EmailSettings.PathNames.ConfirmEmail);
+            token.GenerateToken(user, DateTime.UtcNow.AddYears(1), _DbContext, AppConst.Settings.EmailServicePathNames.ConfirmEmail);
             foreach (EmailTemplateRequiredClass serverClass in Template.RequiredClasses)
             {
                SetTemplateServerPropValue(serverClass, user);
@@ -69,7 +69,7 @@ namespace OSnack.API.Services
                Type = TokenTypes.ChangePassword,
                UrlDomain = DomainUrl,
             };
-            token.GenerateToken(user, DateTime.UtcNow.AddDays(2), _DbContext, AppConst.Settings.EmailSettings.PathNames.NewEmployee);
+            token.GenerateToken(user, DateTime.UtcNow.AddDays(2), _DbContext, AppConst.Settings.EmailServicePathNames.NewEmployee);
             foreach (EmailTemplateRequiredClass serverClass in Template.RequiredClasses)
             {
                SetTemplateServerPropValue(serverClass, user);
@@ -97,7 +97,7 @@ namespace OSnack.API.Services
                Type = TokenTypes.ChangePassword,
                UrlDomain = DomainUrl,
             };
-            token.GenerateToken(user, DateTime.UtcNow.AddHours(5), _DbContext, AppConst.Settings.EmailSettings.PathNames.PasswordReset);
+            token.GenerateToken(user, DateTime.UtcNow.AddHours(5), _DbContext, AppConst.Settings.EmailServicePathNames.PasswordReset);
             foreach (EmailTemplateRequiredClass serverClass in Template.RequiredClasses)
             {
                SetTemplateServerPropValue(serverClass, user);
@@ -139,7 +139,7 @@ namespace OSnack.API.Services
             }
 
 
-            await SendEmailAsync(AppConst.Settings.AdminEmail, AppConst.Settings.AdminEmail).ConfigureAwait(false);
+            await SendEmailAsync(AppConst.Settings.EmailSettings.AdminEmail, AppConst.Settings.EmailSettings.AdminEmail).ConfigureAwait(false);
 
             return true;
          }
@@ -156,7 +156,7 @@ namespace OSnack.API.Services
          {
             await SetUserTemplate(EmailTemplateTypes.OrderDispute).ConfigureAwait(false);
 
-            communication.SetURL($"{AppConst.Settings.AppDomains.ClientApp}{AppConst.Settings.EmailSettings.PathNames.Dispute}");
+            communication.SetURL($"{AppConst.Settings.AppDomains.ClientApp}{AppConst.Settings.EmailServicePathNames.Dispute}");
             foreach (EmailTemplateRequiredClass serverClass in Template.RequiredClasses)
             {
                SetTemplateServerPropValue(serverClass, order);
@@ -172,14 +172,14 @@ namespace OSnack.API.Services
             await SetUserTemplate(EmailTemplateTypes.OrderDisputeForAdmin).ConfigureAwait(false);
 
 
-            communication.SetURL($"{AppConst.Settings.AppDomains.AdminApp}{AppConst.Settings.EmailSettings.PathNames.Dispute}");
+            communication.SetURL($"{AppConst.Settings.AppDomains.AdminApp}{AppConst.Settings.EmailServicePathNames.Dispute}");
             foreach (EmailTemplateRequiredClass serverClass in Template.RequiredClasses)
             {
                SetTemplateServerPropValue(serverClass, order);
                SetTemplateServerPropValue(serverClass, communication);
             }
 
-            await SendEmailAsync(AppConst.Settings.AdminEmail, AppConst.Settings.AdminEmail).ConfigureAwait(false);
+            await SendEmailAsync(AppConst.Settings.EmailSettings.AdminEmail, AppConst.Settings.EmailSettings.AdminEmail).ConfigureAwait(false);
 
             return true;
          }
@@ -221,16 +221,16 @@ namespace OSnack.API.Services
          {
             await SetUserTemplate(EmailTemplateTypes.MessageToAdmin).ConfigureAwait(false);
             if (communication.Type == ContactType.Dispute)
-               communication.SetURL($"{AppConst.Settings.AppDomains.AdminApp}{AppConst.Settings.EmailSettings.PathNames.Dispute}");
+               communication.SetURL($"{AppConst.Settings.AppDomains.AdminApp}{AppConst.Settings.EmailServicePathNames.Dispute}");
             if (communication.Type == ContactType.Message)
-               communication.SetURL($"{AppConst.Settings.AppDomains.AdminApp}{AppConst.Settings.EmailSettings.PathNames.Communication}");
+               communication.SetURL($"{AppConst.Settings.AppDomains.AdminApp}{AppConst.Settings.EmailServicePathNames.Communication}");
             foreach (EmailTemplateRequiredClass serverClass in Template.RequiredClasses)
             {
                SetTemplateServerPropValue(serverClass, message);
                SetTemplateServerPropValue(serverClass, communication);
             }
 
-            await SendEmailAsync(AppConst.Settings.AdminEmail, AppConst.Settings.AdminEmail).ConfigureAwait(false);
+            await SendEmailAsync(AppConst.Settings.EmailSettings.AdminEmail, AppConst.Settings.EmailSettings.AdminEmail).ConfigureAwait(false);
             return true;
          }
          catch (Exception ex)
@@ -246,9 +246,9 @@ namespace OSnack.API.Services
          {
             await SetUserTemplate(EmailTemplateTypes.MessageToUser).ConfigureAwait(false);
             if (communication.Type == ContactType.Dispute)
-               communication.SetURL($"{AppConst.Settings.AppDomains.AdminApp}{AppConst.Settings.EmailSettings.PathNames.Dispute}");
+               communication.SetURL($"{AppConst.Settings.AppDomains.AdminApp}{AppConst.Settings.EmailServicePathNames.Dispute}");
             if (communication.Type == ContactType.Message)
-               communication.SetURL($"{AppConst.Settings.AppDomains.AdminApp}{AppConst.Settings.EmailSettings.PathNames.Communication}");
+               communication.SetURL($"{AppConst.Settings.AppDomains.AdminApp}{AppConst.Settings.EmailServicePathNames.Communication}");
             foreach (EmailTemplateRequiredClass serverClass in Template.RequiredClasses)
             {
                SetTemplateServerPropValue(serverClass, message);

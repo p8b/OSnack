@@ -1,40 +1,27 @@
-﻿import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { setHtmlTitle } from '../../_core/appFunc';
+﻿import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { extractUri, setHtmlTitle } from '../../_core/appFunc';
 const NavLink = (props: IProps) => {
-   const currentKnowPathName = useCurrentKnownPathName();
-   const setSelectedNavItem = async () => {
-      /// must be delayed to avoid render conflicts
-      await new Promise(resolve => setTimeout(resolve, 1));
-      if (currentKnowPathName.value !== window.location.pathname) {
-         currentKnowPathName.setValue(window.location.pathname);
-
-         const uriPathNameArr = window.location.pathname.split('/').filter(val => val.length > 0);
-         let firstPathnameElement = "";
-         if (uriPathNameArr.length > 0) {
-            firstPathnameElement = uriPathNameArr[0];
-         }
-         setHtmlTitle(firstPathnameElement);
-      }
-   };
-   const isCurrentRouteVisited = () => {
-      if (currentKnowPathName.value === props.path || (props.path != "/" && currentKnowPathName.value.includes(props.path)))
-         return "visited";
+   const [linkRef] = useState(React.createRef<HTMLAnchorElement>());
+   const history = useHistory();
+   useEffect(() => {
+      if (extractUri(window.location.pathname)[0]?.toLowerCase() == extractUri(props.path)[0]?.toLowerCase())
+         linkRef.current?.classList.add("visited");
       else
-         return "";
-   };
+         linkRef.current?.classList.remove("class", "visited");
+   }, [window.location.pathname]);
 
    return (
-      <Link
-         className={`link-nav ${isCurrentRouteVisited()} ${props.className || ""}`}
-         onClick={props.onClick}
-         to={() => {
-            setSelectedNavItem();
-            return props.path;
+      <a ref={linkRef}
+         className={`link-nav ${props.className || ""}`}
+         onClick={() => {
+            props.onClick && props.onClick!();
+            setHtmlTitle(props.displayName);
+            history.push(props.path);
          }}>
-         <div className="col-12 ml-auto mr-auto text-center mb-0">{props.displayName}</div>
-         <div id="navlink-underline-animation" />
-      </Link>
+         <div className="col-12 mx-auto text-center mb-0">{props.displayName}</div>
+         <span className="row pm-0" />
+      </a>
    );
 };
 
@@ -45,9 +32,3 @@ declare type IProps = {
    onClick?: () => void;
 };
 export default NavLink;
-
-const useCurrentKnownPathName = () => {
-   const [value, setValue] = useState(window.location.pathname);
-
-   return { value, setValue };
-};

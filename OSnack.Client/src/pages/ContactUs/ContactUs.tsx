@@ -20,7 +20,6 @@ const ContactUs = (props: IProps) => {
    const [message, setMessage] = useState("");
 
    useEffect(() => {
-      window.scrollTo(0, 0);
       return () => {
          isUnmounted.current = true;
          document.body.removeChild(document.getElementsByClassName("grecaptcha-badge")[0]!.parentNode!);

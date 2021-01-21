@@ -43,7 +43,7 @@ export class httpCaller {
       credentials: "include",
     * @param apiUri
     */
-   static GET = async (apiUri: string) => fetch(`${apiUri}`, {
+   static GET = async (apiUri: string, bodyObject: any = "") => fetch(`${apiUri}`, {
       headers: new Headers({
          'content-type': 'application/json',
       }),

@@ -11,7 +11,7 @@ const CartIcon = (props: IProps) => {
    }, [basket.state.List]);
    return (
       <div className="nav-cart ">
-         <button type="button" name="toggler"
+         <button type="button" name="cart" aria-label="cart"
             className={`cart-icon btn-no-style`}
             onClick={() => { history.push("/Checkout"); }}
             children={""}

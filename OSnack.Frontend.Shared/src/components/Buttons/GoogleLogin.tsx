@@ -47,7 +47,6 @@ const GoogleLogin = (props: IProps) => {
             .split('=');
          if (reply![1] != null && localStorage.getItem("googleLogin") === reply![1]) {
             if (props.enableLoading) {
-               console.log("With loading callback");
                props.onSuccess!({
                   code: reply![2],
                   state: reply![1],
@@ -55,7 +54,6 @@ const GoogleLogin = (props: IProps) => {
                   rememberMe: false
                }, loadingCallBack);
             } else {
-               console.log("WithOut loading callback");
                props.onSuccess({
                   code: reply![2],
                   state: reply![1],
@@ -71,7 +69,6 @@ const GoogleLogin = (props: IProps) => {
       };
    };
    const loadingCallBack = () => {
-      console.log("loadingCallBack ");
       if (props.enableLoading?.current || isUnmounted.current) return;
       setLoading(false);
       setDisable(false);

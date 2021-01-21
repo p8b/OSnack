@@ -1,7 +1,7 @@
-﻿import React from 'react';
+﻿import React, { useState } from 'react';
 
 export const TextArea = (props: IProps) => {
-   const id: string = Math.random().toString();
+   const [id] = useState(props.id ?? Math.random().toString());
    const validationClassName = (targetInput: EventTarget & HTMLTextAreaElement) => {
       const regex = RegExp(props.validationPattern ?? "");
       targetInput.classList.remove("class", "default");
@@ -38,6 +38,7 @@ export const TextArea = (props: IProps) => {
 };
 
 declare type IProps = {
+   id?: string;
    label: string;
    value?: string;
    className?: string;

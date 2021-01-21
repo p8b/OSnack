@@ -2,6 +2,8 @@
 import { sleep } from '../../_core/appFunc';
 
 export const Button = (props: IProps) => {
+   const [id] = useState(props.id ?? Math.random().toString());
+   const [btnName] = useState(typeof (props.children) == "string" ? props.children : "Button");
    const [loading, setLoading] = useState(false);
    const [disable, setDisable] = useState(false);
    const isWait = useRef(false);
@@ -29,7 +31,9 @@ export const Button = (props: IProps) => {
          props.onClick && props.onClick!(undefined, event);
    };
    return (
-      <button id="send" key={props.key} type="button" children={props.children}
+      <button id={id.toString()}
+         type="button" name={btnName}
+         children={props.children}
          className={`btn ${props?.className} ${loading && "loading"}`}
          onClick={onClick}
          disabled={props?.disabled || disable || false}
@@ -39,7 +43,7 @@ export const Button = (props: IProps) => {
 
 
 declare type IProps = {
-   key?: string | number | null | undefined;
+   id?: string | number;
    children?: any;
    className?: string;
    disabled?: boolean;

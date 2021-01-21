@@ -114,4 +114,11 @@ namespace OSnack.API.Extras.CustomTypes
       Close = 2,
       OpenAndClose = 3
    }
+
+   public enum AppTypes
+   {
+      Client,
+      Admin,
+      Invalid
+   }
 }

@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Antiforgery;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -64,7 +64,7 @@ namespace OSnack.API
          /// Pass the SQL server connection to the db context
          /// receive the connection string from the settings.json
          var test = services.AddDbContext<OSnackDbContext>(options => options
-           .UseSqlServer(AppConst.Settings.DbConnectionString())
+           .UseSqlServer(AppConst.Settings.DbConnectionString)
            .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 
          /// Add .Net Core Identity to the pipe-line with the following options
@@ -104,8 +104,7 @@ namespace OSnack.API
             options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
          }
          /// Add authentication services to the pipeline
-         services.AddAuthentication()
-            .AddCookie(AuthSchemeApplication, CookieAuthOptions);
+         services.AddAuthentication().AddCookie(AuthSchemeApplication, CookieAuthOptions);
 
          /// Add Authorization policies for Admin, Manager, Staff and Customer
          services.AddAuthorization(options =>
@@ -140,11 +139,10 @@ namespace OSnack.API
                                    , new string[] { AppConst.AccessClaims.Admin });
             });
          });
+         services.AddSingleton<IAuthorizationHandler, EmptyHandler>();
 
          services.Configure<ApiBehaviorOptions>(options =>
-         {
-            options.SuppressModelStateInvalidFilter = true;
-         });
+         options.SuppressModelStateInvalidFilter = true);
 
 
          //// Add MVC services to the pipeline
@@ -155,6 +153,13 @@ namespace OSnack.API
 
          services.AddControllers().AddNewtonsoftJson();
 
+         services.AddOpenApiDocument(document =>
+         {
+            document.DocumentName = $"OSnack Models";
+            document.Title = $"Models";
+            document.AuthorizationPolicyNames = Array.Empty<string>();
+            document.IsModelOnly = true;
+         });
          // Register the Swagger services
          foreach (var policy in AppConst.AccessPolicies.List)
          {
@@ -166,25 +171,13 @@ namespace OSnack.API
                document.IsModelOnly = false;
             });
          }
-
-         services.AddSingleton<IAuthorizationHandler, EmptyHandler>();
-         services.AddOpenApiDocument(document =>
-         {
-            document.DocumentName = $"OSnack Models";
-            document.Title = $"Models";
-            document.AuthorizationPolicyNames = new string[] { };
-            document.IsModelOnly = true;
-         });
       }
-      public void Configure(IApplicationBuilder app,
-         IWebHostEnvironment env,
-         IAntiforgery antiforgery)
+      public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
       {
-         //  CookieOptions antiForgeryCookieOptions;
+         app.UseHttpsRedirection();
          if (env.IsDevelopment())
          {
             app.UseDeveloperExceptionPage();
-
             app.UseStaticFiles(new StaticFileOptions
             {
                FileProvider = new PhysicalFileProvider(
@@ -206,13 +199,12 @@ namespace OSnack.API
          {
             app.UseHsts();
          }
-         app.UseHttpsRedirection();
-
          app.UseCors(CoresPolicy);
-         ///// Only the mentioned CORs are allowed.(excepts excluded paths)
          app.Use(next => context =>
          {
-            foreach (var element in AppConst.Settings.ExcludedRoutesFromCORS)
+            if (env.IsDevelopment()) return next(context);
+
+            foreach (string element in AppConst.Settings.ExcludedRoutesFromCORS)
             {
                if (context.Request.Path.StartsWithSegments(new PathString(element)))
                   return next(context);
@@ -220,19 +212,29 @@ namespace OSnack.API
 
             string OrgPath = context.Request.Path;
             context.Request.Path = "/";
-            foreach (var COR in AppConst.Settings.OpenCors)
-            {
-               if (env.IsDevelopment())
-                  context.Request.Path = OrgPath;
-               else if (context.Request.Headers.TryGetValue("Origin", out StringValues Originvalue)
-                  && COR.EqualCurrentCultureIgnoreCase(Originvalue.ToString()))
-                  context.Request.Path = OrgPath;
-            }
+            if (context.Request.Headers.TryGetValue("Origin", out StringValues Originvalue))
+               foreach (var COR in AppConst.Settings.OpenCors)
+               {
+                  if (COR.EqualCurrentCultureIgnoreCase(Originvalue))
+                  {
+                     context.Request.Path = OrgPath;
+                     break;
+                  }
+               }
             return next(context);
          });
 
          /// Allow the use of static files from wwwroot folder
-         app.UseStaticFiles();
+         app.UseStaticFiles(new StaticFileOptions()
+         {
+            OnPrepareResponse = ctx =>
+            {
+               ctx.Context.Response.Headers.Append("Access-Control-Allow-Origin", "*");
+               ctx.Context.Response.Headers.Append("Access-Control-Allow-Headers",
+                 "Origin, X-Requested-With, Content-Type, Accept");
+            },
+            HttpsCompression = HttpsCompressionMode.Compress,
+         });
 
          /// Enable the application to use authentication
          app.UseAuthentication();

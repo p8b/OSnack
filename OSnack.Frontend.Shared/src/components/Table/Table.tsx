@@ -51,8 +51,8 @@ const Table = (props: IProps) => {
                <InputDropdown dropdownTitle={`Sort By: ${props.data.headers().find(t => t.sortName == selectedSortName)?.name}`}
                   className="col-12  col-md-auto pm-0 pb-0 "
                   titleClassName={`btn ${!isSortAsc ? "sort-numeric-down-icon" : "sort-numeric-up-icon"}`}>
-                  {props.data.headers().filter(h => h.sortName != undefined).map(header =>
-                     <button key={Math.random()} className={`dropdown-item ${getSortedColCss(header.sortName!)}`}
+                  {props.data.headers().filter(h => h.sortName != undefined).map((header, index) =>
+                     <button key={index} className={`dropdown-item ${getSortedColCss(header.sortName!)}`}
                         onClick={() => { sort(header.sortName!); }}>
                         {header.name}
                      </button>

@@ -46,7 +46,7 @@ namespace OSnack.API.Controllers
                 .AnyAsync(c => c.Category.Id == category.Id)
                 .ConfigureAwait(false))
             {
-               CoreFunc.Error(ref ErrorsList, "Category is in use by at least one ");
+               CoreFunc.Error(ref ErrorsList, "Unable to delete. Category is in use by at least one product");
                return StatusCode(412, ErrorsList);
             }
 

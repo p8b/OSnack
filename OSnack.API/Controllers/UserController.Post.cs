@@ -121,7 +121,7 @@ namespace OSnack.API.Controllers
                      break;
                   case RegistrationTypes.Facebook:
                   case RegistrationTypes.Google:
-
+                     newCustomer.RegistrationMethod.RegistrationType = Enum.GetName(newCustomer.RegistrationMethod.Type);
                      await _EmailService.WelcomeExternalRegistrationAsync(newCustomer)
                         .ConfigureAwait(false);
                      break;

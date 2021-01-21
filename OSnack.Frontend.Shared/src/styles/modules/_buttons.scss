@@ -283,14 +283,14 @@
     &:hover {
         text-decoration: none;
 
-        & div#navlink-underline-animation {
+        & span {
             width: 100% !important;
             border-bottom: solid 0.15rem rgba(61, 95, 9,.4);
             transition: width .1s;
         }
     }
 
-    & div#navlink-underline-animation {
+    & span {
         border-bottom: solid 0.15rem rgba(61, 95, 9, 0.00);
         margin-left: auto;
         margin-right: auto;
@@ -301,7 +301,7 @@
 
     &.visited {
 
-        & div#navlink-underline-animation {
+        & span {
             width: 100% !important;
             transition: width .8s;
             border-bottom: solid 0.15rem rgb(61, 95, 9);

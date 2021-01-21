@@ -6,48 +6,41 @@ import { @@Models@@ } from "../../_core/apiModels";
 {% for operation in Operations -%}
 export type IReturnUse{{ operation.ActualOperationNameUpper }}{{ Class }}={ data:{% if operation.ResultType =="void" %} null {% else %}{{  operation.ResultType  }} {% endif %}, status?: number;};
 {% template Client.Method.Documentation %}
-export const use{{ operation.ActualOperationNameUpper }}{{ Class }} = async ({% for parameter in operation.Parameters %}{{ parameter.VariableName }}{% if GenerateOptionalParameters and parameter.IsOptional %}?{% endif %}: {{ parameter.Type }}{{ parameter.TypePostfix }}{% if parameter.IsLast == false %}, {% endif %}{% endfor %}{% if UseAbortSignal %}{% if operation.Parameters.size > 0 %}, {% endif %}signal?: AbortSignal | undefined{% endif %}): Promise<IReturnUse{{ operation.ActualOperationNameUpper }}{{ Class }}> =>{
-        {% template Client.RequestUrl %}
+export const use{{ operation.ActualOperationNameUpper }}{{ Class }} = ({% for parameter in operation.Parameters %}{{ parameter.VariableName }}{% if GenerateOptionalParameters and parameter.IsOptional %}?{% endif %}: {{ parameter.Type }}{{ parameter.TypePostfix }}{% if parameter.IsLast == false %}, {% endif %}{% endfor %}{% if UseAbortSignal %}{% if operation.Parameters.size > 0 %}, {% endif %}signal?: AbortSignal | undefined{% endif %}): Promise<IReturnUse{{ operation.ActualOperationNameUpper }}{{ Class }}> =>{
+    {% template Client.RequestUrl %}
 {%     if operation.HasBody -%}
-        {% template Client.RequestBody %}
-        let response = await httpCaller.{{ operation.HttpMethodUpper | upcase }}(url_, content_);
+    {% template Client.RequestBody %}
+    return httpCaller.{{ operation.HttpMethodUpper | upcase }}(url_, content_).then(response => {
 {%     else -%}
-        let response = await httpCaller.{{ operation.HttpMethodUpper | upcase }}(url_);
+    return httpCaller.{{ operation.HttpMethodUpper | upcase }}(url_).then(response => {
 {%     endif -%}
-        if( response?.status === 400){
-            await httpCaller.GET(API_URL + "/Authentication/Get/AntiforgeryToken");        
-{%     if operation.HasBody -%}
-            response = await httpCaller.{{ operation.HttpMethodUpper | upcase }}(url_, content_);
-{%     else -%}
-            response = await httpCaller.{{ operation.HttpMethodUpper | upcase }}(url_);
-{%     endif -%}
-        }
 
         switch(response?.status){
 {%  for response in operation.Responses -%}  
-                case {{ response.StatusCode }}: 
+            case {{ response.StatusCode }}: 
 {%  if response.HasType -%}
 {%     if response.IsSuccess -%}
-                        var responseData: {{ operation.ResultType }} = await response?.json();
-                        return { data: responseData, status: response?.status };
+                return response?.json().then((data:{{ operation.ResultType }}) => {
+                    return { data: data, status: response?.status };
+                });
 {%      else -%}
-                        return response?.json().then((data: ErrorDto[]) => {
-                                throw new AlertObj(data, AlertTypes.Error, response?.status);
-                        });
+                return response?.json().then((data: ErrorDto[]) => {
+                   throw new AlertObj(data, AlertTypes.Error, response?.status);
+                });
 {%      endif -%}
 {%  elseif response.IsSuccess -%}
-                        return { data: null, status: {{ response.StatusCode }} };
+                return { data: null, status: {{ response.StatusCode }} };
 {%  else -%}
-                        return response?.json().then((data: ErrorDto[]) => {
-                                throw new AlertObj([CommonErrors.BadServerResponse], AlertTypes.Error, response?.status);
-                        });
+                return response?.json().then((data: ErrorDto[]) => {
+                    throw new AlertObj([CommonErrors.BadServerResponse], AlertTypes.Error, response?.status);
+                });
 {%  endif -%}
 {%  endfor %}
-                default:
-                        CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
-                        throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
+            default:
+                CommonErrors.BadServerResponseCode.value = `Server Unresponsive. ${response?.status || ""}`;
+                throw new AlertObj([CommonErrors.BadServerResponseCode], AlertTypes.Error, response?.status);
         }
-  
+    });
 }
 {% endfor -%}
 {% endif -%}

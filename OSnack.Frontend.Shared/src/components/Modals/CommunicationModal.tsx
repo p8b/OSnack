@@ -1,7 +1,7 @@
 ﻿import React from 'react';
 import { Communication, Message } from '../../_core/apiModels';
 import Modal from '../../components/Modals/Modal';
-import { ClientAppAccess } from '../../_core/constant.Variables';
+import { AppAccess } from '../../_core/constant.Variables';
 import ShowCommunication from '../Communication/ShowCommunication';
 import { IReturnUsePutOfficialCommunication } from '../../hooks/OfficialHooks/useCommunicationHook';
 
@@ -27,7 +27,7 @@ const CommunicationModal = (props: IProps) => {
 declare type IProps = {
    usePutSecretCommunication?: (message: Message, communicationId: string | null, status: boolean) => Promise<IReturnUsePutOfficialCommunication>;
    useDeleteCommunication?: (communicationId: string | null) => Promise<{ data: string, status?: number; }>;
-   access: ClientAppAccess;
+   access: AppAccess;
    communication: Communication;
    isOpen: boolean;
    onClose: () => void;

@@ -1,7 +1,7 @@
 ﻿import React, { useEffect, useState } from 'react';
 
 export const Toggler = (props: IProps) => {
-   const [key] = useState(Math.random().toString());
+   const [id] = useState(props.id ?? Math.random().toString());
    const [lblValue, setLblValue] = useState("");
 
    useEffect(() => {
@@ -17,22 +17,22 @@ export const Toggler = (props: IProps) => {
          onClick();
    };
    const onClick = () => {
-      document.getElementById(`${key}`)?.click();
+      document.getElementById(`${id}`)?.click();
    };
    return (
       <div className={`toggler ${props!.className!}`}>
          <div onKeyUp={(ev) => { onKeyUp(ev.keyCode); }}
             onClick={onClick}>
-            <input type="checkbox" id={key}
+            <input type="checkbox" id={id}
                required={props!.required}
                checked={props.value}
                onChange={i => { props!.onChange!(i.target.checked); }}
             //    disabled={props!.disabled}
             />
-            <span onClick={() => { document.getElementById(`${key}`)?.focus(); }} />
+            <span onClick={() => { document.getElementById(`${id}`)?.focus(); }} />
          </div>
          <label className={`dark ${props.lblClassName || ""}`}
-            onClick={() => document.getElementById(`${key}`)?.click()}>
+            onClick={() => document.getElementById(`${id}`)?.click()}>
             {lblValue}
          </label>
       </div>
@@ -40,6 +40,7 @@ export const Toggler = (props: IProps) => {
 };
 
 declare type IProps = {
+   id?: string;
    value: boolean;
    className?: string;
    required?: boolean;

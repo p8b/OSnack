@@ -19,7 +19,6 @@ namespace OSnack.API.Database.Models
 
       public string ExternalLinkedId { get; set; }
 
-      [EmailTemplateVariable(Name = "RegistrationType")]
       [Required(ErrorMessage = "Registration type is required \n")]
       public RegistrationTypes Type { get; set; }
 
@@ -29,5 +28,9 @@ namespace OSnack.API.Database.Models
       [ForeignKey("UserId")]
       [JsonIgnore]
       public User User { get; set; }
+
+      [EmailTemplateVariable(Name = "RegistrationType")]
+      [JsonIgnore, NotMapped]
+      public string RegistrationType { get; set; }
    }
 }

@@ -16,6 +16,7 @@ const ProductNutritionalInfoModal = (props: IProps) => {
 
    return (
       <Modal className="col-12 col-sm-11 col-md-9 col-lg-6"
+         hasParentModal
          isOpen={props.isOpen}>
          <PageHeader title={"Nutritional Information"} />
          <b className="mb-3">**Information per 100g</b>

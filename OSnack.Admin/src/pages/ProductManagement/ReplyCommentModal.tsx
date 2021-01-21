@@ -33,6 +33,7 @@ const ReplyCommentModal = (props: IProps) => {
 
    return (
       <Modal className="col-12 col-sm-10 col-lg-6  px-4"
+         hasParentModal
          bodyRef={props.modalRef}
          isOpen={props.isOpen}>
          <PageHeader title="Reply" />

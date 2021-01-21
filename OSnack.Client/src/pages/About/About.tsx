@@ -7,7 +7,6 @@ const About = (props: IProps) => {
    const [aboutUs, setAboutUs] = useState("");
 
    useEffect(() => {
-      window.scrollTo(0, 0);
       fetch(`${window.location.origin}/public/markdowns/AboutUs.md`).then((result) => {
          if (result.status == 200)
             result.text().then(termsAndCondition => {

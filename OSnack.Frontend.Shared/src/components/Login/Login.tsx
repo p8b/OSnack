@@ -1,7 +1,7 @@
 ﻿import React, { useState, useContext, useRef, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 
-import { ClientAppAccess, CommonRegex } from "../../_core/constant.Variables";
+import { CommonRegex } from "../../_core/constant.Variables";
 import { Input } from "../../components/Inputs/Input";
 import { CheckBox } from "../../components/Inputs/CheckBox";
 import { Button } from "../../components/Buttons/Button";
@@ -10,7 +10,7 @@ import { AuthContext } from "../../_core/authenticationContext";
 import { ExternalLoginDetails, LoginInfo, User } from "../../_core/apiModels";
 import ForgotPasswordModal from "../Modals/ForgotPasswordModal";
 import Alert, { AlertObj, AlertTypes, ErrorDto, useAlert } from "../Texts/Alert";
-import { useAntiforgeryTokenAuthentication, useExternalLoginOfficialAuthentication, useExternalLoginSecretAuthentication, useLoginOfficialAuthentication, useLoginSecretAuthentication } from "../../hooks/PublicHooks/useAuthenticationHook";
+import { useExternalLoginAuthentication, useLoginAuthentication } from "../../hooks/PublicHooks/useAuthenticationHook";
 
 const Login = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -20,19 +20,16 @@ const Login = (props: IProps) => {
    const auth = useContext(AuthContext);
 
    useEffect(() => {
-      window.scrollTo(0, 0);
       return () => {
          isUnmounted.current = true;
       };
    }, []);
 
    const loginSuccess = (result: { data: User, status?: number; }, loadingCallBack?: () => void) => {
+      if (isUnmounted.current) return;
       loadingCallBack && loadingCallBack!();
-      useAntiforgeryTokenAuthentication().then(() => {
-         if (isUnmounted.current) return;
-         errorAlert.clear();
-         auth.setState({ isAuthenticated: true, user: result.data });
-      }).catch();
+      errorAlert.clear();
+      auth.setState({ isAuthenticated: true, user: result.data });
    };
    const loginFailed = (errors: AlertObj, loadingCallBack?: () => void) => {
       if (isUnmounted.current) return;
@@ -41,50 +38,28 @@ const Login = (props: IProps) => {
    };
    const externalLoginSuccess = (result: { data: User, status?: number; }, loadingCallBack?: () => void) => {
       if (isUnmounted.current) return;
+      loadingCallBack && loadingCallBack!();
       if (result.data.id && result.data.id <= 0) {
          props.externalLoginFailed(result.data);
          errorAlert.clear();
       } else {
          loginSuccess(result);
       }
-      loadingCallBack && loadingCallBack!();
    };
    const login = (loadingCallBack?: () => void) => {
       errorAlert.pleaseWait(isUnmounted);
-      switch (props.access) {
-         case ClientAppAccess.Official:
-            useLoginOfficialAuthentication(loginInfo)
-               .then((result) => loginSuccess(result, loadingCallBack))
-               .catch((errors) => loginFailed(errors, loadingCallBack));
-            break;
-         case ClientAppAccess.Secret:
-            useLoginSecretAuthentication(loginInfo)
-               .then((result) => loginSuccess(result, loadingCallBack))
-               .catch((errors) => loginFailed(errors, loadingCallBack));
-            break;
-         default:
-            break;
-      }
+      useLoginAuthentication(loginInfo)
+         .then((result) => loginSuccess(result, loadingCallBack))
+         .catch((errors) => loginFailed(errors, loadingCallBack));
    };
    const externalLogin = (info: ExternalLoginDetails, loadingCallBack?: () => void) => {
       info.rememberMe = loginInfo.rememberMe ?? false;
       info.redirectUrl = window.location.href;
 
       errorAlert.pleaseWait(isUnmounted);
-      switch (props.access) {
-         case ClientAppAccess.Official:
-            useExternalLoginOfficialAuthentication(info)
-               .then(result => externalLoginSuccess(result))
-               .catch(errors => loginFailed(errors, loadingCallBack));
-            break;
-         case ClientAppAccess.Secret:
-            useExternalLoginSecretAuthentication(info)
-               .then(result => externalLoginSuccess(result))
-               .catch(errors => loginFailed(errors, loadingCallBack));
-            break;
-         default:
-            break;
-      }
+      useExternalLoginAuthentication(info)
+         .then(result => externalLoginSuccess(result, loadingCallBack))
+         .catch(errors => loginFailed(errors, loadingCallBack));
    };
 
    const externalLoginWait = () => { errorAlert.pleaseWait(isUnmounted); };
@@ -174,7 +149,6 @@ const Login = (props: IProps) => {
 
 declare type IProps = {
    fromPath: string;
-   access: ClientAppAccess;
    disableExternalLogin?: boolean;
    externalLoginFailed: (user: User) => void;
 };

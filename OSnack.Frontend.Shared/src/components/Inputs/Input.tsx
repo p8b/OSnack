@@ -32,12 +32,11 @@ export const Input = (props: IProps) => {
    }, [props.value]);
    return (
       <div className={`mb-3 ${props.className}`}>
-         {  props.label != undefined &&
-            <label children={`${props.label} ${lblInvalidInput}`} htmlFor={id} onClick={() => { document.getElementById(id)?.focus(); }}
-               className={`col-form-label pm-0 ${lblPos}`} />
-         }
+         <label children={`${props.label ?? "input label"} ${lblInvalidInput}`} htmlFor={id} onClick={() => { document.getElementById(id)?.focus(); }}
+            className={`col-form-label pm-0 ${lblPos} ${props.label ?? "d-none"}`} />
          <input id={id} ref={props.ref} type={props?.type || "text"}
             className={`line-limit-1 ${props.showDanger ? "danger" : ""} ${props.showValid ? "valid" : ""} ${props.inputClassName || ""}`}
+            name="Quantity"
             value={props.value ?? ""}
             onFocus={i => { lblPosition("initial"); }}
             step="any"
