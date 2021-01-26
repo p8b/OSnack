@@ -3,16 +3,22 @@ import { httpCaller } from "../../_core/appFunc";
 import { API_URL, CommonErrors } from "../../_core/constant.Variables";
 import { UpdateCurrentUserData, User } from "../../_core/apiModels";
 export type IReturnUseDownloadDataUser={ data:string , status?: number;};
-export const useDownloadDataUser = (): Promise<IReturnUseDownloadDataUser> =>{
-    let url_ = API_URL + "/User/Get/DownloadData";
+export const useDownloadDataUser = (currentPassword: string): Promise<IReturnUseDownloadDataUser> =>{
+    let url_ = API_URL + "/User/Post/DownloadData";
     url_ = url_.replace(/[?&]$/, "");
-    return httpCaller.GET(url_).then(response => {
+    const content_ = currentPassword;
+    return httpCaller.POST(url_, content_).then(response => {
 
         switch(response?.status){
 
             case 200: 
                 return response?.json().then((data:string) => {
                     return { data: data, status: response?.status };
+                });
+
+            case 412: 
+                return response?.json().then((data: ErrorDto[]) => {
+                   throw new AlertObj(data, AlertTypes.Error, response?.status);
                 });
 
             case 417: 

@@ -1,10 +1,9 @@
 ﻿import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
-import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
-import Table, { TableData, TableView, useTableData } from 'osnack-frontend-shared/src/components/Table/Table';
+import Table, { TableData, useTableData } from 'osnack-frontend-shared/src/components/Table/Table';
 import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRowButtons';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
-import { checkUri, generateUri, convertUriParamToBool } from 'osnack-frontend-shared/src/_core/appFunc';
+import { extractUri, generateUri, convertUriParamToBool } from 'osnack-frontend-shared/src/_core/appFunc';
 import { GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -14,8 +13,6 @@ import { Access } from '../../_core/appConstant.Variables';
 import CommunicationModal from 'osnack-frontend-shared/src/components/Modals/CommunicationModal';
 import { Communication } from 'osnack-frontend-shared/src/_core/apiModels';
 import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
-
-
 
 const MessagesManagement = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -28,24 +25,31 @@ const MessagesManagement = (props: IProps) => {
    const [selectedStatusFilter, setSelectedStatusFilter] = useState("true");
 
    useEffect(() => {
-      onSearch(...checkUri(window.location.pathname,
-         [tbl.selectedPage, tbl.maxItemsPerPage, selectedStatusFilter, tbl.isSortAsc, tbl.sortName, GetAllRecords]));
       return () => { isUnmounted.current = true; };
    }, []);
-
+   useEffect(() => {
+      onSearch(...extractUri([
+         tbl.selectedPage,
+         tbl.maxItemsPerPage,
+         tbl.isSortAsc,
+         tbl.sortName,
+         selectedStatusFilter,
+         GetAllRecords]));
+   }, [window.location.pathname]);
 
 
    const onSearch = (
       selectedPage = tbl.selectedPage,
       maxItemsPerPage = tbl.maxItemsPerPage,
-      statusFilter = selectedStatusFilter,
       isSortAsc = tbl.isSortAsc,
       sortName = tbl.sortName,
+      statusFilter = selectedStatusFilter,
       searchString = GetAllRecords
    ) => {
 
       if (searchValue != null && searchValue != "")
          searchString = searchValue;
+
       if (searchString != GetAllRecords)
          setSearchValue(searchString);
 
@@ -63,16 +67,19 @@ const MessagesManagement = (props: IProps) => {
 
       if (maxItemsPerPage != tbl.maxItemsPerPage)
          tbl.setMaxItemsPerPage(maxItemsPerPage);
+
       statusFilter = convertUriParamToBool(statusFilter);
       if (statusFilter != selectedStatusFilter) setSelectedStatusFilter(statusFilter);
 
-      history.push(generateUri(window.location.pathname,
-         [selectedPage || tbl.selectedPage,
-            maxItemsPerPage,
-         statusFilter == GetAllRecords ? -1 : (statusFilter == 'true' ? 1 : 0),
+      const newUri = generateUri([
+         selectedPage,
+         maxItemsPerPage,
          Number(isSortAsc),
-            sortName,
-         searchString != GetAllRecords ? searchString : ""]));
+         sortName,
+         statusFilter == GetAllRecords ? -1 : (statusFilter == 'true' ? 1 : 0),
+         searchString != GetAllRecords ? searchValue : ""]);
+      if (window.location.pathname.toLowerCase() != newUri.toLowerCase())
+         history.push(newUri);
 
       errorAlert.pleaseWait(isUnmounted);
       useSearchCommunication(selectedPage, maxItemsPerPage, searchString, statusFilter, isSortAsc, sortName).then(result => {
@@ -113,7 +120,6 @@ const MessagesManagement = (props: IProps) => {
          ]));
       tbl.setData(tData);
    };
-
    const getStatusDisplayValue = () => {
       switch (selectedStatusFilter) {
          case "true":
@@ -139,39 +145,29 @@ const MessagesManagement = (props: IProps) => {
                className="col-12 col-md-3 pm-0 mt-2 mt-md-0"
                titleClassName="btn btn-white filter-icon ml-sm-1">
                <button className="dropdown-item"
-                  onClick={() => { onSearch(1, undefined, GetAllRecords); }} >
+                  onClick={() => { onSearch(1, undefined, undefined, undefined, GetAllRecords); }} >
                   All
                   </button>
                <button className="dropdown-item"
-                  onClick={() => { onSearch(1, undefined, "true"); }} >
+                  onClick={() => { onSearch(1, undefined, undefined, undefined, "true"); }} >
                   Open
                   </button>
                <button className="dropdown-item"
-                  onClick={() => { onSearch(1, undefined, "false"); }} >
+                  onClick={() => { onSearch(1, undefined, undefined, undefined, "false"); }} >
                   Close
                   </button>
             </DropDown>
+
             <Alert alert={errorAlert.alert}
                className="col-12 mb-2"
                onClosed={() => { errorAlert.clear(); }}
             />
+
             {tbl.totalItemCount > 0 &&
-               <div className="row col-12 pm-0 mt-3 pb-2">
-                  <Table className="col-12 text-center table-striped"
-                     defaultSortName={tbl.sortName}
-                     data={tbl.data}
-                     onSortChange={(selectedPage, isSortAsce, sortName) => onSearch(selectedPage, undefined, undefined, isSortAsce, sortName)}
-                     view={TableView.CardView}
-                     listCount={tbl.totalItemCount}
-                  />
-                  <Pagination
-                     maxItemsPerPage={tbl.maxItemsPerPage}
-                     selectedPage={tbl.selectedPage}
-                     onChange={(selectedPage, maxItemsPerPage) => {
-                        onSearch(selectedPage, maxItemsPerPage);
-                     }}
-                     listCount={tbl.totalItemCount} />
-               </div>
+               <Table tableData={tbl}
+                  onChange={onSearch}
+                  tblClassName="col-12 text-center table-striped"
+               />
             }
             <CommunicationModal isOpen={isOpenMessageModal}
                communication={selectCommunication}

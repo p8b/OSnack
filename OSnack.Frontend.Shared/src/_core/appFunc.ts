@@ -239,32 +239,34 @@ export const getBadgeByOrderStatusType = (type: OrderStatusType) => {
    }
 };
 
-export const extractUri = (pathName: string) => {
-   return pathName.split('/').filter(val => val.length > 0);
-};
-
-export const checkUri = (patheName: string, defualtValues: any[]) => {
+export const extractUri = (defaultValues?: any[], pathName: string = window.location.pathname) => {
    let result: any[] = [];
-   defualtValues.map((value, index) => {
-      switch (typeof value) {
-         case "number":
-            result.push(Number(extractUri(patheName)[index + 1]) || value);
-            break;
-         case "string":
-            result.push(extractUri(patheName)[index + 1] || value);
-            break;
-         case "boolean":
-            result.push(extractUri(patheName)[index + 1] == undefined ? value : extractUri(window.location.pathname)[index + 1] === '1');
-            break;
-         default:
-            throw "Type is not Valid uri parameter.";
-      }
-   });
+   const pathNames = pathName.split('/').filter(val => val.length > 0);
+
+   if (defaultValues != undefined) {
+      defaultValues?.map((value, index) => {
+         switch (typeof value) {
+            case "number":
+               result.push(Number(pathNames[index + 1]) || value);
+               break;
+            case "string":
+               result.push(pathNames[index + 1] || value);
+               break;
+            case "boolean":
+               result.push(pathNames[index + 1] == undefined ? value : pathNames[index + 1] === '1');
+               break;
+            default:
+               throw "Type is not Valid uri parameter.";
+         }
+      });
+   } else {
+      result = pathNames;
+   }
    return result;
 };
 
-export const generateUri = (patheName: string, values: any[]) => {
-   let uri = `/${extractUri(patheName)[0]}`;
+export const generateUri = (values: any[], pathName: string = window.location.pathname) => {
+   let uri = `/${pathName.split('/').filter(val => val.length > 0)[0]}`;
    values.map(value => uri += `/${value}`);
    return uri;
 };

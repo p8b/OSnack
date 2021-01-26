@@ -7,7 +7,6 @@ namespace OSnack.API.Database.ModelsDependencies
 {
    public abstract class OrderAddressBase
    {
-
       [EmailTemplateVariable(Name = "UserName")]
       [Column(TypeName = "nvarchar(200)")]
       [Required(ErrorMessage = "Name is Required \n")]

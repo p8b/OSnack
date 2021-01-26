@@ -133,21 +133,21 @@ const Dashboard = (props: IProps) => {
                </div>
             </ButtonCard>
             <ButtonCard className="col-12 col-md-6 col-lg" cardClassName="d-flex align-items-center w-100 large-triangles-bg"
-               onClick={() => history.push("Orders/1/10/0/-1/0/Date/")}>
+               onClick={() => history.push("/Orders/1/10/0/Date/0/-1/")}>
                <div className="col-12 text-center h3 text-white">
                   <div>New Orders</div>
                   <div>{totalNewOrders}</div>
                </div>
             </ButtonCard>
             <ButtonCard className="col-12 col-md-6 col-lg" cardClassName="d-flex align-items-center w-100 repeating-chevrons-bg"
-               onClick={() => history.push("Orders/1/10/-1/1/0/Date/")}>
+               onClick={() => history.push("/Orders/1/10/0/Date/0/1/")}>
                <div className="col-12 text-center h3">
                   <div>Open Disputes</div>
                   <div>{totalOpenDisputes}</div>
                </div>
             </ButtonCard>
             <ButtonCard className="col-12 col-md-6 col-lg" cardClassName="d-flex align-items-center w-100 alternating-arrowhead-bg"
-               onClick={() => history.push("Messages/1/10/1/0/Date/")}>
+               onClick={() => history.push("/Messages/1/10/0/Date/1/")}>
                <div className="col-12 text-center h3">
                   <div>New Messages</div>
                   <div>{totalNewMessages}</div>

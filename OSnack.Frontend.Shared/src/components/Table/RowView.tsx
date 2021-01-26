@@ -1,27 +1,17 @@
-﻿import React, { useEffect, useState } from 'react';
-import { TableData } from './Table';
+﻿import React from 'react';
+import { ITableData } from './Table';
 
 const RowView = (props: IProps) => {
-   const [isSortAsc, setIsSortAsc] = useState(true);
-   const [selectedSortName, setSelectedSortName] = useState(props.defaultSortName);
-
-   useEffect(() => {
-      setSelectedSortName(props.defaultSortName);
-   }, [props.defaultSortName]);
-
    const sort = (sortName: string) => {
-      if (selectedSortName === sortName) {
-         setIsSortAsc(!isSortAsc);
-         props.onSortClick!(1, !isSortAsc, selectedSortName);
-      } else {
-         setSelectedSortName(sortName);
-         props.onSortClick!(1, isSortAsc, sortName);
-      }
+      if (props.tableData.sortName === sortName)
+         props.onChange(!props.tableData.isSortAsc);
+      else
+         props.onChange(undefined, sortName);
    };
 
    const getSortedColCss = (sortName: string) => {
-      return selectedSortName === sortName ?
-         !isSortAsc ? "sort-numeric-down-icon" : "sort-numeric-up-icon"
+      return props.tableData.sortName === sortName ?
+         !props.tableData.isSortAsc ? "sort-numeric-down-icon" : "sort-numeric-up-icon"
          : "sortable-icon-light";
    };
 
@@ -31,8 +21,8 @@ const RowView = (props: IProps) => {
             {props?.colGroup}
             <thead>
                <tr>
-                  {props.data.headers().length > 0 &&
-                     props.data.headers().map((header, index) =>
+                  {props.tableData.data.headers().length > 0 &&
+                     props.tableData.data.headers().map((header, index) =>
                         header.sortName != undefined ?
                            <th key={index}>
                               <span onClick={() => sort(header.sortName!)}
@@ -48,9 +38,9 @@ const RowView = (props: IProps) => {
                   }
                </tr>
             </thead>
-            {props.data.rows().length > 0 &&
+            {props.tableData.data.rows().length > 0 &&
                <tbody>
-                  {props.data.rows().map((row, index) =>
+                  {props.tableData.data.rows().map((row, index) =>
                      <tr key={index}>
                         {row.data.map((d, index1) =>
                            <td className="align-middle" key={index1} >
@@ -73,10 +63,9 @@ const RowView = (props: IProps) => {
 };
 
 interface IProps {
-   onSortClick?: (selectedPage: number, isSortAsce: boolean, selectedSortName: string) => void;
+   onChange: (isAsc?: boolean, sortName?: string) => void;
    className?: string;
-   data: TableData;
-   defaultSortName?: string;
+   tableData: ITableData;
    colGroup?: any;
    postRow?: any;
 }

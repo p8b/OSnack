@@ -12,8 +12,8 @@ import { useHistory } from 'react-router-dom';
 const ViewCommunication = (props: IProps) => {
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
-   const [communicationKey] = useState(extractUri(window.location.pathname)[1]);
-   const [isDispute] = useState(extractUri(window.location.pathname)[0].toLowerCase() == "viewdispute" ? true : false);
+   const [communicationKey] = useState(extractUri()[1]);
+   const [isDispute] = useState(extractUri()[0].toLowerCase() == "viewdispute" ? true : false);
    const [communication, setCommunication] = useState(new Communication());
    const history = useHistory();
 

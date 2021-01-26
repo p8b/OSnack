@@ -2,18 +2,17 @@
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
-import Table, { TableData, TableView, useTableData } from 'osnack-frontend-shared/src/components/Table/Table';
+import Table, { TableData, useTableData } from 'osnack-frontend-shared/src/components/Table/Table';
 import { Category, Product, ProductUnitTypeList } from 'osnack-frontend-shared/src/_core/apiModels';
 import ProductModal from './ProductModal';
 import Container from '../../components/Container';
 import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
 import { GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
-import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
 import { useSearchSecretProduct } from '../../SecretHooks/useProductHook';
 import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
 import { useAllSecretCategory } from '../../SecretHooks/useCategoryHook';
 import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRowButtons';
-import { checkUri, convertUriParamToBool, generateUri } from 'osnack-frontend-shared/src/_core/appFunc';
+import { extractUri, convertUriParamToBool, generateUri } from 'osnack-frontend-shared/src/_core/appFunc';
 import { useHistory } from 'react-router-dom';
 import CommentModal from './CommentModal';
 
@@ -42,18 +41,26 @@ const ProductManagement = (props: IProps) => {
          if (isUnmounted.current) return;
          errorAlert.set(errors);
       });
-      onSearch(...checkUri(window.location.pathname,
-         [tbl.selectedPage, tbl.maxItemsPerPage, selectedStatusFilter, selectedCategoryFilter, tbl.isSortAsc, tbl.sortName, GetAllRecords]));
       return () => { isUnmounted.current = true; };
    }, []);
+   useEffect(() => {
+      onSearch(...extractUri([
+         tbl.selectedPage,
+         tbl.maxItemsPerPage,
+         tbl.isSortAsc,
+         tbl.sortName,
+         selectedStatusFilter,
+         selectedCategoryFilter,
+         GetAllRecords]));
+   }, [window.location.pathname]);
 
    const onSearch = async (
       selectedPage = tbl.selectedPage,
       maxItemsPerPage = tbl.maxItemsPerPage,
-      statusFilter = selectedStatusFilter,
-      categoryFilter = selectedCategoryFilter,
       isSortAsc = tbl.isSortAsc,
       sortName = tbl.sortName,
+      statusFilter = selectedStatusFilter,
+      categoryFilter = selectedCategoryFilter,
       searchString = GetAllRecords
    ) => {
       if (searchValue != null && searchValue != "") searchString = searchValue;
@@ -67,14 +74,16 @@ const ProductManagement = (props: IProps) => {
       if (categoryFilter != selectedCategoryFilter) setSelectedCategoryFilter(categoryFilter);
       if (selectedPage != tbl.selectedPage) tbl.setSelectedPage(selectedPage);
 
-      history.push(generateUri(window.location.pathname,
-         [selectedPage || tbl.selectedPage,
-            maxItemsPerPage,
+      const newUri = generateUri([
+         selectedPage,
+         maxItemsPerPage,
+         Number(isSortAsc),
+         sortName,
          statusFilter == GetAllRecords ? -1 : (statusFilter == 'true' ? 1 : 0),
          categoryFilter == GetAllRecords ? -1 : categoryFilter,
-         Number(isSortAsc),
-            sortName,
-         searchString != GetAllRecords ? searchString : ""]));
+         searchString != GetAllRecords ? searchValue : ""]);
+      if (window.location.pathname.toLowerCase() != newUri.toLowerCase())
+         history.push(newUri);
 
       errorAlert.pleaseWait(isUnmounted);
       useSearchSecretProduct(selectedPage, maxItemsPerPage, categoryFilter, searchString, statusFilter, isSortAsc, sortName)
@@ -137,9 +146,7 @@ const ProductManagement = (props: IProps) => {
    const resetProductModal = () => {
       setIsOpenProductModal(false);
       setIsOpenCommentModal(false);
-
       setSelectedProduct(new Product());
-
       onSearch();
    };
    const getStatusDisplayValue = () => {
@@ -172,10 +179,10 @@ const ProductManagement = (props: IProps) => {
                className="col-12 col-sm pm-0 mt-2"
                titleClassName="btn btn-white filter-icon mr-sm-1">
                <button className="dropdown-item"
-                  onClick={() => { onSearch(1, undefined, undefined, GetAllRecords); }} >All</button>
+                  onClick={() => { onSearch(1, undefined, undefined, undefined, undefined, GetAllRecords); }} >All</button>
                {categoryList.map(category =>
                   <button className="dropdown-item" key={category.id}
-                     onClick={() => { onSearch(1, undefined, undefined, category.id?.toString()); }} >
+                     onClick={() => { onSearch(1, undefined, undefined, undefined, undefined, category.id?.toString()); }} >
                      {category.name}
                   </button>
                )}
@@ -184,15 +191,15 @@ const ProductManagement = (props: IProps) => {
                className="col-12 col-sm pm-0 mt-2"
                titleClassName="btn btn-white filter-icon ml-sm-1">
                <button className="dropdown-item"
-                  onClick={() => { onSearch(1, undefined, GetAllRecords); }} >
+                  onClick={() => { onSearch(1, undefined, undefined, undefined, GetAllRecords); }} >
                   All
                   </button>
                <button className="dropdown-item"
-                  onClick={() => { onSearch(1, undefined, "true"); }} >
+                  onClick={() => { onSearch(1, undefined, undefined, undefined, "true"); }} >
                   Active
                   </button>
                <button className="dropdown-item"
-                  onClick={() => { onSearch(1, undefined, "false"); }} >
+                  onClick={() => { onSearch(1, undefined, undefined, undefined, "false"); }} >
                   Disabled
                   </button>
             </DropDown>
@@ -203,22 +210,12 @@ const ProductManagement = (props: IProps) => {
             />
 
             {tbl.totalItemCount > 0 &&
-               <div className="row col-12  mt-3 pm-0">
-                  <Table className="col-12 text-center table-striped"
-                     defaultSortName={tbl.sortName}
-                     data={tbl.data}
-                     onSortChange={(selectedPage, isSortAsce, sortName) => onSearch(selectedPage, undefined, undefined, undefined, isSortAsce, sortName)}
-                     view={TableView.CardView}
-                     listCount={tbl.totalItemCount}
-                  />
-                  <Pagination
-                     maxItemsPerPage={tbl.maxItemsPerPage}
-                     selectedPage={tbl.selectedPage}
-                     listCount={tbl.totalItemCount}
-                     onChange={(selectedPage, maxItemsPerPage) => { onSearch(selectedPage, maxItemsPerPage); }}
-                  />
-               </div>
+               <Table tableData={tbl}
+                  onChange={onSearch}
+                  tblClassName="col-12 text-center table-striped"
+               />
             }
+
             <ProductModal isOpen={isOpenProductModal} categoryList={categoryList}
                onSuccess={() => { resetProductModal(); onSearch(); }}
                product={selectedProduct}

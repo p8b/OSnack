@@ -8,6 +8,7 @@ using OSnack.API.Database.Models;
 using OSnack.API.Extras.CustomTypes;
 
 using P8B.Core.CSharp;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,7 +28,7 @@ namespace OSnack.API.Extras
          return userId;
       }
 
-      internal static void MakeClientZipFile(OpenApiDocument document, string webHostRoot, bool zipIt = false)
+      internal static void MakeClientZipFile(OpenApiDocument document, bool zipIt = false)
       {
          try
          {
@@ -62,14 +63,14 @@ namespace OSnack.API.Extras
                         EnumStyle=NJsonSchema.CodeGeneration.TypeScript.TypeScriptEnumStyle.Enum,
                         TypeStyle=NJsonSchema.CodeGeneration.TypeScript.TypeScriptTypeStyle.Class,
                         GenerateConstructorInterface=false,
-                        TemplateDirectory=Path.Combine(@$"{webHostRoot}\StaticFiles\liquid")
+                        TemplateDirectory=Path.Combine(@$"{Directory.GetCurrentDirectory()}\StaticFiles\liquid")
                      }
             });
 
-            string zipFilePath = Path.Combine(@$"{webHostRoot}\StaticFiles\tsApiFiles\{document.Info.Title}.zip");
-            string zipFolder = Path.Combine(@$"{webHostRoot}\StaticFiles\tsApiFiles\{document.Info.Title}Hooks");
+            string zipFilePath = Path.Combine(@$"{Directory.GetCurrentDirectory()}\StaticFiles\tsApiFiles\{document.Info.Title}.zip");
+            string zipFolder = Path.Combine(@$"{Directory.GetCurrentDirectory()}\StaticFiles\tsApiFiles\{document.Info.Title}Hooks");
             if (document.Tags.Any(t => t.Name.Equals("IsModelOnly")))
-               zipFolder = Path.Combine(@$"{webHostRoot}\StaticFiles\tsApiFiles");
+               zipFolder = Path.Combine(@$"{Directory.GetCurrentDirectory()}\StaticFiles\tsApiFiles");
             try { File.Delete(zipFilePath); } catch { }
             try
             {
@@ -206,5 +207,15 @@ namespace OSnack.API.Extras
 
       }
 
+      internal static void Log(string txt)
+      {
+         try
+         {
+
+            if (!string.IsNullOrWhiteSpace(txt))
+               File.AppendAllText(Path.Combine(@$"{AppDomain.CurrentDomain.BaseDirectory}\StaticFiles\log.txt"), txt + Environment.NewLine);
+         }
+         catch { }
+      }
    }
 }

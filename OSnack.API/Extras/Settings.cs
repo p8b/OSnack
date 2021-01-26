@@ -46,11 +46,13 @@ namespace OSnack.API.Extras
       /// </summary>
       [JsonProperty(PropertyName = "EmailSettings")]
       public EmailSettings EmailSettings { get; set; }
+
       /// <summary>
       /// Path names required for email templates
       /// </summary>
       [JsonProperty(PropertyName = "EmailServicePathNames")]
       public EmailServicePathNames EmailServicePathNames { get; set; }
+
       /// <summary>
       /// PayPal Settings
       /// </summary>
@@ -62,36 +64,7 @@ namespace OSnack.API.Extras
 
       [JsonProperty(PropertyName = "DbConnectionStrings")]
       private string[] _DbConnectionStrings { get; set; }
-      public string DbConnectionString
-      {
-         //static bool checkConnection(string connectionString)
-         //{
-         //   try
-         //   {
-         //      using (var con = new SqlConnection(connectionString))
-         //      {
-         //         con.Open();
-         //      }
-         //      return true;
-         //   }
-         //   catch (Exception)
-         //   {
-         //      return false;
-         //   }
-         //}
-
-         //string SelectedConnection = "";
-         //foreach (string connection in _DbConnectionStrings)
-         //{
-         //   if (checkConnection(connection))
-         //   {
-         //      SelectedConnection = connection;
-         //      break;
-         //   }
-         //}
-         //return SelectedConnection;
-         get => _DbConnectionStrings[0];
-      }
+      public string DbConnectionString { get => _DbConnectionStrings[0]; }
    }
 
    public class AppDomains

@@ -8,11 +8,10 @@ import Container from '../../components/Container';
 import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
 import { useSearchCategory } from '../../SecretHooks/useCategoryHook';
 import { GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
-import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRowButtons';
 import { useHistory } from 'react-router-dom';
-import { checkUri, generateUri } from 'osnack-frontend-shared/src/_core/appFunc';
+import { extractUri, generateUri } from 'osnack-frontend-shared/src/_core/appFunc';
 
 const CategoryManagement = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -24,10 +23,16 @@ const CategoryManagement = (props: IProps) => {
    const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false);
 
    useEffect(() => {
-      onSearch(...checkUri(window.location.pathname,
-         [tbl.selectedPage, tbl.maxItemsPerPage, tbl.isSortAsc, tbl.sortName, GetAllRecords]));
       return () => { isUnmounted.current = true; };
    }, []);
+   useEffect(() => {
+      onSearch(...extractUri([
+         tbl.selectedPage,
+         tbl.maxItemsPerPage,
+         tbl.isSortAsc,
+         tbl.sortName,
+         GetAllRecords]));
+   }, [window.location.pathname]);
 
    const onSearch = (
       selectedPage = tbl.selectedPage,
@@ -36,18 +41,24 @@ const CategoryManagement = (props: IProps) => {
       sortName = tbl.sortName,
       searchString = GetAllRecords
    ) => {
-
       if (searchValue != null && searchValue != "") searchString = searchValue;
       if (searchString != GetAllRecords) setSearchValue(searchString);
       if (isSortAsc != tbl.isSortAsc) tbl.setIsSortAsc(isSortAsc);
       if (sortName != tbl.sortName) tbl.setSortName(sortName);
       if (selectedPage != tbl.selectedPage) tbl.setSelectedPage(selectedPage);
       if (maxItemsPerPage != tbl.maxItemsPerPage) tbl.setMaxItemsPerPage(maxItemsPerPage);
-      history.push(generateUri(window.location.pathname,
-         [selectedPage, maxItemsPerPage, Number(isSortAsc), sortName, searchString != GetAllRecords ? searchString : ""]));
+
+      const newUri = generateUri([
+         selectedPage,
+         maxItemsPerPage,
+         Number(isSortAsc),
+         sortName,
+         searchString != GetAllRecords ? searchValue : ""]);
+      if (window.location.pathname.toLowerCase() != newUri.toLowerCase())
+         history.push(newUri);
 
       errorAlert.pleaseWait(isUnmounted);
-      useSearchCategory(selectedPage, maxItemsPerPage, searchString, isSortAsc, sortName).then(
+      useSearchCategory(selectedPage, maxItemsPerPage, searchValue == "" ? GetAllRecords : searchValue, isSortAsc, sortName).then(
          result => {
             if (isUnmounted.current) return;
             errorAlert.clear();
@@ -76,31 +87,29 @@ const CategoryManagement = (props: IProps) => {
             category.totalProducts,
             <TableRowButtons
                btnClassName="btn-blue edit-icon"
-               btnClick={() => { editCategory(category); }}
+               btnClick={() => {
+                  setSelectedCategory(category);
+                  setIsOpenCategoryModal(true);
+               }}
             />
          ]));
-
       tbl.setData(tData);
    };
 
-   const editCategory = (category: Category) => {
-      setSelectedCategory(category);
-      setIsOpenCategoryModal(true);
-   };
    const resetCategoryModal = () => {
       setIsOpenCategoryModal(false);
       setSelectedCategory(new Category());
    };
 
    return (
-      <Container className="container-fluid ">
+      <Container className="container-fluid">
          <PageHeader title="Categories" className="line-header" />
          <div className="row col-12 py-3 mx-auto bg-white">
             <SearchInput
                value={searchValue}
                onChange={i => setSearchValue(i.target.value)}
                className="col-12 col-md-9 pr-md-4"
-               onSearch={() => { onSearch(1); }}
+               onSearch={() => { onSearch(); }}
             />
 
             <Button children={<span className="add-icon" children="Category" />}
@@ -114,21 +123,10 @@ const CategoryManagement = (props: IProps) => {
             />
 
             {tbl.totalItemCount > 0 &&
-               <div className="row col-12 pm-0 mt-3 pb-2">
-                  <Table className="col-12 text-center table-striped"
-                     defaultSortName={tbl.sortName}
-                     data={tbl.data}
-                     onSortChange={(selectedPage, isSortAsce, sortName) => onSearch(selectedPage, undefined, isSortAsce, sortName)}
-                     listCount={tbl.totalItemCount}
-                  />
-                  <Pagination
-                     maxItemsPerPage={tbl.maxItemsPerPage}
-                     selectedPage={tbl.selectedPage}
-                     listCount={tbl.totalItemCount}
-                     onChange={(selectedPage, maxItemsPerPage) => { onSearch(selectedPage, maxItemsPerPage); }}
-                  />
-
-               </div>
+               <Table tableData={tbl}
+                  onChange={onSearch}
+                  tblClassName="col-12 text-center table-striped"
+               />
             }
             <CategoryModal isOpen={isOpenCategoryModal}
                onSuccess={() => { resetCategoryModal(); onSearch(); }}

@@ -23,40 +23,48 @@ const UserAccount = (props: IProps) => {
    }, []);
 
    const onDetailsChange = (currentPass: string, loadingCallBack?: () => void) => {
-      if (currentPass == "" && user.registrationMethod.type == RegistrationTypes.Application) {
-         setIsOpenConfirmPassword(true);
-         setSelectedAction("Details");
-         loadingCallBack!();
-         return;
+      if (currentPass == "" && !isExternalLogin) {
+         if (currentPassword != "") {
+            currentPass = currentPassword;
+         } else {
+            setIsOpenConfirmPassword(true);
+            setSelectedAction("Details");
+            loadingCallBack && loadingCallBack!();
+            return;
+         }
       }
-
-      errorAlertPasswordInfo.clear();
+      setCurrentPassword(currentPass);
+      setSelectedAction("");
 
       errorAlertAccountInfo.pleaseWait(isUnmounted);
       setIsOpenConfirmPassword(false);
-      useUpdateCurrentUserUser({ user: user, currentPassword: currentPass }).then((user) => {
-         if (isUnmounted.current) return;
-         setSelectedAction("Details");
-         setCurrentPassword("");
-         errorAlertAccountInfo.setSingleSuccess("Update", "Updated.");
-         loadingCallBack!();
-      }).catch((alert) => {
-         if (isUnmounted.current) return;
-         errorAlertAccountInfo.set(alert);
-         loadingCallBack!();
-      });
+      useUpdateCurrentUserUser({ user: user, currentPassword: currentPass })
+         .then((user) => {
+            if (isUnmounted.current) return;
+            setSelectedAction("Details");
+            errorAlertAccountInfo.setSingleSuccess("Update", "Updated.");
+            loadingCallBack && loadingCallBack!();
+         })
+         .catch((alert) => {
+            if (isUnmounted.current) return;
+            errorAlertAccountInfo.set(alert);
+            setCurrentPassword("");
+            loadingCallBack && loadingCallBack!();
+         });
 
-      setCurrentPassword(currentPass);
-      setSelectedAction("");
    };
    const onConfirmPassword = (currentPass: string, loadingCallBack?: () => void) => {
       if (isExternalLogin) return;
 
       if (currentPass == "") {
-         setIsOpenConfirmPassword(true);
-         setSelectedAction("Password");
-         loadingCallBack!();
-         return;
+         if (currentPassword != "") {
+            currentPass = currentPassword;
+         } else {
+            setIsOpenConfirmPassword(true);
+            setSelectedAction("Password");
+            loadingCallBack && loadingCallBack!();
+            return;
+         }
       }
 
       let errors = new AlertObj([], AlertTypes.Error);
@@ -66,11 +74,9 @@ const UserAccount = (props: IProps) => {
          errors.List.push(new ErrorDto('0', "Passwords mismatch."));
 
       setIsOpenConfirmPassword(false);
-      errorAlertAccountInfo.clear();
-
       if (errors.List.length > 0) {
          errorAlertPasswordInfo.set(errors);
-         loadingCallBack!();
+         loadingCallBack && loadingCallBack!();
          return;
       }
 
@@ -84,11 +90,58 @@ const UserAccount = (props: IProps) => {
             setIsOpenConfirmPassword(true);
             setSelectedAction("Password");
             setCurrentPassword("");
-            loadingCallBack!();
-         }).catch((alert) => {
+            loadingCallBack && loadingCallBack!();
+         })
+         .catch((alert) => {
             if (isUnmounted.current) return;
             errorAlertPasswordInfo.set(alert);
-            loadingCallBack!();
+            setCurrentPassword("");
+            loadingCallBack && loadingCallBack!();
+         });
+   };
+
+   const DownloadData = (currentPass: string, loadingCallBack?: () => void) => {
+
+      if (currentPass == "" && !isExternalLogin) {
+         if (currentPassword != "") {
+            currentPass = currentPassword;
+         } else {
+            setIsOpenConfirmPassword(true);
+            setSelectedAction("DownloadData");
+            loadingCallBack && loadingCallBack!();
+            return;
+         }
+      }
+
+      setCurrentPassword(currentPass);
+      setSelectedAction("");
+
+      useDownloadDataUser(currentPass)
+         .then(data => {
+            if (isUnmounted.current) return;
+            console.log(data.data);
+            try {
+               const blob = new Blob([data.data], { type: "text/json;charset=utf-8" });
+               const url = URL.createObjectURL(blob);
+               const link = document.createElement('a');
+               link.download = `${user.fullName}.json`;
+               link.classList.add("d-none");
+               link.href = url;
+               document.body.appendChild(link);
+               link.click();
+               link.remove();
+            } catch (e) {
+
+            }
+            setIsOpenConfirmPassword(false);
+            loadingCallBack && loadingCallBack!();
+         })
+         .catch(error => {
+            if (isUnmounted.current) return;
+            console.log(error);
+            errorAlertAccountInfo.set(error);
+            setCurrentPassword("");
+            loadingCallBack && loadingCallBack!();
          });
    };
 
@@ -98,23 +151,6 @@ const UserAccount = (props: IProps) => {
          return `Linked to ${RegistrationTypes[regType]} account`;
       return "";
    };
-
-   const DownloadData = () => {
-      errorAlertPasswordInfo.pleaseWait(isUnmounted);
-      useDownloadDataUser().then(data => {
-         if (isUnmounted.current) return;
-         const blob = new Blob([JSON.stringify(data.data)], { type: "text/plain" });
-         const url = URL.createObjectURL(blob);
-         const link = document.createElement('a');
-         link.download = `${user.fullName}.json`;
-         link.href = url;
-         link.click();
-      }).catch((alert) => {
-         if (isUnmounted.current) return;
-         errorAlertPasswordInfo.set(alert);
-      });
-   };
-
    return (
       <div className="row">
          <div className="row col-12 col-md-6 m-0">
@@ -157,8 +193,9 @@ const UserAccount = (props: IProps) => {
                />
 
                <div className="col-12 pm-0 row small-text mt-5">
-                  If you want to download the data we hold About you <div className="cursor-pointer text-primary ml-1"
-                     children="Click here." onClick={DownloadData} />
+                  If you want to download the data we hold About you
+                  <a className="cursor-pointer text-primary ml-1"
+                     children="Click here." onClick={() => DownloadData(currentPassword)} />
                </div>
             </div>
          </div>
@@ -212,6 +249,8 @@ const UserAccount = (props: IProps) => {
                   onDetailsChange(currentPassword, loadingCallBack);
                if (selectedAction == "Password")
                   onConfirmPassword(currentPassword, loadingCallBack);
+               if (selectedAction == "DownloadData")
+                  DownloadData(currentPassword, loadingCallBack);
             }}
             onClose={() => {
                setSelectedAction("");

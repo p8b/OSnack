@@ -15,12 +15,12 @@ import PaymentModal from './PaymentModal';
 import useScript from 'osnack-frontend-shared/src/hooks/function/useScript';
 import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
-import { div, Redirect } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 
 const Checkout = (props: IProps) => {
    const clientID = "AUc_fJXtMhI3ugArGsxZur6ej0GP4Pb_usigBXwK9qvtUKByaJWEf7HNrUBSMHaYSiBq6Cg5nOf4_Tq_";
    const paypalScript = useScript(`https://www.paypal.com/sdk/js?client-id=${clientID}&currency=GBP&intent=capture&commit=false`);
-
+   const history = useHistory();
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
    const auth = useContext(AuthContext);
@@ -285,7 +285,7 @@ const Checkout = (props: IProps) => {
             }
             {!auth.state.isAuthenticated &&
                <>
-                  <div className="col-12 btn btn-lg btn-green mt-5" children="Login" to={{ pathname: "/Login", state: { fromPath: "/Checkout" } }} />
+                  <div className="col-12 btn btn-lg btn-green mt-5" children="Login" onClick={() => history.push({ pathname: "/login", state: { fromPath: "/Checkout" } })} />
                   <PageHeader title="OR" className="my-3" />
 
                   <Button className="col-12 btn-lg btn-green mb-5" children="Guest Checkout" onClick={checkout} enableLoading={isUnmounted} />

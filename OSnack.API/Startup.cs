@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -44,11 +43,16 @@ namespace OSnack.API
                 .AllowCredentials()
                 .WithOrigins(AppConst.Settings.OpenCors)
                 .AllowAnyMethod()
-                .WithHeaders("Accept",
-                "content-type",
+                .WithHeaders(
+                "Accept",
+                "Origin",
+                "Content-Type",
                 "X-AF-TOKEN"
                 ));
          });
+
+
+
 
          /// Add the anti-forgery service and identify the
          /// the header name of the request to identify and validate the token
@@ -144,7 +148,6 @@ namespace OSnack.API
          services.Configure<ApiBehaviorOptions>(options =>
          options.SuppressModelStateInvalidFilter = true);
 
-
          //// Add MVC services to the pipeline
          services.AddMvc(options => options.EnableEndpointRouting = false)
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
@@ -183,11 +186,11 @@ namespace OSnack.API
                FileProvider = new PhysicalFileProvider(
                   Path.Combine(Directory.GetCurrentDirectory(), "StaticFiles"))
             });
-            //// Register the Swagger generator and the Swagger UI middlewares
+            //// Register the Swagger generator and the Swagger UI middle-wares
             app.UseOpenApi(config =>
             {
                config.PostProcess = (document, request) =>
-                             AppFunc.MakeClientZipFile(document, Directory.GetCurrentDirectory());
+                             AppFunc.MakeClientZipFile(document);
                config.Path = "/swagger/{documentName}/swagger.json";
             });
             app.UseSwaggerUi3(config =>
@@ -199,31 +202,6 @@ namespace OSnack.API
          {
             app.UseHsts();
          }
-         app.UseCors(CoresPolicy);
-         app.Use(next => context =>
-         {
-            if (env.IsDevelopment()) return next(context);
-
-            foreach (string element in AppConst.Settings.ExcludedRoutesFromCORS)
-            {
-               if (context.Request.Path.StartsWithSegments(new PathString(element)))
-                  return next(context);
-            }
-
-            string OrgPath = context.Request.Path;
-            context.Request.Path = "/";
-            if (context.Request.Headers.TryGetValue("Origin", out StringValues Originvalue))
-               foreach (var COR in AppConst.Settings.OpenCors)
-               {
-                  if (COR.EqualCurrentCultureIgnoreCase(Originvalue))
-                  {
-                     context.Request.Path = OrgPath;
-                     break;
-                  }
-               }
-            return next(context);
-         });
-
          /// Allow the use of static files from wwwroot folder
          app.UseStaticFiles(new StaticFileOptions()
          {
@@ -233,9 +211,37 @@ namespace OSnack.API
                ctx.Context.Response.Headers.Append("Access-Control-Allow-Headers",
                  "Origin, X-Requested-With, Content-Type, Accept");
             },
-            HttpsCompression = HttpsCompressionMode.Compress,
          });
-
+         app.UseCors(CoresPolicy);
+         app.Use(next => context =>
+         {
+            foreach (string element in AppConst.Settings.ExcludedRoutesFromCORS)
+            {
+               if (context.Request.Path.StartsWithSegments(new PathString(element)))
+                  return next(context);
+            }
+            string OrgPath = context.Request.Path;
+            context.Request.Path = "/";
+            string logReport = $"Path => {OrgPath}. {Environment.NewLine} No Match Found" + Environment.NewLine;
+            if (context.Request.Headers.TryGetValue("Origin", out StringValues OriginValue))
+            {
+               logReport = "";
+               foreach (var COR in AppConst.Settings.OpenCors)
+               {
+                  if (COR.EqualCurrentCultureIgnoreCase(OriginValue))
+                  {
+                     context.Request.Path = OrgPath;
+                     break;
+                  }
+                  else
+                  {
+                     logReport += $"Cor failed => {COR} is not {OriginValue}";
+                  }
+               }
+            }
+            AppFunc.Log(logReport + Environment.NewLine + Environment.NewLine);
+            return next(context);
+         });
          /// Enable the application to use authentication
          app.UseAuthentication();
 

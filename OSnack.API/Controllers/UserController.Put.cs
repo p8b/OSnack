@@ -48,7 +48,9 @@ namespace OSnack.API.Controllers
                return StatusCode(412, ErrorsList);
             }
 
-            modifiedUser.Role = await _DbContext.Roles.AsTracking().SingleOrDefaultAsync(r => r.Id == modifiedUser.Role.Id).ConfigureAwait(false);
+            modifiedUser.Role = await _DbContext.Roles.AsTracking()
+               .SingleOrDefaultAsync(r => r.Id == modifiedUser.Role.Id)
+               .ConfigureAwait(false);
 
             ModelState.Clear();
             TryValidateModel(modifiedUser);

@@ -72,7 +72,7 @@ const NavMenu = (props: IProps) => {
                      <NavLink className="dropdown-item"
                         path={"/MyOrders"}
                         displayName="My Orders" />
-                     <a className="dropdown-item"
+                     <a className="link-nav dropdown-item"
                         onClick={logout}
                         children="Logout" />
                   </DropDown >

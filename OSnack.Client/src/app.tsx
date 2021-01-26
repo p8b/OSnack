@@ -18,7 +18,7 @@ const ContactUs = lazy(() => import("./pages/ContactUs/ContactUs"));
 const Basket = lazy(() => import("./pages/Basket/Basket"));
 const MyAccount = lazy(() => import("./pages/MyAccount/MyAccount"));
 const MyAddresses = lazy(() => import("./pages/MyAddress/MyAddresses"));
-const ViewOrders = lazy(() => import("./pages/MyOrder/MyOrders"));
+const MyOrders = lazy(() => import("./pages/MyOrder/MyOrders"));
 const LoginPage = lazy(() => import("./pages/Login/LoginPage"));
 const ProductPage = lazy(() => import("./pages/ProductPage/ProductPage"));
 const PageNotFound = lazy(() => import("osnack-frontend-shared/src/pages/PageNotFound"));
@@ -56,7 +56,7 @@ const App = () => {
 
                         {/***** Protected Routes  ****/}
                         <CustomRoute authRequired exact path="/MyAccount" render={(props: any) => <MyAccount {...props} />} />
-                        <CustomRoute authRequired path="/MyOrders" render={(props: any) => <ViewOrders {...props} />} />
+                        <CustomRoute authRequired path="/MyOrders" render={(props: any) => <MyOrders {...props} />} />
                         <CustomRoute authRequired exact path="/MyAddresses" render={(props: any) => <MyAddresses {...props} />} />
                         <CustomRoute authRequired path="/ViewDispute" render={(props: any) => <ViewCommunication {...props} />} />
 

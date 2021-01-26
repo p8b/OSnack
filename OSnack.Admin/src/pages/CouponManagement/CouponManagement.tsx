@@ -8,12 +8,11 @@ import Container from '../../components/Container';
 import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
 import { useSearchCoupon } from '../../SecretHooks/useCouponHook';
 import { GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
-import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
 import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRowButtons';
 import { useHistory } from 'react-router-dom';
-import { checkUri, generateUri } from 'osnack-frontend-shared/src/_core/appFunc';
+import { extractUri, generateUri } from 'osnack-frontend-shared/src/_core/appFunc';
 
 const CouponManagement = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -26,17 +25,25 @@ const CouponManagement = (props: IProps) => {
    const [isOpenCouponModal, setIsOpenCouponModal] = useState(false);
 
    useEffect(() => {
-      onSearch(...checkUri(window.location.pathname,
-         [tbl.selectedPage, tbl.maxItemsPerPage, selectedFilterType, tbl.isSortAsc, tbl.sortName, GetAllRecords]));
       return () => { isUnmounted.current = true; };
    }, []);
+
+   useEffect(() => {
+      onSearch(...extractUri([
+         tbl.selectedPage,
+         tbl.maxItemsPerPage,
+         tbl.isSortAsc,
+         tbl.sortName,
+         selectedFilterType,
+         GetAllRecords]));
+   }, [window.location.pathname]);
 
    const onSearch = (
       selectedPage = tbl.selectedPage,
       maxItemsPerPage = tbl.maxItemsPerPage,
-      filterType = selectedFilterType,
       isSortAsc = tbl.isSortAsc,
       sortName = tbl.sortName,
+      filterType = selectedFilterType,
       searchString = GetAllRecords
    ) => {
       if (searchValue != null && searchValue != "")
@@ -59,11 +66,16 @@ const CouponManagement = (props: IProps) => {
       if (maxItemsPerPage != tbl.maxItemsPerPage)
          tbl.setMaxItemsPerPage(maxItemsPerPage);
 
-      history.push(generateUri(window.location.pathname,
-         [selectedPage || tbl.selectedPage,
-            maxItemsPerPage, filterType == GetAllRecords ? -1 : filterType,
-         Number(isSortAsc), sortName, searchString != GetAllRecords ? searchString : ""]));
+      const newUri = generateUri([
+         selectedPage,
+         maxItemsPerPage,
+         Number(isSortAsc),
+         sortName,
+         filterType,
+         searchString != GetAllRecords ? searchValue : ""]);
 
+      if (window.location.pathname.toLowerCase() != newUri.toLowerCase())
+         history.push(newUri);
 
       errorAlert.pleaseWait(isUnmounted);
       useSearchCoupon(selectedPage, maxItemsPerPage, searchString, filterType, isSortAsc, sortName).then(
@@ -99,15 +111,15 @@ const CouponManagement = (props: IProps) => {
             CouponTypeList.find(c => c.Value == coupon.type)?.Name,
             <TableRowButtons
                btnClassName="btn-blue edit-icon"
-               btnClick={() => { editCoupon(coupon); }}
+               btnClick={() => {
+                  setSelectedCoupon(coupon);
+                  setIsOpenCouponModal(true);
+               }}
             />
          ]));
       tbl.setData(tData);
    };
-   const editCoupon = (coupon: Coupon) => {
-      setSelectedCoupon(coupon);
-      setIsOpenCouponModal(true);
-   };
+
    const resetCategoryModal = () => {
       setIsOpenCouponModal(false);
       setSelectedCoupon(new Coupon());
@@ -132,12 +144,12 @@ const CouponManagement = (props: IProps) => {
                className="col-12 col-sm pm-0 mt-2"
                titleClassName="btn btn-white filter-icon">
                <button className="dropdown-item"
-                  onClick={() => { onSearch(1, undefined, GetAllRecords); }} >
+                  onClick={() => { onSearch(1, undefined, undefined, undefined, GetAllRecords); }} >
                   All
                   </button>
                {CouponTypeList.map(couponType =>
                   <button className="dropdown-item" key={couponType.Id}
-                     onClick={() => { onSearch(1, undefined, couponType.Id?.toString()); }} >
+                     onClick={() => { onSearch(1, undefined, undefined, undefined, couponType.Id?.toString()); }} >
                      {couponType.Name}
                   </button>
                )}
@@ -150,20 +162,9 @@ const CouponManagement = (props: IProps) => {
 
             {/***** Category Table  ****/}
             {tbl.totalItemCount > 0 &&
-               <div className="row col-12 pm-0 mt-3 pb-2">
-                  <Table className="col-12 text-center table-striped"
-                     defaultSortName={tbl.sortName}
-                     data={tbl.data}
-                     onSortChange={(selectedPage, isSortAsce, sortName) => onSearch(selectedPage, undefined, undefined, isSortAsce, sortName)}
-                     listCount={tbl.totalItemCount}
-                  />
-                  <Pagination
-                     maxItemsPerPage={tbl.maxItemsPerPage}
-                     selectedPage={tbl.selectedPage}
-                     onChange={(selectedPage, maxItemsPerPage) => { onSearch(selectedPage, maxItemsPerPage); }}
-                     listCount={tbl.totalItemCount}
-                  />
-               </div>
+               <Table className="col-12 text-center table-striped" tableData={tbl}
+                  onChange={onSearch}
+               />
             }
 
             {/***** Add/ modify category modal  ****/}

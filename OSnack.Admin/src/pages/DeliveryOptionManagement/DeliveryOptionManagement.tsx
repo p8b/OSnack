@@ -7,11 +7,10 @@ import Container from '../../components/Container';
 import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
 import { useSearchDeliveryOption } from '../../SecretHooks/useDeliveryOptionHook';
 import { GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
-import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRowButtons';
 import { useHistory } from 'react-router-dom';
-import { checkUri, generateUri } from 'osnack-frontend-shared/src/_core/appFunc';
+import { extractUri, generateUri } from 'osnack-frontend-shared/src/_core/appFunc';
 import DeliveyOptionModal from './DeliveyOptionModal';
 
 const DeliveryOptionManagement = (props: IProps) => {
@@ -24,10 +23,16 @@ const DeliveryOptionManagement = (props: IProps) => {
    const [isOpenDeliveryOptionModal, setIsOpenDeliveryOptionModal] = useState(false);
 
    useEffect(() => {
-      onSearch(...checkUri(window.location.pathname,
-         [tbl.selectedPage, tbl.maxItemsPerPage, tbl.isSortAsc, tbl.sortName, GetAllRecords]));
       return () => { isUnmounted.current = true; };
    }, []);
+   useEffect(() => {
+      onSearch(...extractUri([
+         tbl.selectedPage,
+         tbl.maxItemsPerPage,
+         tbl.isSortAsc,
+         tbl.sortName,
+         GetAllRecords]));
+   }, [window.location.pathname]);
 
    const onSearch = (
       selectedPage = tbl.selectedPage,
@@ -39,6 +44,7 @@ const DeliveryOptionManagement = (props: IProps) => {
 
       if (searchValue != null && searchValue != "")
          searchString = searchValue;
+
       if (searchString != GetAllRecords)
          setSearchValue(searchString);
 
@@ -54,9 +60,14 @@ const DeliveryOptionManagement = (props: IProps) => {
       if (maxItemsPerPage != tbl.maxItemsPerPage)
          tbl.setMaxItemsPerPage(maxItemsPerPage);
 
-      history.push(generateUri(window.location.pathname,
-         [selectedPage || tbl.selectedPage,
-            maxItemsPerPage, Number(isSortAsc), sortName, searchString != GetAllRecords ? searchString : ""]));
+      const newUri = generateUri([
+         selectedPage,
+         maxItemsPerPage,
+         Number(isSortAsc),
+         sortName,
+         searchString != GetAllRecords ? searchValue : ""]);
+      if (window.location.pathname.toLowerCase() != newUri.toLowerCase())
+         history.push(newUri);
 
       errorAlert.pleaseWait(isUnmounted);
       useSearchDeliveryOption(selectedPage, maxItemsPerPage, searchString, isSortAsc, sortName).then(
@@ -70,7 +81,6 @@ const DeliveryOptionManagement = (props: IProps) => {
             errorAlert.set(errors);
          });
    };
-
    const populateTable = (deliveryOptionList?: DeliveryOption[]) => {
       if (deliveryOptionList?.length == 0) {
          errorAlert.setSingleWarning("0", "No Result Found");
@@ -88,16 +98,14 @@ const DeliveryOptionManagement = (props: IProps) => {
             deliveyOption.isPremitive ? "Yes" : "No",
             <TableRowButtons
                btnClassName="btn-blue edit-icon"
-               btnClick={() => { editDeliveyOption(deliveyOption); }}
+               btnClick={() => {
+                  setSelectedDeliveryOption(deliveyOption);
+                  setIsOpenDeliveryOptionModal(true);
+               }}
             />
          ]));
 
       tbl.setData(tData);
-   };
-
-   const editDeliveyOption = (deliveryOption: DeliveryOption) => {
-      setSelectedDeliveryOption(deliveryOption);
-      setIsOpenDeliveryOptionModal(true);
    };
    const resetCategoryModal = () => {
       setIsOpenDeliveryOptionModal(false);
@@ -106,7 +114,7 @@ const DeliveryOptionManagement = (props: IProps) => {
 
    return (
       <Container className="container-fluid ">
-         <PageHeader title="Delivey Options" className="line-header" />
+         <PageHeader title="Delivery Options" className="line-header" />
          <div className="row col-12 py-3 mx-auto bg-white">
             <SearchInput
                value={searchValue}
@@ -127,21 +135,10 @@ const DeliveryOptionManagement = (props: IProps) => {
 
             {/***** Category Table  ****/}
             {tbl.totalItemCount > 0 &&
-               <div className="row col-12 mt-3 pm-0">
-                  <Table className="col-12 text-center table-striped"
-                     defaultSortName={tbl.sortName}
-                     data={tbl.data}
-                     onSortChange={(selectedPage, isSortAsce, sortName) => onSearch(selectedPage, undefined, isSortAsce, sortName)}
-                     listCount={tbl.totalItemCount}
-                  />
-                  <Pagination
-                     maxItemsPerPage={tbl.maxItemsPerPage}
-                     selectedPage={tbl.selectedPage}
-                     listCount={tbl.totalItemCount}
-                     onChange={(selectedPage, maxItemsPerPage) => { onSearch(selectedPage, maxItemsPerPage); }}
-                  />
-
-               </div>
+               <Table tableData={tbl}
+                  onChange={onSearch}
+                  tblClassName="col-12 text-center table-striped"
+               />
             }
             {/***** Add/ modify category modal  ****/}
             <DeliveyOptionModal isOpen={isOpenDeliveryOptionModal}

@@ -7,7 +7,7 @@ import { useHistory } from 'react-router-dom';
 
 const Unsubscribe = (props: IProps) => {
    const isUnmounted = useRef(false);
-   const [key, setKey] = useState(extractUri(window.location.pathname)[1]);
+   const [key, setKey] = useState(extractUri()[1]);
    const errorAlert = useAlert(new AlertObj());
    const history = useHistory();
 

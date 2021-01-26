@@ -1,5 +1,4 @@
-﻿
-import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
+﻿import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import React, { useEffect, useRef, useState } from 'react';
 import Container from '../../components/Container';
@@ -13,9 +12,11 @@ import { useHistory } from 'react-router-dom';
 import LoadMore from 'osnack-frontend-shared/src/components/Pagination/LoadMore';
 import { useAllPublicCategory } from 'osnack-frontend-shared/src/hooks/PublicHooks/useCategoryHook';
 import { useTableData } from 'osnack-frontend-shared/src/components/Table/Table';
+import { extractUri } from 'osnack-frontend-shared/src/_core/appFunc';
 
 const Shop = (props: IProps) => {
    const isUnmounted = useRef(false);
+   const history = useHistory();
    const errorAlert = useAlert(new AlertObj());
    const tbl = useTableData("Name", true);
    const [searchValue, setSearchValue] = useState("");
@@ -24,30 +25,34 @@ const Shop = (props: IProps) => {
    const [selectedCategoryFilter, setSelectedCategoryFilter] = useState(GetAllRecords);
    const sortOptions = ["Name", "Price"];
 
-   const history = useHistory();
-
    useEffect(() => {
+      initState();
+      return () => { isUnmounted.current = true; };
+   }, []);
+   useEffect(() => {
+      initState();
+   }, [window.location.pathname]);
+
+   const initState = () => {
       errorAlert.pleaseWait(isUnmounted);
       useAllPublicCategory().then(result => {
          if (isUnmounted.current) return;
          setCategoryList(result.data);
-         const uriPathNameArr = window.location.pathname.split('/').filter(val => val.length > 0);
+         const uriPathNameArr = extractUri();
          if (uriPathNameArr.length === 3 && uriPathNameArr[1] == "Category") {
             const uriSelectedCategory = result.data.filter(val => val.name?.toLowerCase().trim() == decodeURIComponent(uriPathNameArr[2]).toLowerCase());
             if (uriSelectedCategory.length > 0)
-               onSearch(undefined, undefined, undefined, undefined, undefined, uriSelectedCategory[0].id?.toString());
+               onSearch(undefined, undefined, undefined, 1, undefined, uriSelectedCategory[0].id?.toString());
          } else {
-            onSearch();
+            onSearch(undefined, undefined, undefined, 1, undefined, GetAllRecords);
          }
       }
       ).catch(errors => {
          if (isUnmounted.current) return;
          errorAlert.set(errors);
       });
-      return () => { isUnmounted.current = true; };
-   }, []);
-
-   const onSearch = async (
+   };
+   const onSearch = (
       searchVal = searchValue,
       isSortAsc = tbl.isSortAsc,
       sortName = tbl.sortName,
@@ -107,8 +112,7 @@ const Shop = (props: IProps) => {
             errorAlert.set(errors);
          });
    };
-
-   const handelSort = async (sortName: string) => {
+   const handelSort = (sortName: string) => {
       let isSortAsc = tbl.isSortAsc;
       if (tbl.sortName === sortName)
          isSortAsc = !isSortAsc;

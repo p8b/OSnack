@@ -46,18 +46,6 @@ export const PaymentTypeList=[
 {Id:2,Name:"PartialyRefunded".replace(/([A-Z])/g, ' $1').trim(),Value:PaymentType.PartialyRefunded},
 {Id:3,Name:"FullyRefunded".replace(/([A-Z])/g, ' $1').trim(),Value:PaymentType.FullyRefunded},
 ]
-export enum ProductUnitType {
-
-    Kg = 0,
-    Grams = 1,
-    PerItem = 3,
-}
-
-export const ProductUnitTypeList=[
-{Id:0,Name:"Kg".replace(/([A-Z])/g, ' $1').trim(),Value:ProductUnitType.Kg},
-{Id:1,Name:"Grams".replace(/([A-Z])/g, ' $1').trim(),Value:ProductUnitType.Grams},
-{Id:3,Name:"PerItem".replace(/([A-Z])/g, ' $1').trim(),Value:ProductUnitType.PerItem},
-]
 export enum OrderStatusType {
 
     InProgress = 0,
@@ -75,6 +63,18 @@ export const OrderStatusTypeList=[
 {Id:3,Name:"Delivered".replace(/([A-Z])/g, ' $1').trim(),Value:OrderStatusType.Delivered},
 {Id:4,Name:"PartialyRefunded".replace(/([A-Z])/g, ' $1').trim(),Value:OrderStatusType.PartialyRefunded},
 {Id:5,Name:"FullyRefunded".replace(/([A-Z])/g, ' $1').trim(),Value:OrderStatusType.FullyRefunded},
+]
+export enum ProductUnitType {
+
+    Kg = 0,
+    Grams = 1,
+    PerItem = 3,
+}
+
+export const ProductUnitTypeList=[
+{Id:0,Name:"Kg".replace(/([A-Z])/g, ' $1').trim(),Value:ProductUnitType.Kg},
+{Id:1,Name:"Grams".replace(/([A-Z])/g, ' $1').trim(),Value:ProductUnitType.Grams},
+{Id:3,Name:"PerItem".replace(/([A-Z])/g, ' $1').trim(),Value:ProductUnitType.PerItem},
 ]
 export enum RegistrationTypes {
 
@@ -229,7 +229,6 @@ export class Comment {
     name?: string | undefined;
     date?: Date;
     rate?: number;
-    product?: Product | undefined;
 
 }
 export class Message {
@@ -390,20 +389,6 @@ export class ShippingOption {
     type?: string | undefined;
 
 }
-export class NutritionalInfo {
-    id?: number = 0;
-    perGram?: number;
-    energyKJ?: number | undefined;
-    energyKcal?: number | undefined;
-    fat?: number | undefined;
-    saturateFat?: number | undefined;
-    carbohydrate?: number | undefined;
-    carbohydrateSugar?: number | undefined;
-    fibre?: number | undefined;
-    protein?: number | undefined;
-    salt?: number | undefined;
-
-}
 export class LinkDescription {
     encType?: string | undefined;
     href?: string | undefined;
@@ -434,6 +419,20 @@ export class AmountBreakdown {
     shipping?: Money | undefined;
     shipping_discount?: Money | undefined;
     tax_total?: Money | undefined;
+
+}
+export class NutritionalInfo {
+    id?: number = 0;
+    perGram?: number;
+    energyKJ?: number | undefined;
+    energyKcal?: number | undefined;
+    fat?: number | undefined;
+    saturateFat?: number | undefined;
+    carbohydrate?: number | undefined;
+    carbohydrateSugar?: number | undefined;
+    fibre?: number | undefined;
+    protein?: number | undefined;
+    salt?: number | undefined;
 
 }
 export abstract class OrderAddressBase {
@@ -612,7 +611,6 @@ export class User extends UserBase {
     phoneNumber?: string | undefined;
     registrationMethod: RegistrationMethod = new RegistrationMethod();
     email!: string;
-    addresses?: Address[] | undefined;
     password?: string | undefined;
     subscribeNewsLetter?: boolean;
     orderLength?: number;
@@ -629,7 +627,6 @@ export class Order extends OrderAddressBase {
     deliveryPrice?: number;
     addressId!: number;
     shippingReference?: string | undefined;
-    user?: User | undefined;
     userId?: number | undefined;
     payment: Payment = new Payment();
     coupon?: Coupon | undefined;

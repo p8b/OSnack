@@ -5,7 +5,7 @@ const NavLink = (props: IProps) => {
    const [linkRef] = useState(React.createRef<HTMLAnchorElement>());
    const history = useHistory();
    useEffect(() => {
-      if (extractUri(window.location.pathname)[0]?.toLowerCase() == extractUri(props.path)[0]?.toLowerCase())
+      if (extractUri()[0]?.toLowerCase() == extractUri(undefined, props.path)[0]?.toLowerCase())
          linkRef.current?.classList.add("visited");
       else
          linkRef.current?.classList.remove("class", "visited");

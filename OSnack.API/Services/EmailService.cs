@@ -251,16 +251,20 @@ namespace OSnack.API.Services
 
 
    }
-   public struct EmailServicePathNames
+   public class EmailServicePathNames
    {
       [JsonProperty(PropertyName = "PasswordReset")]
       public string PasswordReset { get; set; }
+
       [JsonProperty(PropertyName = "ConfirmEmail")]
       public string ConfirmEmail { get; set; }
+
       [JsonProperty(PropertyName = "NewEmployee")]
       public string NewEmployee { get; set; }
+
       [JsonProperty(PropertyName = "Communication")]
       public string Communication { get; set; }
+
       [JsonProperty(PropertyName = "Dispute")]
       public string Dispute { get; set; }
    }

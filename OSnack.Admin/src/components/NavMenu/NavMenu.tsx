@@ -18,7 +18,7 @@ const NavMenu = (props: IProps) => {
    const breakSize = 768;
 
    useEffect(() => {
-      if (window.innerWidth > breakSize && extractUri(window.location.pathname)[0] != "Login")
+      if (window.innerWidth > breakSize && extractUri()[0] != "Login")
          props.mainContainerToggler(true);
    }, []);
 
@@ -46,10 +46,10 @@ const NavMenu = (props: IProps) => {
                      className={`fas toggler-icon pl-4`}
                      onClick={() => { props.mainContainerToggler(!props.isOpenMainContainer); }} />
                   <DropDown className="col-auto pm-0 ml-auto " titleClassName={`user-circle-icon btn-no-style pr-3`} title={``}>
-                     <button className="dropdown-item"
+                     <button className="link-nav dropdown-item"
                         onClick={() => history.push("/MyAccount")}
                         children="My Account" />
-                     <button className="dropdown-item"
+                     <button className="link-nav dropdown-item"
                         onClick={logout}
                         children="Logout" />
                   </DropDown>

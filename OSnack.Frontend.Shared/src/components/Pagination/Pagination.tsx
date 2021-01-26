@@ -3,6 +3,19 @@
 const Pagination = (props: IProps) => {
    const [arrayOfPageNumbers, setArrayOfPageNumbers] = useState<number[]>([]);
    const [totalPages, setTotalPages] = useState(1);
+   const btnClassName = "col-auto btn  boarder-radius-none outline-none ";
+
+   useEffect(() => {
+      CalculateVisibleButtons();
+   }, [props.listCount]);
+
+   useEffect(() => {
+      CalculateVisibleButtons();
+   }, [props.selectedPage]);
+
+   useEffect(() => {
+      CalculateVisibleButtons();
+   }, [props.maxItemsPerPage]);
 
    const onMaxItemPerPageChange = async (MaxItemsPerPage: number) => {
       props.onChange(1, MaxItemsPerPage);
@@ -97,20 +110,6 @@ const Pagination = (props: IProps) => {
       setArrayOfPageNumbers(ARRAYofPages);
    };
 
-   useEffect(() => {
-      CalculateVisibleButtons();
-   }, [props.listCount]);
-
-   useEffect(() => {
-      CalculateVisibleButtons();
-   }, [props.selectedPage]);
-
-   useEffect(() => {
-      CalculateVisibleButtons();
-   }, [props.maxItemsPerPage]);
-
-   const btnClassName = "col-auto btn  boarder-radius-none outline-none ";
-
    const getMaxItemPerPageItems = () => {
       let list = [1, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
       if (list.find(n => n == props.maxItemsPerPage))
@@ -158,9 +157,8 @@ const Pagination = (props: IProps) => {
                   children={<i className="pagination-right-arrow pm-0" />}
                   onClick={() => onPageAddOrMinus(1)}
                />
-               <select className="w-auto form-control outline-none" defaultValue={props.maxItemsPerPage}
-                  onChange={(i) => { onMaxItemPerPageChange(i.target.value as unknown as number); }}
-               >
+               <select className="w-auto form-control outline-none" value={props.maxItemsPerPage}
+                  onChange={(i) => { onMaxItemPerPageChange(i.target.value as unknown as number); }}>
                   {getMaxItemPerPageItems().map((number) => <option value={number} children={number} />)}
                </select>
                {props.showCount &&

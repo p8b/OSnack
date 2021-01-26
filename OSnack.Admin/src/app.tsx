@@ -51,7 +51,7 @@ const App = () => {
          mainContainer!.onclick = (e: Event) => { if (isOpenRef.current) e.stopImmediatePropagation(); setIsOpenMainContainer(false); };
       }
       else if (mainContainer?.onclick != null && window.innerWidth > breakSize) {
-         if (extractUri(document.location.pathname)![0].toLowerCase() != "login")
+         if (extractUri()![0].toLowerCase() != "login")
             setIsOpenMainContainer(true);
          mainContainer!.onclick = null;
       }

@@ -3,25 +3,17 @@ import InputDropdown from '../Inputs/InputDropDown';
 import CardView from './CardView';
 import RowView from './RowView';
 import { ConstMaxNumberOfPerItemsPage } from "../../_core/constant.Variables";
+import Pagination from '../Pagination/Pagination';
 
 const Table = (props: IProps) => {
-   const [currentView, setCurrentViews] = useState(TableView.CardView);
-   const [isSortAsc, setIsSortAsc] = useState(true);
-   const [selectedSortName, setSelectedSortName] = useState(props.defaultSortName);
-
+   const [currentView, setCurrentViews] = useState(props.defaultTableView ?? TableView.CardView);
    useEffect(() => {
       sizeChange();
       window.addEventListener("resize", sizeChange);
-
-
       return () => {
          window.removeEventListener("resize", sizeChange);
       };
    }, []);
-   useEffect(() => {
-      setSelectedSortName(props.defaultSortName);
-   }, [props.defaultSortName]);
-
    const sizeChange = () => {
       if (window.screen.width <= 650)
          setCurrentViews(TableView.CardView);
@@ -30,28 +22,26 @@ const Table = (props: IProps) => {
 
    };
    const sort = (sortName: string) => {
-      if (selectedSortName === sortName) {
-         setIsSortAsc(!isSortAsc);
-         props.onSortChange!(1, !isSortAsc, selectedSortName);
+      if (props.tableData.sortName === sortName) {
+         props.onChange(1, undefined, !props.tableData.isSortAsc);
       } else {
-         setSelectedSortName(sortName);
-         props.onSortChange!(1, isSortAsc, sortName);
+         props.onChange(1, undefined, undefined, sortName);
       }
    };
    const getSortedColCss = (sortName: string) => {
-      return selectedSortName === sortName ?
-         !isSortAsc ? "sort-numeric-down-icon" : "sort-numeric-up-icon"
+      return props.tableData.sortName === sortName ?
+         !props.tableData.isSortAsc ? "sort-numeric-down-icon" : "sort-numeric-up-icon"
          : "sortable-icon-light";
    };
 
    return (
-      <>
+      <div className={`row col-12 pm-0 mt-3 pb-2 ${props.className}`}>
          <div className="row col-12 pm-0  border-bottom-1 pt-1">
-            {currentView == TableView.CardView && props.data.headers().length > 0 &&
-               <InputDropdown dropdownTitle={`Sort By: ${props.data.headers().find(t => t.sortName == selectedSortName)?.name}`}
+            {currentView == TableView.CardView && props.tableData.data.headers().length > 0 &&
+               <InputDropdown dropdownTitle={`Sort By: ${props.tableData.data.headers().find(t => t.sortName == props.tableData.sortName)?.name}`}
                   className="col-12  col-md-auto pm-0 pb-0 "
-                  titleClassName={`btn ${!isSortAsc ? "sort-numeric-down-icon" : "sort-numeric-up-icon"}`}>
-                  {props.data.headers().filter(h => h.sortName != undefined).map((header, index) =>
+                  titleClassName={`btn ${!props.tableData.isSortAsc ? "sort-numeric-down-icon" : "sort-numeric-up-icon"}`}>
+                  {props.tableData.data.headers().filter(h => h.sortName != undefined).map((header, index) =>
                      <button key={index} className={`dropdown-item ${getSortedColCss(header.sortName!)}`}
                         onClick={() => { sort(header.sortName!); }}>
                         {header.name}
@@ -65,39 +55,57 @@ const Table = (props: IProps) => {
                <button className={`btn-no-style table-row-icon cursor-pointer ${currentView != TableView.RowView ? " disabled" : ""}`}
                   onClick={() => setCurrentViews(TableView.RowView)} />
                <div className="col-auto pm-0 ml-auto small-text text-gray mt-auto mb-auto"
-                  children={props.listCount != undefined ? `Total items: ${props.listCount}` : ""} />
+                  children={props.tableData.totalItemCount != undefined ? `Total items: ${props.tableData.totalItemCount}` : ""} />
             </div>
          </div>
          {currentView == TableView.CardView &&
-            <CardView className={props.className}
-               defaultSortName={props.defaultSortName}
-               data={props.data}
-            />}
+            <CardView className={props.tblClassName} tableData={props.tableData} />
+         }
          {currentView == TableView.RowView &&
-            <RowView className={props.className}
-               defaultSortName={props.defaultSortName}
-               data={props.data}
-               onSortClick={props.onSortChange}
-            />}
-      </>
+            <RowView className={props.tblClassName} tableData={props.tableData}
+               onChange={(isAsc, sortName) => {
+                  props.onChange(1, undefined, isAsc, sortName);
+               }} />}
+
+         {props.disablePagination != true &&
+            <Pagination
+               maxItemsPerPage={props.tableData.maxItemsPerPage}
+               selectedPage={props.tableData.selectedPage}
+               listCount={props.tableData.totalItemCount}
+               onChange={(selectedPage, maxItemsPerPage) => {
+                  props.onChange(selectedPage, maxItemsPerPage);
+               }}
+            />
+         }
+      </div>
    );
 
 };
 
 interface IProps {
-   onSortChange?: (selectedPage: number, isAsc: boolean, sortName: string) => void;
+   onChange: (selectedPage: number, MaxItemsPerPage?: number, isAsc?: boolean, sortName?: string) => void;
    className?: string;
-   data: TableData;
-   listCount?: number;
-   defaultSortName?: string;
-   view?: TableView;
+   tblClassName?: string;
+   tableData: ITableData;
+   defaultTableView?: TableView;
    colGroup?: any;
    postRow?: any;
+   disablePagination?: boolean;
 }
 export default Table;
 
+export interface ITableData {
+   data: TableData,
+   sortName: string,
+   isSortAsc: boolean,
+   totalItemCount: number,
+   selectedPage: number,
+   maxItemsPerPage: number,
+}
+
+
 export const useTableData = (
-   defaultSortName: string,
+   defaultSortName: string = "",
    defaultIsSortAsc: boolean = false,
    defaultMaxItemPerPage: number = ConstMaxNumberOfPerItemsPage,
    defaultTotalItemCount: number = 0,

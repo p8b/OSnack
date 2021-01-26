@@ -97,12 +97,14 @@ const Login = (props: IProps) => {
             />
          }
 
-         <div className="mt-3 mb-3 d-inline">
-            <CheckBox label="Remember Me" className="col-6 color-style-checked"
+         <div className="row pm-0 my-3">
+            <CheckBox label="Remember Me"
+               className="col-6 pm-0"
+               inputClassName=" color-style-checked"
                onChange={checked => setLoginInfo({ ...loginInfo, rememberMe: checked })}
             />
             <a onClick={() => setForgotPasswordModalIsOpen(true)}
-               className="text-right col-6 float-right text-underline"
+               className="text-right col-6 pm-0 text-underline"
                children="Forgot Password?"
             />
 

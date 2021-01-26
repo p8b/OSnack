@@ -1,14 +1,13 @@
 ﻿import Table, { TableData, useTableData } from 'osnack-frontend-shared/src/components/Table/Table';
 import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRowButtons';
-import Pagination from 'osnack-frontend-shared/src/components/Pagination/Pagination';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Communication, DisputeFilterTypes, Order, OrderStatusType, OrderStatusTypeList, PaymentTypeList } from 'osnack-frontend-shared/src/_core/apiModels';
-import { checkUri, convertUriParamToBool, generateUri, getBadgeByOrderStatusType } from 'osnack-frontend-shared/src/_core/appFunc';
+import { convertUriParamToBool, extractUri, generateUri, getBadgeByOrderStatusType } from 'osnack-frontend-shared/src/_core/appFunc';
 import { GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Container from '../../components/Container';
-import { IReturnUseAllOfficialOrder, useAllOfficialOrder } from 'osnack-frontend-shared/src/hooks/OfficialHooks/useOrderHook';
+import { useAllOfficialOrder } from 'osnack-frontend-shared/src/hooks/OfficialHooks/useOrderHook';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
@@ -33,18 +32,26 @@ const MyOrders = (props: IProps) => {
    const [disputeFilterTypes, setDisputeFilterTypes] = useState(DisputeFilterTypes.None);
 
    useEffect(() => {
-      onSearch(...checkUri(window.location.pathname,
-         [tbl.selectedPage, tbl.maxItemsPerPage, selectOrderType, selectDisputeType, tbl.isSortAsc, tbl.sortName, GetAllRecords]));
       return () => { isUnmounted.current = true; };
    }, []);
+   useEffect(() => {
+      onSearch(...extractUri([
+         tbl.selectedPage,
+         tbl.maxItemsPerPage,
+         tbl.isSortAsc,
+         tbl.sortName,
+         selectOrderType,
+         selectDisputeType,
+         GetAllRecords]));
+   }, [window.location.pathname]);
 
    const onSearch = (
       selectedPage = tbl.selectedPage,
       maxItemsPerPage = tbl.maxItemsPerPage,
-      filterOrderType = selectOrderType,
-      filterDisputeType = selectDisputeType,
       isSortAsc = tbl.isSortAsc,
       sortName = tbl.sortName,
+      filterOrderType = selectOrderType,
+      filterDisputeType = selectDisputeType,
       searchString = GetAllRecords
    ) => {
       if (searchValue != null && searchValue != "") searchString = searchValue;
@@ -59,38 +66,33 @@ const MyOrders = (props: IProps) => {
       if (selectedPage != undefined && selectedPage != tbl.selectedPage) tbl.setSelectedPage(selectedPage);
       if (maxItemsPerPage != tbl.maxItemsPerPage) tbl.setMaxItemsPerPage(maxItemsPerPage);
 
-      history.push(generateUri(window.location.pathname,
-         [selectedPage,
-            maxItemsPerPage,
-            filterOrderType === GetAllRecords ? -1 : filterOrderType,
-            filterDisputeType === GetAllRecords ? -1 : (filterDisputeType == 'true' ? 1 : 0),
-            Number(isSortAsc),
-            sortName,
-            searchString != GetAllRecords ? searchString : ""]));
-
+      const newUri = generateUri([
+         selectedPage,
+         maxItemsPerPage,
+         Number(isSortAsc),
+         sortName,
+         filterOrderType === GetAllRecords ? -1 : filterOrderType,
+         filterDisputeType === GetAllRecords ? -1 : (filterDisputeType == 'true' ? 1 : 0),
+         searchString != GetAllRecords ? searchValue : ""]);
+      if (window.location.pathname.toLowerCase() != newUri.toLowerCase())
+         history.push(newUri);
 
       errorAlert.pleaseWait(isUnmounted);
       useAllOfficialOrder(selectedPage, maxItemsPerPage, searchString, filterOrderType, isSortAsc, sortName, filterDisputeType)
-         .then(onGetUserOrderSuccess)
-         .catch(onGetUserOrderFailed);
-
-
-
-   };
-   const onGetUserOrderSuccess = (result: IReturnUseAllOfficialOrder) => {
-      if (isUnmounted.current) return;
-      tbl.setTotalItemCount(result.data.totalCount || 0);
-      setavailableStatusTypeList(result.data.availableTypes!);
-      setDisputeFilterTypes(result.data.disputeFilterType!);
-      errorAlert.clear();
-      populateOrderTable(result.data.orderList!);
-   };
-   const onGetUserOrderFailed = (errors: AlertObj) => {
-      if (isUnmounted.current) return;
-      errorAlert.set(errors);
+         .then(result => {
+            if (isUnmounted.current) return;
+            tbl.setTotalItemCount(result.data.totalCount || 0);
+            setavailableStatusTypeList(result.data.availableTypes!);
+            setDisputeFilterTypes(result.data.disputeFilterType!);
+            errorAlert.clear();
+            populateOrderTable(result.data.orderList!);
+         })
+         .catch(errors => {
+            if (isUnmounted.current) return;
+            errorAlert.set(errors);
+         });
    };
    const populateOrderTable = (orderList: Order[]) => {
-
       if (orderList.length == 0) {
          errorAlert.setSingleWarning("0", "No Result Found");
          return;
@@ -146,8 +148,7 @@ const MyOrders = (props: IProps) => {
    return (
       <>
          <PageHeader title="My Orders" className="hr-section-sm line-limit-1" />
-         <Container className="bg-white py-3">
-
+         <Container className="bg-white pt-4 pb-5">
             <div className="row col-12 pm-0 mb-3">
                <SearchInput
                   value={searchValue}
@@ -160,10 +161,10 @@ const MyOrders = (props: IProps) => {
                   titleClassName={`btn btn-white filter-icon ${disputeFilterTypes != DisputeFilterTypes.None ? "mr-sm-1" : ""}`}>
                   <button children="All"
                      className="dropdown-item"
-                     onClick={() => { onSearch(1, undefined, GetAllRecords); }} />
+                     onClick={() => { onSearch(1, undefined, undefined, undefined, GetAllRecords); }} />
                   {OrderStatusTypeList.filter(o => availableStatusTypeList!.includes(o.Value))?.map(statusType =>
                      <button className="dropdown-item" key={statusType.Id}
-                        onClick={() => { onSearch(1, undefined, statusType.Id?.toString()); }} >
+                        onClick={() => { onSearch(1, undefined, undefined, undefined, statusType.Id?.toString()); }} >
                         {statusType.Name}
                      </button>
                   )}
@@ -173,24 +174,24 @@ const MyOrders = (props: IProps) => {
                      className="col-12 col-sm pm-0 mt-2"
                      titleClassName="btn btn-white filter-icon ml-sm-1">
                      <button children="All"
-                        onClick={() => onSearch(1, undefined, undefined, GetAllRecords)}
+                        onClick={() => onSearch(1, undefined, undefined, undefined, undefined, GetAllRecords)}
                         className="dropdown-item" />
                      {(disputeFilterTypes == DisputeFilterTypes.Open || disputeFilterTypes == DisputeFilterTypes.OpenAndClose) &&
                         <button children="Open Disputes"
-                           onClick={() => onSearch(1, undefined, undefined, "true")}
+                           onClick={() => onSearch(1, undefined, undefined, undefined, undefined, "true")}
                            className="dropdown-item" />
                      }
                      {(disputeFilterTypes == DisputeFilterTypes.Close || disputeFilterTypes == DisputeFilterTypes.OpenAndClose) &&
                         <button children="Closed Disputes"
-                           onClick={() => onSearch(1, undefined, undefined, "false")}
+                           onClick={() => onSearch(1, undefined, undefined, undefined, undefined, "false")}
                            className="dropdown-item" />
                      }
                   </DropDown>
                }
             </div>
             {tbl.totalItemCount == 0 && availableStatusTypeList.length < 1 &&
-               <div className="row col-12 justify-content-center">
-                  <div className="col-12 text-center mt-4">You do not have any orders. <br /> Let's do something about it.</div>
+               <div className="row col-12 pm-0 justify-content-center">
+                  <div className="col-12 text-center mt-4">You don't have any orders. <br /> Let's do something about it.</div>
                   <Button className="btn btn-green col-auto mt-4" children="Shop now" onClick={() => { history.push("/Shop"); }} />
                </div>
             }
@@ -199,21 +200,10 @@ const MyOrders = (props: IProps) => {
                onClosed={() => { errorAlert.clear(); }}
             />
             {tbl.totalItemCount > 0 &&
-               <div className="col-12 pb-5 ">
-                  <Table className="col-12 text-center table-striped"
-                     defaultSortName={tbl.sortName}
-                     data={tbl.data}
-                     onSortChange={(selectedPage, isSortAsce, sortName) => { onSearch(selectedPage, undefined, undefined, undefined, isSortAsce, sortName); }}
-                     listCount={tbl.totalItemCount}
-                  />
-                  <Pagination
-                     maxItemsPerPage={tbl.maxItemsPerPage}
-                     selectedPage={tbl.selectedPage}
-                     onChange={(selectedPage, maxItemsPerPage) => {
-                        onSearch(selectedPage, maxItemsPerPage);
-                     }}
-                     listCount={tbl.totalItemCount} />
-               </div>
+               <Table tableData={tbl}
+                  onChange={onSearch}
+                  tblClassName="col-12 text-center table-striped"
+               />
             }
             <OrderModal isOpen={isOpenOrderModal}
                order={selectOrder}

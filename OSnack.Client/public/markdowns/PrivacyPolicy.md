@@ -1,6 +1,6 @@
 ﻿At OSnack, accessible from OSnack.co.uk, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by OSnack and how we use it.
 
-Internet security is very important to us and you can be assured that we do everything we can to make sure your personal and card payment information is kept secure at all times. To protect you from fraud and to keep your transaction information safe and secure, OSnack uses a secure internet payment service called PayPal and which employs encryption and various other up to date security techniques to ensure your transaction information is kept safe and secure at all times. 
+Internet security is very important to us and you can be assured that we do everything we can to make sure your personal and card payment information is kept secure at all times. To protect you from fraud and to keep your transaction information safe and secure, OSnack uses a secure Internet payment service called PayPal and which employs encryption and various other up to date security techniques to ensure your transaction information is kept safe and secure at all times. 
 
 If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us.
 
@@ -12,7 +12,7 @@ We also maintain an order history of your purchases. This allows you and us to t
 #### What we do with the information
 We never exchange, sell or otherwise give away your email address to other companies. Your email address is used solely by yourself, for purposes of logging into your account, and us for emailing you regarding your orders and to update you with our newsletter.
 
-We use third party authentication (Google authentication) for a faster login/registration. We only use publicly available information from google to identify you in our system and use the provided email address as your main point of contact. 
+We use third party authentication (Google authentication) for a faster login/registration. We only use available information from Google to identify you in our system and use the provided email address as your main point of contact. 
 
 When using our quick checkout functionality we will use your PayPal provided email address to send you information regarding your purchase(s) and use the provided address from PayPal for as delivery address for your order.
 
@@ -36,7 +36,7 @@ You can choose to disable cookies through your individual browser options. To kn
 
 #### Children's Information
 
-Another part of our priority is adding protection for children while using the internet. We encourage parents and guardians to observe, participate in, and/or monitor and guide their online activity.
+Another part of our priority is adding protection for children while using the Internet. We encourage parents and guardians to observe, participate in, and/or monitor and guide their online activity.
 OSnack does not knowingly collect any Personal Identifiable Information from children under the age of 13. If you think that your child provided this kind of information on our website, we strongly encourage you to contact us immediately and we will do our best efforts to promptly remove such information from our records.
 
 #### Online Privacy Policy Only

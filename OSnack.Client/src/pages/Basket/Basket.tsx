@@ -19,8 +19,8 @@ const Basket = (props: IProps) => {
          <Container className="bg-white">
             <div className="row">
                {basket.state.List.length <= 0 &&
-                  <div className="row col-12 justify-content-center pb-4">
-                     <div className="col-12 text-center mt-4">You do not have any items in your basket. <br /> Let's do something about it.</div>
+                  <div className="row col-12 pm-0 justify-content-center pb-4">
+                     <div className="col-12 text-center mt-4">You don't have any items in your basket. <br /> Let's do something about it.</div>
                      <Button className="btn btn-green col-auto mt-4" children="Shop now" onClick={() => { history.push("/Shop"); }} />
                   </div>
                }

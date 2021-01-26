@@ -1,13 +1,14 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import Modal from '../components/Modals/Modal';
 import Alert, { AlertObj, useAlert } from '../components/Texts/Alert';
 import { useConfirmEmailUser } from '../hooks/PublicHooks/useUserHook';
 
 const ConfrimEmail = (props: IProps) => {
    const isUnmounted = useRef(false);
+   const history = useHistory();
    const errorAlert = useAlert(new AlertObj());
-   const [redirectToHome, setRedirectToHome] = useState(false);
+   const [isOpen, setIsOpen] = useState(true);
 
    useEffect(() => {
       errorAlert.pleaseWait(isUnmounted);
@@ -21,12 +22,12 @@ const ConfrimEmail = (props: IProps) => {
       return () => { isUnmounted.current = true; };
    }, []);
 
-   if (redirectToHome) return <Redirect to="" />;
+   useEffect(() => { !isOpen && history.push("/"); }, [isOpen]);
 
    return (
       <Modal className="col-11 col-sm-10 col-md-9 col-lg-4 pl-4 pr-4"
-         isOpen={true}>
-         <Alert alert={errorAlert.alert} onClosed={() => setRedirectToHome(true)} />
+         isOpen={isOpen}>
+         <Alert className="p-5" alert={errorAlert.alert} onClosed={() => setIsOpen(false)} />
       </Modal>
    );
 };

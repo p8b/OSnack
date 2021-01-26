@@ -6,8 +6,9 @@ using System.Reflection;
 
 namespace OSnack.API.Extras
 {
-   public class AppConst
+   public static class AppConst
    {
+
       /// <summary>
       /// Three Levels of access claims within the system.<br />
       /// * Admin<br/>
@@ -73,6 +74,9 @@ namespace OSnack.API.Extras
          Github = 3
       }
 
+
+      private static Settings _settings;
+
       /// <summary>
       /// Get the information from the appSettings json file
       /// </summary>
@@ -80,14 +84,19 @@ namespace OSnack.API.Extras
       {
          get
          {
-            /// Get the directory of the app settings.json file
-            var jsonFilePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\StaticFiles\Settings.json";
-            /// If above file does not exists check the android path.
-            if (!File.Exists(jsonFilePath))
-               jsonFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"StaticFiles\Settings.json");
-            /// Read the json file from that directory
-            /// de-serialise the json string into an object of AppSettings and return it
-            return JsonConvert.DeserializeObject<Settings>(File.ReadAllText(jsonFilePath));
+            if (_settings is null)
+            {
+               /// Get the directory of the app settings.json file
+               var jsonFilePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\StaticFiles\Settings.json";
+               /// If above file does not exists check the android path.
+               if (!File.Exists(jsonFilePath))
+                  jsonFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"StaticFiles\Settings.json");
+               /// Read the json file from that directory
+               /// de-serialise the json string into an object of AppSettings and return it
+               _settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(jsonFilePath));
+            }
+
+            return _settings;
          }
       }
    }

@@ -126,12 +126,16 @@ const NewCustomerModal = (props: IProps) => {
                   />
                </>
             }
-            <div className="col-12">
-               <CheckBox className=" mt-1 color-style-checked"
+            <div className="row col-12">
+               <CheckBox
+                  className="col-12 m-0 mt-1"
+                  inputClassName="color-style-checked"
                   onChange={checked => setSubscribeNewsLetter(checked)}
                   label="Subscribe to our news letter to receive latest promotions"
                />
-               <CheckBox className="mt-1 color-style"
+               <CheckBox
+                  className="col-12 m-0 mt-1"
+                  inputClassName="color-style-checked"
                   onChange={checked => setTermsAndCondition(checked)}
                   label={<>
                      I Agree to <a className="hover-gray text-underline" onClick={() => { history.push("/termsandconditions"); }} target="_blank" > terms and conditions</a>.*

@@ -85,5 +85,14 @@
     <ProjectReference Include="..\..\P8B.Libs\P8B.Core.CSharp\P8B.Core.CSharp.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="StaticFiles\list.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="StaticFiles\log.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 
 </Project>
