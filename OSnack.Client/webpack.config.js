@@ -6,7 +6,7 @@ const HtmlWebPackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 //const WorkboxPlugin = require('workbox-webpack-plugin');
-const isDevelopment = false;
+const isDevelopment = true;
 const appName = "osnack";
 const outputPublicPath = "./build/public/";
 

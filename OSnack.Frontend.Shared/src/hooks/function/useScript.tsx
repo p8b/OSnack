@@ -2,17 +2,29 @@
 
 const useScript = (url: string) => {
    const [isLoaded, setIsLoaded] = useState(false);
+   const [currentUrl, setCurrentUrl] = useState(url);
    useEffect(() => {
       const script = document.createElement('script');
-      script.src = url;
-      script.async = true;
-      script.onload = () => { setIsLoaded(true); };
-      document.body.appendChild(script);
+      if (currentUrl !== "") {
+         script.src = currentUrl;
+         script.async = true;
+         script.onload = () => { setIsLoaded(true); };
+         document.body.appendChild(script);
+      }
+      //else {
+      //   setIsLoaded(false);
+      //}
       return () => {
-         document.body.removeChild(script);
+         if (currentUrl !== "")
+            document.body.removeChild(script);
+         setIsLoaded(false);
 
       };
-   }, [url]);
-   return { isLoaded };
+   }, [currentUrl]);
+
+   const set = (url: string) => {
+      setCurrentUrl(url);
+   };
+   return { isLoaded, set };
 };
 export default useScript;

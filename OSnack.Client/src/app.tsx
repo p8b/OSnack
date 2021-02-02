@@ -10,6 +10,8 @@ import Container from "./components/Container";
 // Main Components such as pages, navbar, footer
 import NavMenu from "./components/NavMenu/NavMenu";
 import Footer from "./components/Footer";
+import CookieContextContainer from "./_core/cookieContext";
+import CookieBanner from "./components/CookieBanner";
 const Home = lazy(() => import("./pages/Home/Home"));
 const OrderSuccess = lazy(() => import("./pages/Basket/OrderSuccess"));
 const Shop = lazy(() => import("./pages/Shop/Shop"));
@@ -34,38 +36,41 @@ const App = () => {
       <BrowserRouter>
          <AuthenticationContext>
             <ShopContextContainer>
-               <NavMenu />
-               <Container id="mainContainer" className="p-0 wide-container main-container" extendBottom extendTop>
-                  <Suspense fallback={<Loading />}>
-                     <Switch>
-                        {/***** Public Routes ****/}
-                        <CustomRoute exact path="/" render={(props: any) => <Home {...props} />} />
-                        <CustomRoute path="/Login" render={(props: any) => <LoginPage {...props} />} />
-                        <CustomRoute path="/EmailConfirmation" render={(props: any) => <ConfirmEmail {...props} />} />
-                        <CustomRoute path="/ResetPassword" render={(props: any) => <PasswordReset {...props} />} />
-                        <CustomRoute path="/Shop/Product" render={(props: any) => <ProductPage {...props} />} />
-                        <CustomRoute path="/Shop" render={(props: any) => <Shop {...props} />} />
-                        <CustomRoute path="/Checkout" render={(props: any) => <Basket {...props} />} />
-                        <CustomRoute path="/About" render={(props: any) => <About {...props} />} />
-                        <CustomRoute path="/Contact" render={(props: any) => <ContactUs {...props} />} />
-                        <CustomRoute path="/OrderSuccessful" render={(props: any) => <OrderSuccess {...props} />} />
-                        <CustomRoute path="/PrivacyPolicy" render={(props: any) => <PrivacyPolicy {...props} />} />
-                        <CustomRoute path="/TermsAndConditions" render={(props: any) => <TermsAndConditions {...props} />} />
-                        <CustomRoute path="/Unsubscribe" render={(props: any) => <Unsubscribe {...props} />} />
-                        <CustomRoute path="/ViewCommunication" render={(props: any) => <ViewCommunication {...props} />} />
+               <CookieContextContainer>
+                  <NavMenu />
+                  <Container id="mainContainer" className="p-0 wide-container main-container" extendBottom extendTop>
+                     <Suspense fallback={<Loading />}>
+                        <Switch>
+                           {/***** Public Routes ****/}
+                           <CustomRoute exact path="/" render={(props: any) => <Home {...props} />} />
+                           <CustomRoute path="/Login" render={(props: any) => <LoginPage {...props} />} />
+                           <CustomRoute path="/EmailConfirmation" render={(props: any) => <ConfirmEmail {...props} />} />
+                           <CustomRoute path="/ResetPassword" render={(props: any) => <PasswordReset {...props} />} />
+                           <CustomRoute path="/Shop/Product" render={(props: any) => <ProductPage {...props} />} />
+                           <CustomRoute path="/Shop" render={(props: any) => <Shop {...props} />} />
+                           <CustomRoute path="/Checkout" render={(props: any) => <Basket {...props} />} />
+                           <CustomRoute path="/About" render={(props: any) => <About {...props} />} />
+                           <CustomRoute path="/Contact" render={(props: any) => <ContactUs {...props} />} />
+                           <CustomRoute path="/OrderSuccessful" render={(props: any) => <OrderSuccess {...props} />} />
+                           <CustomRoute path="/PrivacyPolicy" render={(props: any) => <PrivacyPolicy {...props} />} />
+                           <CustomRoute path="/TermsAndConditions" render={(props: any) => <TermsAndConditions {...props} />} />
+                           <CustomRoute path="/Unsubscribe" render={(props: any) => <Unsubscribe {...props} />} />
+                           <CustomRoute path="/ViewCommunication" render={(props: any) => <ViewCommunication {...props} />} />
 
-                        {/***** Protected Routes  ****/}
-                        <CustomRoute authRequired exact path="/MyAccount" render={(props: any) => <MyAccount {...props} />} />
-                        <CustomRoute authRequired path="/MyOrders" render={(props: any) => <MyOrders {...props} />} />
-                        <CustomRoute authRequired exact path="/MyAddresses" render={(props: any) => <MyAddresses {...props} />} />
-                        <CustomRoute authRequired path="/ViewDispute" render={(props: any) => <ViewCommunication {...props} />} />
+                           {/***** Protected Routes  ****/}
+                           <CustomRoute authRequired exact path="/MyAccount" render={(props: any) => <MyAccount {...props} />} />
+                           <CustomRoute authRequired path="/MyOrders" render={(props: any) => <MyOrders {...props} />} />
+                           <CustomRoute authRequired exact path="/MyAddresses" render={(props: any) => <MyAddresses {...props} />} />
+                           <CustomRoute authRequired path="/ViewDispute" render={(props: any) => <ViewCommunication {...props} />} />
 
-                        {/***** Route Not Found  ****/}
-                        <CustomRoute path="*" render={(props: any) => <PageNotFound {...props} />} />
-                     </Switch>
-                  </Suspense>
-               </Container>
-               <Footer />
+                           {/***** Route Not Found  ****/}
+                           <CustomRoute path="*" render={(props: any) => <PageNotFound {...props} />} />
+                        </Switch>
+                     </Suspense>
+                  </Container>
+                  <CookieBanner />
+                  <Footer />
+               </CookieContextContainer>
             </ShopContextContainer>
          </AuthenticationContext>
       </BrowserRouter>

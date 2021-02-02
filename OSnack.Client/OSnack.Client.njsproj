@@ -197,6 +197,7 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\app.tsx" />
+    <TypeScriptCompile Include="src\components\CookieBanner.tsx" />
     <TypeScriptCompile Include="src\components\Modal\AddressModal.tsx" />
     <TypeScriptCompile Include="src\pages\Communication\ViewCommunication.tsx" />
     <TypeScriptCompile Include="src\pages\MyAddress\MyAddresses.tsx" />
@@ -230,6 +231,7 @@
     <TypeScriptCompile Include="src\pages\Shop\ShopItem.tsx" />
     <TypeScriptCompile Include="src\pages\TermsAndConditions\TermsAndConditions.tsx" />
     <TypeScriptCompile Include="src\_core\appConstant.Variables.ts" />
+    <TypeScriptCompile Include="src\_core\cookieContext.tsx" />
     <TypeScriptCompile Include="src\_core\shopContext.tsx" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
