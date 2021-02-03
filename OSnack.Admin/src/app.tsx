@@ -25,6 +25,7 @@ const ViewUserOrders = lazy(() => import("./pages/OrderManagement/ViewUserOrders
 const MessagesManagement = lazy(() => import("./pages/MessagesManagement/MessagesManagement"));
 const DeliveryOptionManagement = lazy(() => import("./pages/DeliveryOptionManagement/DeliveryOptionManagement"));
 const ViewCommunication = lazy(() => import("./pages/Communication/ViewCommunication"));
+const CookieBanner = lazy(() => import("./components/CookieBanner"));
 
 const App = () => {
    const [isOpenMainContainer, setIsOpenMainContainer] = useState(false);
@@ -100,6 +101,9 @@ const App = () => {
                   </Switch>
                </Suspense>
             </div>
+            <Suspense fallback={<></>}>
+               <CookieBanner />
+            </Suspense>
          </AuthenticationContext>
       </BrowserRouter>
    );

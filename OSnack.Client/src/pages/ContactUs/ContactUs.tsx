@@ -78,7 +78,11 @@ const ContactUs = (props: IProps) => {
                   <TextArea className="col-12" label="Message*" rows={3} value={message}
                      onChange={(i) => { setMessage(i.target.value); }} />
                   <div className="col-12 mt-3">
-                     <Button className="w-100 btn-lg btn-green" children="Send" onClick={sendMessage} enableLoading={isUnmounted} />
+                     <Button className="w-100 btn-lg btn-green"
+                        children="Send"
+                        onClick={sendMessage}
+                        enableLoading={isUnmounted}
+                        disabled={!navigator.cookieEnabled} />
                   </div>
                </div>
                <div className="col-12 col-md-6 text-center pm-0 mt-2 mb-3 pt-3 pb-3">

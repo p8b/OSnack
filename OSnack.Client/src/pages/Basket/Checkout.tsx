@@ -280,7 +280,11 @@ const Checkout = (props: IProps) => {
                      <Button className="col-auto pm-0 edit-icon  mb-auto ml-auto"
                         onClick={() => { setIsOpenAddressModal(true); }} />
                   }
-                  <Button className="col-12 btn-lg btn-green mb-4 mt-4" children="Checkout" onClick={checkout} enableLoading={isUnmounted} />
+                  <Button className="col-12 btn-lg btn-green mb-4 mt-4"
+                     children="Checkout"
+                     onClick={checkout}
+                     enableLoading={isUnmounted}
+                     disabled={!navigator.cookieEnabled} />
                </>
             }
             {!auth.state.isAuthenticated &&
@@ -288,7 +292,11 @@ const Checkout = (props: IProps) => {
                   <div className="col-12 btn btn-lg btn-green mt-5" children="Login" onClick={() => history.push({ pathname: "/login", state: { fromPath: "/Checkout" } })} />
                   <PageHeader title="OR" className="my-3" />
 
-                  <Button className="col-12 btn-lg btn-green mb-5" children="Guest Checkout" onClick={checkout} enableLoading={isUnmounted} />
+                  <Button className="col-12 btn-lg btn-green mb-5"
+                     children="Guest Checkout"
+                     onClick={checkout}
+                     enableLoading={isUnmounted}
+                     disabled={!navigator.cookieEnabled} />
                </>
             }
             <img src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/cc-badges-ppcmcvdam.png"

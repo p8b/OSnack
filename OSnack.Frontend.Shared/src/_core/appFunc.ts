@@ -23,6 +23,14 @@ export const getCookieValue = (name: string) => {
    }
 };
 
+
+export const setCookie = (name: string, value: boolean, expireDays: number) => {
+   var d = new Date();
+   d.setTime(d.getTime() + (expireDays * 24 * 60 * 60 * 1000));
+   var expires = "expires=" + d.toUTCString();
+   document.cookie = name + "=" + value + ";" + expires + ";path=/";
+};
+
 /**
  * Set the expiry date of the parameter cookie to paste date.
  * @param name cookie name
@@ -30,6 +38,24 @@ export const getCookieValue = (name: string) => {
 export const deleteCookie = (name: string) =>
    document.cookie = name + '=; expires=Thu, 29 Mar 1991 00:00:01 GMT;';
 //#endregion
+
+export class localStorageManagement {
+   static SET = (name: string, value: string) => {
+      if (navigator.cookieEnabled)
+         localStorage.setItem(name, value);
+   };
+
+   static GET = (name: string) => {
+      if (navigator.cookieEnabled)
+         return localStorage.getItem(name);
+      return "";
+   };
+
+   static REMOVE = (name: string) => {
+      if (navigator.cookieEnabled)
+         localStorage.removeItem(name);
+   };
+}
 
 /** This class is used to send/receive Http requests */
 export class httpCaller {
@@ -170,11 +196,11 @@ export const uuidv4 = () => {
    });
 };
 
-//export const delay = (ms: number) => {
-//   return new Promise((resolve, reject) => {
-//      setTimeout(resolve, ms);
-//   });
-//};
+export const delay = (ms: number) => {
+   return new Promise((resolve, reject) => {
+      setTimeout(resolve, ms);
+   });
+};
 export const sleep = async (ms: number, isCanceled: React.MutableRefObject<boolean>) => {
    return new Promise((resolve, reject) => {
       setTimeout(() => {

@@ -3,8 +3,8 @@
 const Container = (props: IProps) => {
    useEffect(() => {
       if (props.id !== null && props.extendBottom) {
-         sizeChange();
-         window.addEventListener("resize", sizeChange);
+         //sizeChange();
+         //window.addEventListener("resize", sizeChange);
       }
       if (props.id !== null && props.extendTop) {
          scrollChange();
@@ -12,16 +12,16 @@ const Container = (props: IProps) => {
       }
 
       return () => {
-         window.removeEventListener("resize", sizeChange);
+         //window.removeEventListener("resize", sizeChange);
          window.removeEventListener("scroll", scrollChange);
       };
    }, []);
 
-   const sizeChange = () => {
-      let container = document.getElementById(props.id ?? "");
-      if (props.extendBottom && container !== null)
-         (container as HTMLElement).style.marginBottom = `${document.getElementById("footer")?.scrollHeight}px`;
-   };
+   //const sizeChange = () => {
+   //   let container = document.getElementById(props.id ?? "");
+   //   if (props.extendBottom && container !== null)
+   //      (container as HTMLElement).style.marginBottom = `${document.getElementById("footer")?.scrollHeight}px`;
+   //};
 
    const scrollChange = () => {
       let container = document.getElementById(props.id ?? "");

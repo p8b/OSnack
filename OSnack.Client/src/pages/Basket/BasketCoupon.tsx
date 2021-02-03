@@ -44,7 +44,10 @@ const BasketCoupon = (props: IProps) => {
             className="col-8 mb-0 p-0 " />
          <div className="row col-4 pm-0 mt-auto">
             <Button className="col-12 btn-sm btn-blue radius-none m-0"
-               onClick={couponCheck} children="Apply" enableLoading={isUnmounted} />
+               onClick={couponCheck}
+               children="Apply"
+               enableLoading={isUnmounted}
+               disabled={!navigator.cookieEnabled} />
          </div>
       </div>
    );

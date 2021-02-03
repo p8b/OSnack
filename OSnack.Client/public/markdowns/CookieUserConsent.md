@@ -1,0 +1,2 @@
+﻿### This website uses cookies
+We used cookies for our website functionality and to store information including visitors' preferences, and the pages on the website that the visitor accessed or visited. For more information [Privacy Policy](/PrivacyPolicy).

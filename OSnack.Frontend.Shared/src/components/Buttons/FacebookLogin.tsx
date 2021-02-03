@@ -1,5 +1,5 @@
 ﻿import React from 'react';
-import { uuidv4 } from '../../_core/appFunc';
+import { localStorageManagement, uuidv4 } from '../../_core/appFunc';
 import { ExternalLoginDetails, RegistrationTypes } from '../../_core/apiModels';
 
 
@@ -7,8 +7,8 @@ const FacebookLogin = (props: IProps) => {
    let callBackWasCalled = false;
    const login = async () => {
       props!.onClick!();
-      localStorage.setItem("facebookState", uuidv4());
-      const windowPop: Window | null = window.open(`https://www.facebook.com/v7.0/dialog/oauth?client_id=${props.clientId}&redirect_uri=${props.redirectURI}&state=${localStorage.getItem('facebookState')}`,
+      localStorageManagement.SET("facebookState", uuidv4());
+      const windowPop: Window | null = window.open(`https://www.facebook.com/v7.0/dialog/oauth?client_id=${props.clientId}&redirect_uri=${props.redirectURI}&state=${localStorageManagement.GET('facebookState')}`,
          "_blank", "width=400,height=500");
       let timer = setInterval(() => {
          if (windowPop!.closed) {
@@ -22,20 +22,20 @@ const FacebookLogin = (props: IProps) => {
       windowPop!.opener.callBack = () => {
          callBackWasCalled = true;
          const reply = windowPop!.document.location.search.replace("?code", "")!.replace("&state", "")!.split('=');
-         if (reply![2] != null && localStorage.getItem("facebookState") === reply![2]) {
+         if (reply![2] != null && localStorageManagement.GET("facebookState") === reply![2]) {
             props.onSuccess({
                code: reply![1],
                state: reply![2],
                type: RegistrationTypes.Facebook,
                rememberMe: false
             });
-            localStorage.removeItem("facebookState");
+            localStorageManagement.REMOVE("facebookState");
          } else props.onFailure("Facebook Login Failed. Cannot retrieve code!");
       };
    };
    try {
       const reply = document.location.search.replace("?code", "")!.replace("&state", "")!.split('=');
-      if (reply![2] != null && localStorage.getItem("facebookState") === reply![2]) {
+      if (reply![2] != null && localStorageManagement.GET("facebookState") === reply![2]) {
          window.opener.callBack?.call(null);
          window.close();
       }

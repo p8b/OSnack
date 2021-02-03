@@ -119,7 +119,10 @@ const Home = (props: IProps) => {
                         showDanger={errorAlert.checkExist("email")}
                         onChange={(e) => setEmail(e.target.value)}
                      />
-                     <Button className="col-12  btn-white" children="Sign up" onClick={onSubscribe} />
+                     <Button className="col-12  btn-white"
+                        children="Sign up"
+                        onClick={onSubscribe}
+                        disabled={!navigator.cookieEnabled} />
                   </div>
                </div>
             </Container>

@@ -32,3 +32,12 @@
     height: inherit;
     line-height: unset;
 }
+
+.demo {
+    position: sticky;
+    z-index: 1000;
+    bottom: 0;
+    left: 0;
+    background-color: yellow;
+    clip-path: polygon(100% 0, 0% 100%, 100% 100%);
+}

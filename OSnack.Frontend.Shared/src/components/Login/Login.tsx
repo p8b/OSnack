@@ -103,9 +103,10 @@ const Login = (props: IProps) => {
                inputClassName=" color-style-checked"
                onChange={checked => setLoginInfo({ ...loginInfo, rememberMe: checked })}
             />
-            <a onClick={() => setForgotPasswordModalIsOpen(true)}
+            <a onClick={() => { if (navigator.cookieEnabled) setForgotPasswordModalIsOpen(true); }}
                className="text-right col-6 pm-0 text-underline"
                children="Forgot Password?"
+
             />
 
          </div>
@@ -115,7 +116,8 @@ const Login = (props: IProps) => {
          <Button children="Login"
             className="col-12 btn-lg btn-green mt-2 "
             enableLoading={isUnmounted}
-            onClick={login} />
+            onClick={login}
+            disabled={!navigator.cookieEnabled} />
          {!props.disableExternalLogin &&
             <>
                {/*****                <FacebookLogin clientId="1237220039954343"
@@ -136,6 +138,7 @@ const Login = (props: IProps) => {
                   onClick={externalLoginWait}
                   onClosedWithoutAction={errorAlert.clear}
                   enableLoading={isUnmounted}
+
                />
             </>
          }

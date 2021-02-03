@@ -1,5 +1,4 @@
 ﻿import React, { useState } from 'react';
-import { Access } from '../../_core/appConstant.Variables';
 
 import Login from 'osnack-frontend-shared/src/components/Login/Login';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
@@ -21,11 +20,12 @@ const LoginPage = (props: IProps) => {
          <Container className="mb-5">
             <div className="row justify-content-sm-center pb-3">
                <div className="col-12 col-sm-10 col-md-8 col-lg-6 bg-white py-5">
-                  <Login externalLoginFailed={externalLoginFailed} fromPath={props.location.state?.fromPath} access={Access} />
+                  <Login externalLoginFailed={externalLoginFailed} fromPath={props.location.state?.fromPath} />
                   <Button children="New Customer" className="btn-lg btn-white col-12 my-2"
                      onClick={() => {
                         setIsOpenNewCustomer((prev) => !prev);
                      }}
+                     disabled={!navigator.cookieEnabled}
                   />
                </div>
             </div>
@@ -35,6 +35,7 @@ const LoginPage = (props: IProps) => {
                   setNewUser(new User());
                }}
                newUser={newUser}
+
             />
          </Container>
       </>

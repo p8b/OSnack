@@ -1,7 +1,7 @@
 ﻿import { ErrorDto } from "../components/Texts/Alert";
 
 export const API_URL: string = window.location.hostname === "localhost" ?
-   "https://localhost:44358" : "https://shopapi.osnack.co.uk";
+   "https://localhost:44358" : "https://api.osnack.p8b.uk";
 
 export const GetAllRecords: string = "***GET-ALL***";
 export const ConstMaxNumberOfPerItemsPage = 10;

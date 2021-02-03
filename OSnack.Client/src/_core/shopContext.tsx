@@ -1,4 +1,5 @@
 ﻿import { OrderItem, Product } from "osnack-frontend-shared/src/_core/apiModels";
+import { localStorageManagement } from "osnack-frontend-shared/src/_core/appFunc";
 import React, { createContext, useReducer, useEffect, useRef } from "react";
 
 class ShopState {
@@ -18,15 +19,15 @@ const initShopContext = {
 };
 
 const reducerShop = (state: ShopState, newState: ShopState) => {
-   if (newState === null) {
-      localStorage.removeItem(localStorageName);
+   if (newState === null && navigator.cookieEnabled) {
+      localStorageManagement.REMOVE(localStorageName);
       return initState;
    }
    return { ...state, ...newState };
 };
 
 const localShopState = (): ShopState => {
-   const localValue = localStorage.getItem(localStorageName);
+   const localValue = navigator.cookieEnabled ? localStorageManagement.GET(localStorageName) : null;
    if (localValue == null) {
       return initState;
    } else {
@@ -110,7 +111,8 @@ const ShopContextContainer = ({ children }: Props): JSX.Element => {
    };
 
    useEffect(() => {
-      localStorage.setItem(localStorageName, JSON.stringify(state));
+      if (navigator.cookieEnabled)
+         localStorageManagement.SET(localStorageName, JSON.stringify(state));
    }, [state]);
 
    return (
