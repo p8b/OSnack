@@ -3,7 +3,7 @@ import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRo
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Communication, DisputeFilterTypes, Order, OrderStatusType, OrderStatusTypeList, PaymentTypeList } from 'osnack-frontend-shared/src/_core/apiModels';
 import { convertUriParamToBool, extractUri, generateUri, getBadgeByOrderStatusType } from 'osnack-frontend-shared/src/_core/appFunc';
-import { GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
+import { GetAllRecords } from 'osnack-frontend-shared/src/_core/appConst';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Container from '../../components/Container';

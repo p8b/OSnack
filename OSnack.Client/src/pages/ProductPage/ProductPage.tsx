@@ -4,7 +4,7 @@ import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components
 import { Product, ProductUnitType } from 'osnack-frontend-shared/src/_core/apiModels';
 import { useProductAndRelateProduct } from 'osnack-frontend-shared/src/hooks/PublicHooks/useProductHook';
 import { Redirect, useHistory } from 'react-router-dom';
-import { API_URL } from 'osnack-frontend-shared/src/_core/constant.Variables';
+import { API_URL } from 'osnack-frontend-shared/src/_core/appConst';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import Container from '../../components/Container';
 import QuantityInput from 'osnack-frontend-shared/src/components/Inputs/QuantityInput';

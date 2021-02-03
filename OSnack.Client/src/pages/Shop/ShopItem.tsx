@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 
 import { Product, ProductUnitType } from 'osnack-frontend-shared/src/_core/apiModels';
 import { onImageError } from 'osnack-frontend-shared/src/_core/appFunc';
-import { API_URL } from 'osnack-frontend-shared/src/_core/constant.Variables';
+import { API_URL } from 'osnack-frontend-shared/src/_core/appConst';
 import QuantityInput from 'osnack-frontend-shared/src/components/Inputs/QuantityInput';
 import { ShopContext } from '../../_core/shopContext';
 

@@ -5,7 +5,7 @@ import Container from '../../components/Container';
 import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
 import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
 import { Category, Product } from 'osnack-frontend-shared/src/_core/apiModels';
-import { GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
+import { GetAllRecords } from 'osnack-frontend-shared/src/_core/appConst';
 import { useSearchPublicProduct } from 'osnack-frontend-shared/src/hooks/PublicHooks/useProductHook';
 import ShopItem from './ShopItem';
 import { useHistory } from 'react-router-dom';

@@ -1,7 +1,7 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import { useDownloadDataUser, useUpdateCurrentUserPasswordUser, useUpdateCurrentUserUser } from '../../hooks/OfficialHooks/useUserHook';
 import { User, RegistrationTypes } from '../../_core/apiModels';
-import { CommonRegex } from '../../_core/constant.Variables';
+import { CommonRegex } from '../../_core/appConst';
 import { Button } from '../Buttons/Button';
 import { Input } from '../Inputs/Input';
 import ConfirmPasswordModal from '../Modals/ConfirmPasswordModal';

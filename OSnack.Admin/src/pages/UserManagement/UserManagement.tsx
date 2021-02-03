@@ -6,7 +6,7 @@ import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRo
 import { Role, User } from 'osnack-frontend-shared/src/_core/apiModels';
 import Container from '../../components/Container';
 import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
-import { GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
+import { GetAllRecords } from 'osnack-frontend-shared/src/_core/appConst';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { useGetUser } from '../../SecretHooks/useUserHook';
 import UserModal from './UserModal';

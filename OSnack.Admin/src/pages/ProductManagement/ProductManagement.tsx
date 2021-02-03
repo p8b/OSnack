@@ -7,7 +7,7 @@ import { Category, Product, ProductUnitTypeList } from 'osnack-frontend-shared/s
 import ProductModal from './ProductModal';
 import Container from '../../components/Container';
 import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
-import { GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
+import { GetAllRecords } from 'osnack-frontend-shared/src/_core/appConst';
 import { useSearchSecretProduct } from '../../SecretHooks/useProductHook';
 import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
 import { useAllSecretCategory } from '../../SecretHooks/useCategoryHook';

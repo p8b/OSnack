@@ -4,7 +4,7 @@ import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRo
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { extractUri, generateUri, convertUriParamToBool } from 'osnack-frontend-shared/src/_core/appFunc';
-import { GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
+import { GetAllRecords } from 'osnack-frontend-shared/src/_core/appConst';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Container from '../../components/Container';

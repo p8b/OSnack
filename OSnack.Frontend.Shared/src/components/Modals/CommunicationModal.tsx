@@ -1,7 +1,7 @@
 ﻿import React from 'react';
 import { Communication, Message } from '../../_core/apiModels';
 import Modal from '../../components/Modals/Modal';
-import { AppAccess } from '../../_core/constant.Variables';
+import { AppAccess } from '../../_core/appConst';
 import ShowCommunication from '../Communication/ShowCommunication';
 import { IReturnUsePutOfficialCommunication } from '../../hooks/OfficialHooks/useCommunicationHook';
 

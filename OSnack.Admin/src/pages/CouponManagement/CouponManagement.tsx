@@ -7,7 +7,7 @@ import CouponModel from './CouponModel';
 import Container from '../../components/Container';
 import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
 import { useSearchCoupon } from '../../SecretHooks/useCouponHook';
-import { GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
+import { GetAllRecords } from 'osnack-frontend-shared/src/_core/appConst';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
 import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRowButtons';

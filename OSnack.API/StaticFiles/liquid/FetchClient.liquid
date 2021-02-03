@@ -1,7 +1,7 @@
 ﻿{% if HasOperations -%}
 import { AlertObj, AlertTypes, ErrorDto } from "../../components/Texts/Alert";
 import { httpCaller } from "../../_core/appFunc";
-import { API_URL, CommonErrors } from "../../_core/constant.Variables";
+import { API_URL, CommonErrors } from "../../_core/appConst";
 import { @@Models@@ } from "../../_core/apiModels";
 {% for operation in Operations -%}
 export type IReturnUse{{ operation.ActualOperationNameUpper }}{{ Class }}={ data:{% if operation.ResultType =="void" %} null {% else %}{{  operation.ResultType  }} {% endif %}, status?: number;};

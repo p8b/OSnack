@@ -1,7 +1,7 @@
 ﻿import React, { useState, useContext, useRef, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 
-import { CommonRegex, GoogleLoginKey } from "../../_core/constant.Variables";
+import { CommonRegex, GoogleLoginKey } from "../../_core/appConst";
 import { Input } from "../../components/Inputs/Input";
 import { CheckBox } from "../../components/Inputs/CheckBox";
 import { Button } from "../../components/Buttons/Button";

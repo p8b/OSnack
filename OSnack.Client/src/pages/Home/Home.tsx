@@ -1,7 +1,7 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Container from '../../components/Container';
-import { API_URL } from 'osnack-frontend-shared/src/_core/constant.Variables';
+import { API_URL } from 'osnack-frontend-shared/src/_core/appConst';
 import { Category } from 'osnack-frontend-shared/src/_core/apiModels';
 import Carousel from '../../components/Carousel';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';

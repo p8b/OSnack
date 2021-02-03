@@ -2,7 +2,7 @@
 import ReactToPrint from 'react-to-print';
 import { Communication, Order, OrderStatusType, OrderStatusTypeList, PaymentType, ProductUnitType } from '../../_core/apiModels';
 import { getBadgeByOrderStatusType, onImageError } from '../../_core/appFunc';
-import { API_URL, AppAccess } from '../../_core/constant.Variables';
+import { API_URL, AppAccess } from '../../_core/appConst';
 import { Button } from '../Buttons/Button';
 import InputDropdown from '../Inputs/InputDropDown';
 import Alert, { AlertObj, useAlert } from '../Texts/Alert';

@@ -9,7 +9,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import Container from '../../components/Container';
 import { usePostQuestionCommunication } from "osnack-frontend-shared/src/hooks/PublicHooks/useCommunicationHook";
 import useScript from 'osnack-frontend-shared/src/hooks/function/useScript';
-import { GooglereCAPTCHAKey } from 'osnack-frontend-shared/src/_core/constant.Variables';
+import { GooglereCAPTCHAKey } from 'osnack-frontend-shared/src/_core/appConst';
 
 const ContactUs = (props: IProps) => {
    const isUnmounted = useRef(false);

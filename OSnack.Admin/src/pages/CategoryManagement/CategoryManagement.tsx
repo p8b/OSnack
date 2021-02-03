@@ -7,7 +7,7 @@ import CategoryModal from './CategoryModal';
 import Container from '../../components/Container';
 import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
 import { useSearchCategory } from '../../SecretHooks/useCategoryHook';
-import { GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
+import { GetAllRecords } from 'osnack-frontend-shared/src/_core/appConst';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRowButtons';
 import { useHistory } from 'react-router-dom';

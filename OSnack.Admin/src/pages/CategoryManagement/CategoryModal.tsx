@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import { Category } from 'osnack-frontend-shared/src/_core/apiModels';
-import { API_URL } from 'osnack-frontend-shared/src/_core/constant.Variables';
+import { API_URL } from 'osnack-frontend-shared/src/_core/appConst';
 import { getBase64fromUrlImage } from 'osnack-frontend-shared/src/_core/appFunc';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Input } from 'osnack-frontend-shared/src/components/Inputs/Input';

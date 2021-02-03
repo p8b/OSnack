@@ -4,7 +4,7 @@ import { IReturnUsePutOfficialCommunication, usePutOfficialCommunication } from 
 import PageHeader from '../Texts/PageHeader';
 import { TextArea } from '../Inputs/TextArea';
 import Alert, { AlertObj, useAlert } from '../Texts/Alert';
-import { AppAccess } from '../../_core/constant.Variables';
+import { AppAccess } from '../../_core/appConst';
 import { Toggler } from '../Inputs/Toggler';
 import ModalFooter from '../Modals/ModalFooter';
 

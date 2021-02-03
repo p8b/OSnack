@@ -11,7 +11,7 @@ import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
 import ImageUpload from '../../components/ImageUpload/ImageUpload';
 import { usePostProduct, usePutProduct, useDeleteProduct } from '../../SecretHooks/useProductHook';
 import { TextArea } from 'osnack-frontend-shared/src/components/Inputs/TextArea';
-import { API_URL } from 'osnack-frontend-shared/src/_core/constant.Variables';
+import { API_URL } from 'osnack-frontend-shared/src/_core/appConst';
 import ProductNutritionalInfoModal from './ProductNutritionalInfoModal';
 import ModalFooter from 'osnack-frontend-shared/src/components/Modals/ModalFooter';
 

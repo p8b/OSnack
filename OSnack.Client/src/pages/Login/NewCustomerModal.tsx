@@ -1,7 +1,7 @@
 ﻿import React, { useState, useEffect, useRef } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import { RegistrationTypes, RegistrationTypesList, User } from "osnack-frontend-shared/src/_core/apiModels";
-import { CommonRegex } from "osnack-frontend-shared/src/_core/constant.Variables";
+import { CommonRegex } from "osnack-frontend-shared/src/_core/appConst";
 import PageHeader from "osnack-frontend-shared/src/components/Texts/PageHeader";
 import { Input } from "osnack-frontend-shared/src/components/Inputs/Input";
 import { CheckBox } from "osnack-frontend-shared/src/components/Inputs/CheckBox";

@@ -1,7 +1,7 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Communication, Order, OrderStatusType, OrderStatusTypeList, PaymentTypeList, DisputeFilterTypes } from 'osnack-frontend-shared/src/_core/apiModels';
-import { GetAllRecords } from 'osnack-frontend-shared/src/_core/constant.Variables';
+import { GetAllRecords } from 'osnack-frontend-shared/src/_core/appConst';
 import { useHistory } from 'react-router-dom';
 import { extractUri, convertUriParamToBool, generateUri, getBadgeByOrderStatusType } from 'osnack-frontend-shared/src/_core/appFunc';
 import Table, { TableData, useTableData } from 'osnack-frontend-shared/src/components/Table/Table';

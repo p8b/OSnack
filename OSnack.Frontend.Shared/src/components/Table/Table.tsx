@@ -2,7 +2,7 @@
 import InputDropdown from '../Inputs/InputDropDown';
 import CardView from './CardView';
 import RowView from './RowView';
-import { ConstMaxNumberOfPerItemsPage } from "../../_core/constant.Variables";
+import { ConstMaxNumberOfPerItemsPage } from "../../_core/appConst";
 import Pagination from '../Pagination/Pagination';
 
 const Table = (props: IProps) => {
