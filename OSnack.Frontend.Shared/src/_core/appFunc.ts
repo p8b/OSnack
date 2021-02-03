@@ -1,6 +1,6 @@
 ﻿import 'whatwg-fetch';
 import { OrderStatusType } from './apiModels';
-import { AntiforgeryTokenCookieName, API_URL, GetAllRecords } from "./constant.Variables";
+import { AntiforgeryTokenCookieName, API_URL, GetAllRecords } from "./appConst";
 
 //#region *** 'Cookie Management' ***
 /**
