@@ -99,7 +99,7 @@ const Home = (props: IProps) => {
                <div style={{ fontFamily: "'Courgette', cursive" }} className="col-12 text-center h1">Our mission is to provide quality snacks</div>
             </div>
          </Container>
-         <div className="col-12 sign-up-bg pt-4 pb-4 mt-4 mb-4">
+         <div className="col-12 sign-up-bg py-4 mt-4 ">
             <Container >
                <div className="row pt-5 pb-5">
                   <div className="col-12 col-md-6 mt-auto">
