@@ -1,4 +1,4 @@
-{
+﻿{
   "compilerOptions": {
     /* Basic Options */
     "module": "CommonJS",
@@ -6,7 +6,7 @@
     "target": "ES6",
     "lib": [ "ES6", "dom", "ES2015" ],
     "baseUrl": "./",
-    "outDir": "./build/development",
+    "outDir": "./build",
     "rootDirs": [ "src" ],
     "jsx": "react",
     "sourceMap": true,

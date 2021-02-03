@@ -1,7 +1,7 @@
 ﻿import React, { useState, useContext, useRef, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 
-import { CommonRegex } from "../../_core/constant.Variables";
+import { CommonRegex, GoogleLoginKey } from "../../_core/constant.Variables";
 import { Input } from "../../components/Inputs/Input";
 import { CheckBox } from "../../components/Inputs/CheckBox";
 import { Button } from "../../components/Buttons/Button";
@@ -129,10 +129,10 @@ const Login = (props: IProps) => {
                   onClick={externalLoginWait}
                   onClosedWithoutAction={() => errorAlert.clear()}
                /> ****/}
-               <GoogleLogin clientId="398928888654-flaamd0frl6g0e6l7cilvmhcrm46umpa.apps.googleusercontent.com"
+               <GoogleLogin clientId={GoogleLoginKey}
                   children="Sign in with Google"
                   className="btn-lg btn-g col-12 mt-2 "
-                  redirectURI={window.location.href}
+                  redirectURI={window.location.href.toLowerCase()}
                   onSuccess={externalLogin}
                   onFailure={externalLoginFailed}
                   onClick={externalLoginWait}

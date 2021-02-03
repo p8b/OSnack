@@ -8,13 +8,14 @@
     <meta name="keywords" content="OSnack, Snack, Baklava, Olives, Olive, Turkish Delight" />
     <title id="browser-title">OSnack</title>
 
-    <link async rel="preconnect" href="https://fonts.gstatic.com">
-    <link rel="preload" as="font" href="https://fonts.googleapis.com/css2?family=Courgette&family=Righteous&family=Rubik:wght@300;400;500;600;700;800;900&display=swap">
     <link async rel="apple-touch-icon" href="/public/images/icons-192.png">
     <link async rel="icon" type="image/png" href="/public/favicon.ico" />
     <link async rel="manifest" href="/public/manifest.json">
+    <link async rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preload" as="font" href="https://fonts.googleapis.com/css2?family=Courgette&family=Righteous&family=Rubik:wght@300;400;500;600;700;800;900&display=swap">
     <link rel="preload" crossorigin="" href="/public/fonts/fa-solid-900.woff2" as="font" />
     <link rel="preload" crossorigin="" href="/public/fonts/fa-brands-400.woff2" as="font" />
+    <script defer src="https://assets.p8b.uk/public/js/p8b-dev.js"></script>
     <style type="text/css">
         .skip-link {
             position: absolute;
@@ -50,24 +51,6 @@
             </div>
         </div>
     </main>
-    <script>
-        (async (url) => {
-            var image = new Image();
-            image.onload = () => {
-                var style = [
-                    'padding-top: 20px;',
-                    'padding-bottom: 20px;',
-                    'padding-right: 40px;',
-                    'color: transparent;',
-                    'background: url(' + url + ');',
-                    'background-size: 50px;',
-                    'background-repeat: no-repeat;',
-                ].join(' ');
-                console.info('%cp8b.uk', style);
-            };
-            image.src = url;
-        })('https://p8b.uk/public/images/console.png');
-    </script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
     <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react-router/5.2.0/react-router.min.js"></script>

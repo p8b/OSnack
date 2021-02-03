@@ -47,6 +47,11 @@ export const Input = (props: IProps) => {
             onBlur={(i) => {
                lblPosition(i.target.value);
                props.onBlur && props.onBlur(i);
+               //@ts-ignore
+               if (!document.getElementById(id).checkValidity())
+                  setLblInvalidInput("(Invalid)");
+               else
+                  setLblInvalidInput("");
             }}
             placeholder={props.placeholder}
             min={props.positiveNumbersOnly ? "0" : undefined}
@@ -61,11 +66,8 @@ export const Input = (props: IProps) => {
             }}
             onKeyUp={() => {
                //@ts-ignore
-               if (!document.getElementById(id).checkValidity()) {
-                  setLblInvalidInput("(Invalid Value)");
-               } else {
+               if (document.getElementById(id).checkValidity())
                   setLblInvalidInput("");
-               }
             }}
          />
          {props.inputRightLable &&

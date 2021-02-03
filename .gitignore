@@ -40,3 +40,6 @@ OSnack.Client/debug.log
 *.log
 
 /OSnack.API/StaticFiles/tsApiFiles
+/OSnack.API/StaticFiles/Settings.api-osnack-co-uk.json
+/OSnack.API/StaticFiles/Settings.api-osnack-p8b-uk.json
+/OSnack.API/StaticFiles/Settings.localhost.json

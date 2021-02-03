@@ -1,4 +1,4 @@
-﻿At OSnack, accessible from OSnack.co.uk, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by OSnack and how we use it.
+At OSnack, accessible from OSnack.co.uk, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by OSnack and how we use it.
 
 Internet security is very important to us and you can be assured that we do everything we can to make sure your personal and card payment information is kept secure at all times. To protect you from fraud and to keep your transaction information safe and secure, OSnack uses a secure Internet payment service called PayPal and which employs encryption and various other up to date security techniques to ensure your transaction information is kept safe and secure at all times. 
 
@@ -52,4 +52,3 @@ In the event that we request that you return the products to us we will recommen
 
 #### Consent
 By using our website, you hereby consent to our Privacy Policy and agree to its Terms and Conditions.
-

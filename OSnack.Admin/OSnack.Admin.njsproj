@@ -12,7 +12,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>3b5634dd-b157-4790-ac6b-555fadf9f273</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>server\server-development.js</StartupFile>
+    <StartupFile>
+    </StartupFile>
     <StartWebBrowser>False</StartWebBrowser>
     <SearchPath>
     </SearchPath>
@@ -35,12 +36,6 @@
     <Content Include="public\index.html" />
     <Content Include="public\robot.txt" />
     <Content Include="README.md" />
-    <Content Include="server\cert\cert.pem" />
-    <Content Include="server\cert\exported-cert.cer" />
-    <Content Include="server\cert\key.pem" />
-    <Content Include="server\server-development.js" />
-    <Content Include="server\server.js" />
-    <Content Include="server\web.config" />
     <Content Include="src\pages\DeliveryOptionManagement\DeliveyOptionModal.tsx" />
     <Content Include="src\styles\animation\animations\attention_seekers\_bounce.scss" />
     <Content Include="src\styles\animation\animations\attention_seekers\_flash.scss" />
@@ -137,12 +132,10 @@
     <Content Include="src\styles\pages\_home.scss" />
     <Content Include="src\styles\main.scss" />
     <Content Include="tsconfig.json" />
-    <Content Include="webpack.config.js" />
+    <Content Include="webpack.config.ts" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="public\" />
-    <Folder Include="server\" />
-    <Folder Include="server\cert\" />
     <Folder Include="src\" />
     <Folder Include="src\components\" />
     <Folder Include="src\components\NavMenu\" />

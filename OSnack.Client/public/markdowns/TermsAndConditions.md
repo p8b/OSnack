@@ -1,4 +1,4 @@
-﻿Set out below are our terms and conditions for our site, and which relates to all information contained in all pages of the site and the ordering of any products from this website. Your acceptance and agreement to these terms and conditions is confirmed by your placing an order/ registration via this site.
+Set out below are our terms and conditions for our site, and which relates to all information contained in all pages of the site and the ordering of any products from this website. Your acceptance and agreement to these terms and conditions is confirmed by your placing an order/ registration via this site.
 
 #### Copyright
 “OSnack” is the registered trademark of OSnack Limited. The material contained on this website is the copyright of OSnack Limited or our content and technology providers. Use of this website is on the understanding that all brand names, product names, titles and copyrights displayed are the trademarks or trade names or copyrights of their respective holders.

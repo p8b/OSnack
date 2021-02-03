@@ -23,6 +23,7 @@ using P8B.UK.API.Extras.Overrides;
 
 using System;
 using System.IO;
+using System.Linq;
 
 namespace OSnack.API
 {
@@ -35,6 +36,16 @@ namespace OSnack.API
 
       public void ConfigureServices(IServiceCollection services)
       {
+         if (Configuration.GetSection("ASPNETCORE_ENVIRONMENT").Value == "Development")
+         {
+            AppConst.CallerDomain = "localhost";
+         }
+         else
+         {
+            var contentRootArr = Configuration.GetSection("contentRoot").Value.Split(@"\").ToList();
+            AppConst.CallerDomain = contentRootArr.Last().Replace(".", "-");
+         }
+
          /// Enable API calls from specified origins only
          services.AddCors(options =>
          {
@@ -67,7 +78,7 @@ namespace OSnack.API
 
          /// Pass the SQL server connection to the db context
          /// receive the connection string from the settings.json
-         var test = services.AddDbContext<OSnackDbContext>(options => options
+         services.AddDbContext<OSnackDbContext>(options => options
            .UseSqlServer(AppConst.Settings.DbConnectionString)
            .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 
@@ -222,7 +233,7 @@ namespace OSnack.API
             }
             string OrgPath = context.Request.Path;
             context.Request.Path = "/";
-            string logReport = $"Path => {OrgPath}. {Environment.NewLine} No Match Found" + Environment.NewLine;
+            string logReport = $"Path => {OrgPath}. {Environment.NewLine} No Match Found ({context.Request.Host})";
             if (context.Request.Headers.TryGetValue("Origin", out StringValues OriginValue))
             {
                logReport = "";

@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace OSnack.API.Extras
 {
-   public static class AppConst
+   internal static class AppConst
    {
 
       /// <summary>
@@ -15,33 +15,33 @@ namespace OSnack.API.Extras
       /// * Manager<br/>
       /// * Customer
       /// </summary>
-      public struct AccessClaims
+      internal struct AccessClaims
       {
-         public const string Type = "Role";
-         public const string Admin = nameof(Admin);
-         public const string Manager = nameof(Manager);
-         public const string Customer = nameof(Customer);
-         public static readonly string[] List =
+         internal const string Type = "Role";
+         internal const string Admin = nameof(Admin);
+         internal const string Manager = nameof(Manager);
+         internal const string Customer = nameof(Customer);
+         internal static readonly string[] List =
          { Type, Admin, Manager, Customer  };
       }
 
       /// <summary>
       /// Four Levels of access policies within the system.<br />
       /// </summary>
-      public struct AccessPolicies
+      internal struct AccessPolicies
       {
          /// <summary>
          /// TopSecret Policy includes the following Roles <br/>
          /// * Admin <br/>
          /// </summary>
-         public const string TopSecret = nameof(TopSecret);
+         internal const string TopSecret = nameof(TopSecret);
 
          /// <summary>
          /// Secret Policy includes the following Roles <br/>
          /// * Admin <br/>
          /// * Manager <br/>
          /// </summary>
-         public const string Secret = nameof(Secret);
+         internal const string Secret = nameof(Secret);
 
          /// <summary>
          /// Official Policy includes the following Roles <br/>
@@ -49,13 +49,13 @@ namespace OSnack.API.Extras
          /// * Manager <br/>
          /// * Customer <br/>
          /// </summary>
-         public const string Official = nameof(Official);
+         internal const string Official = nameof(Official);
          /// <summary>
          /// Public Policy includes Everyone including anonymous 
          /// </summary>
-         public const string Public = nameof(Public);
+         internal const string Public = nameof(Public);
 
-         public static string[] List
+         internal static string[] List
          {
             get => new string[] {
             nameof(TopSecret),
@@ -66,7 +66,7 @@ namespace OSnack.API.Extras
          }
       }
 
-      public enum RegistrationTypes
+      internal enum RegistrationTypes
       {
          Application = 0,
          Google = 1,
@@ -74,26 +74,29 @@ namespace OSnack.API.Extras
          Github = 3
       }
 
+      internal static string CallerDomain { get; set; }
 
       private static Settings _settings;
-
       /// <summary>
       /// Get the information from the appSettings json file
       /// </summary>
-      public static Settings Settings
+      internal static Settings Settings
       {
          get
          {
             if (_settings is null)
             {
-               /// Get the directory of the app settings.json file
-               var jsonFilePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\StaticFiles\Settings.json";
-               /// If above file does not exists check the android path.
-               if (!File.Exists(jsonFilePath))
-                  jsonFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"StaticFiles\Settings.json");
-               /// Read the json file from that directory
-               /// de-serialise the json string into an object of AppSettings and return it
-               _settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(jsonFilePath));
+               _settings = new Settings();
+               string settingsPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\StaticFiles\Settings.json";
+               if (!File.Exists(settingsPath))
+                  settingsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"StaticFiles\Settings.json");
+
+               string domainSettingsPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @$"\StaticFiles\Settings.{CallerDomain}.json";
+               if (!File.Exists(domainSettingsPath))
+                  domainSettingsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"StaticFiles\Settings.{CallerDomain}.json");
+
+               JsonConvert.PopulateObject(File.ReadAllText(settingsPath), _settings);
+               JsonConvert.PopulateObject(File.ReadAllText(domainSettingsPath), _settings);
             }
 
             return _settings;

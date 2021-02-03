@@ -1,13 +1,13 @@
-{
+﻿{
   "compilerOptions": {
     /* Basic Options */
     "module": "CommonJS",
     "moduleResolution": "node",
-    "target": "ES6",
-    "lib": [ "ES6", "dom", "ES2015" ],
-    "baseUrl": "./",
-    "outDir": "./build/development",
-    "rootDirs": [ "src" ],
+    "target": "ES5",
+    "lib": [ "ES6", "dom", "ES2015", "ES5" ],
+    "baseUrl": ".",
+    "outDir": "./build",
+    "rootDirs": [ "./src" ],
     "jsx": "react",
     "sourceMap": true,
     "declaration": true,

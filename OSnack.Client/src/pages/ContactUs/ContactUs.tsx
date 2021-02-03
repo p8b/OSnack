@@ -9,11 +9,11 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import Container from '../../components/Container';
 import { usePostQuestionCommunication } from "osnack-frontend-shared/src/hooks/PublicHooks/useCommunicationHook";
 import useScript from 'osnack-frontend-shared/src/hooks/function/useScript';
+import { GooglereCAPTCHAKey } from 'osnack-frontend-shared/src/_core/constant.Variables';
 
 const ContactUs = (props: IProps) => {
    const isUnmounted = useRef(false);
-   const siteKey = "6LfxNycaAAAAAP_-cZ7GUHugSEdqfWIRAiBtl3fX";
-   const captchaScript = useScript(`https://www.google.com/recaptcha/api.js?render=${siteKey}`);
+   const captchaScript = useScript(`https://www.google.com/recaptcha/api.js?render=${GooglereCAPTCHAKey}`);
    const auth = useContext(AuthContext);
    const errorAlert = useAlert(new AlertObj());
    const [contact, setContact] = useState(new Communication());
@@ -47,7 +47,7 @@ const ContactUs = (props: IProps) => {
          });
       else {
          loadingCallBack!();
-         errorAlert.setSingleSuccess("error", "Captcha is not loading.");
+         errorAlert.setSingleSuccess("error", "reCAPTCHA is not loaded.");
       }
    };
 

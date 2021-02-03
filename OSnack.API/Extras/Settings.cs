@@ -11,14 +11,14 @@ namespace OSnack.API.Extras
    /// <summary>
    /// class used to have the app setting information in memory
    /// </summary>
-   public class Settings
+   internal class Settings
    {
       /// <summary>
       /// The array of allowed CORs (Cross-Origin Request) URL
       /// which are allowed to connect to the web API
       /// </summary>
       [JsonProperty(PropertyName = "OpenCors")]
-      public string[] OpenCors { get; set; }
+      internal string[] OpenCors { get; set; }
 
       /// <summary>
       /// Exclude specific routes from CORs check.
@@ -26,63 +26,66 @@ namespace OSnack.API.Extras
       /// e.g. "/Images/test.png" specific file or "/Images" Folder or "/user/post" Route
       /// </summary>
       [JsonProperty(PropertyName = "ExcludedRoutesFromCORS")]
-      public string[] ExcludedRoutesFromCORS { get; set; }
+      internal string[] ExcludedRoutesFromCORS { get; set; }
 
       /// <summary>
       /// Brand Name
       /// </summary>
       [JsonProperty(PropertyName = "BrandName")]
-      public string BrandName { get; set; }
+      internal string BrandName { get; set; }
 
 
       /// <summary>
       /// App Domains
       /// </summary>
       [JsonProperty(PropertyName = "AppDomains")]
-      public AppDomains AppDomains { get; set; }
+      internal AppDomains AppDomains { get; set; }
 
       /// <summary>
       /// Email settings 
       /// </summary>
       [JsonProperty(PropertyName = "EmailSettings")]
-      public EmailSettings EmailSettings { get; set; }
+      internal EmailSettings EmailSettings { get; set; }
 
       /// <summary>
       /// Path names required for email templates
       /// </summary>
       [JsonProperty(PropertyName = "EmailServicePathNames")]
-      public EmailServicePathNames EmailServicePathNames { get; set; }
+      internal EmailServicePathNames EmailServicePathNames { get; set; }
 
       /// <summary>
       /// PayPal Settings
       /// </summary>
       [JsonProperty(PropertyName = "PayPal")]
-      public PayPalSettings PayPal { get; set; }
+      internal PayPalSettings PayPal { get; set; }
 
-      public ExternalEmailSecret[] ExternalLoginSecrets { get; set; }
+      internal ExternalEmailSecret[] ExternalLoginSecrets { get; set; }
 
 
-      [JsonProperty(PropertyName = "DbConnectionStrings")]
-      private string[] _DbConnectionStrings { get; set; }
-      public string DbConnectionString { get => _DbConnectionStrings[0]; }
+      [JsonProperty(PropertyName = "DbConnectionString")]
+      internal string DbConnectionString { get; set; }
+
+      [JsonProperty(PropertyName = "GooglereCAPTCHASecret")]
+      internal string GooglereCAPTCHASecret { get; set; }
+
    }
 
-   public class AppDomains
+   internal class AppDomains
    {
       /// <summary>
       /// Use for setting the domain of antiforgery token cookie
       /// </summary>
       [JsonProperty(PropertyName = "AntiforgeryCookieDomain")]
-      public string AntiforgeryCookieDomain { get; set; }
+      internal string AntiforgeryCookieDomain { get; set; }
 
       [JsonProperty(PropertyName = "ClientApp")]
-      public string ClientApp { get; set; }
+      internal string ClientApp { get; set; }
       [JsonProperty(PropertyName = "ClientAppPolicies")]
-      public string[] ClientAppPolicies { get; set; }
+      internal string[] ClientAppPolicies { get; set; }
 
       [JsonProperty(PropertyName = "AdminApp")]
-      public string AdminApp { get; set; }
+      internal string AdminApp { get; set; }
       [JsonProperty(PropertyName = "AdminAppPolicies")]
-      public string[] AdminAppPolicies { get; set; }
+      internal string[] AdminAppPolicies { get; set; }
    }
 }

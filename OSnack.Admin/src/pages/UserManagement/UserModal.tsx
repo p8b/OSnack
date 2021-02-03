@@ -107,7 +107,7 @@ const UserModal = (props: IProps) => {
                onChange={i => { setUser({ ...user, email: i.target.value }); }}
                className="col-12 col-sm-6" />
             <Input label={`Registration Method`}
-               value={RegistrationTypesList.find((rm) => rm.Value === user.registrationMethod.type || rm.Value === RegistrationTypes.Application)?.Name}
+               value={RegistrationTypesList.find((rm) => rm.Value === (user.registrationMethod.type ?? RegistrationTypes.Application))?.Name}
                onChange={i => { }}
                disabled
                className="col-12 col-sm-6" />

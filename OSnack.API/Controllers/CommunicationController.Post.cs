@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 using Newtonsoft.Json.Linq;
+
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 using OSnack.API.Extras.CustomTypes;
@@ -155,7 +157,7 @@ namespace OSnack.API.Controllers
       {
          HttpClient httpClient = new HttpClient();
 
-         var res = httpClient.GetAsync($"https://www.google.com/recaptcha/api/siteverify?secret=6LfxNycaAAAAAFgnIdsp-z3gJE_efppZe9F2mln1&response={gRecaptchaResponse}").Result;
+         var res = httpClient.GetAsync($"https://www.google.com/recaptcha/api/siteverify?secret={AppConst.Settings.GooglereCAPTCHASecret}&response={gRecaptchaResponse}").Result;
 
          if (res.StatusCode != HttpStatusCode.OK)
             return false;

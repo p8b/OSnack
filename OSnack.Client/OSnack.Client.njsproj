@@ -44,12 +44,6 @@
     <Content Include="public\markdowns\PrivacyPolicy.md" />
     <Content Include="public\robots.txt" />
     <Content Include="README.md" />
-    <Content Include="server\cert\cert.pem" />
-    <Content Include="server\cert\exported-cert.cer" />
-    <Content Include="server\cert\key.pem" />
-    <Content Include="server\server-development.js" />
-    <Content Include="server\server.js" />
-    <Content Include="server\web.config" />
     <Content Include="src\components\Carousel.tsx" />
     <Content Include="src\styles\animation\animations\attention_seekers\_bounce.scss" />
     <Content Include="src\styles\animation\animations\attention_seekers\_flash.scss" />
@@ -147,14 +141,12 @@
     <Content Include="src\styles\modules\_navbar.scss" />
     <Content Include="src\styles\main.scss" />
     <Content Include="tsconfig.json" />
-    <Content Include="webpack.config.js" />
+    <Content Include="webpack.config.ts" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="public\images\" />
     <Folder Include="public\markdowns\" />
-    <Folder Include="server\cert\" />
     <Folder Include="src\" />
-    <Folder Include="server\" />
     <Folder Include="public\" />
     <Folder Include="src\components\" />
     <Folder Include="src\components\Modal\" />
