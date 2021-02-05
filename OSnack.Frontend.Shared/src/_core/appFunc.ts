@@ -47,7 +47,7 @@ export class localStorageManagement {
 
    static GET = (name: string) => {
       if (navigator.cookieEnabled)
-         return localStorage.getItem(name);
+         return localStorage.getItem(name) || "";
       return "";
    };
 

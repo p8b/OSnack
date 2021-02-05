@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Primitives;
 
 using OSnack.API.Database.Models;
 using OSnack.API.Extras;
@@ -20,6 +21,12 @@ namespace OSnack.API.Controllers
 {
    public partial class AuthenticationController
    {
+
+      [ProducesResponseType(typeof(string), StatusCodes.Status418ImATeapot)]
+      [HttpGet("Get/[action]")]
+      public IActionResult DatabaseConnectionFailed() =>
+          StatusCode(418, "Database Connection Failed");
+
       #region *** ***
       [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
@@ -41,12 +48,10 @@ namespace OSnack.API.Controllers
          }
       }
 
-
-
       #region ***  ***
 
-      [MultiResultPropertyNames("user", "isAuthenticated")]
-      [ProducesResponseType(typeof(MultiResult<User, bool>), StatusCodes.Status200OK)]
+      [MultiResultPropertyNames("user", "isAuthenticated", "maintenanceModeStatus")]
+      [ProducesResponseType(typeof(MultiResult<User, bool, bool>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status401Unauthorized)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
@@ -74,7 +79,14 @@ namespace OSnack.API.Controllers
                   }
                }
             SetAntiforgeryCookie();
-            return Ok(new MultiResult<User, bool>(user, isAuthenticated, CoreFunc.GetCustomAttributeTypedArgument(ControllerContext)));
+
+            bool maintenanceModeStatus = AppConst.Settings.MaintenanceModeStatus;
+            Request.Headers.TryGetValue("Origin", out StringValues OriginValue);
+            if (maintenanceModeStatus && AppConst.Settings.AppDomains.AdminApp.EqualCurrentCultureIgnoreCase(OriginValue))
+               maintenanceModeStatus = false;
+
+            return Ok(new MultiResult<User, bool, bool>(user, isAuthenticated, maintenanceModeStatus
+               , CoreFunc.GetCustomAttributeTypedArgument(ControllerContext)));
          }
          catch (Exception ex)
          {

@@ -11,9 +11,11 @@ using P8B.Core.CSharp;
 
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 
@@ -161,7 +163,6 @@ namespace OSnack.API.Extras
          }
       }
 
-
       internal static IEnumerable<string> GetCurrentRequestPolicies(HttpRequest request) => GetCurrentRequestPolicies(request, out AppTypes _);
 
       internal static IEnumerable<string> GetCurrentRequestPolicies(HttpRequest request, out AppTypes appTypes)
@@ -216,6 +217,37 @@ namespace OSnack.API.Extras
                File.AppendAllText(Path.Combine(@$"{AppDomain.CurrentDomain.BaseDirectory}\StaticFiles\log.txt"), txt + Environment.NewLine);
          }
          catch { }
+      }
+
+      internal static bool IsDatabaseConnected(string connectionString)
+      {
+         try
+         {
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+               con.Open();
+            }
+            return true;
+         }
+         catch (Exception)
+         {
+            return false;
+         }
+      }
+
+      /// <summary>
+      /// Get File path relative to root of application
+      /// e.g Folder\File.json
+      /// </summary>
+      /// <returns>file path or if not found string.Empty</returns>
+      internal static string GetFilePath(string filePath)
+      {
+         string path = @$"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\{filePath}";
+         if (!File.Exists(path))
+            path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"{filePath}");
+         if (!File.Exists(path))
+            return string.Empty;
+         return path;
       }
    }
 }

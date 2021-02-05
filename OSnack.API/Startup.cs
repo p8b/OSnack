@@ -13,6 +13,8 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Primitives;
 
+using Newtonsoft.Json;
+
 using OSnack.API.Database;
 using OSnack.API.Database.Context.ClassOverrides;
 using OSnack.API.Database.Models;
@@ -45,7 +47,7 @@ namespace OSnack.API
             var contentRootArr = Configuration.GetSection("contentRoot").Value.Split(@"\").ToList();
             AppConst.CallerDomain = contentRootArr.Last().Replace(".", "-");
          }
-
+         AppFunc.Log(JsonConvert.SerializeObject(AppConst.Settings.OpenCors));
          /// Enable API calls from specified origins only
          services.AddCors(options =>
          {
@@ -223,9 +225,15 @@ namespace OSnack.API
                  "Origin, X-Requested-With, Content-Type, Accept");
             },
          });
+
          app.UseCors(CoresPolicy);
          app.Use(next => context =>
          {
+            if (string.IsNullOrWhiteSpace(AppConst.Settings.DbConnectionString))
+            {
+               context.Request.Path = "/authentication/get/databaseconnectionfailed";
+               return next(context);
+            }
             foreach (string element in AppConst.Settings.ExcludedRoutesFromCORS)
             {
                if (context.Request.Path.StartsWithSegments(new PathString(element)))
@@ -237,20 +245,26 @@ namespace OSnack.API
             if (context.Request.Headers.TryGetValue("Origin", out StringValues OriginValue))
             {
                logReport = "";
+               logReport += $"Path => {OrgPath} {Environment.NewLine}";
+               logReport += $"Method => {context.Request.Method} {Environment.NewLine}";
                foreach (var COR in AppConst.Settings.OpenCors)
                {
                   if (COR.EqualCurrentCultureIgnoreCase(OriginValue))
                   {
+                     logReport = "";
+                     logReport += $"Method => {OrgPath} {Environment.NewLine}";
+                     logReport += $"Method => {context.Request.Method} {Environment.NewLine}";
                      context.Request.Path = OrgPath;
+                     logReport += $"Cor Success => {COR} {Environment.NewLine}";
                      break;
                   }
                   else
                   {
-                     logReport += $"Cor failed => {COR} is not {OriginValue}";
+                     logReport += $"Cor failed => {COR} is not {OriginValue}{Environment.NewLine}";
                   }
                }
             }
-            AppFunc.Log(logReport + Environment.NewLine + Environment.NewLine);
+            AppFunc.Log(logReport + Environment.NewLine);
             return next(context);
          });
          /// Enable the application to use authentication

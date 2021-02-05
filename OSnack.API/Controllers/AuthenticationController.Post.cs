@@ -303,7 +303,7 @@ namespace OSnack.API.Controllers
       {
          ExternalEmailSecret googleSecrets = AppConst.Settings.ExternalLoginSecrets.FindObj(e => e.Provider.EqualCurrentCultureIgnoreCase("Google"));
          var caller = new HttpClient();
-         var content = new StringContent($"client_id={googleSecrets?.ClientId}&client_secret={googleSecrets?.ClientSecret}&code={externalLoginInfo.Code}&grant_type=authorization_code&redirect_uri={externalLoginInfo.RedirectUrl}");
+         var content = new StringContent($"client_id={googleSecrets?.ClientId}&client_secret={googleSecrets?.ClientSecret}&code={externalLoginInfo.Code}&grant_type=authorization_code&redirect_uri={externalLoginInfo.RedirectUrl.ToLower()}");
          content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
          // get the token from github API by using the provided "code", "state", "clientId" and "clientSecret".
          var tokenResult = await caller.PostAsync("https://oauth2.googleapis.com/token", content).ConfigureAwait(false);

@@ -84,19 +84,19 @@ namespace OSnack.API.Extras
       {
          get
          {
-            if (_settings is null)
+            if (_settings is null || string.IsNullOrWhiteSpace(_settings.DbConnectionString))
             {
                _settings = new Settings();
-               string settingsPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\StaticFiles\Settings.json";
-               if (!File.Exists(settingsPath))
-                  settingsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"StaticFiles\Settings.json");
-
-               string domainSettingsPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @$"\StaticFiles\Settings.{CallerDomain}.json";
-               if (!File.Exists(domainSettingsPath))
-                  domainSettingsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"StaticFiles\Settings.{CallerDomain}.json");
+               string settingsPath = AppFunc.GetFilePath(@"StaticFiles\Settings.json");
+               string domainSettingsPath = AppFunc.GetFilePath(@$"StaticFiles\Settings.{CallerDomain}.json");
+               if (string.IsNullOrWhiteSpace(settingsPath) || string.IsNullOrWhiteSpace(domainSettingsPath))
+                  throw new Exception("File Not Found");
 
                JsonConvert.PopulateObject(File.ReadAllText(settingsPath), _settings);
                JsonConvert.PopulateObject(File.ReadAllText(domainSettingsPath), _settings);
+
+               if (!AppFunc.IsDatabaseConnected(_settings.DbConnectionString))
+                  _settings.DbConnectionString = "";
             }
 
             return _settings;

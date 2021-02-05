@@ -34,6 +34,8 @@ namespace OSnack.API.Extras
       [JsonProperty(PropertyName = "BrandName")]
       internal string BrandName { get; set; }
 
+      [JsonProperty(PropertyName = "MaintenanceModeStatus")]
+      internal bool MaintenanceModeStatus { get; set; }
 
       /// <summary>
       /// App Domains
@@ -59,6 +61,7 @@ namespace OSnack.API.Extras
       [JsonProperty(PropertyName = "PayPal")]
       internal PayPalSettings PayPal { get; set; }
 
+      [JsonProperty(PropertyName = "ExternalLoginSecrets")]
       internal ExternalEmailSecret[] ExternalLoginSecrets { get; set; }
 
 
