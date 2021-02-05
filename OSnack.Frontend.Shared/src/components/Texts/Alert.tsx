@@ -1,42 +1,14 @@
-﻿import React, { CSSProperties, useEffect, useRef, useState } from 'react';
+﻿import React, { useEffect, useRef, useState } from 'react';
 import { sleep } from '../../_core/appFunc';
 
 const Alert = (props: IProps) => {
-   let bgColor = 'rgb(0, 0, 0)';
-   let textColor = 'black';
-   switch (props.alert!.Type) {
-      case AlertTypes.default:
-         bgColor = 'white';
-         textColor = 'black';
-         break;
-      case AlertTypes.Warning:
-         bgColor = 'rgb(255, 221, 70)';
-         textColor = 'black';
-         break;
-      case AlertTypes.Error:
-         bgColor = 'rgb(135, 35, 35)';
-         textColor = 'white';
-         break;
-      case AlertTypes.Success:
-         bgColor = 'rgb(35, 135, 62)';
-         textColor = 'white';
-         break;
-      default:
-         break;
-   }
-   let style: CSSProperties = {
-      'backgroundColor': bgColor,
-      'fontWeight': 600,
-      'color': textColor,
-      'padding': '5px',
-   };
    return (
-      <div style={style} className={`row col-12 m-0 mt-2 mb-2 ${props?.className ?? ""} ${(props.alert?.List && props.alert?.List.length === 0) ? "d-none" : ""}`}>
+      <div className={`row col-12 m-0 my-2 p-2 alert ${props.alert?.Type} ${props?.className ?? ""} ${(props.alert?.List && props.alert?.List.length === 0) ? "d-none" : ""}`}>
          <div className="col-11"
             children={props.alert?.List && props.alert!.List.filter(e => !e.excludeFromDisplay).map((error: ErrorDto, index) => <div key={error.key || index} children={error.value} />)}
          />
-         <div className="col-1 p-0 pr-2 text-right"
-            children={<a onClick={props.onClosed} children="✘" />}
+         <div className="col-1 p-0 pr-2 text-right "
+            children={<a className=" mb-auto" onClick={props.onClosed} children="✘" />}
          />
       </div>
    );
@@ -144,7 +116,12 @@ interface IProps {
    onClosed?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
 }
 
-export enum AlertTypes { default, Success, Error, Warning };
+export enum AlertTypes {
+   default = "default",
+   Success = "success",
+   Error = "error",
+   Warning = "warning"
+};
 export class ErrorDto {
    key: string;
    value: string;

@@ -24,6 +24,10 @@ const config: Webpack.Configuration = {
       {
          from: path.resolve(__dirname, "public/robots.txt"),
          to: path.resolve(__dirname, './build/public/')
+      },
+      {
+         from: path.resolve(__dirname, './node_modules/osnack-frontend-shared/public/markdowns'),
+         to: path.resolve(__dirname, './build/public/markdowns/')
       }
    ]),
    optimization: webpackOptions.optimization,

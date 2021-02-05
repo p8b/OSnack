@@ -1,7 +1,5 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import { Category } from 'osnack-frontend-shared/src/_core/apiModels';
-import { API_URL } from 'osnack-frontend-shared/src/_core/appConst';
-import { getBase64fromUrlImage } from 'osnack-frontend-shared/src/_core/appFunc';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Input } from 'osnack-frontend-shared/src/components/Inputs/Input';
 import ModalFooter from 'osnack-frontend-shared/src/components/Modals/ModalFooter';
@@ -14,34 +12,16 @@ const CategoryModal = (props: IProps) => {
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
    const [category, setCategory] = useState(new Category());
-   const [imageBase64, setImageBase64] = useState("");
-   const [originalImageBase64, setOriginalImageBase64] = useState("");
    const [isNewImageSet, setIsNewImageSet] = useState(false);
+
+   useEffect(() => {
+      return () => { isUnmounted.current = true; };
+   }, []);
+
    useEffect(() => {
       setCategory(props.category);
-      /// if the category already exists get the image and convert it to string base64
-      if (props.category.id && props.category.id > 0) {
-         setIsNewImageSet(false);
-
-         errorAlert.pleaseWait(isUnmounted);
-         getBase64fromUrlImage(`${API_URL}/${props.category.imagePath}`)
-            .then(imgBase64 => {
-               if (isUnmounted.current) return;
-
-               setImageBase64(imgBase64 as string);
-            });
-         getBase64fromUrlImage(`${API_URL}/${props.category.originalImagePath}`)
-            .then(originalImgBase64 => {
-               if (isUnmounted.current) return;
-
-               setOriginalImageBase64(originalImgBase64 as string);
-               errorAlert.clear();
-            }).catch(() => {
-               if (isUnmounted.current) return;
-               errorAlert.setSingleWarning("", "Image Not Found!");
-            });
-      }
    }, [props.category]);
+
    useEffect(() => {
       errorAlert.clear();
    }, [props.isOpen]);
@@ -64,7 +44,6 @@ const CategoryModal = (props: IProps) => {
          if (isUnmounted.current) return;
          loadingCallBack!();
          errorAlert.clear();
-         resetImageUpload();
          props.onSuccess();
       }).catch((errors) => {
          if (isUnmounted.current) return;
@@ -98,7 +77,6 @@ const CategoryModal = (props: IProps) => {
       usePutCategory(cat).then(() => {
          if (isUnmounted.current) return;
          errorAlert.clear();
-         resetImageUpload();
          props.onSuccess();
          loadingCallBack!();
       }).catch((errors) => {
@@ -113,7 +91,6 @@ const CategoryModal = (props: IProps) => {
       useDeleteCategory(category.id!).then(() => {
          if (isUnmounted.current) return;
          errorAlert.clear();
-         resetImageUpload();
          props.onSuccess();
          loadingCallBack!();
       }).catch((errors) => {
@@ -123,17 +100,14 @@ const CategoryModal = (props: IProps) => {
       });
    };
 
-   const resetImageUpload = () => {
-      setImageBase64("");
-      setOriginalImageBase64("");
-   };
+
    const onImageUploaded = (croppedImage: string, originalImage: string) => {
       category.imageBase64 = croppedImage;
       category.originalImageBase64 = originalImage;
       setIsNewImageSet(true);
    };
-   const onImageUploadError = (errMsg: string) => {
-      let errors = new AlertObj([], AlertTypes.Error);
+   const onImageUploadError = (errMsg: string, alertType: AlertTypes) => {
+      let errors = new AlertObj([], alertType);
       errors.List.push(new ErrorDto("0", errMsg));
       errorAlert.set(errors);
    };
@@ -161,8 +135,8 @@ const CategoryModal = (props: IProps) => {
 
             {/***** Image upload and show preview button ****/}
             <ImageUpload className="col-12 col-sm-6 mt-4"
-               modifiedImageBase64={imageBase64}
-               originalImageBase64={originalImageBase64}
+               modifiedImagePath={category.imagePath}
+               originalImagePath={category.originalImagePath}
                onUploaded={onImageUploaded}
                onError={onImageUploadError}
                onLoading={onImageUploadLoading}
@@ -181,7 +155,7 @@ const CategoryModal = (props: IProps) => {
             enableLoadingCreate={isUnmounted}
             enableLoadingUpdate={isUnmounted}
             enableLoadingDelete={isUnmounted}
-            onCancel={() => { errorAlert.clear(); resetImageUpload(); props.onClose(); }} />
+            onCancel={() => { errorAlert.clear(); props.onClose(); }} />
       </Modal >
    );
 };

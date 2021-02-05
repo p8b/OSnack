@@ -17,9 +17,19 @@ export const GoogleLoginKey =
       hostname.endsWith("osnack.p8b.uk") ? "93781465546-037srngorphl4elnicr4bmmd0hm384kb.apps.googleusercontent.com" : // P8B Demo Production
          hostname.endsWith("osnack.co.uk") ? "398928888654-flaamd0frl6g0e6l7cilvmhcrm46umpa.apps.googleusercontent.com" : ""; // OSnack Production else ""
 
+
+export const GoogleAnalyticKey =
+   hostname === "localhost" ? "" :
+      hostname.endsWith("admin.osnack.p8b.uk") ? "G-R33S7G4XTH" : // OSnack Admin Production
+         hostname.endsWith("osnack.co.uk") ? "G-CBCN4X38EL" :  // OSnack Shop Production
+            hostname.endsWith("shop.osnack.p8b.uk") ? "G-RTWZB82LHF" :  // p8b Demo Shop Production
+               hostname.endsWith("admin.osnack.p8b.uk") ? "G-LK49THTYPK" : ""; //  p8b Demo admin Production else ""
+
 export const GetAllRecords: string = "***GET-ALL***";
 export const ConstMaxNumberOfPerItemsPage = 10;
 export const AntiforgeryTokenCookieName = "AF-TOKEN";
+
+export const MainWebsiteURL = "https://osnack.co.uk";
 
 export enum AppAccess {
    Client = 0,

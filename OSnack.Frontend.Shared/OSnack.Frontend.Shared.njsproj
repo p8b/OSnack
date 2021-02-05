@@ -42,6 +42,7 @@
     <Content Include="public\fonts\fa-solid-900.woff" />
     <Content Include="public\fonts\fa-solid-900.woff2" />
     <Content Include="public\images\icons-192.png" />
+    <Content Include="public\images\icons-196.png" />
     <Content Include="public\images\icons-512.png" />
     <Content Include="public\images\IdkFace%28Mango%29.png" />
     <Content Include="public\images\LoadSpinner.gif" />
@@ -49,6 +50,7 @@
     <Content Include="public\images\MangoMenu.png" />
     <Content Include="public\images\MintOliveBG.jpg" />
     <Content Include="public\manifest.json" />
+    <Content Include="public\markdowns\CookieUserConsent.md" />
     <Content Include="README.md" />
     <Content Include="server\cert\cert.pem" />
     <Content Include="server\cert\exported-cert.cer" />
@@ -151,6 +153,7 @@
     <Content Include="src\styles\bootstrap\mixins\_caret.scss" />
     <Content Include="src\styles\bootstrap\mixins\_clearfix.scss" />
     <Content Include="src\styles\modules\_background-colors.scss" />
+    <Content Include="src\styles\modules\_banner.scss" />
     <Content Include="src\styles\modules\_body.scss" />
     <Content Include="src\styles\modules\_border.scss" />
     <Content Include="src\styles\modules\_chat.scss" />
@@ -245,6 +248,7 @@
     <Content Include="src\styles\modules\_icons.scss" />
     <Content Include="src\styles\modules\_input.scss" />
     <Content Include="src\styles\modules\_modal.scss" />
+    <Content Include="src\styles\modules\_notification.scss" />
     <Content Include="src\styles\modules\_position.scss" />
     <Content Include="src\styles\modules\_radius.scss" />
     <Content Include="src\styles\modules\_rate.scss" />
@@ -260,6 +264,7 @@
     <Content Include="tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="public\markdowns\" />
     <Folder Include="server\" />
     <Folder Include="public\images\" />
     <Folder Include="public\fonts\" />
@@ -267,11 +272,12 @@
     <Folder Include="src\" />
     <Folder Include="src\components\" />
     <Folder Include="src\components\Buttons\" />
+    <Folder Include="src\components\CookieBanner\" />
     <Folder Include="src\components\Inputs\" />
     <Folder Include="src\components\Loading\" />
     <Folder Include="src\components\Modals\" />
     <Folder Include="src\components\Communication\" />
-    <Folder Include="src\components\Demo\" />
+    <Folder Include="src\components\Notification\" />
     <Folder Include="src\components\ProductComment\" />
     <Folder Include="src\components\Order\" />
     <Folder Include="src\components\Pagination\" />
@@ -317,7 +323,9 @@
     <TypeScriptCompile Include="src\components\Buttons\FacebookLogin.tsx" />
     <TypeScriptCompile Include="src\components\Buttons\GoogleLogin.tsx" />
     <TypeScriptCompile Include="src\components\Buttons\NavLink.tsx" />
-    <TypeScriptCompile Include="src\components\Demo\Demo.tsx" />
+    <TypeScriptCompile Include="src\components\CookieBanner\CookieBanner.tsx" />
+    <TypeScriptCompile Include="src\components\Notification\NotificationContainer.tsx" />
+    <TypeScriptCompile Include="src\components\Notification\NotificationModal.tsx" />
     <TypeScriptCompile Include="src\components\ProductComment\ProductComment.tsx" />
     <TypeScriptCompile Include="src\components\Communication\ShowCommunication.tsx" />
     <TypeScriptCompile Include="src\components\Inputs\DatePicker.tsx" />
@@ -376,6 +384,7 @@
     <TypeScriptCompile Include="src\_core\appConst.ts" />
     <TypeScriptCompile Include="src\_core\customRoute.tsx" />
     <TypeScriptCompile Include="src\_core\authenticationContext.tsx" />
+    <TypeScriptCompile Include="src\_core\notificationContext.tsx" />
     <TypeScriptCompile Include="src\_core\type.Extensions.ts" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />

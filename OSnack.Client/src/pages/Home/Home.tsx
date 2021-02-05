@@ -62,7 +62,6 @@ const Home = (props: IProps) => {
          .then(result => errorAlert.setSingleSuccess("", result.data))
          .catch(errors => { errorAlert.set(errors); });
    };
-
    return (
       <Container className="wide-container pl-0 pr-0">
          <div className={`hero-container ${heroImgLoaded ? "imgLoaded" : ""} row`}>

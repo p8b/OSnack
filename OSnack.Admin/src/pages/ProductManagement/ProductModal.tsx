@@ -1,6 +1,5 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import { Category, Product, ProductUnitTypeList } from 'osnack-frontend-shared/src/_core/apiModels';
-import { getBase64fromUrlImage } from 'osnack-frontend-shared/src/_core/appFunc';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Input } from 'osnack-frontend-shared/src/components/Inputs/Input';
 import InputDropDown from 'osnack-frontend-shared/src/components/Inputs/InputDropDown';
@@ -11,7 +10,6 @@ import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
 import ImageUpload from '../../components/ImageUpload/ImageUpload';
 import { usePostProduct, usePutProduct, useDeleteProduct } from '../../SecretHooks/useProductHook';
 import { TextArea } from 'osnack-frontend-shared/src/components/Inputs/TextArea';
-import { API_URL } from 'osnack-frontend-shared/src/_core/appConst';
 import ProductNutritionalInfoModal from './ProductNutritionalInfoModal';
 import ModalFooter from 'osnack-frontend-shared/src/components/Modals/ModalFooter';
 
@@ -20,35 +18,16 @@ const ProductModal = (props: IProps) => {
    const errorAlert = useAlert(new AlertObj());
    const [product, setProduct] = useState(new Product());
    const [productUnitTypeList] = useState(ProductUnitTypeList);
-   const [imageBase64, setImageBase64] = useState("");
-   const [originalImageBase64, setOriginalImageBase64] = useState("");
    const [nutritionalInfoModalIsOpen, setNutritionalInfoModalIsOpen] = useState(false);
    const [isNewImageSet, setIsNewImageSet] = useState(false);
-
    useEffect(() => {
       return () => { isUnmounted.current = true; };
    }, []);
+
    useEffect(() => {
       setProduct(props.product);
-      if (props.product.id && props.product.id > 0) {
-         setIsNewImageSet(false);
-         errorAlert.pleaseWait(isUnmounted);
-         getBase64fromUrlImage(`${API_URL}/${props.product.imagePath}`)
-            .then(imgBase64 => {
-               if (isUnmounted.current) return;
-               setImageBase64(imgBase64 as string);
-            }).catch(error => { if (isUnmounted.current) return; console.log(error); });
-         getBase64fromUrlImage(`${API_URL}/${props.product.originalImagePath}`)
-            .then(originalImgBase64 => {
-               if (isUnmounted.current) return;
-               setOriginalImageBase64(originalImgBase64 as string);
-               errorAlert.clear();
-            }).catch(() => {
-               if (isUnmounted.current) return;
-               errorAlert.setSingleWarning("", "Image Not Found!");
-            });
-      }
    }, [props.product]);
+
    useEffect(() => {
       if (!props.isOpen)
          setNutritionalInfoModalIsOpen(false);
@@ -56,12 +35,10 @@ const ProductModal = (props: IProps) => {
    }, [props.isOpen]);
 
    const createProduct = (loadingCallBack?: () => void) => {
-      console.log(product);
       errorAlert.pleaseWait(isUnmounted);
       usePostProduct(product).then(result => {
          if (isUnmounted.current) return;
          setProduct(result.data);
-         resetImageUpload();
          props.onSuccess();
          errorAlert.clear();
          loadingCallBack!();
@@ -84,7 +61,6 @@ const ProductModal = (props: IProps) => {
       usePutProduct(product).then(result => {
          if (isUnmounted.current) return;
          setProduct(result.data);
-         resetImageUpload();
          props.onSuccess();
          errorAlert.clear();
          loadingCallBack!();
@@ -100,7 +76,6 @@ const ProductModal = (props: IProps) => {
       errorAlert.pleaseWait(isUnmounted);
       useDeleteProduct(product.id!).then(() => {
          if (isUnmounted.current) return;
-         resetImageUpload();
          errorAlert.clear();
          props.onSuccess();
          loadingCallBack!();
@@ -111,17 +86,14 @@ const ProductModal = (props: IProps) => {
       });
 
    };
-   const resetImageUpload = () => {
-      setImageBase64("");
-      setOriginalImageBase64("");
-   };
+
    const onImageUploaded = (croppedImage: string, originalImage: string) => {
       product.imageBase64 = croppedImage;
       product.originalImageBase64 = originalImage;
       setIsNewImageSet(true);
    };
-   const onImageUploadError = (errMsg: string) => {
-      let errors = new AlertObj([], AlertTypes.Error);
+   const onImageUploadError = (errMsg: string, alertType: AlertTypes) => {
+      let errors = new AlertObj([], alertType);
       errors.List.push(new ErrorDto("0", errMsg));
       errorAlert.set(errors);
    };
@@ -222,8 +194,8 @@ const ProductModal = (props: IProps) => {
                className="col-12 col-sm-6" />
 
             <ImageUpload className="col-12 col-sm-6 mt-4"
-               modifiedImageBase64={imageBase64}
-               originalImageBase64={originalImageBase64}
+               modifiedImagePath={product.imagePath}
+               originalImagePath={product.originalImagePath}
                onUploaded={onImageUploaded}
                onError={onImageUploadError}
                onLoading={onImageUploadLoading}
@@ -242,7 +214,7 @@ const ProductModal = (props: IProps) => {
             enableLoadingCreate={isUnmounted}
             enableLoadingUpdate={isUnmounted}
             enableLoadingDelete={isUnmounted}
-            onCancel={() => { errorAlert.clear(); resetImageUpload(); props.onClose(); }} />
+            onCancel={() => { errorAlert.clear(); props.onClose(); }} />
       </Modal >
    );
 };

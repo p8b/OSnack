@@ -238,7 +238,7 @@
 .open-eye-icon {
     &:before {
         text-decoration: none;
-        padding: 0.2rem;
+        padding: 0 0.2rem;
         content: "\f06e";
         display: inline-block;
         font-family: "FA5 Solid" !important;
@@ -248,6 +248,7 @@
 .close-eye-icon {
     &:before {
         text-decoration: none;
+        padding: 0 0.2rem;
         content: "\f070";
         display: inline-block;
         font-family: "FA5 Solid" !important;

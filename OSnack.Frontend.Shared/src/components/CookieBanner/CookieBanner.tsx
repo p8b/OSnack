@@ -1,10 +1,10 @@
-﻿import { Button } from "osnack-frontend-shared/src/components/Buttons/Button";
-import useScript from "osnack-frontend-shared/src/hooks/function/useScript";
-import { getCookieValue, setCookie } from "osnack-frontend-shared/src/_core/appFunc";
+﻿import { Button } from "../Buttons/Button";
+import useScript from "../../hooks/function/useScript";
+import { getCookieValue, setCookie } from "../../_core/appFunc";
 import React, { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { Link } from "react-router-dom";
-import Container from "./Container";
+import { GoogleAnalyticKey, MainWebsiteURL } from "../../_core/appConst";
 
 const CookieBanner = () => {
    const [cookieUserConsent, setCookieUserConsent] = useState("");
@@ -16,7 +16,7 @@ const CookieBanner = () => {
    useEffect(() => {
       setTimeout(() => {
          setShow(true);
-      }, 1);
+      }, navigator.cookieEnabled ? 10 : 1000);
    }, [show]);
 
    useEffect(() => {
@@ -32,7 +32,7 @@ const CookieBanner = () => {
 
    const setGoogleAScript = (value: boolean) => {
       if (value)
-         setCurrentUrl("https://www.googletagmanager.com/gtag/js?id=G-6Q00CYCVPL");
+         setCurrentUrl(`https://www.googletagmanager.com/gtag/js?id=${GoogleAnalyticKey}`);
       else
          setCurrentUrl("");
 
@@ -49,34 +49,33 @@ const CookieBanner = () => {
          // @ts-ignore
          gtag('js', new Date());
          // @ts-ignore
-         gtag('config', 'G-6Q00CYCVPL');
+         gtag('config', GoogleAnalyticKey);
       }
    }
 
    if (getCookieValue(cookieName) !== '' || !show) return <></>;
 
    return (
-      <div className=" pos-b-sticky shadow-top bg-white justify-content-center py-4 py-md-5">
-         <Container>
+      <div className="cookie-banner justify-content-center py-4 py-md-5">
+         <div className="container">
             {!navigator.cookieEnabled ?
-               <div className="display-6 text-center">Your browser has blocked cookies.<br />
+               <div className="display-6 text-center">
+                  Your browser has blocked cookies.<br />
                   Please enable cookies in your Web browser.<br />
-                  <Link to="/PrivacyPolicy">Privacy Policy</Link>
+                  <Link to={`${MainWebsiteURL}"/PrivacyPolicy"`}>Privacy Policy</Link>
                </div>
                :
-               <div className="col ml-auto mr-auto">
-                  <ReactMarkdown>{cookieUserConsent}</ReactMarkdown>
-                  <div className="row justify-content-center ">
-                     <Button className="col-auto mt-2"
-                        children="Only Necessary"
-                        onClick={() => { setGoogleAScript(false); }} />
-                     <Button className="col-12 col-md-4 ml-md-3 btn-green btn-lg mt-2"
-                        children="Allow Cookies"
-                        onClick={() => { setGoogleAScript(true); }} />
-                  </div>
+               <div className="row justify-content-center ">
+                  <ReactMarkdown className="col-12">{cookieUserConsent}</ReactMarkdown>
+                  <Button className="col-auto mt-2"
+                     children="Only Necessary"
+                     onClick={() => { setGoogleAScript(false); }} />
+                  <Button className="col-12 col-md-4 ml-md-3 btn-green btn-lg mt-2"
+                     children="Allow Cookies"
+                     onClick={() => { setGoogleAScript(true); }} />
                </div>
             }
-         </Container>
+         </div>
       </div>
    );
 };

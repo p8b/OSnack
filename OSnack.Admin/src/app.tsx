@@ -4,6 +4,7 @@ import { BrowserRouter, Switch } from "react-router-dom";
 import CustomRoute from "osnack-frontend-shared/src/_core/customRoute";
 import { Loading } from "osnack-frontend-shared/src/components/Loading/Loading";
 import AuthenticationContext from "osnack-frontend-shared/src/_core/authenticationContext";
+import NotificationContextContainer from "osnack-frontend-shared/src/_core/notificationContext";
 import { extractUri } from "osnack-frontend-shared/src/_core/appFunc";
 
 // Main Components such as pages, navbar, footer
@@ -25,7 +26,8 @@ const ViewUserOrders = lazy(() => import("./pages/OrderManagement/ViewUserOrders
 const MessagesManagement = lazy(() => import("./pages/MessagesManagement/MessagesManagement"));
 const DeliveryOptionManagement = lazy(() => import("./pages/DeliveryOptionManagement/DeliveryOptionManagement"));
 const ViewCommunication = lazy(() => import("./pages/Communication/ViewCommunication"));
-const CookieBanner = lazy(() => import("./components/CookieBanner"));
+const CookieBanner = lazy(() => import("osnack-frontend-shared/src/components/CookieBanner/CookieBanner"));
+const NotificationContainer = lazy(() => import("osnack-frontend-shared/src/components/Notification/NotificationContainer"));
 
 const App = () => {
    const [isOpenMainContainer, setIsOpenMainContainer] = useState(false);
@@ -70,40 +72,45 @@ const App = () => {
    return (
       <BrowserRouter>
          <AuthenticationContext>
-            <NavMenu mainContainerToggler={(isOpen) => setIsOpenMainContainer(isOpen)} isOpenMainContainer={isOpenMainContainer} />
-            <div id="main-container" className={`sidenav-main-container ${isOpenMainContainer ? "show" : ""}`}>
-               <Suspense fallback={<Loading />}>
-                  <Switch>
-                     {/***** Public Routes ****/}
-                     <CustomRoute path="/Login" render={(props: any) => <LoginPage {...props} mainContainerToggler={(isOpen) => setIsOpenMainContainer(isOpen)} />} />
-                     <CustomRoute path="/EmailConfirmation" render={(props: any) => <ConfirmEmail {...props} />} />
-                     <CustomRoute path="/ResetPassword" render={(props: any) => <PasswordReset {...props} />} />
-                     <CustomRoute path="/NewEmployee/SetupPassword" render={(props: any) => <PasswordReset {...props} />} />
+            <NotificationContextContainer>
+               <NavMenu mainContainerToggler={(isOpen) => setIsOpenMainContainer(isOpen)} isOpenMainContainer={isOpenMainContainer} />
+               <div id="main-container" className={`sidenav-main-container ${isOpenMainContainer ? "show" : ""}`}>
+                  <Suspense fallback={<Loading />}>
+                     <Switch>
+                        {/***** Public Routes ****/}
+                        <CustomRoute path="/Login" render={(props: any) => <LoginPage {...props} mainContainerToggler={(isOpen) => setIsOpenMainContainer(isOpen)} />} />
+                        <CustomRoute path="/EmailConfirmation" render={(props: any) => <ConfirmEmail {...props} />} />
+                        <CustomRoute path="/ResetPassword" render={(props: any) => <PasswordReset {...props} />} />
+                        <CustomRoute path="/NewEmployee/SetupPassword" render={(props: any) => <PasswordReset {...props} />} />
 
-                     {/***** Protected Routes  ****/}
-                     <CustomRoute authRequired exact path="/" render={(props: any) => <Dashboard {...props} />} />
-                     <CustomRoute authRequired exact path="/MyAccount" render={(props: any) => <MyAccount {...props} />} />
-                     <CustomRoute authRequired path="/Categories" render={(props: any) => <CategoryManagement {...props} />} />
-                     <CustomRoute authRequired path="/Coupons" render={(props: any) => <CouponManagement {...props} />} />
-                     <CustomRoute authRequired path="/Products" render={(props: any) => <ProductManagement {...props} />} />
-                     <CustomRoute authRequired exact path="/EmailTemplate" render={(props: any) => <EmailTemplateManagement {...props} />} />
-                     <CustomRoute authRequired exact path="/EmailTemplate/Edit" render={(props: any) => <EmailTemplateEdit {...props} />} />
-                     <CustomRoute authRequired path="/Users" render={(props: any) => <UserManagement {...props} />} />
-                     <CustomRoute authRequired path="/ViewUserOrders" render={(props: any) => <ViewUserOrders {...props} />} />
-                     <CustomRoute authRequired path="/Messages" render={(props: any) => <MessagesManagement {...props} />} />
-                     <CustomRoute authRequired path="/Orders" render={(props: any) => <OrderManagement {...props} />} />
-                     <CustomRoute authRequired path="/DeliveryOptions" render={(props: any) => <DeliveryOptionManagement {...props} />} />
-                     <CustomRoute authRequired path="/ViewDispute" render={(props: any) => <ViewCommunication {...props} />} />
-                     <CustomRoute authRequired path="/ViewCommunication" render={(props: any) => <ViewCommunication {...props} />} />
+                        {/***** Protected Routes  ****/}
+                        <CustomRoute authRequired exact path="/" render={(props: any) => <Dashboard {...props} />} />
+                        <CustomRoute authRequired exact path="/MyAccount" render={(props: any) => <MyAccount {...props} />} />
+                        <CustomRoute authRequired path="/Categories" render={(props: any) => <CategoryManagement {...props} />} />
+                        <CustomRoute authRequired path="/Coupons" render={(props: any) => <CouponManagement {...props} />} />
+                        <CustomRoute authRequired path="/Products" render={(props: any) => <ProductManagement {...props} />} />
+                        <CustomRoute authRequired exact path="/EmailTemplate" render={(props: any) => <EmailTemplateManagement {...props} />} />
+                        <CustomRoute authRequired exact path="/EmailTemplate/Edit" render={(props: any) => <EmailTemplateEdit {...props} />} />
+                        <CustomRoute authRequired path="/Users" render={(props: any) => <UserManagement {...props} />} />
+                        <CustomRoute authRequired path="/ViewUserOrders" render={(props: any) => <ViewUserOrders {...props} />} />
+                        <CustomRoute authRequired path="/Messages" render={(props: any) => <MessagesManagement {...props} />} />
+                        <CustomRoute authRequired path="/Orders" render={(props: any) => <OrderManagement {...props} />} />
+                        <CustomRoute authRequired path="/DeliveryOptions" render={(props: any) => <DeliveryOptionManagement {...props} />} />
+                        <CustomRoute authRequired path="/ViewDispute" render={(props: any) => <ViewCommunication {...props} />} />
+                        <CustomRoute authRequired path="/ViewCommunication" render={(props: any) => <ViewCommunication {...props} />} />
 
-                     {/***** Route Not Found  ****/}
-                     <CustomRoute authRequired path="*" render={(props: any) => <PageNotFound {...props} />} />
-                  </Switch>
+                        {/***** Route Not Found  ****/}
+                        <CustomRoute authRequired path="*" render={(props: any) => <PageNotFound {...props} />} />
+                     </Switch>
+                  </Suspense>
+               </div>
+               <Suspense fallback={<></>}>
+                  <div className="c-container">
+                     <NotificationContainer />
+                     <CookieBanner />
+                  </div>
                </Suspense>
-            </div>
-            <Suspense fallback={<></>}>
-               <CookieBanner />
-            </Suspense>
+            </NotificationContextContainer>
          </AuthenticationContext>
       </BrowserRouter>
    );

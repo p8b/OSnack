@@ -3,7 +3,7 @@ import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import ProductComment from 'osnack-frontend-shared/src/components/ProductComment/ProductComment';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
-import { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
+import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Comment } from 'osnack-frontend-shared/src/_core/apiModels';
 import { useAllComment } from '../../SecretHooks/useCommentHook';
 import ReplyCommentModal from './ReplyCommentModal';
@@ -21,9 +21,6 @@ const CommentModal = (props: IProps) => {
    useEffect(() => () => { isUnmounted.current = true; }, []);
    useEffect(() => { reload(); }, [props.productId]);
 
-   useEffect(() => {
-      errorAlert.clear();
-   }, [props.isOpen]);
    const reload = (selectedPage = tbl.selectedPage, maxItemsPerPage = tbl.maxItemsPerPage) => {
       if (selectedPage != tbl.selectedPage)
          tbl.setSelectedPage(selectedPage);
@@ -31,11 +28,14 @@ const CommentModal = (props: IProps) => {
       if (maxItemsPerPage != tbl.maxItemsPerPage)
          tbl.setMaxItemsPerPage(maxItemsPerPage);
 
+
+
       errorAlert.pleaseWait(isUnmounted);
       useAllComment(props.productId, selectedPage, maxItemsPerPage).then(result => {
          if (isUnmounted.current) return;
          setCommentList(result.data.commentList!);
          tbl.setTotalItemCount(result.data.totalCount!);
+         errorAlert.clear();
       }).catch(errors => {
          if (isUnmounted.current) return;
          errorAlert.set(errors);
@@ -47,6 +47,10 @@ const CommentModal = (props: IProps) => {
          bodyRef={props.modalRef}
          isOpen={props.isOpen}>
          <PageHeader title="Comments" />
+         <Alert alert={errorAlert.alert}
+            className="col-12 mb-2"
+            onClosed={() => { errorAlert.clear(); }}
+         />
          {commentList!.map(comment =>
             <ProductComment key={comment.id} comment={comment}
                reply={comment => {
@@ -63,7 +67,7 @@ const CommentModal = (props: IProps) => {
             />
             <Button children="Close"
                className="col-12 mt-3 btn-white btn-lg"
-               onClick={() => { props.onClose(); }} />
+               onClick={() => { errorAlert.clear(); props.onClose(); }} />
          </div>
 
          <ReplyCommentModal isOpen={isOpenReplyModal} comment={selectedComment}

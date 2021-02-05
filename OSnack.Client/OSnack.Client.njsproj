@@ -190,7 +190,6 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\app.tsx" />
-    <TypeScriptCompile Include="src\components\CookieBanner.tsx" />
     <TypeScriptCompile Include="src\components\Modal\AddressModal.tsx" />
     <TypeScriptCompile Include="src\components\Modal\CookieDisableModal.tsx" />
     <TypeScriptCompile Include="src\pages\Communication\ViewCommunication.tsx" />

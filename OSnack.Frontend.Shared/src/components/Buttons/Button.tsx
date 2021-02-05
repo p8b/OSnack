@@ -34,7 +34,7 @@ export const Button = (props: IProps) => {
       <button id={id.toString()}
          type="button" name={btnName}
          children={props.children}
-         className={`btn ${props?.className} ${loading && "loading"}`}
+         className={`btn ${props?.className} ${loading ? "loading" : ""}`}
          onClick={onClick}
          disabled={props?.disabled || disable || false}
       />
