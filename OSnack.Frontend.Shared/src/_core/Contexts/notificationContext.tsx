@@ -1,136 +1,118 @@
-﻿import { extractUri, localStorageManagement } from "../appFunc";
-import React, { createContext, useReducer, useEffect, useContext } from "react";
+﻿import { extractUri, localStorageManagement, CopyObject } from "../appFunc";
+import React, { createContext, useEffect, useContext, useState } from "react";
 import { AuthenticationContext } from "./authenticationContext";
+import { Notification, NotificationType } from "../../components/Notification/NotificationModal";
 
-export enum NotificationShow {
-   default = 0,
-   always = 1,
-   login = 2
-}
 
-export class Notification {
-   id?: number = 0;
-   children: any;
-   show: NotificationShow;
-   timeOut: number;
-   location: string | null;
-   constructor(children: any, show: NotificationShow = NotificationShow.default, timeOut: number = 0, location: string | null = null) {
-      this.children = children;
-      this.show = show;
-      this.timeOut = timeOut;
-      this.location = location;
-   }
-}
-
-class NotificationState {
-   List: Notification[] = [];
-   LastId: number = 0;
-}
-
-const localStorageName = "NotificationState";
-export const initState = new NotificationState();
 
 interface INotificationContext {
+   list: Notification[],
+   isEmpty: boolean,
+   findById: (id: number) => Notification | undefined,
    add: (notification: Notification) => void,
+   addFix: (children: any, timeOut?: number, location?: string | null, id?: number) => void,
+   addDefualt: (children: any, timeOut?: number, location?: string | null, id?: number) => void,
+   addAuthorised: (children: any, timeOut?: number, location?: string | null, id?: number) => void,
    remove: (id: number) => void,
-   notifications: () => Notification[],
+   changeMinimize: (id: number, minimize: boolean) => void;
 }
 
-const initNotificationContext: INotificationContext = {
+export const NotificationContext = createContext({
+   list: [],
+   isEmpty: true,
+   findById: (id: number) => undefined,
    add: (notification: Notification) => { },
+   addFix: (children: any, timeOut: number = 0, location: string | null = null, id: number = 0) => { },
+   addDefualt: (children: any, timeOut: number = 0, location: string | null = null, id: number = 0) => { },
+   addAuthorised: (children: any, timeOut: number = 0, location: string | null = null, id: number = 0) => { },
    remove: (id: number) => { },
-   notifications: () => [],
-};
+   changeMinimize: (id: number, minimize: boolean) => { }
+} as INotificationContext);
 
-const reducerNotification = (state: NotificationState, newState: NotificationState) => {
-   if (newState === null && navigator.cookieEnabled) {
-      localStorageManagement.REMOVE(localStorageName);
-      return initState;
-   }
-   return { ...state, ...newState };
-};
-
-const localNotificationState = (): NotificationState => {
-   const localValue = localStorageManagement.GET(localStorageName);
-   if (localValue == "") {
-      return initState;
-   } else {
-      return JSON.parse(localValue);
-   }
-};
-
-export const NotificationContext = createContext(initNotificationContext);
-
-
-const NotificationContextContainerProvider = ({ children }: Props): JSX.Element => {
+const NotificationContextContainer = ({ children }: { children: React.ReactNode; }) => {
    const auth = useContext(AuthenticationContext);
-   const [state, setState] = useReducer(reducerNotification, localNotificationState());
+
+   const [notificationList, setNotificationList] = useState<Notification[]>([]);
+
+   const localStorageName = "NotificationState";
 
 
+   useEffect(() => {
+      try {
+         var _list = JSON.parse(localStorageManagement.GET(localStorageName)) as Notification[];
+         setNotificationList(_list || []);
+      } catch {
+         setNotificationList([]);
+      }
+   }, []);
+
+   useEffect(() => {
+      localStorageManagement.SET(localStorageName, JSON.stringify(list));
+   }, [notificationList]);
+   const list = (() => {
+      var _list = notificationList.filter(n => visibilityCheck(n));
+      if (notificationList.length != _list.length)
+         setNotificationList(_list);
+      return _list;
+   })();
+
+   const isEmpty = (() => notificationList.length === 0)();
+
+   const findById = (id: number) => list.find(n => n.id == id);
 
    const add = (notification: Notification) => {
-      var _State = state;
-      notification.id = _State.LastId;
-      _State.LastId += 1;
-      _State.List.push(notification);
-      setState(_State);
+      var _list = CopyObject(notificationList);
+      if (notification.id == 0)
+         notification.id = Math.random();
+      _list.push(notification);
+      setNotificationList(_list);
+   };
+
+   const addFix = (children: any, timeOut: number = 0, location: string | null = null, id: number = 0) =>
+      add(new Notification(children, NotificationType.fix, timeOut, location, id));
+
+
+   const addDefualt = (children: any, timeOut: number = 0, location: string | null = null, id: number = 0) =>
+      add(new Notification(children, NotificationType.default, timeOut, location, id));
+
+   const addAuthorised = (children: any, timeOut: number = 0, location: string | null = null, id: number = 0) =>
+      add(new Notification(children, NotificationType.authorised, timeOut, location, id));
+
+
+   const remove = (id: number) => setNotificationList(list.filter(n => n.id != id));
+   const changeMinimize = (id: number, minimize: boolean) => {
+      var notification = list.find(n => n.id == id);
+      notification!.minimize = minimize;
+      setNotificationList(list);
    };
 
 
-
-   const remove = (id: number) => {
-      var _State = state;
-      var tempList: Notification[] = [];
-      _State.List.map(notification => {
-         if (notification.id != id)
-            tempList.push(notification);
-      });
-      _State.List = tempList;
-      if (_State.List.length == 0)
-         _State.LastId = 0;
-      setState(_State);
-   };
-
-   const notifications = () => {
-      var _State = state;
-      var tempList: Notification[] = [];
-      _State.List.map(notification => {
-         if (checkNotification(notification))
-            tempList.push(notification);
-      });
-      _State.List = tempList;
-      if (_State.List.length == 0)
-         _State.LastId = 0;
-      if (_State.List.length != tempList.length)
-         setState(_State);
-      return _State.List;
-
-   };
-
-   const checkNotification = (notifications: Notification) => {
-      if (!auth.isAuthenticated && notifications.show == NotificationShow.login)
+   function visibilityCheck(notifications: Notification) {
+      if (!auth.isAuthenticated && notifications.type == NotificationType.authorised)
          return false;
 
       if (notifications.location !== null && notifications.location !== extractUri()[0])
          return false;
 
       return true;
-
    };
 
-   useEffect(() => {
-      localStorageManagement.SET(localStorageName, JSON.stringify(state));
-   }, [state]);
+   const providerValue = {
+      list,
+      isEmpty,
+      findById,
+      add,
+      addFix,
+      addDefualt,
+      addAuthorised,
+      remove,
+      changeMinimize
+   };
 
    return (
-      <NotificationContext.Provider value={{ add, remove, notifications }}>
+      <NotificationContext.Provider value={providerValue}>
          {children}
       </NotificationContext.Provider>
    );
 };
-export default NotificationContextContainerProvider;
-
-
-type Props = {
-   children: React.ReactNode;
-};
+export default NotificationContextContainer;

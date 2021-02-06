@@ -16,7 +16,8 @@ const ImageUpload = (props: IProps) => {
    const [originalImageLoading, setOriginalImageLoading] = useState(true);
 
    useEffect(() => {
-      if (props.modifiedImagePath != null)
+      console.log(props.modifiedImagePath);
+      if (props.modifiedImagePath != undefined)
          getBase64fromUrlImage(`${API_URL}/${props.modifiedImagePath}`)
             .then(imgBase64 => {
                if (isUnmounted.current) return;
@@ -28,9 +29,11 @@ const ImageUpload = (props: IProps) => {
                // errorAlert.setSingleWarning("", "Image Not Found!");
                setImageLoading(false);
             });
+      else
+         setImageLoading(false);
    }, [props.modifiedImagePath]);
    useEffect(() => {
-      if (props.originalImagePath != null)
+      if (props.originalImagePath != undefined)
          getBase64fromUrlImage(`${API_URL}/${props.originalImagePath}`)
             .then(imgBase64 => {
                if (isUnmounted.current) return;
@@ -41,7 +44,8 @@ const ImageUpload = (props: IProps) => {
                props.onError("Original Image Not Found!", AlertTypes.Warning);
                setOriginalImageLoading(false);
             });
-
+      else
+         setOriginalImageLoading(false);
    }, [props.originalImagePath]);
 
    const uploadDocument = async (input: HTMLInputElement) => {

@@ -10,6 +10,7 @@ import Footer from "../Footer";
 import { extractUri } from "osnack-frontend-shared/src/_core/appFunc";
 import { Toggler } from "osnack-frontend-shared/src/components/Inputs/Toggler";
 import { usePutMaintenance, useGetMaintenance } from "../../SecretHooks/useMaintenanceHook";
+import { NotificationContext } from "osnack-frontend-shared/src/_core/Contexts/notificationContext";
 
 // Navigation menu component
 const NavMenu = (props: IProps) => {
@@ -18,6 +19,7 @@ const NavMenu = (props: IProps) => {
    const [maintenanceIsOn, setMaintenanceIsOn] = useState(false);
    const history = useHistory();
    const breakSize = 768;
+   const notificationCtx = useContext(NotificationContext);
 
    useEffect(() => {
       if (window.innerWidth > breakSize && extractUri()[0] != "Login")
@@ -72,7 +74,7 @@ const NavMenu = (props: IProps) => {
                </div>
                <nav className={`row text-center align-items-start sidenav pt-2 m-0 ${props.isOpenMainContainer ? "show" : "hide"}`}>
                   <div onClick={() => history.push("/")} className="logo-container col-12 cursor-pointer">
-                     <img id="logo" alt="Logo" className="Logo" src={`/public/images/logo.png`} />
+                     <img id="logo" alt="Logo" className="Logo" src={`/public/images/logo.png`} onDoubleClick={() => { notificationCtx.addDefualt("Hello"); }} />
                      <p className="col-12 text-dark text-center user-select-none">Management</p>
                   </div>
                   {/** user links */}

@@ -1,11 +1,9 @@
-﻿import React, { useContext, useEffect } from 'react';
+﻿import React, { useEffect } from 'react';
 import Login from 'osnack-frontend-shared/src/components/Login/Login';
 import { User } from 'osnack-frontend-shared/src/_core/apiModels';
-import { Notification, NotificationContext, NotificationShow } from 'osnack-frontend-shared/src/_core/Contexts/notificationContext';
 
 const LoginPage = (props: IProps) => {
 
-   const notifCtx = useContext(NotificationContext);
    const externalLoginFailed = (user: User) => {
 
    };
@@ -20,7 +18,7 @@ const LoginPage = (props: IProps) => {
       <div className="row pm-0 justify-content-sm-center">
          <div className="row col-12">
             <div className="m-auto">
-               <img id="logo" alt="Logo" className="Logo pm-0" src={`/public/images/logo.png`} onClick={() => { notifCtx.add(new Notification("demo", NotificationShow.always, 4)); }} />
+               <img id="logo" alt="Logo" className="Logo pm-0" src={`/public/images/logo.png`} />
                <p className="text-center">Management</p>
             </div>
          </div>

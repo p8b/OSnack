@@ -57,6 +57,11 @@ export class localStorageManagement {
    };
 }
 
+export function CopyObject<T>(val: T) {
+   return JSON.parse(JSON.stringify(val)) as T;
+}
+
+
 /** This class is used to send/receive Http requests */
 export class httpCaller {
    /**
@@ -196,11 +201,11 @@ export const uuidv4 = () => {
    });
 };
 
-export const delay = (ms: number) => {
-   return new Promise((resolve, reject) => {
-      setTimeout(resolve, ms);
-   });
-};
+//export const delay = (ms: number) => {
+//   return new Promise((resolve, reject) => {
+//      setTimeout(resolve, ms);
+//   });
+//};
 export const sleep = async (ms: number, isCanceled: React.MutableRefObject<boolean>) => {
    return new Promise((resolve, reject) => {
       setTimeout(() => {

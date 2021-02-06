@@ -5,7 +5,7 @@ export const CustomRouteContext = createContext({
    isAuthenticationConfirmed: false,
    maintenanceIsOn: false,
    isUserAllowedInMaintenance: false,
-   setMaintenance: (_isOpen: boolean = true, _isUserAllowedInMaintenance: boolean = true) => { },
+   setMaintenance: (_maintenanceIsOn: boolean = false, _isUserAllowedInMaintenance: boolean = false) => { },
    setPath: (_path: string) => { },
    authenticationIsConfirmed: () => { }
 });

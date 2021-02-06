@@ -29,6 +29,8 @@ const CookieBanner = lazy(() => import("osnack-frontend-shared/src/components/Co
 const NotificationContainer = lazy(() => import("osnack-frontend-shared/src/components/Notification/NotificationContainer"));
 
 const App = () => {
+
+
    const [isOpenMainContainer, setIsOpenMainContainer] = useState(false);
    const isOpenRef = useRef(false);
    const breakSize = 768;
@@ -37,9 +39,16 @@ const App = () => {
       if (window.innerWidth <= breakSize)
          setIsOpenMainContainer(false);
       window.addEventListener("resize", sizeChange);
+
+
+
+
       return () => {
          window.removeEventListener("resize", sizeChange);
       };
+
+
+
    }, []);
 
    useEffect(() => {
@@ -103,10 +112,8 @@ const App = () => {
                </Suspense>
             </div>
             <Suspense fallback={<></>}>
-               <div className="c-container">
-                  <NotificationContainer />
-                  <CookieBanner />
-               </div>
+               <NotificationContainer />
+               <CookieBanner />
             </Suspense>
          </ContextContainer>
       </BrowserRouter>

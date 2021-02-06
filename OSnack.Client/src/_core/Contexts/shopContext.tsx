@@ -1,5 +1,5 @@
 ﻿import { OrderItem, Product } from "osnack-frontend-shared/src/_core/apiModels";
-import { localStorageManagement } from "osnack-frontend-shared/src/_core/appFunc";
+import { CopyObject, localStorageManagement } from "osnack-frontend-shared/src/_core/appFunc";
 import React, { createContext, useEffect, useRef, useState } from "react";
 
 interface IShopContext {
@@ -43,7 +43,7 @@ const ShopContextContainer = ({ children }: Props): JSX.Element => {
    }, [list]);
 
    const set = (product: Product, quantity: number) => {
-      var _list = list;
+      var _list = CopyObject(list);
       let isFound = false;
       for (var i = 0; i < list?.length; i++) {
          if (list[i].productId === product.id) {
@@ -59,7 +59,7 @@ const ShopContextContainer = ({ children }: Props): JSX.Element => {
       isCleared.current = false;
    };
    const updateOrderItem = (orderItem: OrderItem, quantity?: number) => {
-      var _list = list;
+      var _list = CopyObject(list);
       if (quantity != undefined)
          orderItem.quantity = quantity;
       for (var i = 0; i < list?.length; i++) {

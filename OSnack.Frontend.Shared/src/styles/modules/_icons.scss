@@ -130,6 +130,15 @@
     }
 }
 
+.maximize-icon {
+    &:before {
+        text-decoration: none;
+        content: "\f2d0";
+        display: inline;
+        font-family: "FA5 Solid" !important;
+    }
+}
+
 .sort-numeric-up-icon {
     &:before {
         text-decoration: none;

@@ -1,25 +1,19 @@
 ﻿import { Button } from "../Buttons/Button";
 import useScript from "../../hooks/function/useScript";
-import { getCookieValue, setCookie } from "../../_core/appFunc";
-import React, { useContext, useEffect, useState } from "react";
+import { getCookieValue, setCookie, sleep } from "../../_core/appFunc";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { Link } from "react-router-dom";
 import { CustomRouteContext } from "../../_core/Contexts/customRouteContext";
 import { GoogleAnalyticKey, MainWebsiteURL } from "../../_core/appConst";
 
 const CookieBanner = () => {
+   const isUnmounted = useRef(false);
    const maintenance = useContext(CustomRouteContext);
    const [cookieUserConsent, setCookieUserConsent] = useState("");
    const [currentUrl, setCurrentUrl] = useState<string | null>(null);
    const googleAnalytic = useScript(currentUrl);
    const cookieName = "CookieUserConsent";
    const [show, setShow] = React.useState(false);
-
-   useEffect(() => {
-      setTimeout(() => {
-         setShow(true);
-      }, navigator.cookieEnabled ? 10 : 1000);
-   }, [show]);
 
    useEffect(() => {
       fetch(`${window.location.origin}/public/markdowns/CookieUserConsent.md`).then((result) => {
@@ -30,7 +24,30 @@ const CookieBanner = () => {
       });
       if (getCookieValue(cookieName) !== "")
          setGoogleAScript(getCookieValue(cookieName) === "true");
+
+      return () => {
+         isUnmounted.current = true;
+      };
    }, []);
+
+   useEffect(() => {
+      sleep(navigator.cookieEnabled ? 10 : 1000, isUnmounted)
+         .then(() => { setShow(true); });
+   }, [show]);
+
+   useEffect(() => {
+      if (googleAnalytic.isLoaded && getCookieValue(cookieName) === "true") {
+         // @ts-ignore
+         window.dataLayer = window.dataLayer || [];
+         // @ts-ignore
+         function gtag() { dataLayer.push(arguments); }
+         // @ts-ignore
+         gtag('js', new Date());
+         // @ts-ignore
+         gtag('config', GoogleAnalyticKey);
+      }
+   }, [googleAnalytic.isLoaded]);
+
 
    const setGoogleAScript = (value: boolean) => {
       if (value)
@@ -42,20 +59,9 @@ const CookieBanner = () => {
          setCookie(cookieName, value, 356);
    };
 
-   if (getCookieValue(cookieName) === "true") {
-      if (googleAnalytic.isLoaded) {
-         // @ts-ignore
-         window.dataLayer = window.dataLayer || [];
-         // @ts-ignore
-         function gtag() { dataLayer.push(arguments); }
-         // @ts-ignore
-         gtag('js', new Date());
-         // @ts-ignore
-         gtag('config', GoogleAnalyticKey);
-      }
-   }
-   if (maintenance.maintenanceIsOn || !maintenance.isUserAllowedInMaintenance)
+   if (maintenance.maintenanceIsOn && !maintenance.isUserAllowedInMaintenance)
       return (<></>);
+
    if (getCookieValue(cookieName) !== '' || !show) return <></>;
 
    return (
@@ -65,7 +71,7 @@ const CookieBanner = () => {
                <div className="display-6 text-center">
                   Your browser has blocked cookies.<br />
                   Please enable cookies in your Web browser.<br />
-                  <Link to={`${MainWebsiteURL}"/PrivacyPolicy"`}>Privacy Policy</Link>
+                  <a href={`${MainWebsiteURL}"/PrivacyPolicy"`}>Privacy Policy</a>
                </div>
                :
                <div className="row justify-content-center ">
