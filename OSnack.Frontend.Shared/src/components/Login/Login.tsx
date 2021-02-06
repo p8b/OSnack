@@ -6,7 +6,7 @@ import { Input } from "../../components/Inputs/Input";
 import { CheckBox } from "../../components/Inputs/CheckBox";
 import { Button } from "../../components/Buttons/Button";
 import GoogleLogin from "../../components/Buttons/GoogleLogin";
-import { AuthContext } from "../../_core/authenticationContext";
+import { AuthenticationContext } from "../../_core/Contexts/authenticationContext";
 import { ExternalLoginDetails, LoginInfo, User } from "../../_core/apiModels";
 import ForgotPasswordModal from "../Modals/ForgotPasswordModal";
 import Alert, { AlertObj, AlertTypes, ErrorDto, useAlert } from "../Texts/Alert";
@@ -17,7 +17,7 @@ const Login = (props: IProps) => {
    const errorAlert = useAlert(new AlertObj());
    const [loginInfo, setLoginInfo] = useState(new LoginInfo());
    const [forgotPasswordModalIsOpen, setForgotPasswordModalIsOpen] = useState(false);
-   const auth = useContext(AuthContext);
+   const auth = useContext(AuthenticationContext);
 
    useEffect(() => {
       return () => {
@@ -29,7 +29,7 @@ const Login = (props: IProps) => {
       if (isUnmounted.current) return;
       loadingCallBack && loadingCallBack!();
       errorAlert.clear();
-      auth.setState({ isAuthenticated: true, user: result.data });
+      auth.set(true, result.data);
    };
    const loginFailed = (errors: AlertObj, loadingCallBack?: () => void) => {
       if (isUnmounted.current) return;
@@ -69,7 +69,7 @@ const Login = (props: IProps) => {
    };
 
    /// If user is authenticated then redirect the user to home page
-   if (auth.state.isAuthenticated) {
+   if (auth.isAuthenticated) {
       try {
          return (<Redirect to={props.fromPath || "/"} />);
       } catch (e) {

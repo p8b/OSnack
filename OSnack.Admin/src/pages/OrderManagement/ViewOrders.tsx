@@ -1,7 +1,7 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Communication, Order, OrderStatusType, OrderStatusTypeList, PaymentTypeList, DisputeFilterTypes } from 'osnack-frontend-shared/src/_core/apiModels';
-import { GetAllRecords } from 'osnack-frontend-shared/src/_core/appConst';
+import { AppAccess, GetAllRecords } from 'osnack-frontend-shared/src/_core/appConst';
 import { useHistory } from 'react-router-dom';
 import { extractUri, convertUriParamToBool, generateUri, getBadgeByOrderStatusType } from 'osnack-frontend-shared/src/_core/appFunc';
 import Table, { TableData, useTableData } from 'osnack-frontend-shared/src/components/Table/Table';
@@ -14,7 +14,6 @@ import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
 import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput';
 import { usePutSecretCommunication } from '../../SecretHooks/useCommunicationHook';
 import { useAllOrder, useAllUserOrder } from '../../SecretHooks/useOrderHook';
-import { Access } from '../../_core/appConstant.Variables';
 import Container from '../../components/Container';
 
 const ViewOrders = (props: IProps) => {
@@ -232,7 +231,7 @@ const ViewOrders = (props: IProps) => {
                onDispute={props.onDispute} />
             <CommunicationModal isOpen={isOpenDisputeModal}
                communication={selectedDispute}
-               access={Access}
+               access={AppAccess.Admin}
                onClose={() => { setIsOpenDisputeModal(false); onSearch(); }}
                usePutSecretCommunication={usePutSecretCommunication}
             />

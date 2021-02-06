@@ -4,7 +4,7 @@ import { OrderItem, ProductUnitType } from 'osnack-frontend-shared/src/_core/api
 import { onImageError } from 'osnack-frontend-shared/src/_core/appFunc';
 import { API_URL } from 'osnack-frontend-shared/src/_core/appConst';
 import QuantityInput from 'osnack-frontend-shared/src/components/Inputs/QuantityInput';
-import { ShopContext } from '../../_core/shopContext';
+import { ShopContext } from '../../_core/Contexts/shopContext';
 
 const BasketItem = (props: IProps) => {
    const basket = useContext(ShopContext);

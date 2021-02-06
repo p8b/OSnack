@@ -226,8 +226,8 @@ namespace OSnack.API.Extras
             using (SqlConnection con = new SqlConnection(connectionString))
             {
                con.Open();
-            }
             return true;
+            }
          }
          catch (Exception)
          {

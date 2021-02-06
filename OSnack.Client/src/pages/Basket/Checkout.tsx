@@ -1,12 +1,12 @@
 ﻿import React, { useContext, useEffect, useRef, useState } from 'react';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
-import { ShopContext } from '../../_core/shopContext';
+import { ShopContext } from '../../_core/Contexts/shopContext';
 import InputDropDown from 'osnack-frontend-shared/src/components/Inputs/InputDropDown';
 import { Address, Coupon, CouponType, DeliveryOption, Order, Order2 } from 'osnack-frontend-shared/src/_core/apiModels';
 import { useAllDeliveryOption } from 'osnack-frontend-shared/src/hooks/PublicHooks/useDeliveryOptionHook';
 import { useAllAddress } from 'osnack-frontend-shared/src/hooks/OfficialHooks/useAddressHook';
 import { usePostOrder, useVerifyOrder } from 'osnack-frontend-shared/src/hooks/PublicHooks/useOrderHook';
-import { AuthContext } from 'osnack-frontend-shared/src/_core/authenticationContext';
+import { AuthenticationContext } from 'osnack-frontend-shared/src/_core/Contexts/authenticationContext';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import { useDetectOutsideClick } from 'osnack-frontend-shared/src/hooks/function/useDetectOutsideClick';
 import AddressModal from '../../components/Modal/AddressModal';
@@ -23,7 +23,7 @@ const Checkout = (props: IProps) => {
    const history = useHistory();
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
-   const auth = useContext(AuthContext);
+   const auth = useContext(AuthenticationContext);
    const basket = useContext(ShopContext);
    const [isOpenAddressModal, setIsOpenAddressModal] = useState(false);
    const [isOrderCompleted, setIsOrderCompleted] = useState(false);
@@ -43,7 +43,7 @@ const Checkout = (props: IProps) => {
       getDeliveryOptionAndAddresses;
       return () => { isUnmounted.current = true; };
    }, []);
-   useEffect(() => { getDeliveryOptionAndAddresses(); }, [auth.state.isAuthenticated]);
+   useEffect(() => { getDeliveryOptionAndAddresses(); }, [auth.isAuthenticated]);
    useEffect(() => {
       if (props.refresh) {
          recalculateBasket(deliveryOptionList, order.deliveryOption);
@@ -57,7 +57,7 @@ const Checkout = (props: IProps) => {
    const getDeliveryOptionAndAddresses = () => {
 
       errorAlert.pleaseWait(isUnmounted);
-      if (auth.state.isAuthenticated) {
+      if (auth.isAuthenticated) {
          useAllAddress().then(result => {
             if (isUnmounted.current) return;
             setAddressList(result.data);
@@ -82,7 +82,7 @@ const Checkout = (props: IProps) => {
       let totalDiscount = 0;
       let totalItemPriceTemp = 0;
       /// Calculate the Total item price
-      basket.state.List.map(orderItem => {
+      basket.list.map(orderItem => {
          totalItemPriceTemp += (orderItem.quantity * orderItem.price);
       });
       let removeCoupon = false;
@@ -165,7 +165,7 @@ const Checkout = (props: IProps) => {
             ...prev, totalPrice: (totalItemPriceTemp + shippingPrice - totalDiscount),
             deliveryOption: selectDeliveryOption || order.deliveryOption,
             coupon: removeCoupon ? new Coupon() : selectCoupon,
-            orderItems: basket.state.List,
+            orderItems: basket.list,
             totalItemPrice: totalItemPriceTemp,
             totalDiscount: totalDiscount
          };
@@ -249,7 +249,7 @@ const Checkout = (props: IProps) => {
                <b className="col pm-0" >£{order.totalPrice?.toFixed(2)}</b>
             </div>
             <p className="col-12 pm-0 small-text text-gray" >Total Items: {basket.getTotalItems()}</p>
-            {auth.state.isAuthenticated &&
+            {auth.isAuthenticated &&
                <>
                   <InputDropDown dropdownTitle={selectAddress.name || "My Addresses"}
                      className="col-12 pm-0 mt-5 align-self-end "
@@ -287,7 +287,7 @@ const Checkout = (props: IProps) => {
                      disabled={!navigator.cookieEnabled} />
                </>
             }
-            {!auth.state.isAuthenticated &&
+            {!auth.isAuthenticated &&
                <>
                   <div className="col-12 btn btn-lg btn-green mt-5" children="Login" onClick={() => history.push({ pathname: "/login", state: { fromPath: "/Checkout" } })} />
                   <PageHeader title="OR" className="my-3" />
@@ -305,7 +305,7 @@ const Checkout = (props: IProps) => {
             />
          </div>
          {/***** Add/ modify category modal  ****/}
-         {auth.state.isAuthenticated &&
+         {auth.isAuthenticated &&
             <AddressModal isOpen={isOpenAddressModal}
                onSuccess={(address) => {
                   useAllAddress().then(result => {

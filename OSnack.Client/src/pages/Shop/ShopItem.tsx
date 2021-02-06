@@ -5,7 +5,7 @@ import { Product, ProductUnitType } from 'osnack-frontend-shared/src/_core/apiMo
 import { onImageError } from 'osnack-frontend-shared/src/_core/appFunc';
 import { API_URL } from 'osnack-frontend-shared/src/_core/appConst';
 import QuantityInput from 'osnack-frontend-shared/src/components/Inputs/QuantityInput';
-import { ShopContext } from '../../_core/shopContext';
+import { ShopContext } from '../../_core/Contexts/shopContext';
 
 const ShopItem = (props: IProps) => {
    const history = useHistory();

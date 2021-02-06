@@ -5,10 +5,10 @@ import Container from '../../components/Container';
 import { useGetQuestionCommunication } from "osnack-frontend-shared/src/hooks/PublicHooks/useCommunicationHook";
 import { useGetDisputeSecretCommunication } from "../../SecretHooks/useCommunicationHook";
 import ShowCommunication from 'osnack-frontend-shared/src/components/Communication/ShowCommunication';
-import { Access } from '../../_core/appConstant.Variables';
 import { extractUri } from 'osnack-frontend-shared/src/_core/appFunc';
 import { useHistory } from 'react-router-dom';
 import { useDeleteCommunication, usePutSecretCommunication } from '../../SecretHooks/useCommunicationHook';
+import { AppAccess } from 'osnack-frontend-shared/src/_core/appConst';
 
 const ViewCommunication = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -51,7 +51,7 @@ const ViewCommunication = (props: IProps) => {
             />
             {communication.id == communicationKey && communicationKey != undefined &&
                <div className="row justify-content-center bg-white p-3">
-                  <ShowCommunication access={Access}
+                  <ShowCommunication access={AppAccess.Admin}
                      communication={communication}
                      useDeleteCommunication={useDeleteCommunication}
                      usePutSecretCommunication={usePutSecretCommunication}

@@ -281,6 +281,7 @@
     <Folder Include="src\components\ProductComment\" />
     <Folder Include="src\components\Order\" />
     <Folder Include="src\components\Pagination\" />
+    <Folder Include="src\components\Question\" />
     <Folder Include="src\components\Table\" />
     <Folder Include="src\components\UserAccount\" />
     <Folder Include="src\components\Texts\" />
@@ -314,6 +315,7 @@
     <Folder Include="src\styles\bootstrap\vendor\" />
     <Folder Include="src\styles\modules\" />
     <Folder Include="src\_core\" />
+    <Folder Include="src\_core\Contexts\" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\components\Buttons\Button.tsx" />
@@ -346,6 +348,7 @@
     <TypeScriptCompile Include="src\components\Order\OrderDetails.tsx" />
     <TypeScriptCompile Include="src\components\Pagination\LoadMore.tsx" />
     <TypeScriptCompile Include="src\components\Pagination\Pagination.tsx" />
+    <TypeScriptCompile Include="src\components\Question\QuestionsView.tsx" />
     <TypeScriptCompile Include="src\components\Table\CardView.tsx" />
     <TypeScriptCompile Include="src\components\Table\RowView.tsx" />
     <TypeScriptCompile Include="src\components\Table\Table.tsx" />
@@ -368,6 +371,7 @@
     <TypeScriptCompile Include="src\hooks\PublicHooks\useOrderHook.ts" />
     <TypeScriptCompile Include="src\hooks\PublicHooks\useProductHook.ts" />
     <TypeScriptCompile Include="src\hooks\PublicHooks\useUserHook.ts" />
+    <TypeScriptCompile Include="src\pages\Maintenance.tsx" />
     <TypeScriptCompile Include="src\pages\PasswordReset.tsx" />
     <TypeScriptCompile Include="src\pages\ConfirmEmail.tsx" />
     <TypeScriptCompile Include="src\pages\PageNotFound.tsx" />
@@ -382,9 +386,10 @@
     <TypeScriptCompile Include="src\_core\appClasses.ts" />
     <TypeScriptCompile Include="src\_core\appFunc.ts" />
     <TypeScriptCompile Include="src\_core\appConst.ts" />
+    <TypeScriptCompile Include="src\_core\Contexts\authenticationContext.tsx" />
+    <TypeScriptCompile Include="src\_core\Contexts\customRouteContext.tsx" />
     <TypeScriptCompile Include="src\_core\customRoute.tsx" />
-    <TypeScriptCompile Include="src\_core\authenticationContext.tsx" />
-    <TypeScriptCompile Include="src\_core\notificationContext.tsx" />
+    <TypeScriptCompile Include="src\_core\Contexts\notificationContext.tsx" />
     <TypeScriptCompile Include="src\_core\type.Extensions.ts" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />

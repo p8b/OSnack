@@ -1,10 +1,15 @@
-﻿import React from "react";
+﻿import { CustomRouteContext } from "osnack-frontend-shared/src/_core/Contexts/customRouteContext";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import Container from "./Container";
 
 const Footer = () => {
+   const customRouteContext = useContext(CustomRouteContext);
+
+   if (customRouteContext.maintenanceIsOn && !customRouteContext.isUserAllowedInMaintenance)
+      return (<></>);
    return (
-      <footer id="footer" className="footer pt-4">
+      <footer id="footer" className="footer pt-4 ">
          <Container>
             <div className="row pm-0">
                <div className="row col-12 justify-content-center pm-0 mt-2  mb-2 ">

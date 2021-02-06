@@ -1,6 +1,6 @@
-﻿import { extractUri, localStorageManagement } from "./appFunc";
+﻿import { extractUri, localStorageManagement } from "../appFunc";
 import React, { createContext, useReducer, useEffect, useContext } from "react";
-import { AuthContext } from "./authenticationContext";
+import { AuthenticationContext } from "./authenticationContext";
 
 export enum NotificationShow {
    default = 0,
@@ -62,8 +62,8 @@ const localNotificationState = (): NotificationState => {
 export const NotificationContext = createContext(initNotificationContext);
 
 
-const NotificationContextContainer = ({ children }: Props): JSX.Element => {
-   const auth = useContext(AuthContext);
+const NotificationContextContainerProvider = ({ children }: Props): JSX.Element => {
+   const auth = useContext(AuthenticationContext);
    const [state, setState] = useReducer(reducerNotification, localNotificationState());
 
 
@@ -108,7 +108,7 @@ const NotificationContextContainer = ({ children }: Props): JSX.Element => {
    };
 
    const checkNotification = (notifications: Notification) => {
-      if (!auth.state.isAuthenticated && notifications.show == NotificationShow.login)
+      if (!auth.isAuthenticated && notifications.show == NotificationShow.login)
          return false;
 
       if (notifications.location !== null && notifications.location !== extractUri()[0])
@@ -128,7 +128,7 @@ const NotificationContextContainer = ({ children }: Props): JSX.Element => {
       </NotificationContext.Provider>
    );
 };
-export default NotificationContextContainer;
+export default NotificationContextContainerProvider;
 
 
 type Props = {

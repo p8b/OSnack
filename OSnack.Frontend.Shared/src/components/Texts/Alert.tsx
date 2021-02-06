@@ -3,12 +3,13 @@ import { sleep } from '../../_core/appFunc';
 
 const Alert = (props: IProps) => {
    return (
-      <div className={`row col-12 m-0 my-2 p-2 alert ${props.alert?.Type} ${props?.className ?? ""} ${(props.alert?.List && props.alert?.List.length === 0) ? "d-none" : ""}`}>
-         <div className="col-11"
-            children={props.alert?.List && props.alert!.List.filter(e => !e.excludeFromDisplay).map((error: ErrorDto, index) => <div key={error.key || index} children={error.value} />)}
-         />
-         <div className="col-1 p-0 pr-2 text-right "
-            children={<a className=" mb-auto" onClick={props.onClosed} children="✘" />}
+      <div className={`row col-12 m-0 my-2 py-2 alert ${props.alert?.Type} ${props?.className ?? ""} ${(props.alert?.List && props.alert?.List.length === 0) ? "d-none" : ""}`}>
+         {props.alert?.List &&
+            props.alert!.List.filter(e => !e.excludeFromDisplay).map((error: ErrorDto, index) =>
+               <div className="col pm-0 my-auto" key={error.key || index} children={error.value} />)
+         }
+         <div className="col-auto pm-0 text-right "
+            children={<a className="mb-auto" onClick={props.onClosed} children="✘" />}
          />
       </div>
    );

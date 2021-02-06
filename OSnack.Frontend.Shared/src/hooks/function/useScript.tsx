@@ -2,8 +2,15 @@
 
 const useScript = (url: string | null) => {
    const [isLoaded, setIsLoaded] = useState(false);
+   const [script] = useState<HTMLScriptElement>(document.createElement('script'));
+
    useEffect(() => {
-      const script = document.createElement('script');
+      return (() => {
+         document.body.removeChild(script);
+      });
+   }, []);
+
+   useEffect(() => {
       if (url !== "" && url !== null) {
          script.src = url;
          script.async = true;
@@ -14,7 +21,6 @@ const useScript = (url: string | null) => {
          if (url !== "" && url !== null)
             document.body.removeChild(script);
          setIsLoaded(false);
-
       };
    }, [url]);
 

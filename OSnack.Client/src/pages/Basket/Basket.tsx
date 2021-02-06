@@ -2,7 +2,7 @@
 import React, { useContext, useState } from 'react';
 //import ReactDOM from 'react-dom';
 import Container from '../../components/Container';
-import { ShopContext } from '../../_core/shopContext';
+import { ShopContext } from '../../_core/Contexts/shopContext';
 import BasketItem from './BasketItem';
 import Checkout from './Checkout';
 import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
@@ -18,17 +18,17 @@ const Basket = (props: IProps) => {
          <PageHeader title="Basket" className="hr-section-sm" />
          <Container className="bg-white">
             <div className="row">
-               {basket.state.List.length <= 0 &&
+               {basket.list.length <= 0 &&
                   <div className="row col-12 pm-0 justify-content-center pb-4">
                      <div className="col-12 text-center mt-4">You don't have any items in your basket. <br /> Let's do something about it.</div>
                      <Button className="btn btn-green col-auto mt-4" children="Shop now" onClick={() => { history.push("/Shop"); }} />
                   </div>
                }
-               {basket.state.List.length > 0 &&
+               {basket.list.length > 0 &&
                   <>
                      {/* Basket info */}
                      < div className="col-12 col-md-7 m-0 pb-5">
-                        {basket.state.List.map(orderItem =>
+                        {basket.list.map(orderItem =>
                            <BasketItem
                               key={orderItem.productId}
                               orderItem={orderItem}

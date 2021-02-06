@@ -50,8 +50,8 @@ namespace OSnack.API.Controllers
 
       #region ***  ***
 
-      [MultiResultPropertyNames("user", "isAuthenticated", "maintenanceModeStatus")]
-      [ProducesResponseType(typeof(MultiResult<User, bool, bool>), StatusCodes.Status200OK)]
+      [MultiResultPropertyNames("user", "isAuthenticated", "maintenanceModeStatus", "isUserAllowedInMaintenance")]
+      [ProducesResponseType(typeof(MultiResult<User, bool, bool, bool>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status401Unauthorized)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
@@ -81,11 +81,15 @@ namespace OSnack.API.Controllers
             SetAntiforgeryCookie();
 
             bool maintenanceModeStatus = AppConst.Settings.MaintenanceModeStatus;
+            bool isUserAllowedInMaintenance = false;
+            if (user.Role != null
+              && (user.Role.AccessClaim == AppConst.AccessClaims.Admin
+               || user.Role.AccessClaim == AppConst.AccessClaims.Manager))
+               isUserAllowedInMaintenance = true;
             Request.Headers.TryGetValue("Origin", out StringValues OriginValue);
             if (maintenanceModeStatus && AppConst.Settings.AppDomains.AdminApp.EqualCurrentCultureIgnoreCase(OriginValue))
                maintenanceModeStatus = false;
-
-            return Ok(new MultiResult<User, bool, bool>(user, isAuthenticated, maintenanceModeStatus
+            return Ok(new MultiResult<User, bool, bool, bool>(user, isAuthenticated, maintenanceModeStatus, isUserAllowedInMaintenance
                , CoreFunc.GetCustomAttributeTypedArgument(ControllerContext)));
          }
          catch (Exception ex)

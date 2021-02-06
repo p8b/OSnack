@@ -175,6 +175,7 @@
     <Folder Include="src\styles\modules\" />
     <Folder Include="src\styles\pages\" />
     <Folder Include="src\_core\" />
+    <Folder Include="src\_core\Contexts\" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\app.tsx" />
@@ -210,7 +211,6 @@
     <TypeScriptCompile Include="src\pages\ProductManagement\ProductModal.tsx" />
     <TypeScriptCompile Include="src\pages\UserManagement\UserModal.tsx" />
     <TypeScriptCompile Include="src\pages\UserManagement\UserManagement.tsx" />
-    <TypeScriptCompile Include="src\SecretHooks\useAuthenticationHook.ts" />
     <TypeScriptCompile Include="src\SecretHooks\useCategoryHook.ts" />
     <TypeScriptCompile Include="src\SecretHooks\useCommentHook.ts" />
     <TypeScriptCompile Include="src\SecretHooks\useCommunicationHook.ts" />
@@ -218,11 +218,12 @@
     <TypeScriptCompile Include="src\SecretHooks\useDashboardHook.ts" />
     <TypeScriptCompile Include="src\SecretHooks\useDeliveryOptionHook.ts" />
     <TypeScriptCompile Include="src\SecretHooks\useEmailHook.ts" />
+    <TypeScriptCompile Include="src\SecretHooks\useMaintenanceHook.ts" />
     <TypeScriptCompile Include="src\SecretHooks\useOrderHook.ts" />
     <TypeScriptCompile Include="src\SecretHooks\useProductHook.ts" />
     <TypeScriptCompile Include="src\SecretHooks\useRoleHook.ts" />
     <TypeScriptCompile Include="src\SecretHooks\useUserHook.ts" />
-    <TypeScriptCompile Include="src\_core\appConstant.Variables.ts" />
+    <TypeScriptCompile Include="src\_core\Contexts\contextContainer.tsx" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
   <ProjectExtensions>

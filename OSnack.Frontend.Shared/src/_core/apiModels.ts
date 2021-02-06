@@ -683,6 +683,10 @@ export class OrderListAndAvailableTypesAndTotalCount extends OrderListAndAvailab
     totalCount?: number;
 
 }
+export class UserAndIsAuthenticatedAndMaintenanceModeStatus extends UserAndIsAuthenticated {
+    maintenanceModeStatus?: boolean;
+
+}
 export class OrderListAndAvailableTypesAndFullNameAndTotalCount extends OrderListAndAvailableTypesAndFullName {
     totalCount?: number;
 
@@ -701,5 +705,9 @@ export class NewOrderCountAndOpenDisputeCountAndOpenMessageCountAndTotalSales ex
 }
 export class OrderListAndAvailableTypesAndFullNameAndTotalCountAndDisputeFilterType extends OrderListAndAvailableTypesAndFullNameAndTotalCount {
     disputeFilterType?: DisputeFilterTypes;
+
+}
+export class UserAndIsAuthenticatedAndMaintenanceModeStatusAndIsUserAllowedInMaintenance extends UserAndIsAuthenticatedAndMaintenanceModeStatus {
+    isUserAllowedInMaintenance?: boolean;
 
 }

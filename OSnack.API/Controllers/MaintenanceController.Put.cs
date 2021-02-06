@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 using OSnack.API.Database;
 using OSnack.API.Extras;
 
 using P8B.Core.CSharp;
+using P8B.Core.CSharp.JsonConvertor;
 using P8B.Core.CSharp.Models;
 using P8B.UK.API.Services;
 
@@ -31,7 +33,7 @@ namespace OSnack.API.Controllers
       #endregion
       [HttpPut("[action]")]
       [Authorize(AppConst.AccessPolicies.Secret)] /// Done  
-      public async Task<IActionResult> PutTemplate([FromBody] bool status)
+      public async Task<IActionResult> Put([FromBody] bool status)
       {
          try
          {
@@ -50,9 +52,15 @@ namespace OSnack.API.Controllers
             settings.MaintenanceModeStatus = status;
             AppConst.Settings.MaintenanceModeStatus = status;
 
-            await System.IO.File.WriteAllTextAsync(settingsPath, JsonConvert.SerializeObject(settings, Formatting.Indented))
+            await System.IO.File.WriteAllTextAsync(settingsPath, JsonConvert.SerializeObject(settings, Formatting.Indented, new JsonSerializerSettings
+            {
+               Converters = new List<JsonConverter> { new StringEnumConverter(), new DecimalFormatConverter() },
+               ContractResolver = new DynamicContractResolver("OpenCors", "AntiforgeryCookieDomain", "ClientApp", "AdminApp", "MailServer"
+               , "Sender", "Password", "AdminEmail", "PayPal", "ExternalLoginSecrets", "DbConnectionString", "GooglereCAPTCHASecret")
+            }))
                .ConfigureAwait(false);
 
+            AppConst.SetSettings();
             return Ok(status);
          }
          catch (Exception ex)

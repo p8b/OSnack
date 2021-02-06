@@ -4,7 +4,7 @@ import { TextArea } from 'osnack-frontend-shared/src/components/Inputs/TextArea'
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Communication } from 'osnack-frontend-shared/src/_core/apiModels';
-import { AuthContext } from 'osnack-frontend-shared/src/_core/authenticationContext';
+import { AuthenticationContext } from 'osnack-frontend-shared/src/_core/Contexts/authenticationContext';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import Container from '../../components/Container';
 import { usePostQuestionCommunication } from "osnack-frontend-shared/src/hooks/PublicHooks/useCommunicationHook";
@@ -14,7 +14,7 @@ import { GooglereCAPTCHAKey } from 'osnack-frontend-shared/src/_core/appConst';
 const ContactUs = (props: IProps) => {
    const isUnmounted = useRef(false);
    const captchaScript = useScript(`https://www.google.com/recaptcha/api.js?render=${GooglereCAPTCHAKey}`);
-   const auth = useContext(AuthContext);
+   const auth = useContext(AuthenticationContext);
    const errorAlert = useAlert(new AlertObj());
    const [contact, setContact] = useState(new Communication());
    const [message, setMessage] = useState("");
@@ -28,23 +28,31 @@ const ContactUs = (props: IProps) => {
 
    const sendMessage = (loadingCallBack?: () => void) => {
       if (captchaScript.isLoaded)
-         // @ts-ignore
-         grecaptcha.execute(siteKey, { action: 'Contact' }).then((token) => {
-            contact.captchaToken = token;
-            contact.messages = [{ body: message }];
-            errorAlert.pleaseWait(isUnmounted);
-            usePostQuestionCommunication(contact)
-               .then(result => {
-                  if (isUnmounted.current) return;
-                  setMessage("");
-                  loadingCallBack!();
-                  errorAlert.setSingleSuccess("submit", result.data);
-               }).catch(errors => {
-                  if (isUnmounted.current) return;
-                  errorAlert.set(errors);
-                  loadingCallBack!();
+         try {
+
+            // @ts-ignore
+            grecaptcha.execute(GooglereCAPTCHAKey, { action: 'Contact' })
+               .then((token: string) => {
+                  contact.captchaToken = token;
+                  contact.messages = [{ body: message }];
+                  errorAlert.pleaseWait(isUnmounted);
+                  usePostQuestionCommunication(contact)
+                     .then(result => {
+                        if (isUnmounted.current) return;
+                        setMessage("");
+                        loadingCallBack!();
+                        errorAlert.setSingleSuccess("submit", result.data);
+                     }).catch(errors => {
+                        if (isUnmounted.current) return;
+                        errorAlert.set(errors);
+                        loadingCallBack && loadingCallBack!();
+                     });
                });
-         });
+         }
+         catch {
+            errorAlert.setSingleError("error", "Unable to process your request.");
+            loadingCallBack && loadingCallBack!();
+         }
       else {
          loadingCallBack!();
          errorAlert.setSingleSuccess("error", "reCAPTCHA is not loaded.");
@@ -64,7 +72,7 @@ const ContactUs = (props: IProps) => {
                      <a className="col-12 phone-icon" children=" 078 6569 0055" href="tel:07865690055" />
                      <a className="col-12 email-icon" children=" support@osnack.co.uk" href="mailto:support@osnack.co.uk" />
                   </div>
-                  {!auth.state.isAuthenticated &&
+                  {!auth.isAuthenticated &&
                      <>
                         < Input className="col-12" label="Name*"
                            value={contact.fullName} onChange={(i) => { setContact({ ...contact, fullName: i.target.value }); }}

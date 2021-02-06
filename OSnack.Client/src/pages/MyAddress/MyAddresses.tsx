@@ -8,7 +8,6 @@ import { Button } from 'osnack-frontend-shared/src/components/Buttons/Button';
 import { useAllAddress, useSetDefaultAddress } from 'osnack-frontend-shared/src/hooks/OfficialHooks/useAddressHook';
 
 const MyAddresses = (props: IProps) => {
-   //const auth = useContext(AuthContext);
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
    const [isOpenAddressModal, setIsOpenAddressModal] = useState(false);

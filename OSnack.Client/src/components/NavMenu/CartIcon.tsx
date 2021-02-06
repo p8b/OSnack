@@ -1,6 +1,6 @@
 ﻿import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { ShopContext } from '../../_core/shopContext';
+import { ShopContext } from '../../_core/Contexts/shopContext';
 
 const CartIcon = (props: IProps) => {
    const history = useHistory();
@@ -8,7 +8,7 @@ const CartIcon = (props: IProps) => {
    const [totalItems, setTotalItems] = useState(0);
    useEffect(() => {
       setTotalItems(basket.getTotalItems());
-   }, [basket.state.List]);
+   }, [basket.list]);
    return (
       <div className="nav-cart ">
          <button type="button" name="cart" aria-label="cart"

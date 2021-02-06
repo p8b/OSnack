@@ -1,7 +1,7 @@
 ﻿import React, { useContext, useEffect } from 'react';
 import Login from 'osnack-frontend-shared/src/components/Login/Login';
 import { User } from 'osnack-frontend-shared/src/_core/apiModels';
-import { Notification, NotificationContext, NotificationShow } from 'osnack-frontend-shared/src/_core/notificationContext';
+import { Notification, NotificationContext, NotificationShow } from 'osnack-frontend-shared/src/_core/Contexts/notificationContext';
 
 const LoginPage = (props: IProps) => {
 

@@ -4,12 +4,11 @@ import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRo
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { extractUri, generateUri, convertUriParamToBool } from 'osnack-frontend-shared/src/_core/appFunc';
-import { GetAllRecords } from 'osnack-frontend-shared/src/_core/appConst';
+import { AppAccess, GetAllRecords } from 'osnack-frontend-shared/src/_core/appConst';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Container from '../../components/Container';
 import { usePutSecretCommunication, useSearchCommunication, useDeleteCommunication } from '../../SecretHooks/useCommunicationHook';
-import { Access } from '../../_core/appConstant.Variables';
 import CommunicationModal from 'osnack-frontend-shared/src/components/Modals/CommunicationModal';
 import { Communication } from 'osnack-frontend-shared/src/_core/apiModels';
 import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
@@ -171,7 +170,7 @@ const MessagesManagement = (props: IProps) => {
             }
             <CommunicationModal isOpen={isOpenMessageModal}
                communication={selectCommunication}
-               access={Access}
+               access={AppAccess.Admin}
                onClose={() => { setIsOpenMessageModal(false); onSearch(); }}
                usePutSecretCommunication={usePutSecretCommunication}
                useDeleteCommunication={useDeleteCommunication}

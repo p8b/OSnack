@@ -1,31 +1,23 @@
-﻿import React, { useEffect } from "react";
+﻿import { CustomRouteContext } from "osnack-frontend-shared/src/_core/Contexts/customRouteContext";
+import React, { useContext, useEffect, useState } from "react";
 
 const Container = (props: IProps) => {
+   const customRouteContext = useContext(CustomRouteContext);
+   const [containerId] = useState(Math.random().toString());
+
    useEffect(() => {
-      if (props.id !== null && props.extendBottom) {
-         //sizeChange();
-         //window.addEventListener("resize", sizeChange);
-      }
-      if (props.id !== null && props.extendTop) {
+      if (props.mainContainer) {
          scrollChange();
          window.addEventListener("scroll", scrollChange);
       }
-
       return () => {
-         //window.removeEventListener("resize", sizeChange);
          window.removeEventListener("scroll", scrollChange);
       };
    }, []);
 
-   //const sizeChange = () => {
-   //   let container = document.getElementById(props.id ?? "");
-   //   if (props.extendBottom && container !== null)
-   //      (container as HTMLElement).style.marginBottom = `${document.getElementById("footer")?.scrollHeight}px`;
-   //};
-
    const scrollChange = () => {
-      let container = document.getElementById(props.id ?? "");
-      if (props.extendTop && container !== null && window.pageYOffset > 0) {
+      let container = document.getElementById(containerId);
+      if (container !== null && window.pageYOffset > 0) {
          document.getElementById("logo")?.classList.add("small");
          document.getElementById("navbar")?.classList.add("transition");
       }
@@ -34,18 +26,19 @@ const Container = (props: IProps) => {
          document.getElementById("navbar")?.classList.remove("transition");
       }
    };
-   return (<div id={props.id}
-      className={`container ${props?.className}`}
+
+   if (customRouteContext.maintenanceIsOn && !customRouteContext.isUserAllowedInMaintenance)
+      return (<>{props.children}</>);
+   return (<div id={containerId}
+      className={`container ${props?.className} ${props?.mainContainer && "main-container"}`}
       children={props?.children}
       ref={props?.ref} />);
 };
 
 interface IProps {
-   id?: string;
+   mainContainer?: boolean;
    children?: any;
    className?: string;
    ref?: any;
-   extendBottom?: boolean;
-   extendTop?: boolean;
 }
 export default Container;

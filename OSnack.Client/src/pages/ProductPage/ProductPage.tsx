@@ -10,7 +10,7 @@ import Container from '../../components/Container';
 import QuantityInput from 'osnack-frontend-shared/src/components/Inputs/QuantityInput';
 import Tabs from './Tabs';
 import ShopItem from '../Shop/ShopItem';
-import { ShopContext } from '../../_core/shopContext';
+import { ShopContext } from '../../_core/Contexts/shopContext';
 import Carousel from '../../components/Carousel';
 import { StarRating } from 'osnack-frontend-shared/src/components/Inputs/StarRating';
 

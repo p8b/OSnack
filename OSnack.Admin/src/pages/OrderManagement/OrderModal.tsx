@@ -9,7 +9,7 @@ import ModalFooter from 'osnack-frontend-shared/src/components/Modals/ModalFoote
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { usePutOrder } from '../../SecretHooks/useOrderHook';
 import { usePutSecretCommunication } from '../../SecretHooks/useCommunicationHook';
-import { Access } from '../../_core/appConstant.Variables';
+import { AppAccess } from 'osnack-frontend-shared/src/_core/appConst';
 
 const OrderModal = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -106,7 +106,7 @@ const OrderModal = (props: IProps) => {
          bodyRef={props.modalRef}
          isOpen={props.isOpen}>
          <PageHeader title="Order Details" />
-         <OrderDetails order={selectedOrder} access={Access}
+         <OrderDetails order={selectedOrder} access={AppAccess.Admin}
             availabeType={getAvailabeType()}
             statusChanged={statusChange}
             showDispute={dispute => { setSelectedDispute(dispute); setIsOpenDisputeModal(true); }} />
@@ -132,7 +132,7 @@ const OrderModal = (props: IProps) => {
 
          <CommunicationModal isOpen={isOpenDisputeModal}
             communication={selectedDispute}
-            access={Access}
+            access={AppAccess.Admin}
             onClose={() => { setIsOpenDisputeModal(false); }}
             usePutSecretCommunication={usePutSecretCommunication}
          />

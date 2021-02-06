@@ -3,7 +3,7 @@ import TableRowButtons from 'osnack-frontend-shared/src/components/Table/TableRo
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import { Communication, DisputeFilterTypes, Order, OrderStatusType, OrderStatusTypeList, PaymentTypeList } from 'osnack-frontend-shared/src/_core/apiModels';
 import { convertUriParamToBool, extractUri, generateUri, getBadgeByOrderStatusType } from 'osnack-frontend-shared/src/_core/appFunc';
-import { GetAllRecords } from 'osnack-frontend-shared/src/_core/appConst';
+import { AppAccess, GetAllRecords } from 'osnack-frontend-shared/src/_core/appConst';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Container from '../../components/Container';
@@ -14,7 +14,6 @@ import SearchInput from 'osnack-frontend-shared/src/components/Inputs/SeachInput
 import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
 import OrderModal from './OrderModal';
 import CommunicationModal from 'osnack-frontend-shared/src/components/Modals/CommunicationModal';
-import { Access } from '../../_core/appConstant.Variables';
 
 const MyOrders = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -210,7 +209,7 @@ const MyOrders = (props: IProps) => {
                onClose={() => { setIsOpenOrderModal(false); onSearch(); }} />
             <CommunicationModal isOpen={isOpenDisputeModal}
                communication={selectedDispute}
-               access={Access}
+               access={AppAccess.Client}
                onClose={() => { setIsOpenDisputeModal(false); onSearch(); }}
             />
          </Container>

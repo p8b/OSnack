@@ -3,7 +3,7 @@ import { Communication, ContactType, Order } from 'osnack-frontend-shared/src/_c
 import Modal from 'osnack-frontend-shared/src/components/Modals/Modal';
 import { usePostDisputeCommunication } from 'osnack-frontend-shared/src/hooks/OfficialHooks/useCommunicationHook';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
-import { AuthContext } from 'osnack-frontend-shared/src/_core/authenticationContext';
+import { AuthenticationContext } from 'osnack-frontend-shared/src/_core/Contexts/authenticationContext';
 import { TextArea } from 'osnack-frontend-shared/src/components/Inputs/TextArea';
 import Alert, { AlertObj, useAlert } from 'osnack-frontend-shared/src/components/Texts/Alert';
 import ModalFooter from 'osnack-frontend-shared/src/components/Modals/ModalFooter';
@@ -11,7 +11,7 @@ import ModalFooter from 'osnack-frontend-shared/src/components/Modals/ModalFoote
 const AddDisputeModal = (props: IProps) => {
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());
-   const auth = useContext(AuthContext);
+   const auth = useContext(AuthenticationContext);
    const [message, setMessage] = useState("");
 
    useEffect(() => () => { isUnmounted.current = true; }, []);
@@ -19,7 +19,7 @@ const AddDisputeModal = (props: IProps) => {
    const sendMessage = (loadingCallBack?: () => void) => {
       errorAlert.pleaseWait(isUnmounted);
       usePostDisputeCommunication({
-         email: auth.state.user.email,
+         email: auth.user.email,
          type: ContactType.Dispute,
          order_Id: props.order.id,
          status: true,

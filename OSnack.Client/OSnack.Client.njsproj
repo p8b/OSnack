@@ -187,6 +187,7 @@
     <Folder Include="src\styles\modules\" />
     <Folder Include="src\_core\" />
     <Folder Include="src\pages\" />
+    <Folder Include="src\_core\Contexts\" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\app.tsx" />
@@ -223,8 +224,8 @@
     <TypeScriptCompile Include="src\pages\Shop\Shop.tsx" />
     <TypeScriptCompile Include="src\pages\Shop\ShopItem.tsx" />
     <TypeScriptCompile Include="src\pages\TermsAndConditions\TermsAndConditions.tsx" />
-    <TypeScriptCompile Include="src\_core\appConstant.Variables.ts" />
-    <TypeScriptCompile Include="src\_core\shopContext.tsx" />
+    <TypeScriptCompile Include="src\_core\Contexts\contextContainer.tsx" />
+    <TypeScriptCompile Include="src\_core\Contexts\shopContext.tsx" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
   <ProjectExtensions>

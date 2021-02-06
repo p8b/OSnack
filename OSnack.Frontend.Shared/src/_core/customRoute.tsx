@@ -1,35 +1,41 @@
-﻿import React, { useContext, useState } from "react";
+﻿import React, { useContext, useEffect } from "react";
 import { Route, Redirect } from "react-router-dom";
 import { Loading } from "../components/Loading/Loading";
 import { useSilenceAuthentication } from "../hooks/PublicHooks/useAuthenticationHook";
-import { User } from "./apiModels";
-import { AuthContext } from "./authenticationContext";
+import Maintenance from "../pages/Maintenance";
+import { AuthenticationContext } from "./Contexts/authenticationContext";
+import { CustomRouteContext } from "./Contexts/customRouteContext";
 
 const CustomRoute = (props: IProps) => {
-   const auth = useContext(AuthContext);
-   const [prevPath, setPrevPath] = useState("");
-   const [authChecking, setAuthChecking] = useState(true);
-   if (prevPath !== props.path) {
-      window.scrollTo(0, 0);
-      setAuthChecking(true);
-      useSilenceAuthentication().then(result => {
-         auth.setState({ isAuthenticated: result.data.isAuthenticated!, user: result.data.user! });
-         setAuthChecking(false);
+   const auth = useContext(AuthenticationContext);
+   const customRouteContext = useContext(CustomRouteContext);
+   useEffect(() => {
+      if (customRouteContext.currentPath.toLocaleLowerCase() != props.path.toLocaleLowerCase()) {
+         window.scrollTo(0, 0);
+         customRouteContext.setPath(props.path.toLocaleLowerCase());
+         useSilenceAuthentication().then(result => {
+            customRouteContext.setMaintenance(result.data.maintenanceModeStatus, result.data.isUserAllowedInMaintenance);
+            auth.set(result.data.isAuthenticated, result.data.user);
+            customRouteContext.authenticationIsConfirmed();
+         }
+         ).catch(error => {
+            customRouteContext.setMaintenance(true, false);
+            auth.set(false);
+            customRouteContext.authenticationIsConfirmed();
+         });
       }
-      ).catch((error) => {
-         auth.setState({ isAuthenticated: false, user: new User() });
-         setAuthChecking(false);
-      });
+   }, [props.path]);
 
-      setPrevPath(props.path);
-   }
-   if (props.authRequired && !auth.state.isAuthenticated && !authChecking)
+   if (customRouteContext.maintenanceIsOn && !customRouteContext.isUserAllowedInMaintenance && customRouteContext.isAuthenticationConfirmed)
+      return (<Route exact={props?.exact} path={props.path} render={(props: any) => <Maintenance />} />);
+
+   if (props.authRequired && !auth.isAuthenticated && customRouteContext.isAuthenticationConfirmed)
       return (<Redirect to={{ pathname: "/Login", state: { fromPath: window.location.pathname } }} />);
 
-   if (!props.authRequired || (props.authRequired && auth.state.isAuthenticated && !authChecking))
+   if (!props.authRequired || (auth.isAuthenticated && customRouteContext.isAuthenticationConfirmed))
       return (<Route exact={props?.exact} path={props.path} render={props.render} />);
 
-   return <Loading />;
+   return (<Loading />);
 };
 declare type IProps = {
    path: string,

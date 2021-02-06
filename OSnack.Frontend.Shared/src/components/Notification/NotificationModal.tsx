@@ -1,5 +1,5 @@
 ﻿import React, { useContext, useEffect } from 'react';
-import { Notification, NotificationContext, NotificationShow } from '../../_core/notificationContext';
+import { Notification, NotificationContext, NotificationShow } from '../../_core/Contexts/notificationContext';
 const NotificationModal = (props: IProps) => {
    const notificationCtx = useContext(NotificationContext);
 
