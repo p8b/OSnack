@@ -32,3 +32,28 @@
     height: inherit;
     line-height: unset;
 }
+
+.grecaptcha-badge {
+    visibility: hidden;
+}
+
+.side-notifier {
+    pointer-events: none;
+    position: fixed;
+    right: 0;
+    background-color: white;
+    z-index: 1100;
+    opacity: .8;
+    font-weight: bold;
+    padding: .5rem;
+    transform: translateY(-50%,-50%);
+    transform-origin: 100% 100%;
+    -ms-transform: rotate(-90deg); /* IE 9 */
+    transform: rotate(-90deg);
+}
+
+.vh-100 {
+    min-height: 100% !important;
+    min-height: 100vh !important;
+    min-height: -webkit-fill-available;
+}

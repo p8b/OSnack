@@ -1,52 +1,53 @@
 ﻿import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
 
-import { DefaultNav, LoginNav } from "./NavMenuItems";
+import { Admin, INavItem, Manager } from "./NavMenuItems";
 import { AuthenticationContext } from "osnack-frontend-shared/src/_core/Contexts/authenticationContext";
 import { useLogoutAuthentication } from "osnack-frontend-shared/src/hooks/OfficialHooks/useAuthenticationHook";
 import DropDown from "osnack-frontend-shared/src/components/Buttons/DropDown";
 import NavLink from "osnack-frontend-shared/src/components/Buttons/NavLink";
 import Footer from "../Footer";
-import { extractUri } from "osnack-frontend-shared/src/_core/appFunc";
 import { Toggler } from "osnack-frontend-shared/src/components/Inputs/Toggler";
-import { usePutMaintenance, useGetMaintenance } from "../../SecretHooks/useMaintenanceHook";
+import { usePutMaintenance } from "../../SecretHooks/useMaintenanceHook";
 import { NotificationContext } from "osnack-frontend-shared/src/_core/Contexts/notificationContext";
+import { CustomRouteContext } from "osnack-frontend-shared/src/_core/Contexts/customRouteContext";
 
 // Navigation menu component
 const NavMenu = (props: IProps) => {
    const auth = useContext(AuthenticationContext);
-   const [currentNavItems, setCurrentNavItems] = useState(DefaultNav);
-   const [maintenanceIsOn, setMaintenanceIsOn] = useState(false);
+   const [currentNavItems, setCurrentNavItems] = useState<INavItem[]>([]);
    const history = useHistory();
    const breakSize = 768;
    const notificationCtx = useContext(NotificationContext);
+   const customRouteContext = useContext(CustomRouteContext);
 
    useEffect(() => {
-      if (window.innerWidth > breakSize && extractUri()[0] != "Login")
+      if (window.innerWidth > breakSize && auth.isAuthenticated)
          props.mainContainerToggler(true);
-      useGetMaintenance().then(result => {
-         setMaintenanceIsOn(result.data);
-      }).catch(err => { });
+
    }, []);
 
    useEffect(() => {
       /// Check which menu items to show for the user
-      if (auth.isAuthenticated)
-         setCurrentNavItems(LoginNav);
-      else
-         setCurrentNavItems(DefaultNav);
+      if (auth.isAuthenticated) {
+         if (auth.user.role.accessClaim.toLowerCase() === "admin")
+            setCurrentNavItems(Admin);
+         if (auth.user.role.accessClaim.toLowerCase() === "manager")
+            setCurrentNavItems(Manager);
+      }
    }, [auth.isAuthenticated]);
 
    const setMaintenanceMode = (val: boolean) => {
       usePutMaintenance(!val).then(result => {
-         setMaintenanceIsOn(result.data);
+         customRouteContext.setMaintenance(result.data, true);
       }).catch(error => { });
    };
+
    const logout = () => {
       useLogoutAuthentication().then(() => {
          auth.set(false);
          props.mainContainerToggler(false);
-         setCurrentNavItems(DefaultNav);
+         setCurrentNavItems([]);
       });
    };
 
@@ -54,17 +55,17 @@ const NavMenu = (props: IProps) => {
       <header>
          {auth.isAuthenticated &&
             <>
-               <div id="navbar" className={`bg-white top-navbar row pm-0 pb-1  ${props.isOpenMainContainer ? "show" : "hide"}`}>
+               <div id="navbar" className={`bg-white top-navbar row flex-nowrap pm-0 pb-1  ${props.isOpenMainContainer ? "show" : "hide"}`}>
                   <button type="button"
-                     className={`fas toggler-icon pl-4`}
+                     className={`col-auto fas toggler-icon `}
                      onClick={() => { props.mainContainerToggler(!props.isOpenMainContainer); }} />
-                  <Toggler className="toggler-lg my-auto mx-5"
+                  <Toggler className="col-auto toggler-xlg circle m-auto px-4"
                      lblValueFalse="Shop Closed"
                      lblValueTrue="Shop Open"
                      onChange={setMaintenanceMode}
-                     value={!maintenanceIsOn} />
-                  <DropDown className="col-auto pm-0 ml-auto " titleClassName={`user-circle-icon btn-no-style pr-3`} title={``}>
-                     <button className="link-nav dropdown-item"
+                     value={!customRouteContext.maintenanceIsOn} />
+                  <DropDown className="col-auto pm-0 " titleClassName={`user-circle-icon btn-no-style pr-3`} title={``}>
+                     <button className="link-nav dropdown-item my-auto"
                         onClick={() => history.push("/MyAccount")}
                         children="My Account" />
                      <button className="link-nav dropdown-item"

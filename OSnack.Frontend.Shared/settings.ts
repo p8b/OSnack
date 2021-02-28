@@ -7,7 +7,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
-const isDevelopment = true;
+const isDevelopment = false;
 const appName = "OSnack";
 
 export const webpackOptions = {
@@ -100,7 +100,7 @@ export const webpackOptions = {
                   transform(content: any) {
                      var jsonContent = JSON.parse(content.toString());
                      delete jsonContent["dependencies"]["osnack-frontend-shared"];
-                     delete jsonContent["devDependencies"];
+                     //delete jsonContent["devDependencies"];
                      return JSON.stringify(jsonContent);
                   }
                },
@@ -144,5 +144,3 @@ export const webpackOptions = {
       splitChunks: { chunks: "all" },
    }) as Webpack.Options.Optimization,
 };
-
-

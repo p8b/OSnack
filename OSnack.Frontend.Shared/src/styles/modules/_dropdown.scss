@@ -34,14 +34,7 @@
             content: "\f0d8";
         }
     }
-    /*    &:after {
-        text-align: right;
-        float: right;
-        text-decoration: none;
-        padding-left: 0.5rem;
-        content: "\f0d7";
-        font-family: "FA5 Solid" !important;
-    }*/
+
     &.disabled {
         background-color: rgb(224, 224, 224) !important;
         color: black;

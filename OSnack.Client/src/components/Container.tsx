@@ -1,8 +1,6 @@
-﻿import { CustomRouteContext } from "osnack-frontend-shared/src/_core/Contexts/customRouteContext";
-import React, { useContext, useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 
 const Container = (props: IProps) => {
-   const customRouteContext = useContext(CustomRouteContext);
    const [containerId] = useState(Math.random().toString());
 
    useEffect(() => {
@@ -26,9 +24,6 @@ const Container = (props: IProps) => {
          document.getElementById("navbar")?.classList.remove("transition");
       }
    };
-
-   if (customRouteContext.maintenanceIsOn && !customRouteContext.isUserAllowedInMaintenance)
-      return (<>{props.children}</>);
    return (<div id={containerId}
       className={`container ${props?.className} ${props?.mainContainer && "main-container"}`}
       children={props?.children}

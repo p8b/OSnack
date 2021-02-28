@@ -119,7 +119,6 @@ const UserAccount = (props: IProps) => {
       useDownloadDataUser(currentPass)
          .then(data => {
             if (isUnmounted.current) return;
-            console.log(data.data);
             try {
                const blob = new Blob([data.data], { type: "text/json;charset=utf-8" });
                const url = URL.createObjectURL(blob);
@@ -138,7 +137,6 @@ const UserAccount = (props: IProps) => {
          })
          .catch(error => {
             if (isUnmounted.current) return;
-            console.log(error);
             errorAlertAccountInfo.set(error);
             setCurrentPassword("");
             loadingCallBack && loadingCallBack!();

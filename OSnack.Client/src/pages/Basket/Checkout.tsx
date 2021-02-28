@@ -16,10 +16,10 @@ import useScript from 'osnack-frontend-shared/src/hooks/function/useScript';
 import DropDown from 'osnack-frontend-shared/src/components/Buttons/DropDown';
 import PageHeader from 'osnack-frontend-shared/src/components/Texts/PageHeader';
 import { Redirect, useHistory } from 'react-router-dom';
+import { PaypalClientId } from 'osnack-frontend-shared/src/_core/appConst';
 
 const Checkout = (props: IProps) => {
-   const clientID = "AUc_fJXtMhI3ugArGsxZur6ej0GP4Pb_usigBXwK9qvtUKByaJWEf7HNrUBSMHaYSiBq6Cg5nOf4_Tq_";
-   const paypalScript = useScript(`https://www.paypal.com/sdk/js?client-id=${clientID}&currency=GBP&intent=capture&commit=false`);
+   const paypalScript = useScript(`https://www.paypal.com/sdk/js?client-id=${PaypalClientId}&currency=GBP&intent=capture&commit=false`);
    const history = useHistory();
    const isUnmounted = useRef(false);
    const errorAlert = useAlert(new AlertObj());

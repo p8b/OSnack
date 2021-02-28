@@ -1,13 +1,12 @@
-﻿import React, { lazy, Suspense, useEffect, useRef, useState } from "react";
+﻿import React, { lazy, Suspense, useContext, useEffect, useRef, useState } from "react";
 import { BrowserRouter, Switch } from "react-router-dom";
 
 import CustomRoute from "osnack-frontend-shared/src/_core/customRoute";
 import { Loading } from "osnack-frontend-shared/src/components/Loading/Loading";
-import { ContextContainer } from "./_core/Contexts/contextContainer";
-import { extractUri } from "osnack-frontend-shared/src/_core/appFunc";
 
 // Main Components such as pages, navbar, footer
 import NavMenu from "./components/NavMenu/NavMenu";
+import { AuthenticationContext } from "osnack-frontend-shared/src/_core/Contexts/authenticationContext";
 const Dashboard = lazy(() => import("./pages/Dashboard/Dashboard"));
 const MyAccount = lazy(() => import("./pages/MyAccount/MyAccount"));
 const LoginPage = lazy(() => import("./pages/LoginPage/LoginPage"));
@@ -27,10 +26,11 @@ const DeliveryOptionManagement = lazy(() => import("./pages/DeliveryOptionManage
 const ViewCommunication = lazy(() => import("./pages/Communication/ViewCommunication"));
 const CookieBanner = lazy(() => import("osnack-frontend-shared/src/components/CookieBanner/CookieBanner"));
 const NotificationContainer = lazy(() => import("osnack-frontend-shared/src/components/Notification/NotificationContainer"));
+const SideNotifier = lazy(() => import("osnack-frontend-shared/src/components/Texts/SideNotifier"));
+
 
 const App = () => {
-
-
+   const auth = useContext(AuthenticationContext);
    const [isOpenMainContainer, setIsOpenMainContainer] = useState(false);
    const isOpenRef = useRef(false);
    const breakSize = 768;
@@ -38,17 +38,13 @@ const App = () => {
       sizeChange();
       if (window.innerWidth <= breakSize)
          setIsOpenMainContainer(false);
+      else
+         setIsOpenMainContainer(true);
       window.addEventListener("resize", sizeChange);
-
-
-
 
       return () => {
          window.removeEventListener("resize", sizeChange);
       };
-
-
-
    }, []);
 
    useEffect(() => {
@@ -59,10 +55,14 @@ const App = () => {
    const sizeChange = () => {
       var mainContainer = document.getElementById("main-container");
       if (mainContainer?.onclick == null && window.innerWidth <= breakSize) {
-         mainContainer!.onclick = (e: Event) => { if (isOpenRef.current) e.stopImmediatePropagation(); setIsOpenMainContainer(false); };
+         mainContainer!.onclick = (e: Event) => {
+            if (isOpenRef.current)
+               e.stopImmediatePropagation();
+            setIsOpenMainContainer(false);
+         };
       }
       else if (mainContainer?.onclick != null && window.innerWidth > breakSize) {
-         if (extractUri()![0].toLowerCase() != "login")
+         if (auth.isAuthenticated)
             setIsOpenMainContainer(true);
          mainContainer!.onclick = null;
       }
@@ -79,43 +79,42 @@ const App = () => {
 
    return (
       <BrowserRouter>
-         <ContextContainer>
-            <NavMenu mainContainerToggler={(isOpen) => setIsOpenMainContainer(isOpen)} isOpenMainContainer={isOpenMainContainer} />
-            <div id="main-container" className={`sidenav-main-container ${isOpenMainContainer ? "show" : ""}`}>
-               <Suspense fallback={<Loading />}>
-                  <Switch>
-                     {/***** Public Routes ****/}
-                     <CustomRoute path="/Login" render={(props: any) => <LoginPage {...props} mainContainerToggler={(isOpen) => setIsOpenMainContainer(isOpen)} />} />
-                     <CustomRoute path="/EmailConfirmation" render={(props: any) => <ConfirmEmail {...props} />} />
-                     <CustomRoute path="/ResetPassword" render={(props: any) => <PasswordReset {...props} />} />
-                     <CustomRoute path="/NewEmployee/SetupPassword" render={(props: any) => <PasswordReset {...props} />} />
+         <SideNotifier />
+         <NavMenu mainContainerToggler={(isOpen) => setIsOpenMainContainer(isOpen)} isOpenMainContainer={isOpenMainContainer} />
+         <div id="main-container" className={`${auth.isAuthenticated ? "sidenav-main-container" : "vh-100 pm-0"} ${isOpenMainContainer ? "show" : ""}`}>
+            <Suspense fallback={<Loading />}>
+               <Switch>
+                  {/***** Public Routes ****/}
+                  <CustomRoute path="/Login" render={(props: any) => <LoginPage {...props} mainContainerToggler={(isOpen) => setIsOpenMainContainer(isOpen)} />} />
+                  <CustomRoute path="/EmailConfirmation" render={(props: any) => <ConfirmEmail {...props} />} />
+                  <CustomRoute path="/ResetPassword" render={(props: any) => <PasswordReset {...props} />} />
+                  <CustomRoute path="/NewEmployee/SetupPassword" render={(props: any) => <PasswordReset {...props} />} />
 
-                     {/***** Protected Routes  ****/}
-                     <CustomRoute authRequired exact path="/" render={(props: any) => <Dashboard {...props} />} />
-                     <CustomRoute authRequired exact path="/MyAccount" render={(props: any) => <MyAccount {...props} />} />
-                     <CustomRoute authRequired path="/Categories" render={(props: any) => <CategoryManagement {...props} />} />
-                     <CustomRoute authRequired path="/Coupons" render={(props: any) => <CouponManagement {...props} />} />
-                     <CustomRoute authRequired path="/Products" render={(props: any) => <ProductManagement {...props} />} />
-                     <CustomRoute authRequired exact path="/EmailTemplate" render={(props: any) => <EmailTemplateManagement {...props} />} />
-                     <CustomRoute authRequired exact path="/EmailTemplate/Edit" render={(props: any) => <EmailTemplateEdit {...props} />} />
-                     <CustomRoute authRequired path="/Users" render={(props: any) => <UserManagement {...props} />} />
-                     <CustomRoute authRequired path="/ViewUserOrders" render={(props: any) => <ViewUserOrders {...props} />} />
-                     <CustomRoute authRequired path="/Messages" render={(props: any) => <MessagesManagement {...props} />} />
-                     <CustomRoute authRequired path="/Orders" render={(props: any) => <OrderManagement {...props} />} />
-                     <CustomRoute authRequired path="/DeliveryOptions" render={(props: any) => <DeliveryOptionManagement {...props} />} />
-                     <CustomRoute authRequired path="/ViewDispute" render={(props: any) => <ViewCommunication {...props} />} />
-                     <CustomRoute authRequired path="/ViewCommunication" render={(props: any) => <ViewCommunication {...props} />} />
+                  {/***** Protected Routes  ****/}
+                  <CustomRoute authRequired exact path="/" render={(props: any) => <Dashboard {...props} />} />
+                  <CustomRoute authRequired exact path="/MyAccount" render={(props: any) => <MyAccount {...props} />} />
+                  <CustomRoute authRequired path="/Categories" render={(props: any) => <CategoryManagement {...props} />} />
+                  <CustomRoute authRequired path="/Coupons" render={(props: any) => <CouponManagement {...props} />} />
+                  <CustomRoute authRequired path="/Products" render={(props: any) => <ProductManagement {...props} />} />
+                  <CustomRoute authRequired exact path="/EmailTemplate" render={(props: any) => <EmailTemplateManagement {...props} />} />
+                  <CustomRoute authRequired exact path="/EmailTemplate/Edit" render={(props: any) => <EmailTemplateEdit {...props} />} />
+                  <CustomRoute authRequired path="/Users" render={(props: any) => <UserManagement {...props} />} />
+                  <CustomRoute authRequired path="/ViewUserOrders" render={(props: any) => <ViewUserOrders {...props} />} />
+                  <CustomRoute authRequired path="/Messages" render={(props: any) => <MessagesManagement {...props} />} />
+                  <CustomRoute authRequired path="/Orders" render={(props: any) => <OrderManagement {...props} />} />
+                  <CustomRoute authRequired path="/DeliveryOptions" render={(props: any) => <DeliveryOptionManagement {...props} />} />
+                  <CustomRoute authRequired path="/ViewDispute" render={(props: any) => <ViewCommunication {...props} />} />
+                  <CustomRoute authRequired path="/ViewCommunication" render={(props: any) => <ViewCommunication {...props} />} />
 
-                     {/***** Route Not Found  ****/}
-                     <CustomRoute authRequired path="*" render={(props: any) => <PageNotFound {...props} />} />
-                  </Switch>
-               </Suspense>
-            </div>
-            <Suspense fallback={<></>}>
-               <NotificationContainer />
-               <CookieBanner />
+                  {/***** Route Not Found  ****/}
+                  <CustomRoute authRequired path="*" render={(props: any) => <PageNotFound {...props} />} />
+               </Switch>
             </Suspense>
-         </ContextContainer>
+         </div>
+         <Suspense fallback={<></>}>
+            <NotificationContainer />
+            <CookieBanner />
+         </Suspense>
       </BrowserRouter>
    );
 };

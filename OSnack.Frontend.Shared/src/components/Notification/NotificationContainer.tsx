@@ -1,18 +1,8 @@
-﻿import React, { useContext, useEffect } from 'react';
+﻿import React, { useContext } from 'react';
 import { NotificationContext } from '../../_core/Contexts/notificationContext';
 import NotificationModal from './NotificationModal';
 const NotificationContainer = (props: IProps) => {
    const notificationContext = useContext(NotificationContext);
-
-   useEffect(() => {
-      if (window.location.host.endsWith("osnack.p8b.uk") && notificationContext.findById(1) == undefined)
-         notificationContext.addFix("Demo Site.", 0, null, 1);
-      else
-         notificationContext.remove(1);
-
-
-   }, []);
-
    if (notificationContext.isEmpty)
       return (<></>);
    return (

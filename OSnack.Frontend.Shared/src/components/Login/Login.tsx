@@ -155,6 +155,6 @@ const Login = (props: IProps) => {
 declare type IProps = {
    fromPath: string;
    disableExternalLogin?: boolean;
-   externalLoginFailed: (user: User) => void;
+   externalLoginFailed?: (user: User) => void;
 };
 export default Login;

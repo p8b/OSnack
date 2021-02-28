@@ -80,16 +80,16 @@ namespace OSnack.API.Controllers
                }
             SetAntiforgeryCookie();
 
-            bool maintenanceModeStatus = AppConst.Settings.MaintenanceModeStatus;
             bool isUserAllowedInMaintenance = false;
-            if (user.Role != null
-              && (user.Role.AccessClaim == AppConst.AccessClaims.Admin
-               || user.Role.AccessClaim == AppConst.AccessClaims.Manager))
-               isUserAllowedInMaintenance = true;
+
             Request.Headers.TryGetValue("Origin", out StringValues OriginValue);
-            if (maintenanceModeStatus && AppConst.Settings.AppDomains.AdminApp.EqualCurrentCultureIgnoreCase(OriginValue))
-               maintenanceModeStatus = false;
-            return Ok(new MultiResult<User, bool, bool, bool>(user, isAuthenticated, maintenanceModeStatus, isUserAllowedInMaintenance
+            if ((user.Role != null && (user.Role.AccessClaim == AppConst.AccessClaims.Admin
+                                    || user.Role.AccessClaim == AppConst.AccessClaims.Manager))
+              || AppConst.Settings.AppDomains.AdminApp.EqualCurrentCultureIgnoreCase(OriginValue))
+               isUserAllowedInMaintenance = true;
+
+            return Ok(new MultiResult<User, bool, bool, bool>
+               (user, isAuthenticated, AppConst.Settings.MaintenanceModeStatus, isUserAllowedInMaintenance
                , CoreFunc.GetCustomAttributeTypedArgument(ControllerContext)));
          }
          catch (Exception ex)

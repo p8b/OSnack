@@ -16,7 +16,6 @@ const ImageUpload = (props: IProps) => {
    const [originalImageLoading, setOriginalImageLoading] = useState(true);
 
    useEffect(() => {
-      console.log(props.modifiedImagePath);
       if (props.modifiedImagePath != undefined)
          getBase64fromUrlImage(`${API_URL}/${props.modifiedImagePath}`)
             .then(imgBase64 => {

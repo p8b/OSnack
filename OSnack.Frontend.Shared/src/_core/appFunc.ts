@@ -224,12 +224,12 @@ export const setHtmlTitle = (value: string) => {
 };
 
 export class onImageError {
-   static Product = async (i: React.SyntheticEvent<HTMLImageElement, Event>) =>
+   static Product = (i: React.SyntheticEvent<HTMLImageElement, Event>) =>
       onImageError.onImageErrorSelect(i, "Product");
-   static Category = async (i: React.SyntheticEvent<HTMLImageElement, Event>) =>
+   static Category = (i: React.SyntheticEvent<HTMLImageElement, Event>) =>
       onImageError.onImageErrorSelect(i, "Category");
 
-   static onImageErrorSelect = (i: React.SyntheticEvent<HTMLImageElement, Event>, type: string = "") => {
+   private static onImageErrorSelect = (i: React.SyntheticEvent<HTMLImageElement, Event>, type: string) => {
       let src = `${API_URL}/Images/defaults/default.png`;
 
       switch (type) {

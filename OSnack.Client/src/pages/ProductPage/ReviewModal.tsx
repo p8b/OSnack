@@ -65,7 +65,9 @@ export const ReviewModal = (props: IProps) => {
          isOpen={props.isOpen}>
          <PageHeader children="Review" />
          <div className="col-12 mb-2" children="How much do you like this product? Rate it!" />
-         <StarRating className="col-12" onRateChanged={rate => changeRate(rate)} rate={comment.rate != 0 ? comment.rate : undefined} />
+         <StarRating className="col-12"
+            onRateChanged={rate => changeRate(rate)}
+            rate={comment.rate != 0 ? comment.rate : undefined} />
 
          <TextArea className="col-12 p-0" label="Review :" rows={4} value={comment.description}
             onChange={(e) => setCommment({ ...comment, description: e.target.value })} />

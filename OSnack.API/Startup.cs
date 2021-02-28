@@ -119,6 +119,7 @@ namespace OSnack.API
             options.SlidingExpiration = true;
             options.Cookie.SameSite = SameSiteMode.Lax;
             options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            // options.Cookie.Domain = ".osnack.co.uk";
          }
          /// Add authentication services to the pipeline
          services.AddAuthentication().AddCookie(AuthSchemeApplication, CookieAuthOptions);

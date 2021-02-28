@@ -56,7 +56,6 @@ const Tabs = (props: IProps) => {
       useGetComment(props.product.id!, selectedPage, maxItemsPerPage).then(result => {
          if (isUnmounted.current) return;
          setComment(result.data.comment);
-         console.log(result.data.comment);
          tbl.setTotalItemCount(result.data.totalCount!);
 
          let list: Comment[] = commentList;
@@ -66,8 +65,16 @@ const Tabs = (props: IProps) => {
             list.push(...result.data.commentList);
          setCommentList(list);
 
-      }).catch(errors => { if (isUnmounted.current) return; errorAlert.set(errors); });
+      }).catch(errors => {
+         if (isUnmounted.current) return;
+         errorAlert.set(errors);
+      });
    };
+
+   if (!showNutritionalInfo && commentList.length == 0 && comment == undefined) {
+      return <></>;
+   }
+
 
    return (
       <div className="col-12 py-5 px-0">

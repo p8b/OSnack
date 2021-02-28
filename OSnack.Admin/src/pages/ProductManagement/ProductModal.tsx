@@ -44,8 +44,6 @@ const ProductModal = (props: IProps) => {
          loadingCallBack!();
       }).catch(errors => {
          if (isUnmounted.current) return;
-         console.log(errors);
-         errorAlert.set(errors);
          loadingCallBack!();
       });
    };

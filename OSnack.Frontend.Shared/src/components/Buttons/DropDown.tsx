@@ -39,7 +39,7 @@ const DropDown = (props: IProps) => {
                />
             }
          </button>
-         <span className={`col dropdown-menu text-center dropdown-menu-right bg-white ${props.menuClassName ?? ""} ${isOpen ? " show" : ""}`}>
+         <span className={`col dropdown-menu text-center pt-0 dropdown-menu-right bg-white ${props.menuClassName ?? ""} ${isOpen ? " show" : ""}`}>
             {props.children}
          </span>
       </div>

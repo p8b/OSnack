@@ -1,16 +1,21 @@
-﻿import React from "react";
+﻿import React, { lazy, Suspense } from "react";
 import AuthenticationContextProvider from "osnack-frontend-shared/src/_core/Contexts/authenticationContext";
-import MaintenanceContext from "osnack-frontend-shared/src/_core/Contexts/customRouteContext";
-import ShopContextContainer from "./shopContext";
-import NotificationContextContainer from "osnack-frontend-shared/src/_core/Contexts/notificationContext";
+import CustomRouteContextProvider from "osnack-frontend-shared/src/_core/Contexts/customRouteContext";
+import ShopContextProvider from "./shopContext";
+import NotificationContextProvider from "osnack-frontend-shared/src/_core/Contexts/notificationContext";
+import { Loading } from "osnack-frontend-shared/src/components/Loading/Loading";
+const App = lazy(() => import("../../app"));
 
-export const ContextContainer = ({ children }: { children: React.ReactNode; }) =>
-   <MaintenanceContext>
+const ContextContainer = () =>
+   <CustomRouteContextProvider>
       <AuthenticationContextProvider>
-         <ShopContextContainer>
-            <NotificationContextContainer>
-               {children}
-            </NotificationContextContainer>
-         </ShopContextContainer>
+         <ShopContextProvider>
+            <NotificationContextProvider>
+               <Suspense fallback={<Loading />}>
+                  <App />
+               </Suspense>
+            </NotificationContextProvider>
+         </ShopContextProvider>
       </AuthenticationContextProvider>
-   </MaintenanceContext>;
+   </CustomRouteContextProvider>;
+export default ContextContainer;

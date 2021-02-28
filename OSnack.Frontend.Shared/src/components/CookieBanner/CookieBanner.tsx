@@ -1,14 +1,12 @@
 ﻿import { Button } from "../Buttons/Button";
 import useScript from "../../hooks/function/useScript";
 import { getCookieValue, setCookie, sleep } from "../../_core/appFunc";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { CustomRouteContext } from "../../_core/Contexts/customRouteContext";
 import { GoogleAnalyticKey, MainWebsiteURL } from "../../_core/appConst";
 
 const CookieBanner = () => {
    const isUnmounted = useRef(false);
-   const maintenance = useContext(CustomRouteContext);
    const [cookieUserConsent, setCookieUserConsent] = useState("");
    const [currentUrl, setCurrentUrl] = useState<string | null>(null);
    const googleAnalytic = useScript(currentUrl);
@@ -58,9 +56,6 @@ const CookieBanner = () => {
       if (getCookieValue(cookieName) === "")
          setCookie(cookieName, value, 356);
    };
-
-   if (maintenance.maintenanceIsOn && !maintenance.isUserAllowedInMaintenance)
-      return (<></>);
 
    if (getCookieValue(cookieName) !== '' || !show) return <></>;
 

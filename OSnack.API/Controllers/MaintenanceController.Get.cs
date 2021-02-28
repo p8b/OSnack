@@ -1,22 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Primitives;
 
-using Newtonsoft.Json;
-
-using OSnack.API.Database;
+using OSnack.API.Database.Models;
 using OSnack.API.Extras;
 
 using P8B.Core.CSharp;
+using P8B.Core.CSharp.Attributes;
 using P8B.Core.CSharp.Models;
-using P8B.UK.API.Services;
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OSnack.API.Controllers
@@ -24,21 +20,45 @@ namespace OSnack.API.Controllers
    public partial class MaintenanceController
    {
 
-      #region *** ***
-      [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+      #region *** ***                                                 
+      [MultiResultPropertyNames("maintenanceModeStatus", "isUserAllowedInMaintenance")]
+      [ProducesResponseType(typeof(MultiResult<bool, bool>), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(List<Error>), StatusCodes.Status417ExpectationFailed)]
       #endregion
       [HttpGet("[action]")]
-      [Authorize(AppConst.AccessPolicies.Secret)] /// Done  
-      public IActionResult Get()
+      [Authorize(AppConst.AccessPolicies.Public)] /// Done  
+      public async Task<IActionResult> Get()
       {
          try
          {
-            Settings settings = new Settings();
+            User user = new User();
+            bool maintenanceModeStatus = AppConst.Settings.MaintenanceModeStatus;
+            bool isUserAllowedInMaintenance = false;
 
-            string settingsPath = AppFunc.GetFilePath(@"StaticFiles\Settings.json");
+            if (_SignInManager.IsSignedIn(User))
+               foreach (string policy in AppFunc.GetCurrentRequestPolicies(Request))
+               {
+                  AuthorizationResult authResult = await _AuthService.AuthorizeAsync(User, policy).ConfigureAwait(false);
+                  if (authResult.Succeeded)
+                  {
+                     user = await _DbContext.Users
+                        .Include(u => u.Role)
+                        .Include(u => u.RegistrationMethod)
+                        .FirstOrDefaultAsync(u => u.Id == AppFunc.GetUserId(User))
+                        .ConfigureAwait(false);
+                     break;
+                  }
+               }
 
-            return Ok(AppConst.Settings.MaintenanceModeStatus);
+            Request.Headers.TryGetValue("Origin", out StringValues OriginValue);
+            if ((user.Role != null && (user.Role.AccessClaim == AppConst.AccessClaims.Admin
+                                    || user.Role.AccessClaim == AppConst.AccessClaims.Manager))
+              || AppConst.Settings.AppDomains.AdminApp.EqualCurrentCultureIgnoreCase(OriginValue))
+               isUserAllowedInMaintenance = true;
+
+            return Ok(new MultiResult<bool, bool>
+              (maintenanceModeStatus, isUserAllowedInMaintenance
+              , CoreFunc.GetCustomAttributeTypedArgument(ControllerContext)));
          }
          catch (Exception ex)
          {

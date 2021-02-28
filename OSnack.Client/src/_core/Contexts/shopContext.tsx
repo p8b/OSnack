@@ -21,17 +21,16 @@ export const ShopContext = createContext({
 } as IShopContext);
 
 
-const ShopContextContainer = ({ children }: Props): JSX.Element => {
+const ShopContextProvider = ({ children }: Props): JSX.Element => {
    const [list, setList] = useState<OrderItem[]>([]);
    const isCleared = useRef(false);
    const localStorageName = "ShopState";
 
    useEffect(() => {
       try {
-
          var _list = JSON.parse(localStorageManagement.GET(localStorageName)) as OrderItem[];
-         if (_list.length > 0)
-            _list[0].name;
+         if (_list.length == undefined)
+            _list = [];
          setList(_list || []);
       } catch {
          setList([]);
@@ -87,11 +86,16 @@ const ShopContextContainer = ({ children }: Props): JSX.Element => {
    };
 
    const getQuantity = (product: Product) => {
-      const item = list?.find(p => p.productId === product.id);
+      try {
+         const item = list?.find(p => p.productId === product.id);
 
-      if (item != undefined)
-         return item.quantity;
-      return undefined;
+         if (item != undefined)
+            return item.quantity;
+         return undefined;
+      } catch {
+         setList([]);
+         return 0;
+      }
    };
    const clear = () => {
       if (!isCleared.current) {
@@ -101,11 +105,16 @@ const ShopContextContainer = ({ children }: Props): JSX.Element => {
    };
 
    const getTotalItems = () => {
-      let totalItem = 0;
-      list.map((orderItem) => {
-         totalItem += orderItem.quantity * 1;
-      });
-      return totalItem;
+      try {
+         let totalItem = 0;
+         list.map((orderItem) => {
+            totalItem += orderItem.quantity * 1;
+         });
+         return totalItem;
+      } catch {
+         setList([]);
+         return 0;
+      }
    };
    return (
       <ShopContext.Provider value={{ list, set, getQuantity, clear, getTotalItems, updateOrderItem }}>
@@ -113,7 +122,7 @@ const ShopContextContainer = ({ children }: Props): JSX.Element => {
       </ShopContext.Provider >
    );
 };
-export default ShopContextContainer;
+export default ShopContextProvider;
 
 
 type Props = {

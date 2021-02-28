@@ -130,10 +130,19 @@
     }
 }
 
-.maximize-icon {
+.chevron-down {
     &:before {
         text-decoration: none;
-        content: "\f2d0";
+        content: "\f078";
+        display: inline;
+        font-family: "FA5 Solid" !important;
+    }
+}
+
+.chevron-up {
+    &:before {
+        text-decoration: none;
+        content: "\f077";
         display: inline;
         font-family: "FA5 Solid" !important;
     }
@@ -377,7 +386,6 @@
         padding-top: 0.4rem;
     }
 }
-
 
 .close-icon {
     &:after {

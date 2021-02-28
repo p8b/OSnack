@@ -7,13 +7,13 @@ export const AuthenticationContext = createContext({
    set: (_isAuthenticated?: boolean, _user?: User) => { }
 });
 
-const AuthenticationContextProvider = ({ children }: { children: React.ReactNode; }): JSX.Element => {
+const AuthenticationContextProvider = ({ children }: { children: React.ReactNode; }) => {
    const [isAuthenticated, setIsAuthenticated] = useState(false);
    const [user, setUser] = useState(new User());
 
    const set = (_isAuthenticated?: boolean, _user?: User) => {
-      setIsAuthenticated(_isAuthenticated || false);
       setUser(_user || new User());
+      setIsAuthenticated(_isAuthenticated || false);
    };
    return (
       <AuthenticationContext.Provider value={{ isAuthenticated, user, set }}>

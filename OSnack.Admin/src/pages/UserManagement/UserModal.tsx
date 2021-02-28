@@ -33,7 +33,6 @@ const UserModal = (props: IProps) => {
          loadingCallBack!();
       }).catch(errors => {
          if (isUnmounted.current) return;
-         console.log(errors);
          errorAlert.set(errors);
          loadingCallBack!();
       });
@@ -93,7 +92,7 @@ const UserModal = (props: IProps) => {
                label="Role*"
                showDanger={errorAlert.checkExistFilterRequired("Role")}
                className="col-12 col-sm-6 " >
-               {props.roleList.map(role =>
+               {props.roleList.filter(r => r.name.toLowerCase() != "customer").map(role =>
                   <button className="dropdown-item" key={role.id}
                      onClick={() => { setUser({ ...user, role: role }); }} >
                      {role.name}

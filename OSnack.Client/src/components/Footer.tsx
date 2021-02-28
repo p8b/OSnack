@@ -1,13 +1,9 @@
-﻿import { CustomRouteContext } from "osnack-frontend-shared/src/_core/Contexts/customRouteContext";
-import React, { useContext } from "react";
+﻿import React from "react";
 import { Link } from "react-router-dom";
 import Container from "./Container";
 
 const Footer = () => {
-   const customRouteContext = useContext(CustomRouteContext);
 
-   if (customRouteContext.maintenanceIsOn && !customRouteContext.isUserAllowedInMaintenance)
-      return (<></>);
    return (
       <footer id="footer" className="footer pt-4 ">
          <Container>

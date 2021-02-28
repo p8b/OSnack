@@ -354,6 +354,7 @@
     <TypeScriptCompile Include="src\components\Table\Table.tsx" />
     <TypeScriptCompile Include="src\components\Table\TableRowButtons.tsx" />
     <TypeScriptCompile Include="src\components\Texts\CopyText.tsx" />
+    <TypeScriptCompile Include="src\components\Texts\SideNotifier.tsx" />
     <TypeScriptCompile Include="src\hooks\function\useScript.tsx" />
     <TypeScriptCompile Include="src\hooks\OfficialHooks\useAddressHook.ts" />
     <TypeScriptCompile Include="src\hooks\OfficialHooks\useAuthenticationHook.ts" />

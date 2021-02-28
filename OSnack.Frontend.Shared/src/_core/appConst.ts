@@ -7,6 +7,11 @@ export const API_URL =
       hostname.endsWith("osnack.p8b.uk") ? "https://api.osnack.p8b.uk" : // P8B Demo Production
          hostname.endsWith("osnack.co.uk") ? "https://api.osnack.co.uk" : ""; // OSnack Production else "" 
 
+export const PaypalClientId =
+   hostname === "localhost" ? "AUc_fJXtMhI3ugArGsxZur6ej0GP4Pb_usigBXwK9qvtUKByaJWEf7HNrUBSMHaYSiBq6Cg5nOf4_Tq_" :  // Dev
+      hostname.endsWith("osnack.p8b.uk") ? "AUc_fJXtMhI3ugArGsxZur6ej0GP4Pb_usigBXwK9qvtUKByaJWEf7HNrUBSMHaYSiBq6Cg5nOf4_Tq_" : // P8B Demo Production
+         hostname.endsWith("osnack.co.uk") ? "AQi4yipAb1-0ujsjVnsifbr0dJRbBe0RIYt7rXKyyASJGgt7g7yB39ItAgrF-ivcATCIhnIn8fEzRYSG" : ""; // OSnack Production else "" 
+
 export const GooglereCAPTCHAKey =
    hostname === "localhost" ? "6LeYK0gaAAAAAEFPv11v-Kpphrm-kW_Ff0KwUEMC" :  // Dev
       hostname.endsWith("osnack.p8b.uk") ? "6LcVL0gaAAAAAIKgko6e86v276-Su8x0YYQrHk7o" : // P8B Demo Production

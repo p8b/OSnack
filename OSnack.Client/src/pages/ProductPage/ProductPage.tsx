@@ -13,6 +13,7 @@ import ShopItem from '../Shop/ShopItem';
 import { ShopContext } from '../../_core/Contexts/shopContext';
 import Carousel from '../../components/Carousel';
 import { StarRating } from 'osnack-frontend-shared/src/components/Inputs/StarRating';
+import { onImageError } from 'osnack-frontend-shared/src/_core/appFunc';
 
 const ProductPage = (props: IProps) => {
    const isUnmounted = useRef(false);
@@ -77,7 +78,11 @@ const ProductPage = (props: IProps) => {
                   <div className="row ">
                      <div className="row pm-0 col-12 col-sm-5 p-4 justify-text-center">
                         <div className="col-12 pm-0 mx-auto">
-                           <img className="shop-card-img" src={`${API_URL}/${product.imagePath}`} alt={product.name} />
+                           <img className="shop-card-img"
+                              src={`${API_URL}/${product.imagePath}`}
+                              alt={product.name}
+                              onError={onImageError.Product}
+                           />
                         </div>
                         {product.score != -1 &&
                            <StarRating className="col-auto pm-0 mx-auto stars-lg" rate={product.score} readonly />

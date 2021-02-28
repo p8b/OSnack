@@ -23,6 +23,12 @@ const Maintenance = (props: IProps) => {
                Under Construction.
             </div>
             <div className="text-white col-12 display-6 mt-3 text-center">
+               {props.CannotReachServer &&
+                  <>
+                     Server is unavalible
+                     <div className="col-12 mt-3" />
+                  </>
+               }
                We apologize for any inconvenience this may have caused.
                <div className="col-12 mt-3" />
                We will be back soon
@@ -39,5 +45,6 @@ const Maintenance = (props: IProps) => {
    );
 };
 declare type IProps = {
+   CannotReachServer?: boolean;
 };
 export default Maintenance;

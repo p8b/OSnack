@@ -17,24 +17,17 @@ const NotificationModal = (props: IProps) => {
    return (
       <>
          {props.notification.minimize &&
-            <div key={props.notification.id} className={`row col-2 notification mb-3 pm-0 ml-auto justify-content-center`}>
-               <div className={`${props.notification.type != NotificationType.fix ? "col-6 pl-2 text-left" : "col-12 pr-2 text-right"} p-0   pt-1`}
-                  children={<a className="close-button mb-auto maximize-icon " onClick={() => { notificationCtx.changeMinimize(props.notification.id!, false); }} />}
-               />
-               {props.notification.type != NotificationType.fix &&
-                  <div className="col-6 p-0 pr-2 text-right pt-1"
-                     children={<a className="close-button mb-auto" onClick={() => { notificationCtx.remove(props.notification.id!); }} children="✘" />}
-                  />
-               }
+            <div key={props.notification.id} className={`col-auto notification mb-3 m-0 ml-auto`}>
+               <a className="close-button mb-auto chevron-up" onClick={() => { notificationCtx.changeMinimize(props.notification.id!, false); }} />
             </div>
          }
          {!props.notification.minimize &&
-            <div key={props.notification.id} className={`row col-12 notification mb-3 pm-0 `}>
+            <div key={props.notification.id} className={`row col-auto notification mb-3 pm-0 `}>
                <div className={`${props.notification.type != NotificationType.fix ? "col-10" : "col-11"} p-4`}
                   children={props.notification.children}
                />
                <div className={`col-1 p-0 pr-2 text-right pt-1`}
-                  children={<a className="close-button mb-auto minus-icon " onClick={() => { notificationCtx.changeMinimize(props.notification.id!, true); }} />}
+                  children={<a className="close-button mb-auto chevron-down " onClick={() => { notificationCtx.changeMinimize(props.notification.id!, true); }} />}
                />
                {props.notification.type != NotificationType.fix &&
                   <div className="col-1 p-0 pr-2 text-right pt-1"

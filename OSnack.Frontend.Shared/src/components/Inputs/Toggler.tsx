@@ -20,8 +20,8 @@ export const Toggler = (props: IProps) => {
       document.getElementById(`${id}`)?.click();
    };
    return (
-      <div className={`toggler ${props!.className!}`}>
-         <div onKeyUp={(ev) => { onKeyUp(ev.keyCode); }}
+      <div className={`toggler d-flex flex-nowrap ${props!.className!}`}>
+         <div className="col-auto" onKeyUp={(ev) => { onKeyUp(ev.keyCode); }}
             onClick={onClick}>
             <input type="checkbox" id={id}
                required={props!.required}
@@ -31,7 +31,7 @@ export const Toggler = (props: IProps) => {
             />
             <span onClick={() => { document.getElementById(`${id}`)?.focus(); }} />
          </div>
-         <label className={`dark ${props.lblClassName || ""}`}
+         <label className={`col-auto my-auto dark ${props.lblClassName || ""}`}
             onClick={() => document.getElementById(`${id}`)?.click()}>
             {lblValue}
          </label>

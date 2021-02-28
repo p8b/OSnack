@@ -14,6 +14,7 @@ interface INotificationContext {
    addDefualt: (children: any, timeOut?: number, location?: string | null, id?: number) => void,
    addAuthorised: (children: any, timeOut?: number, location?: string | null, id?: number) => void,
    remove: (id: number) => void,
+   clear: () => void,
    changeMinimize: (id: number, minimize: boolean) => void;
 }
 
@@ -26,10 +27,11 @@ export const NotificationContext = createContext({
    addDefualt: (children: any, timeOut: number = 0, location: string | null = null, id: number = 0) => { },
    addAuthorised: (children: any, timeOut: number = 0, location: string | null = null, id: number = 0) => { },
    remove: (id: number) => { },
+   clear: () => { },
    changeMinimize: (id: number, minimize: boolean) => { }
 } as INotificationContext);
 
-const NotificationContextContainer = ({ children }: { children: React.ReactNode; }) => {
+const NotificationContextProvider = ({ children }: { children: React.ReactNode; }) => {
    const auth = useContext(AuthenticationContext);
 
    const [notificationList, setNotificationList] = useState<Notification[]>([]);
@@ -47,12 +49,13 @@ const NotificationContextContainer = ({ children }: { children: React.ReactNode;
    }, []);
 
    useEffect(() => {
-      localStorageManagement.SET(localStorageName, JSON.stringify(list));
+      localStorageManagement.SET(localStorageName, JSON.stringify(notificationList));
    }, [notificationList]);
    const list = (() => {
       var _list = notificationList.filter(n => visibilityCheck(n));
       if (notificationList.length != _list.length)
          setNotificationList(_list);
+      // _list.sort((a, b) => (a.minimize ? 1 : 0) - (b.minimize ? 1 : 0));
       return _list;
    })();
 
@@ -68,8 +71,9 @@ const NotificationContextContainer = ({ children }: { children: React.ReactNode;
       setNotificationList(_list);
    };
 
-   const addFix = (children: any, timeOut: number = 0, location: string | null = null, id: number = 0) =>
+   const addFix = (children: any, timeOut: number = 0, location: string | null = null, id: number = 0) => {
       add(new Notification(children, NotificationType.fix, timeOut, location, id));
+   };
 
 
    const addDefualt = (children: any, timeOut: number = 0, location: string | null = null, id: number = 0) =>
@@ -80,6 +84,7 @@ const NotificationContextContainer = ({ children }: { children: React.ReactNode;
 
 
    const remove = (id: number) => setNotificationList(list.filter(n => n.id != id));
+   const clear = () => setNotificationList([]);
    const changeMinimize = (id: number, minimize: boolean) => {
       var notification = list.find(n => n.id == id);
       notification!.minimize = minimize;
@@ -93,7 +98,6 @@ const NotificationContextContainer = ({ children }: { children: React.ReactNode;
 
       if (notifications.location !== null && notifications.location !== extractUri()[0])
          return false;
-
       return true;
    };
 
@@ -106,6 +110,7 @@ const NotificationContextContainer = ({ children }: { children: React.ReactNode;
       addDefualt,
       addAuthorised,
       remove,
+      clear,
       changeMinimize
    };
 
@@ -115,4 +120,4 @@ const NotificationContextContainer = ({ children }: { children: React.ReactNode;
       </NotificationContext.Provider>
    );
 };
-export default NotificationContextContainer;
+export default NotificationContextProvider;

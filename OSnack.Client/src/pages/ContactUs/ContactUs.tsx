@@ -85,6 +85,11 @@ const ContactUs = (props: IProps) => {
 
                   <TextArea className="col-12" label="Message*" rows={3} value={message}
                      onChange={(i) => { setMessage(i.target.value); }} />
+                  <div className="col-12 small-text text-gray">
+                     {"This site is protected by reCAPTCHA and the Google "}
+                     <a href="https://policies.google.com/privacy">Privacy Policy</a>{" and"}
+                     <a href="https://policies.google.com/terms">Terms of Service</a>{" apply."}
+                  </div>
                   <div className="col-12 mt-3">
                      <Button className="w-100 btn-lg btn-green"
                         children="Send"

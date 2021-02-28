@@ -603,6 +603,11 @@ export class EmailTemplateAndDefaultEmailTemplate {
     defaultEmailTemplate?: EmailTemplate | undefined;
 
 }
+export class MaintenanceModeStatusAndIsUserAllowedInMaintenance {
+    maintenanceModeStatus?: boolean;
+    isUserAllowedInMaintenance?: boolean;
+
+}
 export class User extends UserBase {
     id?: number = 0;
     firstName!: string;

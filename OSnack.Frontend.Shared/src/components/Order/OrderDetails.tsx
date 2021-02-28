@@ -33,7 +33,7 @@ const OrderDetails = (props: IProps) => {
          <div className="col-12 col-md-6 col-lg-5">
             <div className=" pos-sticky t-0">
                {props.access == AppAccess.Admin &&
-                  props.availabeType!.length > 0 &&
+                  props.availabeType && props.availabeType.length > 0 &&
                   <InputDropdown
                      dropdownTitle={<span className={`${getBadgeByOrderStatusType(selectedStatus)}`}
                         children={`${OrderStatusTypeList.find((s) => s.Value == selectedStatus)?.Name || "All"}`} />}
@@ -51,7 +51,7 @@ const OrderDetails = (props: IProps) => {
                }
 
                <div className="row pm-0 ">
-                  {(props.access == AppAccess.Client || props.availabeType!.length == 0) &&
+                  {(props.access == AppAccess.Client || (props.availabeType && props.availabeType.length == 0)) &&
                      <>
                         <div className="col-7 pm-0 small-text text-gray mt-auto" children="Status:" />
                         <div className="col-5 p-0">

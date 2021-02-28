@@ -2,7 +2,6 @@
 import { Route, Redirect } from "react-router-dom";
 import { Loading } from "../components/Loading/Loading";
 import { useSilenceAuthentication } from "../hooks/PublicHooks/useAuthenticationHook";
-import Maintenance from "../pages/Maintenance";
 import { AuthenticationContext } from "./Contexts/authenticationContext";
 import { CustomRouteContext } from "./Contexts/customRouteContext";
 
@@ -25,9 +24,6 @@ const CustomRoute = (props: IProps) => {
          });
       }
    }, [props.path]);
-
-   if (customRouteContext.maintenanceIsOn && !customRouteContext.isUserAllowedInMaintenance && customRouteContext.isAuthenticationConfirmed)
-      return (<Route exact={props?.exact} path={props.path} render={(props: any) => <Maintenance />} />);
 
    if (props.authRequired && !auth.isAuthenticated && customRouteContext.isAuthenticationConfirmed)
       return (<Redirect to={{ pathname: "/Login", state: { fromPath: window.location.pathname } }} />);

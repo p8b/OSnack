@@ -1,13 +1,18 @@
-﻿import React from "react";
+﻿import React, { lazy, Suspense } from "react";
 import AuthenticationContextProvider from "osnack-frontend-shared/src/_core/Contexts/authenticationContext";
 import CustomRouteContextProvider from "osnack-frontend-shared/src/_core/Contexts/customRouteContext";
-import NotificationContextContainer from "osnack-frontend-shared/src/_core/Contexts/notificationContext";
+import NotificationContextProvider from "osnack-frontend-shared/src/_core/Contexts/notificationContext";
+import { Loading } from "osnack-frontend-shared/src/components/Loading/Loading";
+const App = lazy(() => import("../../app"));
 
-export const ContextContainer = ({ children }: { children: React.ReactNode; }) =>
+const ContextContainer = () =>
    <CustomRouteContextProvider>
       <AuthenticationContextProvider>
-         <NotificationContextContainer>
-            {children}
-         </NotificationContextContainer>
+         <NotificationContextProvider>
+            <Suspense fallback={<Loading />}>
+               <App />
+            </Suspense>
+         </NotificationContextProvider>
       </AuthenticationContextProvider>
    </CustomRouteContextProvider>;
+export default ContextContainer;
