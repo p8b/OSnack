@@ -53,12 +53,10 @@ namespace OSnack.API.Controllers
             if (foundTemplate.HTML != emailTemplate.HTML)
             {
                emailTemplate.SaveFilesToWWWRoot(WebHost.WebRootPath);
-               foundTemplate.DeleteFiles(WebHost.WebRootPath);
             }
             else
             {
-               emailTemplate.DesignPath = foundTemplate.DesignPath;
-               emailTemplate.HtmlPath = foundTemplate.HtmlPath;
+               emailTemplate.FolderName = foundTemplate.FolderName;
             }
             _DbContext.EmailTemplates.Update(emailTemplate);
             await _DbContext.SaveChangesAsync().ConfigureAwait(false);

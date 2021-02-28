@@ -40,7 +40,6 @@ const Login = (props: IProps) => {
       if (isUnmounted.current) return;
       loadingCallBack && loadingCallBack!();
       if (result.data.id && result.data.id <= 0) {
-         props.externalLoginFailed(result.data);
          errorAlert.clear();
       } else {
          loginSuccess(result);

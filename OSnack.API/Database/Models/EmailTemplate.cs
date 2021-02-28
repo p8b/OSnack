@@ -3,8 +3,6 @@ using Newtonsoft.Json;
 
 using OSnack.API.Extras.CustomTypes;
 
-using P8B.Core.CSharp;
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -36,11 +34,7 @@ namespace OSnack.API.Database.Models
       public List<EmailTemplateRequiredClass> RequiredClasses { get; set; }
 
       [JsonIgnore]
-      public string HtmlPath { get; set; }
-
-      [JsonIgnore]
-      public string DesignPath { get; set; }
-
+      public string FolderName { get; set; }
 
       [NotMapped,
          Required(ErrorMessage = "HTML Template Is Required \n")]
@@ -52,50 +46,38 @@ namespace OSnack.API.Database.Models
 
       internal void SaveFilesToWWWRoot(string webRootPath)
       {
-
-         var SelectedFolder = Path.Combine(webRootPath, $"EmailTemplates");
-         DeleteFiles(webRootPath);
-
-         if (!Directory.Exists(Path.Combine(SelectedFolder, TemplateType.ToString())))
-            Directory.CreateDirectory(Path.Combine(SelectedFolder, TemplateType.ToString()));
-
-         HtmlPath = string.Format(@"{0}\html-{1}.html", TemplateType.ToString(), new Random().Next(0, 100));
-         DesignPath = string.Format(@"{0}\design-{1}.json", TemplateType.ToString(), new Random().Next(0, 100));
+         FolderName = TemplateType.ToString();
+         string selectedFolder = Path.Combine(webRootPath, @$"EmailTemplates\{FolderName}");
+         string[] oldFiles = Directory.GetFiles(Path.Combine(webRootPath, $"EmailTemplates\\{FolderName}"));
+         if (!Directory.Exists(selectedFolder))
+            Directory.CreateDirectory(selectedFolder);
 
          RemoveHtmlComment();
-         File.WriteAllText(Path.Combine(SelectedFolder, HtmlPath), HTML);
-         File.WriteAllText(Path.Combine(SelectedFolder, DesignPath), JsonConvert.SerializeObject(Design));
+         File.WriteAllText(Path.Combine(selectedFolder, $"html-{new Random().Next(0, 100)}.html"), HTML);
+         File.WriteAllText(Path.Combine(selectedFolder, $"design-{new Random().Next(0, 100)}.json"), JsonConvert.SerializeObject(Design));
+
+         foreach (var item in oldFiles)
+         {
+            File.Delete(item);
+         }
       }
 
       internal void PrepareDesign(string webRootPath)
       {
-         /// Get the directory of the app settings.json file
-         var SelectedFile = Path.Combine(webRootPath, $"EmailTemplates\\{DesignPath}");
-         /// If above file does not exists check the android path.
+         string SelectedFile = Directory
+            .GetFiles(Path.Combine(webRootPath, $"EmailTemplates\\{FolderName}"), "*.json")
+            .FirstOrDefault();
          if (File.Exists(SelectedFile))
-            /// Read the json file from that directory
-            /// de-serialise the json string into an object of dynamic
             Design = JsonConvert.DeserializeObject<dynamic>(File.ReadAllText(SelectedFile));
       }
 
       internal void PrepareHtml(string webRootPath)
       {
-         /// Get the directory of the app settings.json file                                              
-         var SelectedFile = Path.Combine(webRootPath, $"EmailTemplates\\{HtmlPath}");
-         /// If above file does not exists check the android path.
+         string SelectedFile = Directory
+            .GetFiles(Path.Combine(webRootPath, $"EmailTemplates\\{FolderName}"), "*.html")
+            .FirstOrDefault();
          if (File.Exists(SelectedFile))
-            /// Read the html file from that directory
             HTML = File.ReadAllText(SelectedFile);
-      }
-
-      internal void DeleteFiles(string webRootPath)
-      {
-         if (!string.IsNullOrWhiteSpace(HtmlPath))
-            CoreFunc.DeleteFromWWWRoot(HtmlPath, $"{webRootPath}\\EmailTemplates");
-         if (!string.IsNullOrWhiteSpace(DesignPath))
-            CoreFunc.DeleteFromWWWRoot(DesignPath, $"{webRootPath}\\EmailTemplates");
-
-         CoreFunc.ClearEmptyEmailTemplateFolders(webRootPath);
       }
 
       internal void RemoveHtmlComment() =>

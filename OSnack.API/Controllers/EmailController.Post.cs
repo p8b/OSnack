@@ -43,7 +43,6 @@ namespace OSnack.API.Controllers
          }
          catch (Exception ex)
          {
-            emailTemplate.DeleteFiles(WebHost.WebRootPath);
             CoreFunc.Error(ref ErrorsList, _LoggingService.LogException(Request.Path, ex, User));
             return StatusCode(417, ErrorsList);
          }
